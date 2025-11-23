@@ -1,0 +1,32 @@
+/* Container (frosted + elevated) */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  backdrop-filter: blur(10px);
+}
+
+/* Normal links */
+.link-item {
+  font-weight: 500;
+  padding: 6px 12px !important;
+  border-radius: 8px;
+  color: #555 !important;
+  transition: 0.25s ease;
+}
+
+/* Hover */
+.link-item:hover {
+  background: rgba(13, 110, 253, 0.08);
+  color: #0d6efd !important;
+}
+
+/* Active route */
+.active-item {
+  background: #e8f1ff;
+  border-radius: 8px;
+  font-weight: 600 !important;
+  color: #0d6efd !important;
+  box-shadow: inset 0 0 0 1px #d0e3ff;
+}
