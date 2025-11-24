@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Home } from './home';
+import { FreeOnlineTutor } from './free-online-tutor';
 
-describe('Home', () => {
-  let component: Home;
-  let fixture: ComponentFixture<Home>;
+describe('FreeOnlineTutor', () => {
+  let component: FreeOnlineTutor;
+  let fixture: ComponentFixture<FreeOnlineTutor>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Home]
+      imports: [FreeOnlineTutor]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Home);
+    fixture = TestBed.createComponent(FreeOnlineTutor);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

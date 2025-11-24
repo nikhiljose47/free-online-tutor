@@ -10,10 +10,10 @@ import { SyllabusItem } from '../../models/syllabus.model';
   templateUrl: './syllabus.html',
 })
 export class SyllabusComponent {
-  grouped = signal<any[]>([]);   // Only this affects UI → must be a signal
+  grouped = signal<any[]>([]); // Only this affects UI → must be a signal
 
   constructor(private service: SyllabusService) {
-    const list = this.service.getAll();  // sync load
+    const list = this.service.getAll(); // sync load
 
     // this will notify Angular to update UI (zoneless mode)
     this.grouped.set(this.groupByClass(list));

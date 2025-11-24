@@ -1,0 +1,31 @@
+<div class="container-fluid home-wrapper">
+  <div class="row">
+    <!-- LEFT SIDEBAR (10%) -->
+    <div class="col-12 col-md-2 left-pane">
+      <h5 class="section-title">Live Tuitions</h5>
+
+      <div class="live-item" *ngFor="let live of liveClasses()">
+        <div class="title">{{ live.title }}</div>
+        <div class="small text-muted">{{ live.teacher }}</div>
+        <div class="time">{{ live.time }}</div>
+      </div>
+    </div>
+
+    <!-- RIGHT CONTENT -->
+    <div class="col-12 col-md-10 right-pane">
+      <div class="class-block" *ngFor="let block of classSections()">
+        <div class="header">{{ block.class }}</div>
+
+        <div class="scroll-row no-scrollbar">
+          <div class="card roadmap-card" *ngFor="let card of block.cards">
+            <img [src]="card.image" class="card-img-top rounded" />
+            <div class="p-2">
+              <div class="card-title">{{ card.title }}</div>
+              <div class="card-sub">{{ card.subtitle }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
