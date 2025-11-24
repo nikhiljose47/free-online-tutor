@@ -1,13 +1,18 @@
 import { Component } from '@angular/core';
+import { Testimonial } from '../../models/testimonial.model';
+import { TestimonialService } from '../../services/testimonial.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   standalone: true,
+  imports: [CommonModule],
   selector: 'testimonials',
-  template: `
-    <div class="p-3">
-      <h4>Testimonials</h4>
-      <p>User feedback will appear here…</p>
-    </div>
-  `
+  templateUrl: './testimonials.html',
 })
-export class TestimonialsComponent {}
+export class Testimonials {
+  testimonials: Testimonial[] = [];
+
+  constructor(private service: TestimonialService) {
+    this.testimonials = this.service.getAll();
+  }
+}

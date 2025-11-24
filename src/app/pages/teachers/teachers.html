@@ -1,1 +1,29 @@
-<p>teachers works!</p>
+<div class="carousel-wrapper position-relative">
+
+  <!-- IMAGE -->
+  <div class="carousel-inner rounded-4 shadow-lg">
+    <img [src]="images[current]" class="carousel-img d-block w-100">
+  </div>
+
+  <!-- PREV BUTTON -->
+  <button class="nav-btn prev-btn" (click)="prev()">
+    ‹
+  </button>
+
+  <!-- NEXT BUTTON -->
+  <button class="nav-btn next-btn" (click)="next()">
+    ›
+  </button>
+
+  <!-- DOT INDICATORS -->
+  <div class="indicators">
+    @for (img of images; let i = $index; track i) {
+      <span 
+        class="dot"
+        [class.active]="i === current"
+        (click)="goTo(i)">
+      </span>
+    }
+  </div>
+
+</div>

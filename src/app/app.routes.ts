@@ -6,8 +6,9 @@ import { RoadmapComponent } from './pages/roadmap/roadmap';
 import { LoginComponent } from './pages/login/login';
 import { ClassDetailsComponent } from './pages/class-details/class-details';
 import { SyllabusComponent } from './components/syllabus/syllabus';
-import { TestimonialsComponent } from './components/testimonials/testimonials';
 import { HomeComponent } from './pages/home/home';
+import { TeachersPage } from './pages/teachers/teachers';
+import { About } from './pages/about/about';
 
 export const routes: Routes = [
   { path: 'book/:id', component: BookingDrawerComponent },
@@ -19,7 +20,7 @@ export const routes: Routes = [
   { path: 'upcoming', component: UpcomingClassesComponent },
   { path: 'syllabus', component: SyllabusComponent },
   { path: 'roadmap', component: RoadmapComponent },
-  { path: 'testimonials', component: TestimonialsComponent },
-
+  { path: 'about', component: About },
+  { path: 'teachers', component: TeachersPage },
   { path: '**', redirectTo: '' },
 ];
