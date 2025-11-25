@@ -2,31 +2,14 @@ import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SessionService } from '../../services/session.service';
 import { Session } from '../../models/session.model';
-import { DatePipe, NgIf } from '@angular/common';
+import { CommonModule, DatePipe, NgIf } from '@angular/common';
+import { BookSlotComponent } from '../book-slot/book-slot';
 
 @Component({
   selector: 'app-booking-drawer',
   standalone: true,
-  imports: [NgIf, DatePipe],
-  template: `
-    <div class="p-3">
-      <h4>Book Class</h4>
-
-      <div *ngIf="session()">
-        <h5>{{ session()?.title }}</h5>
-        <p>Teacher: {{ session()?.teacher }}</p>
-        <p>Seats Left: {{ session()?.seatsLeft }}</p>
-        <p>Starts: {{ session()?.startAt | date : 'shortTime' }}</p>
-
-        <button class="btn btn-success mt-3" (click)="book()">Confirm Booking</button>
-
-        <div *ngIf="meetingLink()" class="alert alert-info mt-3">
-          <strong>Join Link:</strong><br />
-          <a [href]="meetingLink()" target="_blank">{{ meetingLink() }}</a>
-        </div>
-      </div>
-    </div>
-  `,
+  imports: [CommonModule, DatePipe, BookSlotComponent],
+  templateUrl: './booking-drawer.html',
 })
 export class BookingDrawerComponent {
   private route = inject(ActivatedRoute);

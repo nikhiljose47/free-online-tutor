@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { RoadmapCacheService } from '../../services/cache/roadmap-cache.service';
 
-interface RoadmapCard {
+export interface RoadmapCard {
   title: string;
   subtitle: string;
   image: string;
@@ -14,6 +15,7 @@ interface RoadmapCard {
   styleUrl: './free-online-tutor.scss',
 })
 export class FreeOnlineTutor {
+  private cache = inject(RoadmapCacheService);
   liveClasses = signal([
     { title: 'Maths – Algebra', teacher: 'Anjali', time: 'Live Now' },
     { title: 'Physics – Motion', teacher: 'Rahul', time: 'Starting in 10m' },
@@ -26,32 +28,7 @@ export class FreeOnlineTutor {
   classSections = signal(
     Array.from({ length: 12 }, (_, i) => ({
       class: `Class ${i + 1}`,
-      cards: this.generateCards(),
+      cards: this.cache.cards(),
     }))
   );
-
-  private generateCards(): RoadmapCard[] {
-    return [
-      {
-        title: 'Roadmap',
-        subtitle: 'Complete study path',
-        image: '/assets/roadmap.jpg',
-      },
-      {
-        title: 'Famous Problem',
-        subtitle: 'Solve this challenge',
-        image: '/assets/fam-problem.jpg',
-      },
-      {
-        title: 'Quote of the Day',
-        subtitle: 'Motivation boost',
-        image: '/assets/class5-quote.png',
-      },
-      {
-        title: 'Exam Prep',
-        subtitle: 'Important tips',
-        image: '/assets/exam-time.jpg',
-      },
-    ];
-  }
 }

@@ -4,7 +4,7 @@ import { SlotService } from '../../services/slot.service';
 import { Slot } from '../../models/slot.model';
 
 @Component({
-  selector: 'app-book-slot',
+  selector: 'book-slot',
   standalone: true,
   imports: [CommonModule],
   template: `

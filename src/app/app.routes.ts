@@ -10,11 +10,13 @@ import { TeachersPage } from './pages/teachers/teachers';
 import { About } from './pages/about/about';
 import { FreeOnlineTutor } from './pages/free-online-tutor/free-online-tutor';
 import { Career } from './pages/career/career';
+import { BookSlotComponent } from './components/book-slot/book-slot';
 
 export const routes: Routes = [
   { path: '', component: FreeOnlineTutor },
   { path: 'book/:id', component: BookingDrawerComponent },
   { path: 'class/:id', component: ClassDetailsComponent },
+    { path: 'book-slot', component: BookSlotComponent },
   { path: 'roadmap', component: RoadmapComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'login', component: LoginComponent },

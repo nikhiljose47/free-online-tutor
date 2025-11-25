@@ -1,1 +1,18 @@
-<p>booking-drawer works!</p>
+<div class="p-3">
+  <h4>Book Class</h4>
+
+  <div *ngIf="session()">
+    <h5>{{ session()?.title }}</h5>
+    <p>Teacher: {{ session()?.teacher }}</p>
+    <p>Seats Left: {{ session()?.seatsLeft }}</p>
+    <p>Starts: {{ session()?.startAt | date : 'shortTime' }}</p>
+
+    <button class="btn btn-success mt-3" (click)="book()">Confirm Booking</button>
+
+    <div *ngIf="meetingLink()" class="alert alert-info mt-3">
+      <strong>Join Link:</strong><br />
+      <a [href]="meetingLink()" target="_blank">{{ meetingLink() }}</a>
+    </div>
+  </div>
+  <book-slot></book-slot>
+</div>
