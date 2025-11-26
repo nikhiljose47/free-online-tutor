@@ -1,11 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { RoadmapCacheService } from '../../services/cache/roadmap-cache.service';
+import { ToastService } from '../../services/toast.service';
+import { Router } from '@angular/router';
 
 export interface RoadmapCard {
   title: string;
   subtitle: string;
   image: string;
+}
+
+export interface LiveClassModel {
+  id: string;
+  title: string;
+  teacher: string;
+  time: string;
+  isLive: boolean; // show green dot
 }
 
 @Component({
@@ -16,12 +26,19 @@ export interface RoadmapCard {
 })
 export class FreeOnlineTutor {
   private cache = inject(RoadmapCacheService);
+  constructor(private toast: ToastService, private route: Router) {}
   liveClasses = signal([
-    { title: 'Maths – Algebra', teacher: 'Anjali', time: 'Live Now' },
-    { title: 'Physics – Motion', teacher: 'Rahul', time: 'Starting in 10m' },
-    { title: 'Chemistry – Bonds', teacher: 'Vishal', time: '1:30 PM' },
-    { title: 'Biology – Cells', teacher: 'Nisha', time: '3:00 PM' },
-    { title: 'English – Grammar', teacher: 'Priya', time: '5:00 PM' },
+    { id: '1', title: 'Maths – Algebra', teacher: 'Anjali', time: 'Live Now', isLive: true },
+    {
+      id: '2',
+      title: 'Physics – Motion',
+      teacher: 'Rahul',
+      time: 'Starting in 10m',
+      isLive: false,
+    },
+    { id: '3', title: 'Chemistry – Bonds', teacher: 'Vishal', time: '1:30 PM', isLive: false },
+    { id: '4', title: 'Biology – Cells', teacher: 'Nisha', time: '3:00 PM', isLive: false },
+    { id: '5', title: 'English – Grammar', teacher: 'Priya', time: '5:00 PM', isLive: false },
   ]);
 
   // 12 sections for classes 1–12
@@ -31,4 +48,10 @@ export class FreeOnlineTutor {
       cards: this.cache.cards(),
     }))
   );
+
+  onLiveClick(live: LiveClassModel): void {
+    // Example: open modal, navigate, play video, etc.
+   // this.toast.show(`Opening ${live.title}`);
+    this.route.navigate(['/join-tution']);
+  }
 }

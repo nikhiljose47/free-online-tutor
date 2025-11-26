@@ -1,1 +1,18 @@
-<p>book-slot works!</p>
+    <div class="container mt-4">
+      <h3 class="fw-bold mb-3">Book Your Slot</h3>
+      <a href="https://us04web.zoom.us/j/77618964547?pwd=WFa92AmqDcGQWXXLzwBT44eBtKy6WZ.1" target = "_top">JOIN</a>
+       <p>  </p>
+      <div class="row">
+        <div class="col-3 mb-3" *ngFor="let s of slots()">
+          <div
+            class="p-3 text-center rounded"
+            [class.bg-success]="s.isBooked"
+            [class.bg-light]="!s.isBooked"
+            style="cursor: pointer; border: 1px solid #ccc;"
+            (click)="book(s.id)"
+          >
+            {{ s.isBooked ? 'Booked' : 'Available' }}
+          </div>
+        </div>
+      </div>
+    </div>

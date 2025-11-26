@@ -1,62 +1,83 @@
+/* Page container */
 .home-wrapper {
   height: 100vh;
   overflow-y: auto;
-  background: #fafafa;
+  background: #f5f7fb; /* soft school theme */
 }
 
-/* LEFT */
+/* ---------------- LEFT SIDEBAR ---------------- */
 .left-pane {
   padding: 1rem;
-  border-right: 1px solid #e4e4e4;
-  background: white;
+  border-right: 1px solid #e6e6e6;
+  background: #ffffff;
   height: 100vh;
   position: sticky;
   top: 0;
 }
 
 .section-title {
-  font-weight: 600;
+  font-weight: 700;
+  color: #2b4c7e;          /* school theme navy */
   margin-bottom: 1rem;
 }
 
+/* Twitch-style live cards */
 .live-item {
-  padding: 0.8rem 0.5rem;
-  margin-bottom: 0.6rem;
-  background: #f7f9fc;
-  border-radius: 12px;
-  border: 1px solid #e5e5e5;
-  transition: 0.25s ease;
+  padding: 0.6rem 0.4rem;
+  margin-bottom: 0.5rem;
+  background: #f2f5ff;
+  border-radius: 10px;
+  border: 1px solid #d8e0ff;
+  transition: 0.2s ease;
   cursor: pointer;
 }
 
 .live-item:hover {
-  background: #eef4ff;
+  background: #e9efff;
   transform: translateX(3px);
 }
 
-.time {
-  font-size: 12px;
-  color: #3877ff;
-  font-weight: 600;
+/* Row inside card */
+.live-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
-/* RIGHT */
+/* Green dot only for live */
+.dot {
+  width: 9px;
+  height: 9px;
+  background: #2ecc71; /* green */
+  border-radius: 50%;
+}
+
+/* Single line text like Twitch */
+.live-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ---------------- RIGHT CONTENT ---------------- */
 .right-pane {
   padding: 1.2rem 1rem;
 }
 
-/* Section Header */
 .header {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  margin-left: 0.3rem;
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: #1a3b6b;
+  margin-bottom: 0.4rem;
 }
 
-/* Horizontal Scroll */
+/* Horizontal scroll */
 .scroll-row {
   display: flex;
-  gap: 1rem;
+  gap: 0.9rem;
   overflow-x: auto;
   padding-bottom: 0.8rem;
   scroll-behavior: smooth;
@@ -66,40 +87,38 @@
   display: none;
 }
 
-/* Cards */
+/* Cards - top-tier aesthetic */
 .roadmap-card {
-  aspect-ratio: 1.4;
+  aspect-ratio: 1.35;
   min-width: 170px;
   max-width: 220px;
   background: white;
-  border-radius: 16px;
+  border-radius: 18px;
   border: 1px solid #e6e6e6;
   overflow: hidden;
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.04);
-  transition: 0.25s ease;
-}
 
-.roadmap-card img {
-  aspect-ratio: 16 / 9;
-  width: 100%;
-  object-fit: cover;
-}
-
-.roadmap-card .p-2 {
-  flex: 1;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.04);
+  transition: 0.2s ease;
 }
 
 .roadmap-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+.roadmap-card img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
 }
 
 .card-title {
   font-weight: 600;
   font-size: 14px;
+  color: #2c3e50;
 }
 
 .card-sub {
   font-size: 12px;
-  color: #777;
+  color: #6b7280;
 }

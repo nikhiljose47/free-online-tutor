@@ -34,8 +34,12 @@ export class BookingDrawerComponent {
 
     this.api.bookSession(sess.id).subscribe((r) => {
       if (r.success) {
-        // meetingLink.set(r.meetingLink!);
-        alert('Seat booked!');
+        // 🔥 update UI instantly
+        this.session.update((s) => ({
+          ...s!,
+          seatsLeft: s!.seatsLeft - 1,
+          meetingLink: r.meetingLink!,
+        }));
       } else {
         alert('No seats left');
       }
