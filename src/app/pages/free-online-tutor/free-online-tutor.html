@@ -1,32 +1,56 @@
-<div class="container-fluid home-wrapper">
-  <div class="row no-gutters">
+<div class="home-wrapper container-fluid">
+  <div class="row g-0">
+    <aside class="col-12 col-md-3 col-lg-2 left-pane">
+      <!-- LIVE CLASSES -->
+      <h6 class="section-title">Live Classes</h6>
 
-    <!-- LEFT SIDEBAR 15% -->
-    <div class="col-12 col-md-2 left-pane">
-
-      <h6 class="section-title">Live Tuitions</h6>
-
-      <div class="live-item"
-           *ngFor="let live of liveClasses()"
-           (click)="onLiveClick(live)">
-
+      <div class="live-item" *ngFor="let live of liveClasses()" (click)="onLiveClick(live)">
         <div class="live-row">
-          <span class="dot" *ngIf="live.isLive"></span>
-          <span class="live-text">{{ live.title }}</span>
+          <img class="avatar" [src]="live.image" alt="tutor" />
+
+          <div class="content">
+            <div class="live-title">{{ live.title }}</div>
+            <div class="live-subject">{{ live.subject }}</div>
+          </div>
+
+          <div class="right">
+            
+            <span class="viewer-count">{{ live.viewers }}</span>
+            <img class = "live-gif" src = "./assets/live-dot.gif" />
+            <!-- <span class="live-dot" *ngIf="live.isLive"></span> -->
+          </div>
+        </div>
+      </div>
+
+      <!-- UPCOMING CLASSES -->
+      <h6 class="section-title mt-4">Upcoming Classes</h6>
+
+      <div class="live-item" *ngFor="let up of upcomingClasses()" (click)="onUpcomingClick(up)">
+        <div class="live-row">
+          <img class="avatar" [src]="up.image" alt="tutor" />
+
+          <div class="content">
+            <div class="live-title">{{ up.title }}</div>
+            <div class="live-subject">{{ up.time }}</div>
+          </div>
+
+          <div class="right">
+            <i class="bi bi-clock text-secondary small"></i>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT PANE -->
+    <main class="col-12 col-md-9 col-lg-10 right-pane">
+      <div class="class-block" *ngFor="let block of classSections()">
+        <div class="block-head">
+          <h4>{{ block.class }}</h4>
+          <button class="see-all-btn">See all</button>
         </div>
 
-      </div>
-    </div>
-
-    <!-- RIGHT CONTENT 75% -->
-    <div class="col-12 col-md-10 right-pane">
-
-      <div class="class-block" *ngFor="let block of classSections()">
-        <div class="header">{{ block.class }}</div>
-
         <div class="scroll-row no-scrollbar">
-          <div class="card roadmap-card"
-               *ngFor="let card of block.cards">
+          <div class="card roadmap-card" *ngFor="let card of block.cards">
             <img [src]="card.image" loading="lazy" />
             <div class="p-2">
               <div class="card-title">{{ card.title }}</div>
@@ -34,9 +58,7 @@
             </div>
           </div>
         </div>
-
       </div>
-    </div>
-
+    </main>
   </div>
 </div>

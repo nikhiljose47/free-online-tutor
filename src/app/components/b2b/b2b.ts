@@ -1,43 +1,28 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { B2BService } from '../../services/b2b.service';
-import { B2BFeature } from '../../models/b2b-feature.model';
 
 @Component({
   selector: 'b2b',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div class="container mt-4">
-      <h3 class="fw-bold mb-3">AI Empowered Tutoring</h3>
-      <p class="text-muted mb-4">
-        Smart features for schools, academies, and B2B partners.
-      </p>
-
-      <div class="row">
-        <div class="col-md-4 mb-3" *ngFor="let f of features">
-          <div class="card h-100 shadow-sm">
-            <div class="card-body">
-              <h5 class="fw-bold">{{ f.title }}</h5>
-              <p>{{ f.description }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="mt-4 p-3 bg-light rounded text-center border">
-        <h5 class="fw-bold">Partner With Us</h5>
-        <p class="mb-2">Upgrade your coaching centre or school using our AI tools.</p>
-        <button class="btn btn-primary px-4">Contact Sales</button>
-      </div>
-    </div>
-  `,
+  templateUrl: './b2b.html',
 })
 export class B2BComponent {
-  features: B2BFeature[] = [];
-
-  constructor(private service: B2BService) {
-  this.features = this.service.getAll();
-
-  }
+  features: any[] = [
+    {
+      id: '1',
+      title: 'AI Progress Tracking',
+      description: 'Automatically tracks student learning and generates weekly reports.',
+    },
+    {
+      id: '2',
+      title: 'Smart Class Scheduling',
+      description: 'AI predicts best class timings based on attendance patterns.',
+    },
+    {
+      id: '3',
+      title: 'Teacher Performance Insights',
+      description: 'Monitors teacher delivery quality and engagement signals.',
+    },
+  ];
 }

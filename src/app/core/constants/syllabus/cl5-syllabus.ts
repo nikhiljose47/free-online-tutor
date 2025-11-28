@@ -1,0 +1,95 @@
+import { ClassSyllabus } from './syllabus.model';
+
+export const CLASS5_SYLLABUS: ClassSyllabus = {
+  class: '5',
+  code_prefix: 'CL5',
+  subjects: {
+    Mathematics: {
+      code: 'CL5-MATH',
+      chapters: [
+        { code: 'CL5-MATH-01', name: 'The Fish Tale' },
+        { code: 'CL5-MATH-02', name: 'Shapes and Angles' },
+        { code: 'CL5-MATH-03', name: 'How Many Squares?' },
+        { code: 'CL5-MATH-04', name: 'Parts and Wholes' },
+        { code: 'CL5-MATH-05', name: 'Does it Look the Same?' },
+        { code: 'CL5-MATH-06', name: 'Be My Multiple, I’ll Be Your Factor' },
+        { code: 'CL5-MATH-07', name: 'Can You See the Pattern?' },
+        { code: 'CL5-MATH-08', name: 'Mapping Your Way' },
+        { code: 'CL5-MATH-09', name: 'Boxes and Sketches' },
+        { code: 'CL5-MATH-10', name: 'Tenths and Hundredths' },
+        { code: 'CL5-MATH-11', name: 'Area and Its Boundary' },
+        { code: 'CL5-MATH-12', name: 'Smart Charts' },
+        { code: 'CL5-MATH-13', name: 'Ways to Multiply and Divide' },
+        { code: 'CL5-MATH-14', name: 'How Big? How Heavy?' }
+      ]
+    },
+
+    English: {
+      code: 'CL5-ENG',
+      chapters: [
+        { code: 'CL5-ENG-01', name: 'Ice-cream Man' },
+        { code: 'CL5-ENG-02', name: 'Wonderful Waste!' },
+        { code: 'CL5-ENG-03', name: 'Teamwork' },
+        { code: 'CL5-ENG-04', name: 'Flying Together' },
+        { code: 'CL5-ENG-05', name: 'My Shadow' },
+        { code: 'CL5-ENG-06', name: 'Robinson Crusoe Discovers a Footprint' },
+        { code: 'CL5-ENG-07', name: 'Crying' },
+        { code: 'CL5-ENG-08', name: 'My Elder Brother' },
+        { code: 'CL5-ENG-09', name: 'The Lazy Frog' },
+        { code: 'CL5-ENG-10', name: 'Rip Van Winkle' }
+      ]
+    },
+
+    Hindi: {
+      code: 'CL5-HIN',
+      chapters: [
+        { code: 'CL5-HIN-01', name: 'राख की रस्सी' },
+        { code: 'CL5-HIN-02', name: 'फसलों के त्योहार' },
+        { code: 'CL5-HIN-03', name: 'खिलौनेवाला' },
+        { code: 'CL5-HIN-04', name: 'नन्हा फ़नकार' },
+        { code: 'CL5-HIN-05', name: 'जहाँ चाह वहाँ राह' },
+        { code: 'CL5-HIN-06', name: 'चिट्ठी का सफ़र' },
+        { code: 'CL5-HIN-07', name: 'डाकिए की कहानी, कुंवर सिंह की ज़ुबानी' },
+        { code: 'CL5-HIN-08', name: 'वे दिन भी क्या दिन थे' },
+        { code: 'CL5-HIN-09', name: 'एक माँ की बेबसी' },
+        { code: 'CL5-HIN-10', name: 'एक दिन की बादशाहत' },
+        { code: 'CL5-HIN-11', name: 'चावल की रोटियाँ' },
+        { code: 'CL5-HIN-12', name: 'गुरु और चेला' },
+        { code: 'CL5-HIN-13', name: 'स्वामी की दादी' },
+        { code: 'CL5-HIN-14', name: 'बाघ आया उस रात' },
+        { code: 'CL5-HIN-15', name: 'बिशन की दिलेरी' },
+        { code: 'CL5-HIN-16', name: 'पानी रे पानी' },
+        { code: 'CL5-HIN-17', name: 'छोटी-सी हमारी नदी' },
+        { code: 'CL5-HIN-18', name: 'चुनौती हिमालय की' }
+      ]
+    },
+
+    EVS: {
+      code: 'CL5-EVS',
+      chapters: [
+        { "code": "CL5-EVS-01", "name": "Chapter 1" },
+        { "code": "CL5-EVS-02", "name": "Chapter 2" },
+        { "code": "CL5-EVS-03", "name": "Chapter 3" },
+        { "code": "CL5-EVS-04", "name": "Chapter 4" },
+        { "code": "CL5-EVS-05", "name": "Chapter 5" },
+        { "code": "CL5-EVS-06", "name": "Chapter 6" },
+        { "code": "CL5-EVS-07", "name": "Chapter 7" },
+        { "code": "CL5-EVS-08", "name": "Chapter 8" },
+        { "code": "CL5-EVS-09", "name": "Chapter 9" },
+        { "code": "CL5-EVS-10", "name": "Chapter 10" },
+        { "code": "CL5-EVS-11", "name": "Chapter 11" },
+        { "code": "CL5-EVS-12", "name": "Chapter 12" },
+        { "code": "CL5-EVS-13", "name": "Chapter 13" },
+        { "code": "CL5-EVS-14", "name": "Chapter 14" },
+        { "code": "CL5-EVS-15", "name": "Chapter 15" },
+        { "code": "CL5-EVS-16", "name": "Chapter 16" },
+        { "code": "CL5-EVS-17", "name": "Chapter 17" },
+        { "code": "CL5-EVS-18", "name": "Chapter 18" },
+        { "code": "CL5-EVS-19", "name": "Chapter 19" },
+        { "code": "CL5-EVS-20", "name": "Chapter 20" },
+        { "code": "CL5-EVS-21", "name": "Chapter 21" },
+        { "code": "CL5-EVS-22", "name": "Chapter 22" }
+      ]
+    }
+  }
+};

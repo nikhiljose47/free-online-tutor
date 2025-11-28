@@ -1,5 +1,7 @@
 import { Component, ChangeDetectionStrategy, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
+import { ClassDoc } from '../../models/fire/docs.model';
 
 @Component({
   selector: 'join-tution',
@@ -25,6 +27,12 @@ export class JoinTution {
   className = signal('Maths – Algebra Basics');
   duration = signal('1h 30m');
 
+  constructor(private docs: FirestoreDocService) {
+    this.docs.getOnce<ClassDoc>('classes', '27PYrAjjfBfpaTGXMd2W').subscribe((data) => {
+      console.log('came');
+      console.log(data);
+    });
+  }
 
   async goToJoin() {
     window.open(this.joinLink, '_blank');

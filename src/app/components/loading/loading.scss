@@ -1,0 +1,32 @@
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(41, 41, 41);
+  z-index: 99999;
+}
+
+/* The whole shine is ONE animation */
+.shine-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e0e0e0;
+  position: relative;
+
+  /* mask trick → the shine sweeps across entire text once */
+  -webkit-mask-image: linear-gradient(
+    110deg,
+    transparent,
+    white 40%,
+    transparent
+  );
+  -webkit-mask-size: 200%;
+  animation: shineWave 2s linear infinite;
+}
+
+@keyframes shineWave {
+  0%   { -webkit-mask-position: 150% 0; }
+  100% { -webkit-mask-position: -50% 0; }
+}

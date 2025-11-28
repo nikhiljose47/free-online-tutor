@@ -11,10 +11,14 @@ export class RoadmapService {
         { id: 'n1', title: 'Number Systems', order: 1, completed: true, hoursEstimate: 2 },
         { id: 'n2', title: 'Polynomials', order: 2, completed: false, hoursEstimate: 3 },
         { id: 'n3', title: 'Coordinate Geometry', order: 3, completed: false, hoursEstimate: 4 },
-      ]
-    }
+      ],
+    },
   ];
 
-  getAll(): Roadmap[] { return this.list; }
-  getById(id: string) { return this.list.find(r=>r.id===id); }
+  getAll(): Roadmap[] {
+    return this.list;
+  }
+  getById(id: string) {
+    return this.list.find((r) => r.id === id);
+  }
 }

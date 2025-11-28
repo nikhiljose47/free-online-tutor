@@ -1,43 +1,26 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/fire/auth.service';
 import { Router } from '@angular/router';
-import { Auth2Service } from '../../services/auth2.service';
+import { Auth2Service } from '../../services/fire/auth2.service';
+import { Toast } from '../../components/toast/toast';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'login',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div class="container mt-4" style="max-width:480px;">
-      <div class="card p-4">
-        <h5 class="mb-3">Login / Register</h5>
-
-        <!-- Input using signal (SAFE & PARSER-ERROR FREE) -->
-        <input
-          class="form-control mb-2"
-          placeholder="Your name"
-          [value]="name()"
-          (input)="onInput($event)"
-        />
-        <input
-          class="form-control mb-2"
-          placeholder="Your psws"
-          [value]="pswd()"
-          (input)="onInputP($event)"
-        />
-        <div class="d-flex gap-2 mt-2">
-          <button class="btn btn-primary" (click)="doLogin()">Login</button>
-          <button class="btn btn-outline-secondary" (click)="doRegister()">Register</button>
-        </div>
-      </div>
-    </div>
-  `,
+  templateUrl: './login.html',
 })
 export class LoginComponent {
   name = signal('');
   pswd = signal('');
-  constructor(private auth: AuthService, private auth2: Auth2Service, private router: Router) {}
+  constructor(
+    private auth: AuthService,
+    private auth2: Auth2Service,
+    private router: Router,
+    private toast: ToastService
+  ) {}
 
   // safe handler → avoids parser errors
   onInput(event: Event) {
@@ -50,23 +33,40 @@ export class LoginComponent {
     this.pswd.set(input.value);
   }
 
-  doLogin() {
+  async doLogin() {
     const userName = this.name().trim();
     if (!userName) return alert('Enter name');
 
-    const x = this.auth2.login(this.name(), this.pswd());
-    console.log(x);
+    const res = await this.auth2.login(this.name(), this.pswd());
+
+    if (res.ok && res.user) {
+      console.log('Logged in:', res.user.uid);
+      // navigate
+      this.router.navigate(['/home']);
+    } else {
+      this.toast.show('Invalid Login');
+    }
+    //console.log(x);
     // this.auth.login(userName).subscribe(() => {
     //   this.router.navigate(['/dashboard']);
     // });
   }
 
-  doRegister() {
+  async doRegister() {
     const userName = this.name().trim();
     if (!userName) return alert('Enter name');
 
-    this.auth.register(userName).subscribe(() => {
-      this.router.navigate(['/dashboard']);
-    });
+    const res = await this.auth2.register(this.name(), this.pswd());
+
+    if (res.ok && res.user) {
+      console.log('Logged in:', res.user.uid);
+      // navigate
+      this.router.navigate(['/home']);
+    } else {
+      this.toast.show('Invalid Login');
+    }
+    // this.auth.register(userName).subscribe(() => {
+    //   this.router.navigate(['/dashboard']);
+    // });
   }
 }

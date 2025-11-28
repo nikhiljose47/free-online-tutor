@@ -1,78 +1,61 @@
-<nav class="navbar navbar-expand-lg bg-white topbar shadow-sm border-bottom">
-  <div class="container-fluid">
-    <!-- Brand -->
-    <a class="navbar-brand fw-bold text-primary fs-4" routerLink="/"> FreeTutor </a>
+<nav class="topbar px-3">
+  <div class="topbar-inner">
 
-    <!-- Toggle for mobile -->
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navMenu"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <!-- Menu -->
-    <div class="collapse navbar-collapse" id="navMenu">
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
-        <li class="nav-item">
-          <a class="nav-link link-item" routerLink="/upcoming" routerLinkActive="active-item">
-            Upcoming
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link link-item" routerLink="/hopin" routerLinkActive="active-item">
-            Hop-in
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link link-item" routerLink="/syllabus" routerLinkActive="active-item">
-            Syllabus
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link link-item" routerLink="/roadmap" routerLinkActive="active-item">
-            Roadmap
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link link-item" routerLink="/teachers" routerLinkActive="active-item">
-            Teachers
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link link-item" routerLink="/about" routerLinkActive="active-item">
-            About
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link link-item" routerLink="/career" routerLinkActive="active-item">
-            Careers
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link link-item" routerLink="/profile" routerLinkActive="active-item">
-            Profile
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link link-item" routerLink="/dashboard" routerLinkActive="active-item">
-            DashBoard
-          </a>
-        </li>
-                <li class="nav-item">
-          <a class="nav-link link-item" routerLink="/login" routerLinkActive="active-item">
-            Login
-          </a>
-        </li>
-      </ul>
+    <!-- LEFT -->
+    <div class="brand-area">
+      <img src="favicon.ico" class="app-logo" alt="logo" />
+      <span class="brand-text">FreeTutor</span>
     </div>
+
+    <!-- CENTER (Search) -->
+    <div class="search-area d-none d-md-flex">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search classes, topics, exams..."
+        (input)="onSearch($event.target.value)"
+      />
+      <button class="search-btn">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="actions">
+
+      <!-- BEFORE LOGIN -->
+      <ng-container *ngIf="true">
+        <button class="login-btn" routerLink="/login">Log In</button>
+        <button class="signup-btn" routerLink="/signup">Sign Up</button>
+      </ng-container>
+
+      <!-- AFTER LOGIN -->
+      <ng-container *ngIf="false">
+
+        <!-- Tabs -->
+        <div class="nav-links d-none d-lg-flex">
+          <a class="nav-link" routerLink="/upcoming" routerLinkActive="active">Upcoming</a>
+          <a class="nav-link" routerLink="/hopin" routerLinkActive="active">Hop-in</a>
+          <a class="nav-link" routerLink="/syllabus" routerLinkActive="active">Syllabus</a>
+          <a class="nav-link" routerLink="/roadmap" routerLinkActive="active">Roadmap</a>
+          <a class="nav-link" routerLink="/teachers" routerLinkActive="active">Teachers</a>
+          <a class="nav-link" routerLink="/about" routerLinkActive="active">About</a>
+          <a class="nav-link" routerLink="/career" routerLinkActive="active">Careers</a>
+        </div>
+
+        <!-- Profile -->
+        <div class="profile-wrapper" (click)="toggleProfile()">
+          <i class="bi bi-person-circle profile-icon"></i>
+        </div>
+
+        <div class="profile-dropdown" *ngIf="openProfile()">
+          <a routerLink="/profile">My Profile</a>
+          <a routerLink="/dashboard">Dashboard</a>
+          <a (click)="logout()">Logout</a>
+        </div>
+
+      </ng-container>
+    </div>
+
   </div>
 </nav>

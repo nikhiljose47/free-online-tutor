@@ -1,124 +1,240 @@
-/* Page container */
+/* Overall Page */
 .home-wrapper {
-  height: 100vh;
-  overflow-y: auto;
-  background: #f5f7fb; /* soft school theme */
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f7f9fc, #eef3ff);
+  font-family: 'Inter', sans-serif;
 }
 
-/* ---------------- LEFT SIDEBAR ---------------- */
+/* ---------------- LEFT ---------------- */
 .left-pane {
   padding: 1rem;
-  border-right: 1px solid #e6e6e6;
-  background: #ffffff;
+  background: #f0f0f6;
+  color: #fff;
   height: 100vh;
+  border-right: 1px solid #2b2b2f;
   position: sticky;
   top: 0;
+  overflow-y: auto;
 }
 
 .section-title {
+  font-size: 0.9rem;
   font-weight: 700;
-  color: #2b4c7e;          /* school theme navy */
   margin-bottom: 1rem;
+  color: #1f1f1f;
 }
 
-/* Twitch-style live cards */
+/* Single row */
 .live-item {
-  padding: 0.6rem 0.4rem;
-  margin-bottom: 0.5rem;
-  background: #f2f5ff;
-  border-radius: 10px;
-  border: 1px solid #d8e0ff;
-  transition: 0.2s ease;
+  padding: 6px 4px;
+  border-radius: 6px;
   cursor: pointer;
+  transition: 0.15s ease;
+
+  &:hover {
+    background: #c3c3e7a9;
+  }
 }
 
-.live-item:hover {
-  background: #e9efff;
-  transform: translateX(3px);
-}
-
-/* Row inside card */
 .live-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
+}
+
+/* Avatar */
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Middle text block */
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.live-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #525050;
   white-space: nowrap;
+  text-overflow: ellipsis;
   overflow: hidden;
 }
 
-/* Green dot only for live */
-.dot {
-  width: 9px;
-  height: 9px;
-  background: #2ecc71; /* green */
+.live-subject {
+  font-size: 12px;
+  color: #696666;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* Right side: red dot + viewer count */
+.right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.live-gif {
+  width: 10px;
+  height: 10px;
+  background: #11c63b00;
+  border-radius: 90%;
+}
+
+.live-dot {
+  width: 10px;
+  height: 10px;
+  background: #11c63b;
   border-radius: 50%;
 }
 
-/* Single line text like Twitch */
-.live-text {
-  text-overflow: ellipsis;
+.viewer-count {
+  font-size: 13px;
+  color: #524e4e;
+}
+
+/* profile pic */
+.teacher-img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #dce4ff;
+}
+
+.info {
+  flex: 1;
   overflow: hidden;
-  font-size: 14px;
-  font-weight: 500;
+
+  .title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1c2e4a;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .subject {
+    font-size: 12px;
+    color: #6c7a92;
+  }
 }
 
-/* ---------------- RIGHT CONTENT ---------------- */
+/* Right-side viewer count */
+.viewer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #d9534f; // BookMyShow red
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background: #e53935;
+  border-radius: 50%;
+}
+
+.count {
+  font-size: 12px;
+}
+
+/* ---------------- RIGHT ---------------- */
 .right-pane {
-  padding: 1.2rem 1rem;
+  padding: 1.5rem 1.2rem;
 }
 
-.header {
-  font-size: 1.12rem;
-  font-weight: 700;
-  color: #1a3b6b;
-  margin-bottom: 0.4rem;
+/* Section header */
+.block-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+
+  h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #233b6d;
+  }
+}
+
+.see-all-btn {
+  background: #dbe4ff;
+  border: none;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+  color: #2b4a8b;
+
+  &:hover {
+    background: #c7d7ff;
+  }
 }
 
 /* Horizontal scroll */
 .scroll-row {
   display: flex;
-  gap: 0.9rem;
   overflow-x: auto;
+  gap: 1rem;
   padding-bottom: 0.8rem;
-  scroll-behavior: smooth;
+
+  &.no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-/* Cards - top-tier aesthetic */
+/* Cards */
 .roadmap-card {
-  aspect-ratio: 1.35;
-  min-width: 170px;
-  max-width: 220px;
-  background: white;
+  min-width: 160px;
+  background: #ffffff;
   border-radius: 18px;
-  border: 1px solid #e6e6e6;
+  border: 1px solid #e5e8f1;
   overflow: hidden;
+  transition: 0.25s ease;
+  box-shadow: 0 4px 8px rgba(0, 20, 77, 0.04);
 
-  box-shadow: 0 3px 8px rgba(0,0,0,0.04);
-  transition: 0.2s ease;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 20, 77, 0.12);
+  }
+
+  img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+  }
+
+  .card-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: #2c3e50;
+  }
+
+  .card-sub {
+    font-size: 12px;
+    color: #6b7280;
+  }
 }
 
-.roadmap-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-}
+/* ----------- MOBILE OPTIMIZATION ----------- */
+@media (max-width: 768px) {
+  .left-pane {
+    height: auto;
+    position: relative;
+  }
 
-.roadmap-card img {
-  width: 100%;
-  aspect-ratio: 16/9;
-  object-fit: cover;
-}
-
-.card-title {
-  font-weight: 600;
-  font-size: 14px;
-  color: #2c3e50;
-}
-
-.card-sub {
-  font-size: 12px;
-  color: #6b7280;
+  .roadmap-card {
+    min-width: 140px;
+  }
 }

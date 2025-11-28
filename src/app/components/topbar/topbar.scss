@@ -1,32 +1,137 @@
-/* Container (frosted + elevated) */
 .topbar {
+  background: #0e0e10;
+  border-bottom: 1px solid #1f1f23;
   position: sticky;
   top: 0;
-  z-index: 1000;
-
-  backdrop-filter: blur(10px);
+  z-index: 2000;
+  height: 58px;
+  display: flex;
+  align-items: center;
 }
 
-/* Normal links */
-.link-item {
-  font-weight: 500;
-  padding: 6px 12px !important;
+.topbar-inner {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+
+  /* THESE ARE KEY FIXES */
+  justify-content: space-between;
+  flex-wrap: nowrap;
+}
+
+/* LEFT */
+.brand-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.app-logo {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+}
+
+.brand-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* CENTER */
+.search-area {
+  flex: 1;
+  max-width: 420px;
+  display: flex;
+  overflow: hidden;
+}
+
+.search-input {
+  flex: 1;
+  background: #18181b;
+  border: none;
+  color: #fff;
+  padding: 6px 10px;
+  outline: none;
+}
+
+.search-btn {
+  background: #3a3a3d;
+  border: none;
+  width: 42px;
+  color: #dcdcdc;
+}
+
+/* RIGHT SIDE */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+/* Login / Signup */
+.login-btn,
+.signup-btn {
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  border-radius: 14px;
+}
+
+/* Reduce padding on small screens */
+@media (max-width: 480px) {
+  .login-btn,
+  .signup-btn {
+    padding: 4px 10px;
+    font-size: 0.8rem;
+  }
+
+  .brand-text {
+    font-size: 1rem;
+  }
+}
+
+/* Nav links */
+.nav-links .nav-link {
+  color: #cfcfcf;
+  margin-right: 10px;
+  font-size: 0.88rem;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.nav-links .nav-link.active,
+.nav-links .nav-link:hover {
+  background: #3a3a3d;
+  color: #fff;
+}
+
+/* Profile */
+.profile-icon {
+  font-size: 1.4rem;
+  color: #e8e8e8;
+  cursor: pointer;
+}
+
+.profile-dropdown {
+  position: absolute;
+  right: 0;
+  top: 58px;
+  background: #18181b;
+  border: 1px solid #2e2e32;
   border-radius: 8px;
-  color: #555 !important;
-  transition: 0.25s ease;
+  padding: 8px;
+  width: 160px;
 }
 
-/* Hover */
-.link-item:hover {
-  background: rgba(13, 110, 253, 0.08);
-  color: #0d6efd !important;
+.profile-dropdown a {
+  display: block;
+  padding: 6px 8px;
+  color: #dcdcdc;
 }
 
-/* Active route */
-.active-item {
-  background: #e8f1ff;
-  border-radius: 8px;
-  font-weight: 600 !important;
-  color: #0d6efd !important;
-  box-shadow: inset 0 0 0 1px #d0e3ff;
+.profile-dropdown a:hover {
+  background: #2f2f33;
+  color: #fff;
 }
