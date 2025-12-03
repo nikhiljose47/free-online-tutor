@@ -7,4 +7,11 @@ export const BUILD_INFO = {
   app: APP_VERSION,
   updatedOn: '2025-02-01',
 };
-    
+
+export const UPCOMING = 'Upcoming';
+export const COMPLETED = 'Completed';
+export const LIVE = 'Live';
+
+export const ADMIN = 'admin';
+export const USER = 'user';
+export const TEACHER = 'teacher';

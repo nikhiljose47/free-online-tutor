@@ -1,0 +1,45 @@
+<div class="timetable">
+
+  <div class="subject-card" *ngFor="let sbj of syllabus.subjects | keyvalue">
+
+    <!-- Header -->
+    <div class="subject-header">
+      <h4>{{ sbj.key }}</h4>
+      <span class="code">{{ sbj.value.code }}</span>
+
+      <div class="current-box" *ngIf="current()[sbj.key] as cur">
+        <small>Current</small>
+        <div class="current-name">
+          {{ getChapterName(sbj.key, cur) }}
+        </div>
+      </div>
+
+      <div class="live-box" *ngIf="live()[sbj.key] as batches">
+        <h6>Next Live</h6>
+
+        <div class="live-row" *ngFor="let b of batches">
+          <span>{{ b.time }} · Batch {{ b.batch }}</span>
+          <span class="status" [class.live]="b.status === 'Live'">{{ b.status }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scrollable chapter list -->
+    <div class="chapters">
+      <div class="chapter" *ngFor="let ch of sbj.value.chapters">
+
+        <div class="chapter-left">
+          <div class="chapter-name">{{ ch.name }}</div>
+          <div class="tag" *ngIf="notes()[ch.code]">{{ notes()[ch.code] }}</div>
+        </div>
+
+        <div class="chapter-right">
+          <span class="chip">{{ ch.code }}</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

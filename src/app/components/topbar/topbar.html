@@ -24,31 +24,22 @@
     <div class="actions">
 
       <!-- BEFORE LOGIN -->
-      <ng-container *ngIf="true">
+      <ng-container *ngIf="!user()">
         <button class="login-btn" routerLink="/login">Log In</button>
         <button class="signup-btn" routerLink="/signup">Sign Up</button>
       </ng-container>
 
       <!-- AFTER LOGIN -->
-      <ng-container *ngIf="false">
+      <ng-container *ngIf="user()">
 
-        <!-- Tabs -->
-        <div class="nav-links d-none d-lg-flex">
-          <a class="nav-link" routerLink="/upcoming" routerLinkActive="active">Upcoming</a>
-          <a class="nav-link" routerLink="/hopin" routerLinkActive="active">Hop-in</a>
-          <a class="nav-link" routerLink="/syllabus" routerLinkActive="active">Syllabus</a>
-          <a class="nav-link" routerLink="/roadmap" routerLinkActive="active">Roadmap</a>
-          <a class="nav-link" routerLink="/teachers" routerLinkActive="active">Teachers</a>
-          <a class="nav-link" routerLink="/about" routerLinkActive="active">About</a>
-          <a class="nav-link" routerLink="/career" routerLinkActive="active">Careers</a>
-        </div>
+
 
         <!-- Profile -->
         <div class="profile-wrapper" (click)="toggleProfile()">
           <i class="bi bi-person-circle profile-icon"></i>
         </div>
 
-        <div class="profile-dropdown" *ngIf="openProfile()">
+        <div class="profile-dropdown" *ngIf="user()">
           <a routerLink="/profile">My Profile</a>
           <a routerLink="/dashboard">Dashboard</a>
           <a (click)="logout()">Logout</a>

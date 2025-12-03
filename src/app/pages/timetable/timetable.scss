@@ -1,0 +1,138 @@
+/* === GRID LAYOUT === */
+.timetable {
+  display: grid;
+  gap: 18px;
+  padding: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+/* === SUBJECT CARD === */
+.subject-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid #e5e5e5;
+  height: 360px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  transition: 0.25s ease;
+}
+.subject-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 16px rgba(0,0,0,0.08);
+}
+
+/* === HEADER === */
+.subject-header {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #efefef;
+}
+.subject-header h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a2a42;
+}
+.subject-header .code {
+  display: inline-block;
+  font-size: 12px;
+  color: #6d6d6d;
+  margin-top: 2px;
+}
+
+/* Current chapter box */
+.current-box {
+  margin-top: 10px;
+  padding: 8px;
+  background: #e9f3ff;
+  border-radius: 8px;
+}
+.current-box small {
+  font-size: 11px;
+  color: #275a9d;
+  font-weight: 600;
+}
+.current-name {
+  margin-top: 3px;
+  font-weight: 600;
+  color: #153f6c;
+  font-size: 0.9rem;
+}
+
+/* Live class box */
+.live-box {
+  margin-top: 12px;
+  background: #fff6d8;
+  padding: 10px;
+  border-radius: 8px;
+}
+.live-box h6 {
+  margin: 0 0 6px 0;
+  font-size: 0.85rem;
+  color: #8b6405;
+  font-weight: 700;
+}
+.live-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #6c5a34;
+  margin-bottom: 4px;
+}
+.status {
+  font-weight: 600;
+}
+.status.live {
+  color: #e60000;
+}
+
+/* === CHAPTERS LIST === */
+.chapters {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.chapters::-webkit-scrollbar {
+  width: 4px;
+}
+.chapters::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+
+/* === INDIVIDUAL CHAPTER === */
+.chapter {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f8fafc;
+  margin-bottom: 8px;
+  transition: 0.2s ease;
+}
+.chapter:hover {
+  background: #eef2ff;
+}
+.chapter-name {
+  font-weight: 600;
+  color: #1a2a42;
+  max-width: 170px;
+}
+.tag {
+  font-size: 11px;
+  background: #d8ffe7;
+  color: #067a36;
+  padding: 3px 6px;
+  border-radius: 6px;
+  margin-top: 4px;
+}
+.chip {
+  padding: 3px 8px;
+  font-size: 11px;
+  background: #e9ecef;
+  border-radius: 6px;
+  font-weight: 600;
+  color: #344054;
+}

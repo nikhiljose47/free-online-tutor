@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Auth2Service } from '../../services/fire/auth2.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'topbar',
@@ -11,13 +13,18 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class TopbarComponent {
   openProfile = signal(false);
- // isLoggedIn: boolean = false;
+  user = computed(() => this.auth.user());
+
+  constructor(private auth: Auth2Service, private toast: ToastService) {
+  }
 
   toggleProfile() {
     this.openProfile.update((v) => !v);
   }
 
   logout() {
+    this.auth.logout();
+    this.toast.show('Logged Out.')
     // your logout logic
   }
 
