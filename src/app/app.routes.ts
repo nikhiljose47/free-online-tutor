@@ -13,6 +13,7 @@ import { Career } from './pages/career/career';
 import { BookSlotComponent } from './components/book-slot/book-slot';
 import { JoinTution } from './pages/join-tution/join-tution';
 import { Timetable } from './pages/timetable/timetable';
+import { ScheduleLiveClass } from './pages/schedule-live-class/schedule-live-class';
 
 export const routes: Routes = [
   { path: '', component: FreeOnlineTutor },
@@ -30,5 +31,6 @@ export const routes: Routes = [
   { path: 'profile', component: DashboardComponent },
   { path: 'join-tution', component: JoinTution },
     { path: 'timetable', component: Timetable },
+        { path: 'schedule', component: ScheduleLiveClass },
   { path: '**', redirectTo: '' },
 ];

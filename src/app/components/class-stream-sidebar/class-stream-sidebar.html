@@ -1,0 +1,40 @@
+<aside class="stream-sidebar">
+
+  <!-- LIVE STREAMING SECTION -->
+  <h6 class="section-title">Live Now</h6>
+
+  <div class="live-item" *ngFor="let item of live()" (click)="onClick(item)">
+    
+    <img class="avatar-live" [src]="item.image" alt="teacher" />
+
+    <div class="info">
+      <div class="title">{{ item.chapterCode }}</div>
+      <div class="subject">{{ item.date }}</div>
+    </div>
+
+    <div class="status-box">
+      <span class="red-dot"></span>
+      <span class="viewer-count">{{ item.viewers }}</span>
+    </div>
+
+  </div>
+
+  <!-- UPCOMING -->
+  <h6 class="section-title mt-4">Upcoming</h6>
+
+  <div class="live-item" *ngFor="let item of upcoming()" (click)="onClick(item)">
+    
+    <img class="avatar" [src]="item.image" alt="teacher" />
+
+    <div class="info">
+      <div class="title">{{ item.chapterCode }}</div>
+      <div class="subject">{{ item.date }}</div>
+    </div>
+
+    <div class="status-box upcoming-clock">
+      <i class="bi bi-clock"></i>
+    </div>
+
+  </div>
+
+</aside>

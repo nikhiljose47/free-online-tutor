@@ -1,0 +1,95 @@
+<div class="container mt-4">
+
+  <h3 class="title">Schedule a Live Class</h3>
+
+  <!-- FORM -->
+  <div class="card p-3 shadow-sm border-0 mb-4">
+    <div class="row g-3">
+
+      <!-- CLASS ID -->
+      <div class="col-md-4">
+        <label class="form-label">Class ID</label>
+        <input
+          class="form-control"
+          [value]="classId()"
+          (input)="classId.set($any($event.target).value)"
+        />
+      </div>
+
+      <!-- SUBJECT -->
+      <div class="col-md-4">
+        <label class="form-label">Subject ID</label>
+        <input
+          class="form-control"
+          [value]="subjectId()"
+          (input)="subjectId.set($any($event.target).value)"
+        />
+      </div>
+
+      <!-- BATCH -->
+      <div class="col-md-4">
+        <label class="form-label">Batch ID</label>
+        <input
+          class="form-control"
+          [value]="batchId()"
+          (input)="batchId.set($any($event.target).value)"
+        />
+      </div>
+
+      <!-- MEETING LINK -->
+      <div class="col-md-6">
+        <label class="form-label">Meeting Link</label>
+        <input
+          class="form-control"
+          [value]="meetLink()"
+          (input)="meetLink.set($any($event.target).value)"
+        />
+      </div>
+
+      <!-- CHAPTER -->
+      <div class="col-md-6">
+        <label class="form-label">Chapter Code</label>
+        <input
+          class="form-control"
+          [value]="chapterCode()"
+          (input)="chapterCode.set($any($event.target).value)"
+        />
+      </div>
+
+      <!-- DATE/TIME -->
+      <div class="col-md-6">
+        <label class="form-label">Class Date & Time</label>
+        <input
+          type="datetime-local"
+          class="form-control"
+          [value]="date()"
+          (input)="date.set($any($event.target).value)"
+        />
+      </div>
+
+      <!-- Button -->
+      <div class="col-12">
+        <button class="btn btn-primary px-4"
+                [disabled]="submitting()"
+                (click)="scheduleClass()">
+          Schedule Class
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- END CLASS SECTION -->
+  <div class="card p-3 shadow-sm border-0" *ngIf="meetingId()">
+    <h5>End Live Class</h5>
+
+    <p class="text-muted small">
+      Meeting ID: {{ meetingId() }}
+    </p>
+
+    <button class="btn btn-danger" (click)="endClass()">
+      End Class & Mark Attendance
+    </button>
+  </div>
+
+</div>

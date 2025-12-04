@@ -1,0 +1,103 @@
+.stream-sidebar {
+  padding: 1rem;
+  height: 100%;
+  width: 100%;
+  background: #4e4f4f;
+  color: #fff;
+  overflow-y: auto;
+  border-right: 1px solid #1f1f23;
+  position: sticky;
+  top: 0;
+}
+
+/* TITLE */
+.section-title {
+  color: #e5e5e5;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+/* ROW */
+.live-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: .15s ease;
+
+  &:hover {
+    background: #1f1f23;
+  }
+}
+
+/* LIVE AVATAR */
+.avatar-live {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e91916;
+}
+
+/* Normal avatar */
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #333;
+}
+
+/* TEXT */
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.subject {
+  color: #b3b3b3;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* RIGHT STATUS BOX */
+.status-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.red-dot {
+  width: 10px;
+  height: 10px;
+  background: #e91916;
+  border-radius: 50%;
+}
+
+.viewer-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffcccc;
+}
+
+/* Upcoming clock */
+.upcoming-clock i {
+  color: #9e9e9e;
+  font-size: 14px;
+}

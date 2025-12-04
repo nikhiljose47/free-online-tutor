@@ -54,60 +54,60 @@ export class FreeOnlineTutor {
     });
   }
 
-  upcomingClasses = signal([
-    {
-      id: '1',
-      title: 'English – Grammar',
-      teacher: 'Priya',
-      time: '5:00 PM',
-      subject: 'Maths',
-      viewers: 3,
-      isLive: false,
-      image: './assets/abbu.jpg',
-    },
-    {
-      id: '2',
-      title: 'Chemistry – Bonds',
-      teacher: 'Vishal',
-      time: '1:30 PM',
-      subject: 'Maths',
-      viewers: 3,
-      isLive: false,
-      image: './assets/abbu.jpg',
-    },
-    {
-      id: '3',
-      title: 'Biology – Cells',
-      teacher: 'Nisha',
-      time: '3:00 PM',
-      subject: 'Maths',
-      viewers: 3,
-      isLive: false,
-      image: './assets/abbu.jpg',
-    },
-  ]);
-  liveClasses = signal([
-    {
-      id: '1',
-      title: 'Maths – Algebra',
-      teacher: 'Anjali',
-      time: 'Live Now',
-      isLive: true,
-      subject: 'Maths',
-      viewers: 3,
-      image: './assets/abbu.jpg',
-    },
-    {
-      id: '2',
-      title: 'Physics – Motion',
-      teacher: 'Rahul',
-      time: 'Starting in 10m',
-      subject: 'Maths',
-      viewers: 3,
-      isLive: false,
-      image: './assets/abbu.jpg',
-    },
-  ]);
+  // upcomingClasses = signal([
+  //   {
+  //     id: '1',
+  //     title: 'English – Grammar',
+  //     teacher: 'Priya',
+  //     time: '5:00 PM',
+  //     subject: 'Maths',
+  //     viewers: 3,
+  //     isLive: false,
+  //     image: './assets/abbu.jpg',
+  //   },
+  //   {
+  //     id: '2',
+  //     title: 'Chemistry – Bonds',
+  //     teacher: 'Vishal',
+  //     time: '1:30 PM',
+  //     subject: 'Maths',
+  //     viewers: 3,
+  //     isLive: false,
+  //     image: './assets/abbu.jpg',
+  //   },
+  //   {
+  //     id: '3',
+  //     title: 'Biology – Cells',
+  //     teacher: 'Nisha',
+  //     time: '3:00 PM',
+  //     subject: 'Maths',
+  //     viewers: 3,
+  //     isLive: false,
+  //     image: './assets/abbu.jpg',
+  //   },
+  // ]);
+  // liveClasses = signal([
+  //   {
+  //     id: '1',
+  //     title: 'Maths – Algebra',
+  //     teacher: 'Anjali',
+  //     time: 'Live Now',
+  //     isLive: true,
+  //     subject: 'Maths',
+  //     viewers: 3,
+  //     image: './assets/abbu.jpg',
+  //   },
+  //   {
+  //     id: '2',
+  //     title: 'Physics – Motion',
+  //     teacher: 'Rahul',
+  //     time: 'Starting in 10m',
+  //     subject: 'Maths',
+  //     viewers: 3,
+  //     isLive: false,
+  //     image: './assets/abbu.jpg',
+  //   },
+  // ]);
 
   // 12 sections for classes 1–12
   classSections = signal(
@@ -117,15 +117,15 @@ export class FreeOnlineTutor {
     }))
   );
 
-  onUpcomingClick(live: LiveClassModel): void {
-    // Example: open modal, navigate, play video, etc.
-    // this.toast.show(`Opening ${live.title}`);
-    this.route.navigate(['/timetable']);
-  }
+  // onUpcomingClick(live: LiveClassModel): void {
+  //   // Example: open modal, navigate, play video, etc.
+  //   // this.toast.show(`Opening ${live.title}`);
+  //   this.route.navigate(['/timetable']);
+  // }
 
-  onLiveClick(live: LiveClassModel): void {
-    // Example: open modal, navigate, play video, etc.
-    // this.toast.show(`Opening ${live.title}`);
-    this.route.navigate(['/join-tution']);
-  }
+  // onLiveClick(live: LiveClassModel): void {
+  //   // Example: open modal, navigate, play video, etc.
+  //   // this.toast.show(`Opening ${live.title}`);
+  //   this.route.navigate(['/join-tution']);
+  // }
 }

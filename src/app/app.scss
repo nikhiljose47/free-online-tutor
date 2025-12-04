@@ -1,5 +1,77 @@
-.body {
-  height: calc(100vh - (var(--topbar-h, 56px) + var(--ann-h, 45px)));
+/* Remove browser scroll from entire page */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* IMPORTANT */
+}
+
+/* APP ROOT occupies entire screen */
+.app-root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* prevent body scroll */
+}
+
+/* TOPBAR fixed height */
+topbar {
+  height: 58px;
+  flex-shrink: 0;
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+/* LAYOUT: sidebar + right pane */
+.layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  height: calc(100vh - 58px); /* remove topbar height */
+  overflow: hidden;
+}
+
+/* SIDEBAR: sticks under topbar */
+.sidebar {
+  background: #0e0e10;
+  height: 100vh;
+  overflow-y: auto;         /* scroll only if sidebar content longer */
+  position: sticky;
+  top: 58px;                /* same as topbar height */
+  border-right: 1px solid #1f1f23;
+}
+//   &::-webkit-scrollbar {
+//     width: 0;
+//     height: 0;
+//   }
+
+//   /* Hide scrollbar (Firefox) */
+//   scrollbar-width: none;
+
+//   /* Hide scrollbar (IE/old Edge) */
+//   -ms-overflow-style: none;
+// }
+
+/* RIGHT COLUMN holds announcement + content */
+.right {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ANNOUNCEMENT BAR does NOT scroll */
+announcement-bar {
+  flex-shrink: 0;
+  display: block;
+}
+
+/* CONTENT scrolls independently */
+.content {
+  flex: 1;
   overflow-y: auto;
-  padding: 8px 0 40px;
+  padding: 1rem;
+  background: #f7f7fb;
 }

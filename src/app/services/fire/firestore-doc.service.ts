@@ -14,107 +14,173 @@ import {
   collectionData,
   docData,
 } from '@angular/fire/firestore';
-import { from, map, catchError, of } from 'rxjs';
+
+import { from, map, catchError, of, Observable } from 'rxjs';
+
+// --------------------------------------------------
+// ⭐ Generic Response Model
+// --------------------------------------------------
+export interface FireResponse<T> {
+  ok: boolean;
+  data: T | T[] | null;
+  message?: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class FirestoreDocService {
   private db = inject(Firestore);
 
-  // -------------------------
-  // Helpers
-  // -------------------------
-  private success<T>(data?: T) {
+  // --------------------------------------------------
+  // ⭐ Helpers
+  // --------------------------------------------------
+
+  private success<T>(data: T | T[] | null): FireResponse<T> {
     return { ok: true, data };
   }
 
-  private error(message: string) {
-    return { ok: false, message };
+  private fail<T>(msg: string): FireResponse<T> {
+    return { ok: false, data: null, message: msg };
   }
 
-  private handle<T>() {
-    return catchError((e: any) => of(this.error(e.message ?? 'Unknown Firestore error')));
-  }
+  // --------------------------------------------------
+  // ⭐ Collection + Document references
+  // --------------------------------------------------
 
-  // -------------------------
-  // References
-  // -------------------------
   private col<T>(path: string) {
     return collection(this.db, path) as any;
   }
 
-  private doc<T>(path: string, id: string) {
+  private docRef<T>(path: string, id: string) {
     return doc(this.db, `${path}/${id}`) as any;
   }
 
-  // -------------------------
-  // CRUD OPERATIONS
-  // -------------------------
+  // --------------------------------------------------
+  // ⭐ CREATE / SET
+  // --------------------------------------------------
 
-  /** CREATE or SET */
-  set<T>(path: string, id: string, data: T) {
-    return from(setDoc(this.doc<T>(path, id), data)).pipe(
-      map(() => this.success()),
-      this.handle()
+  set<T>(path: string, id: string, data: T): Observable<FireResponse<T>> {
+    return from(setDoc(this.docRef<T>(path, id), data)).pipe(
+      map(() => this.success<T>(null)),
+      catchError((err) => of(this.fail<T>(err.message)))
     );
   }
 
-  /** UPDATE */
-  update<T>(path: string, id: string, data: Partial<T>) {
-    return from(updateDoc(this.doc<T>(path, id), data as any)).pipe(
-      map(() => this.success()),
-      this.handle()
+  // --------------------------------------------------
+  // ⭐ UPDATE
+  // --------------------------------------------------
+
+  update<T>(path: string, id: string, data: Partial<T>): Observable<FireResponse<T>> {
+    return from(updateDoc(this.docRef<T>(path, id), data as any)).pipe(
+      map(() => this.success<T>(null)),
+      catchError((err) => of(this.fail<T>(err.message)))
     );
   }
 
-  /** DELETE */
-  delete(path: string, id: string) {
-    return from(deleteDoc(this.doc(path, id))).pipe(
-      map(() => this.success()),
-      this.handle()
+  // --------------------------------------------------
+  // ⭐ DELETE
+  // --------------------------------------------------
+
+  delete<T>(path: string, id: string): Observable<FireResponse<T>> {
+    return from(deleteDoc(this.docRef(path, id))).pipe(
+      map(() => this.success<T>(null)),
+      catchError((err) => of(this.fail<T>(err.message)))
     );
   }
 
-  /** GET SINGLE (ONCE) */
-  getOnce<T>(path: string, id: string) {
-    return from(getDoc(this.doc<T>(path, id))).pipe(
-      map((snap) =>
-        snap.exists() ? this.success(snap.data() as T) : this.error('Document not found')
-      ),
-      this.handle()
+  // --------------------------------------------------
+  // ⭐ GET ONE DOCUMENT (once)
+  // --------------------------------------------------
+
+  getOnce<T>(path: string, id: string): Observable<FireResponse<T>> {
+    return from(getDoc(this.docRef<T>(path, id))).pipe(
+      map((snap) => {
+        if (!snap.exists()) return this.fail<T>('Document not found');
+
+        const d = snap.data() as any;
+        const out = { id: snap.id, ...d } as T;
+
+        return this.success<T>(out);
+      }),
+      catchError((err) => of(this.fail<T>(err.message)))
     );
   }
 
-  /** LISTEN TO DOCUMENT */
-  listen<T>(path: string, id: string) {
-    return docData(this.doc<T>(path, id), { idField: 'id' }).pipe(
-      map((d) => this.success(d as T)),
-      this.handle()
+  // --------------------------------------------------
+  // ⭐ LISTEN TO DOCUMENT (realtime)
+  // --------------------------------------------------
+
+  listen<T>(path: string, id: string): Observable<FireResponse<T>> {
+    return docData(this.docRef<T>(path, id), { idField: 'id' }).pipe(
+      map((d) => this.success<T>(d as T)),
+      catchError((err) => of(this.fail<T>(err.message)))
     );
   }
 
-  /** GET ALL (ONCE) */
-  getAllOnce<T>(path: string) {
+  // --------------------------------------------------
+  // ⭐ GET ALL DOCUMENTS (once)
+  // --------------------------------------------------
+
+  getAllOnce<T>(path: string): Observable<FireResponse<T>> {
     return from(getDocs(this.col<T>(path))).pipe(
-      map((snap) => this.success(snap.docs.map((d) => ({ id: d.id, ...(d.data() as T) })))),
-      this.handle()
+      map((snap) => {
+        const out: T[] = snap.docs.map((d) => {
+          return { id: d.id, ...(d.data() as any) } as T;
+        });
+
+        return this.success<T>(out);
+      }),
+      catchError((err) => of(this.fail<T>(err.message)))
     );
   }
 
-  /** LISTEN TO COLLECTION */
-  listenAll<T>(path: string) {
+  // --------------------------------------------------
+  // ⭐ LISTEN ALL DOCUMENTS (realtime)
+  // --------------------------------------------------
+
+  listenAll<T>(path: string): Observable<FireResponse<T>> {
     return collectionData(this.col<T>(path), { idField: 'id' }).pipe(
-      map((data) => this.success(data as T[])),
-      this.handle()
+      map((arr) => this.success<T>(arr as T[])),
+      catchError((err) => of(this.fail<T>(err.message)))
     );
   }
 
-  /** WHERE QUERY */
-  where<T>(path: string, field: string, op: any, value: any, limitTo = 50) {
+  // --------------------------------------------------
+  // ⭐ WHERE QUERY
+  // --------------------------------------------------
+
+  where<T>(
+    path: string,
+    field: string,
+    op: any,
+    value: any,
+    limitTo = 50
+  ): Observable<FireResponse<T>> {
     const q = query(this.col<T>(path), where(field, op, value), limit(limitTo));
 
     return from(getDocs(q)).pipe(
-      map((snap) => this.success(snap.docs.map((d) => ({ id: d.id, ...(d.data() as T) })))),
-      this.handle()
+      map((snap) => {
+        const out: T[] = snap.docs.map((d) => {
+          return { id: d.id, ...(d.data() as any) } as T;
+        });
+
+        return this.success<T>(out);
+      }),
+      catchError((err) => of(this.fail<T>(err.message)))
+    );
+  }
+
+  realtimeWhere<T>(
+    path: string,
+    field: string,
+    op: any,
+    value: any,
+    limitTo = 50
+  ): Observable<FireResponse<T>> {
+    const q = query(this.col<T>(path), where(field, op, value), limit(limitTo));
+
+    return collectionData(q, { idField: 'id' } as any).pipe(
+      map((arr) => this.success<T>(arr as T[])),
+      catchError((err) => of(this.fail<T>(err.message ?? 'Realtime Firestore error')))
     );
   }
 }

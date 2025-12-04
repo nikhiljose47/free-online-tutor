@@ -37,7 +37,7 @@ export class SessionService {
 
   login(email: string, password: string) {
     return this.authApi.login(email, password).then(async res => {
-      if (!res.ok || !res.user) return res;
+      if (!res.success || !res.user) return res;
 
       const data = await this.userDocs.getUser(res.user.uid);
 
@@ -55,7 +55,7 @@ export class SessionService {
 
   register(email: string, password: string, role: AppUser['role'] = 'user') {
     return this.authApi.register(email, password).then(async res => {
-      if (!res.ok || !res.user) return res;
+      if (!res.success || !res.user) return res;
 
       const newUser: AppUser = {
         uid: res.user.uid,

@@ -1,9 +1,15 @@
-<div>
+<div class="app-root">
   <topbar></topbar>
-  <announcement-bar></announcement-bar>
-  <toast></toast>
-  <div class="body pt-1 pb-5">
-    <loading-component *ngIf="false" text="The classes are loading..."></loading-component>
-    <router-outlet></router-outlet>
+
+  <div class="layout">
+    <class-stream-sidebar class="sidebar"></class-stream-sidebar>
+    <div class="right">
+      <announcement-bar></announcement-bar>
+      <main class="content">
+        <toast></toast>
+        <loading-component *ngIf="false" text="The classes are loading..."></loading-component>
+        <router-outlet></router-outlet>
+      </main>
+    </div>
   </div>
 </div>

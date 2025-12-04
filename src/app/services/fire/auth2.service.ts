@@ -8,6 +8,12 @@ import {
   User,
 } from '@angular/fire/auth';
 
+export interface AuthResult {
+  success: boolean;
+  user: User | null;
+  message: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class Auth2Service {
   user = signal<User | null>(null);
@@ -16,16 +22,16 @@ export class Auth2Service {
     onAuthStateChanged(auth, (u) => this.user.set(u));
   }
 
-  login(email: string, password: string) {
+  login(email: string, password: string): Promise<AuthResult> {
     return signInWithEmailAndPassword(this.auth, email, password)
-      .then((res) => ({ ok: true, user: res.user }))
-      .catch((err) => ({ ok: false, user: null, message: err.message }));
+      .then((res) => ({ success: true, user: res.user, message: '' }))
+      .catch((err) => ({ success: false, user: null, message: err.message }));
   }
 
-  register(email: string, password: string) {
+  register(email: string, password: string): Promise<AuthResult> {
     return createUserWithEmailAndPassword(this.auth, email, password)
-      .then((res) => ({ ok: true, user: res.user }))
-      .catch((err) => ({ ok: false, user: null, message: err.message }));
+      .then((res) => ({ success: true, user: res.user, message: '' }))
+      .catch((err) => ({ success: false, user: null, message: err.message }));
   }
 
   logout() {

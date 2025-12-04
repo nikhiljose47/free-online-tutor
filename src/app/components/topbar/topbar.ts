@@ -7,7 +7,7 @@ import { ToastService } from '../../services/toast.service';
 @Component({
   selector: 'topbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, CommonModule],
+  imports: [RouterLink, CommonModule],
   templateUrl: './topbar.html',
   styleUrls: ['./topbar.scss'],
 })

@@ -39,7 +39,7 @@ export class LoginComponent {
 
     const res = await this.auth2.login(this.name(), this.pswd());
 
-    if (res.ok && res.user) {
+    if (res.success && res.user) {
       console.log('Logged in:', res.user.uid);
       // navigate
       this.router.navigate(['/home']);
@@ -58,7 +58,7 @@ export class LoginComponent {
 
     const res = await this.auth2.register(this.name(), this.pswd());
 
-    if (res.ok && res.user) {
+    if (res.success && res.user) {
       console.log('Logged in:', res.user.uid);
       // navigate
       this.router.navigate(['/home']);
