@@ -1,0 +1,44 @@
+.register-wrapper {
+  max-width: 480px;
+  margin: auto;
+  padding-top: 40px;
+}
+
+.register-card {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #e7e7e7;
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: #6c6c6c;
+}
+
+/* ROLE SELECTOR */
+.role-switch {
+  display: flex;
+  gap: 12px;
+}
+
+.role-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #d5d5d5;
+  background: #fafafa;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: 600;
+}
+
+.role-btn.active {
+  background: #dce7ff;
+  color: #083ea4;
+  border-color: #b6ceff;
+}

@@ -1,0 +1,140 @@
+.details-page {
+  padding: 1.5rem 1rem;
+  font-family: "Inter", sans-serif;
+}
+
+/* HEADER */
+.page-header h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 1.2rem;
+}
+
+/* QUOTE */
+.quote-box {
+  background: #fff3cd;
+  border-left: 4px solid #f0ad4e;
+  padding: 14px 20px;
+  border-radius: 8px;
+  margin-bottom: 1.4rem;
+}
+
+.quote {
+  margin: 0;
+  font-style: italic;
+  color: #614d00;
+  font-weight: 600;
+}
+
+/* SECTION TITLES */
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin: 1.3rem 0 0.8rem;
+}
+
+/* ROADMAP */
+.roadmap-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.roadmap-item {
+  background: #f8faff;
+  padding: 12px 14px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid #e2e8f8;
+
+  h3 {
+    margin: 0;
+    font-size: 15px;
+  }
+
+  .duration {
+    font-size: 13px;
+    color: #4f5d75;
+  }
+}
+
+/* EXAM PREP */
+.prep-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.prep-item {
+  background: #fffdf0;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #f4e8a2;
+  display: flex;
+  justify-content: space-between;
+
+  h3 {
+    margin: 0;
+    font-size: 15px;
+  }
+
+  .badge {
+    background: #f4c542;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: black;
+    font-weight: 600;
+  }
+}
+
+/* TEACHERS */
+.teachers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.teacher-card {
+  display: flex;
+  gap: 12px;
+  background: #fff;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  width: 200px;
+  align-items: center;
+
+  .avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .info h4 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .info p {
+    margin: 0;
+    color: gray;
+    font-size: 13px;
+  }
+}
+
+/* JAM INFO */
+.jam-box {
+  padding: 14px;
+  background: #edf2ff;
+  border-radius: 10px;
+  border: 1px solid #cdd9ff;
+
+  p {
+    margin: 4px 0;
+    font-size: 14px;
+  }
+}

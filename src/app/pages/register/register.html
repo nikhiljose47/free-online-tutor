@@ -1,0 +1,64 @@
+<div class="register-wrapper container">
+
+  <div class="register-card shadow-sm p-4">
+
+    <h2 class="title mb-3">Create Your Account</h2>
+    <p class="subtitle mb-4">Join FreeTutor to start learning or teaching</p>
+
+    <!-- Name -->
+    <label class="form-label">Full Name</label>
+    <input
+      class="form-control mb-3"
+      placeholder="Enter your full name"
+      [value]="name()"
+      (input)="name.set($any($event.target).value)"
+    />
+
+    <!-- Email -->
+    <label class="form-label">Email Address</label>
+    <input
+      class="form-control mb-3"
+      type="email"
+      placeholder="you@example.com"
+      [value]="email()"
+      (input)="email.set($any($event.target).value)"
+    />
+
+    <!-- Password -->
+    <label class="form-label">Password</label>
+    <input
+      class="form-control mb-3"
+      type="password"
+      placeholder="Create a strong password"
+      [value]="password()"
+      (input)="password.set($any($event.target).value)"
+    />
+
+    <!-- ROLE SELECTOR -->
+    <label class="form-label">Register as</label>
+    <div class="role-switch mb-4">
+      <button
+        class="role-btn"
+        [class.active]="role() === 'student'"
+        (click)="role.set('student')"
+      >
+        👨‍🎓 Student
+      </button>
+
+      <button
+        class="role-btn"
+        [class.active]="role() === 'teacher'"
+        (click)="role.set('teacher')"
+      >
+        👩‍🏫 Teacher
+      </button>
+    </div>
+
+    <!-- SUBMIT BUTTON -->
+    <button class="btn btn-primary w-100 py-2 mt-2" (click)="register()">
+      Create Account
+    </button>
+
+  </div>
+
+</div>

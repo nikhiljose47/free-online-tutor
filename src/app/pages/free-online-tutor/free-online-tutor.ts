@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RoadmapCacheService } from '../../services/cache/roadmap-cache.service';
 import { ToastService } from '../../services/toast.service';
 import { Router } from '@angular/router';
 import { Auth2Service } from '../../services/fire/auth2.service';
 import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
 import { Jam } from '../../models/jam.model';
+import { LearningSkeleton } from '../../components/learning-skeleton/learning-skeleton';
 
 export interface RoadmapCard {
   title: string;
@@ -23,16 +24,19 @@ export interface LiveClassModel {
 
 @Component({
   selector: 'free-online-tutor',
-  imports: [CommonModule],
+  imports: [CommonModule, LearningSkeleton],
   templateUrl: './free-online-tutor.html',
   styleUrl: './free-online-tutor.scss',
 })
-export class FreeOnlineTutor {
+export class FreeOnlineTutor implements OnInit {
   private cache = inject(RoadmapCacheService);
-  
+  classLoading = signal(true);
+  jamLoading = signal(true);
+
+  skeletonCount = Array(6); // 6 placeholders
   constructor(
     private toast: ToastService,
-    private route: Router,
+    private router: Router,
     private auth: Auth2Service,
     private fire: FirestoreDocService
   ) {
@@ -54,6 +58,84 @@ export class FreeOnlineTutor {
     });
   }
 
+  classCategories = signal([
+    {
+      id: 'class1',
+      name: 'Class 1',
+      students: 120,
+      teachers: 4,
+      medium: ['EN', 'HI'],
+      image: '/assets/fam-problem.jpg',
+    },
+    {
+      id: 'class2',
+      name: 'Class 2',
+      students: 160,
+      teachers: 5,
+      medium: ['EN'],
+      image: '/assets/fam-problem.jpg',
+    },
+    {
+      id: 'class3',
+      name: 'Class 3',
+      students: 210,
+      teachers: 6,
+      medium: ['HI'],
+      image: '/assets/fam-problem.jpg',
+    },
+    {
+      id: 'class4',
+      name: 'Class 4',
+      students: 10,
+      teachers: 3,
+      medium: ['HI'],
+      image: '/assets/fam-problem.jpg',
+    },
+    {
+      id: 'class5',
+      name: 'Class 5',
+      students: 10,
+      teachers: 3,
+      medium: ['HI'],
+      image: '/assets/fam-problem.jpg',
+    },
+  ]);
+
+  jamSessions = signal([
+    {
+      id: 'jam101',
+      title: 'GATE Rapid JAM',
+      students: 180,
+      teacher: 'Prof. Rao',
+      lang: ['EN'],
+      time: 'Live',
+      image: '/assets/fam-problem.jpg',
+    },
+    {
+      id: 'jam202',
+      title: 'CAT Quant JAM',
+      students: 140,
+      teacher: 'Ananya',
+      lang: ['HI'],
+      time: 'Soon',
+      image: '/assets/fam-problem.jpg',
+    },
+  ]);
+
+  ngOnInit() {
+    // Simulate Firestore load
+    setTimeout(() => {
+      this.classLoading.set(false);
+      this.jamLoading.set(false);
+    }, 1200);
+  }
+  openCategory(cls: any) {
+    this.router.navigate(['/details', 'class', cls.id]);
+  }
+
+  joinJam(jam: any) {
+    this.router.navigate(['/details', 'jam', jam.id]);
+  }
   // upcomingClasses = signal([
   //   {
   //     id: '1',

@@ -1,24 +1,78 @@
-<div class="home-wrapper container-fluid">
-  <main class="right-pane">
+<div class="learning-home container">
 
-    <div class="class-block" *ngFor="let block of classSections()">
+  <!-- SECTION: CLASS CATEGORY GRID -->
+  <section class="section">
+    <h2 class="section-title">CBSE & ICSE Classes</h2>
 
-      <div class="block-head">
-        <h4 class="class-title">{{ block.class }}</h4>
-        <button class="see-all-btn">See all</button>
-      </div>
+    <!-- SKELETON -->
+    <div class="grid" *ngIf="classLoading(); else classData">
+      <learning-skeleton *ngFor="let i of skeletonCount"></learning-skeleton>
+    </div>
 
-      <div class="scroll-row no-scrollbar">
-        <div class="card roadmap-card" *ngFor="let card of block.cards">
-          <img [src]="card.image" loading="lazy" />
-          <div class="p-2">
-            <div class="card-title">{{ card.title }}</div>
-            <div class="card-sub">{{ card.subtitle }}</div>
+    <!-- REAL DATA -->
+    <ng-template #classData>
+      <div class="grid">
+        <div
+          class="simple-card"
+          *ngFor="let cls of classCategories()"
+          (click)="openCategory(cls)"
+        >
+          <img src="./assets/roadmap.jpg" class="banner" />
+
+          <div class="info">
+            <h3 class="title">{{ cls.name }}</h3>
+
+            <div class="meta">
+              <span>{{ cls.students }} students</span>
+              <span>{{ cls.teachers }} teachers</span>
+              <span>{{ cls.medium.join(', ') }}</span>
+            </div>
           </div>
         </div>
       </div>
+    </ng-template>
+  </section>
 
+  <!-- SECTION: JAM SESSIONS -->
+  <section class="section mt-4">
+    <h2 class="section-title">JAM Sessions</h2>
+
+    <!-- SKELETON -->
+    <div class="grid" *ngIf="jamLoading(); else jamData">
+      <learning-skeleton *ngFor="let i of skeletonCount"></learning-skeleton>
     </div>
 
-  </main>
+    <!-- REAL JAM DATA -->
+    <ng-template #jamData>
+      <ng-container *ngIf="jamSessions().length > 0; else noJam">
+        <div class="grid">
+          <div
+            class="simple-card"
+            *ngFor="let jam of jamSessions()"
+            (click)="joinJam(jam)"
+          >
+            <img src="./assets/jam-placeholder.jpg" class="banner" />
+
+            <div class="info">
+              <div class="jam-head">
+                <h3 class="title">{{ jam.title }}</h3>
+                <span class="badge" *ngIf="jam.time === 'Live'">LIVE</span>
+              </div>
+
+              <div class="meta">
+                <span>{{ jam.students }} joined</span>
+                <span>{{ jam.teacher }}</span>
+                <span>{{ jam.lang.join(', ') }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-template #noJam>
+        <div class="no-jam-box">No JAM sessions running right now.</div>
+      </ng-template>
+    </ng-template>
+  </section>
+
 </div>

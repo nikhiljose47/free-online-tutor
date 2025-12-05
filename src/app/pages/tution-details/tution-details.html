@@ -1,0 +1,60 @@
+<div class="details-page">
+
+  <!-- ------------------ HEADER TITLE ------------------ -->
+  <header class="page-header">
+    <h1 *ngIf="type === 'class'">{{ id }}</h1>
+    <h1 *ngIf="type === 'jam'">JAM Session: {{ jamInfo().topic }}</h1>
+  </header>
+
+  <!-- ------------------ TODAY’S QUOTE ------------------ -->
+  <section class="quote-box">
+    <p class="quote">“{{ quote() }}”</p>
+  </section>
+
+  <!-- ------------------ ROADMAP (CLASS ONLY) ------------------ -->
+  <section *ngIf="type === 'class'" class="section">
+    <h2 class="section-title"> Roadmap</h2>
+
+   <timetable></timetable>
+  </section>
+
+  <!-- ------------------ EXAM PREP (CLASS ONLY) ------------------ -->
+  <section *ngIf="type === 'class'" class="section">
+    <h2 class="section-title">Exam Preparation</h2>
+
+    <div class="prep-list">
+      <div class="prep-item" *ngFor="let p of examPrep()">
+        <h3>{{ p.title }}</h3>
+        <span class="badge">{{ p.level }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------ TEACHERS ------------------ -->
+  <section *ngIf="type === 'class'" class="section">
+    <h2 class="section-title">Teachers</h2>
+
+    <div class="teachers">
+      <div class="teacher-card" *ngFor="let t of teachers()">
+        <img [src]="t.avatar" class="avatar" />
+        <div class="info">
+          <h4>{{ t.name }}</h4>
+          <p>{{ t.subject }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------ JAM INFO ------------------ -->
+  <section *ngIf="type === 'jam'" class="section">
+    <h2 class="section-title">Session Details</h2>
+
+    <div class="jam-box">
+      <p><b>Host:</b> {{ jamInfo().host }}</p>
+      <p><b>Topic:</b> {{ jamInfo().topic }}</p>
+      <p><b>Starts at:</b> {{ jamInfo().starts }}</p>
+      <p><b>Participants:</b> {{ jamInfo().participants }}</p>
+    </div>
+  </section>
+
+</div>

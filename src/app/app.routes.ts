@@ -14,6 +14,7 @@ import { BookSlotComponent } from './components/book-slot/book-slot';
 import { JoinTution } from './pages/join-tution/join-tution';
 import { Timetable } from './pages/timetable/timetable';
 import { ScheduleLiveClass } from './pages/schedule-live-class/schedule-live-class';
+import { Register } from './pages/register/register';
 
 export const routes: Routes = [
   { path: '', component: FreeOnlineTutor },
@@ -23,6 +24,7 @@ export const routes: Routes = [
   { path: 'roadmap', component: RoadmapComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'register', component: Register },
   { path: 'upcoming', component: UpcomingClassesComponent },
   { path: 'syllabus', component: SyllabusComponent },
   { path: 'about', component: About },
@@ -30,7 +32,13 @@ export const routes: Routes = [
   { path: 'career', component: Career },
   { path: 'profile', component: DashboardComponent },
   { path: 'join-tution', component: JoinTution },
-    { path: 'timetable', component: Timetable },
-        { path: 'schedule', component: ScheduleLiveClass },
+  { path: 'timetable', component: Timetable },
+  { path: 'schedule', component: ScheduleLiveClass },
+
+  {
+    path: 'details/:type/:id',
+    loadComponent: () =>
+      import('./pages/tution-details/tution-details').then((m) => m.TutionDetails),
+  },
   { path: '**', redirectTo: '' },
 ];

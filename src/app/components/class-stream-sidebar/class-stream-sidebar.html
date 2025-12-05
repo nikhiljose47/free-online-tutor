@@ -1,40 +1,48 @@
-<aside class="stream-sidebar">
+<aside class="stream-sidebar" [class.collapsed]="collapsed()">
+  <!-- COLLAPSE BUTTON (mobile only) -->
+  <button class="collapse-btn" (click)="toggleSidebar()">
+<i class="bi" [ngClass]="collapsed() ? 'bi-chevron-right' : 'bi-chevron-left'"></i>
+  </button>
 
-  <!-- LIVE STREAMING SECTION -->
-  <h6 class="section-title">Live Now</h6>
+  <!-- FULL MODE CONTENT -->
+  <div class="full-content" *ngIf="!collapsed()">
+    <!-- LIVE STREAMING -->
+    <h6 class="section-title">Live Now</h6>
 
-  <div class="live-item" *ngFor="let item of live()" (click)="onClick(item)">
-    
-    <img class="avatar-live" [src]="item.image" alt="teacher" />
-
-    <div class="info">
-      <div class="title">{{ item.chapterCode }}</div>
-      <div class="subject">{{ item.date }}</div>
+    <div class="live-item" *ngFor="let item of live()" (click)="onClick(item)">
+      <img class="avatar-live" [src]="item.image || 'assets/abbu.jpg'" />
+      <div class="info">
+        <div class="title">{{ item.chapterCode }}</div>
+        <div class="subject">{{ item.date }}</div>
+      </div>
+      <div class="status-box">
+        <span class="red-dot"></span>
+        <span class="viewer-count">{{ item.viewers }}</span>
+      </div>
     </div>
 
-    <div class="status-box">
-      <span class="red-dot"></span>
-      <span class="viewer-count">{{ item.viewers }}</span>
-    </div>
+    <!-- UPCOMING -->
+    <h6 class="section-title mt-4">Upcoming</h6>
 
+    <div class="live-item" *ngFor="let item of upcoming()" (click)="onClick(item)">
+      <img class="avatar" [src]="item.image || 'assets/abbu.jpg'" />
+      <div class="info">
+        <div class="title">{{ item.chapterCode }}</div>
+        <div class="subject">{{ item.date }}</div>
+      </div>
+      <div class="status-box upcoming-clock">
+        <i class="bi bi-clock"></i>
+      </div>
+    </div>
   </div>
 
-  <!-- UPCOMING -->
-  <h6 class="section-title mt-4">Upcoming</h6>
-
-  <div class="live-item" *ngFor="let item of upcoming()" (click)="onClick(item)">
-    
-    <img class="avatar" [src]="item.image" alt="teacher" />
-
-    <div class="info">
-      <div class="title">{{ item.chapterCode }}</div>
-      <div class="subject">{{ item.date }}</div>
-    </div>
-
-    <div class="status-box upcoming-clock">
-      <i class="bi bi-clock"></i>
-    </div>
-
+  <!-- COLLAPSED AVATAR-ONLY MODE -->
+  <div class="collapsed-content" *ngIf="collapsed()">
+    <img
+      *ngFor="let item of live()"
+      class="collapsed-avatar"
+      [src]="item.image || 'assets/abbu.jpg'"
+      (click)="onClick(item)"
+    />
   </div>
-
 </aside>

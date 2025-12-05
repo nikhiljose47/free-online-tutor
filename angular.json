@@ -30,7 +30,11 @@
               },
               "src/assets"
             ],
-            "styles": ["src/styles.scss", "node_modules/bootstrap/dist/css/bootstrap.min.css"],
+            "styles": [
+              "src/styles.scss",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/bootstrap-icons/font/bootstrap-icons.css"
+            ],
             "server": "src/main.server.ts",
             "outputMode": "server",
             "ssr": {
@@ -44,8 +48,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "800kB",
+                  "maximumError": "1.4MB"
                 },
                 {
                   "type": "anyComponentStyle",

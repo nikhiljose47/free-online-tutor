@@ -7,7 +7,6 @@ export interface UserModel {
   role: 'student' | 'teacher' | 'admin';
   photoUrl?: string;
   phone?: string;
-
   joinedAt: Timestamp | null;
   updatedAt: Timestamp | null;
 }

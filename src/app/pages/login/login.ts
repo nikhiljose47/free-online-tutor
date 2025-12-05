@@ -40,33 +40,10 @@ export class LoginComponent {
     const res = await this.auth2.login(this.name(), this.pswd());
 
     if (res.success && res.user) {
-      console.log('Logged in:', res.user.uid);
-      // navigate
-      this.router.navigate(['/home']);
+      this.toast.show('Success!!');
+      this.router.navigate([''], { replaceUrl: true });
     } else {
       this.toast.show('Invalid Login');
     }
-    //console.log(x);
-    // this.auth.login(userName).subscribe(() => {
-    //   this.router.navigate(['/dashboard']);
-    // });
-  }
-
-  async doRegister() {
-    const userName = this.name().trim();
-    if (!userName) return alert('Enter name');
-
-    const res = await this.auth2.register(this.name(), this.pswd());
-
-    if (res.success && res.user) {
-      console.log('Logged in:', res.user.uid);
-      // navigate
-      this.router.navigate(['/home']);
-    } else {
-      this.toast.show('Invalid Login');
-    }
-    // this.auth.register(userName).subscribe(() => {
-    //   this.router.navigate(['/dashboard']);
-    // });
   }
 }

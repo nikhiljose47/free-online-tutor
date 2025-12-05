@@ -26,21 +26,32 @@ topbar {
 
 /* LAYOUT: sidebar + right pane */
 .layout {
-  flex: 1;
-  display: grid;
+  display: flex;
+  width: 100%;
   grid-template-columns: 240px 1fr;
   height: calc(100vh - 58px); /* remove topbar height */
   overflow: hidden;
 }
 
 /* SIDEBAR: sticks under topbar */
+// .sidebar {
+//   background: #0e0e10;
+//   height: 100vh;
+//   overflow-y: auto;         /* scroll only if sidebar content longer */
+//   position: sticky;
+//   top: 58px;                /* same as topbar height */
+//   border-right: 1px solid #1f1f23;
+// }
+
 .sidebar {
-  background: #0e0e10;
-  height: 100vh;
-  overflow-y: auto;         /* scroll only if sidebar content longer */
-  position: sticky;
-  top: 58px;                /* same as topbar height */
-  border-right: 1px solid #1f1f23;
+  width: 240px;
+  transition: width 0.25s ease;
+  height: 100%;
+}
+
+/* COLLAPSED WIDTH (applied by classStreamSidebar component) */
+.sidebar.collapsed {
+  width: 60px !important;
 }
 //   &::-webkit-scrollbar {
 //     width: 0;
@@ -56,6 +67,8 @@ topbar {
 
 /* RIGHT COLUMN holds announcement + content */
 .right {
+  flex: 1;              /* expands to fill space */
+  min-width: 0;         /* prevents overflow */
   display: flex;
   flex-direction: column;
   height: 100%;

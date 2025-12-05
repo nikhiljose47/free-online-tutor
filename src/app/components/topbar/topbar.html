@@ -26,14 +26,11 @@
       <!-- BEFORE LOGIN -->
       <ng-container *ngIf="!user()">
         <button class="login-btn" routerLink="/login">Log In</button>
-        <button class="signup-btn" routerLink="/signup">Sign Up</button>
+        <button class="signup-btn" routerLink="/register">Sign Up</button>
       </ng-container>
 
       <!-- AFTER LOGIN -->
       <ng-container *ngIf="user()">
-
-
-
         <!-- Profile -->
         <div class="profile-wrapper" (click)="toggleProfile()">
           <i class="bi bi-person-circle profile-icon"></i>

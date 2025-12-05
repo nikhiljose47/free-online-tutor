@@ -13,6 +13,7 @@ import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
 import { LIVE, UPCOMING } from '../../core/constants/app.constants';
 import { Meeting } from '../../models/meeting.model';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'class-stream-sidebar',
@@ -20,14 +21,25 @@ import { Subscription } from 'rxjs';
   imports: [CommonModule],
   templateUrl: './class-stream-sidebar.html',
   styleUrl: './class-stream-sidebar.scss',
+    host: {
+    '[class.collapsed]': 'collapsed()'   // ← THIS ENABLES THE LAYOUT
+  }
 })
 export class ClassStreamSidebar implements OnDestroy {
   live = signal<any[]>([]);
   upcoming = signal<any[]>([]);
 
   private sub = new Subscription();
+collapsed = signal(false);
 
-  constructor(private firestore: Firestore, private fire: FirestoreDocService) {
+toggleSidebar() {
+  this.collapsed.update(v => !v);
+}
+  constructor(
+    private firestore: Firestore,
+    private fire: FirestoreDocService,
+    private router: Router
+  ) {
     // this.loadLive();
     // this.loadUpcoming();
 
@@ -36,9 +48,10 @@ export class ClassStreamSidebar implements OnDestroy {
       .subscribe((res) => res && this.upcoming.set(res.data));
 
     this.sub.add(
-    this.fire.realtimeWhere<any>('global_meetings','status','==',LIVE)
-      .subscribe(res => this.live.set(res.data))
-  ); 
+      this.fire
+        .realtimeWhere<any>('global_meetings', 'status', '==', LIVE)
+        .subscribe((res) => this.live.set(res.data))
+    );
   }
 
   private loadLive() {
@@ -68,9 +81,10 @@ export class ClassStreamSidebar implements OnDestroy {
 
   onClick(item: any) {
     console.log('Open stream/class:', item);
+    this.router.navigate(['/join-tution']);
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.sub.unsubscribe();
   }
 }
