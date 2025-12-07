@@ -11,5 +11,7 @@ export interface Subject {
 export interface ClassSyllabus {
   class: string;
   code_prefix: string;
+  desc: string,
   subjects: Record<string, Subject>;
+  meta: string
 }

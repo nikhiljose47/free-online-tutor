@@ -1,0 +1,31 @@
+<div class="analytics-wrapper">
+
+  <h2 class="title">Attendance Analytics</h2>
+
+  <div *ngFor="let m of meetingStats()" class="meeting-row">
+
+    <div class="row-head">
+      <span class="meeting-name">{{ m.id }}</span>
+      <span class="percent">{{ m.percent }}%</span>
+    </div>
+
+    <div class="progress">
+      <div
+        class="progress-bar"
+        role="progressbar"
+        [style.width.%]="m.percent"
+        aria-valuemin="0"
+        aria-valuemax="100">
+      </div>
+    </div>
+
+  </div>
+
+  <h3 class="mt-4">Top Students</h3>
+
+  <div class="top-students" *ngFor="let s of topStudents()">
+    <span>{{ s.id }}</span>
+    <span class="count">{{ s.count }} classes</span>
+  </div>
+
+</div>

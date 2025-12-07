@@ -13,6 +13,7 @@ import {
   limit,
   collectionData,
   docData,
+  addDoc,
 } from '@angular/fire/firestore';
 
 import { from, map, catchError, of, Observable } from 'rxjs';
@@ -57,6 +58,21 @@ export class FirestoreDocService {
   // --------------------------------------------------
   // ⭐ CREATE / SET
   // --------------------------------------------------
+  add<T extends Record<string, any>>(path: string, data: T): Observable<FireResponse<T>> {
+    const colRef = collection(this.db, path);
+
+    return from(addDoc(colRef, data)).pipe(
+      map(
+        (ref) =>
+          ({
+            ok: true,
+            id: ref.id,
+            data: null,
+          } as FireResponse<T>)
+      ),
+      catchError((err) => of(this.fail<T>(err.message ?? 'Firestore add() error')))
+    );
+  }
 
   set<T>(path: string, id: string, data: T): Observable<FireResponse<T>> {
     return from(setDoc(this.docRef<T>(path, id), data)).pipe(

@@ -3,6 +3,8 @@ import { ClassSyllabus } from './syllabus.model';
 export const CLASS5_SYLLABUS: ClassSyllabus = {
   class: '5',
   code_prefix: 'CL5',
+  desc: '',
+  meta: '',
   subjects: {
     Mathematics: {
       code: 'CL5-MATH',
@@ -20,8 +22,8 @@ export const CLASS5_SYLLABUS: ClassSyllabus = {
         { code: 'CL5-MATH-11', name: 'Area and Its Boundary' },
         { code: 'CL5-MATH-12', name: 'Smart Charts' },
         { code: 'CL5-MATH-13', name: 'Ways to Multiply and Divide' },
-        { code: 'CL5-MATH-14', name: 'How Big? How Heavy?' }
-      ]
+        { code: 'CL5-MATH-14', name: 'How Big? How Heavy?' },
+      ],
     },
 
     English: {
@@ -36,8 +38,8 @@ export const CLASS5_SYLLABUS: ClassSyllabus = {
         { code: 'CL5-ENG-07', name: 'Crying' },
         { code: 'CL5-ENG-08', name: 'My Elder Brother' },
         { code: 'CL5-ENG-09', name: 'The Lazy Frog' },
-        { code: 'CL5-ENG-10', name: 'Rip Van Winkle' }
-      ]
+        { code: 'CL5-ENG-10', name: 'Rip Van Winkle' },
+      ],
     },
 
     Hindi: {
@@ -60,36 +62,36 @@ export const CLASS5_SYLLABUS: ClassSyllabus = {
         { code: 'CL5-HIN-15', name: 'बिशन की दिलेरी' },
         { code: 'CL5-HIN-16', name: 'पानी रे पानी' },
         { code: 'CL5-HIN-17', name: 'छोटी-सी हमारी नदी' },
-        { code: 'CL5-HIN-18', name: 'चुनौती हिमालय की' }
-      ]
+        { code: 'CL5-HIN-18', name: 'चुनौती हिमालय की' },
+      ],
     },
 
     EVS: {
       code: 'CL5-EVS',
       chapters: [
-        { "code": "CL5-EVS-01", "name": "Chapter 1" },
-        { "code": "CL5-EVS-02", "name": "Chapter 2" },
-        { "code": "CL5-EVS-03", "name": "Chapter 3" },
-        { "code": "CL5-EVS-04", "name": "Chapter 4" },
-        { "code": "CL5-EVS-05", "name": "Chapter 5" },
-        { "code": "CL5-EVS-06", "name": "Chapter 6" },
-        { "code": "CL5-EVS-07", "name": "Chapter 7" },
-        { "code": "CL5-EVS-08", "name": "Chapter 8" },
-        { "code": "CL5-EVS-09", "name": "Chapter 9" },
-        { "code": "CL5-EVS-10", "name": "Chapter 10" },
-        { "code": "CL5-EVS-11", "name": "Chapter 11" },
-        { "code": "CL5-EVS-12", "name": "Chapter 12" },
-        { "code": "CL5-EVS-13", "name": "Chapter 13" },
-        { "code": "CL5-EVS-14", "name": "Chapter 14" },
-        { "code": "CL5-EVS-15", "name": "Chapter 15" },
-        { "code": "CL5-EVS-16", "name": "Chapter 16" },
-        { "code": "CL5-EVS-17", "name": "Chapter 17" },
-        { "code": "CL5-EVS-18", "name": "Chapter 18" },
-        { "code": "CL5-EVS-19", "name": "Chapter 19" },
-        { "code": "CL5-EVS-20", "name": "Chapter 20" },
-        { "code": "CL5-EVS-21", "name": "Chapter 21" },
-        { "code": "CL5-EVS-22", "name": "Chapter 22" }
-      ]
-    }
-  }
+        { code: 'CL5-EVS-01', name: 'Chapter 1' },
+        { code: 'CL5-EVS-02', name: 'Chapter 2' },
+        { code: 'CL5-EVS-03', name: 'Chapter 3' },
+        { code: 'CL5-EVS-04', name: 'Chapter 4' },
+        { code: 'CL5-EVS-05', name: 'Chapter 5' },
+        { code: 'CL5-EVS-06', name: 'Chapter 6' },
+        { code: 'CL5-EVS-07', name: 'Chapter 7' },
+        { code: 'CL5-EVS-08', name: 'Chapter 8' },
+        { code: 'CL5-EVS-09', name: 'Chapter 9' },
+        { code: 'CL5-EVS-10', name: 'Chapter 10' },
+        { code: 'CL5-EVS-11', name: 'Chapter 11' },
+        { code: 'CL5-EVS-12', name: 'Chapter 12' },
+        { code: 'CL5-EVS-13', name: 'Chapter 13' },
+        { code: 'CL5-EVS-14', name: 'Chapter 14' },
+        { code: 'CL5-EVS-15', name: 'Chapter 15' },
+        { code: 'CL5-EVS-16', name: 'Chapter 16' },
+        { code: 'CL5-EVS-17', name: 'Chapter 17' },
+        { code: 'CL5-EVS-18', name: 'Chapter 18' },
+        { code: 'CL5-EVS-19', name: 'Chapter 19' },
+        { code: 'CL5-EVS-20', name: 'Chapter 20' },
+        { code: 'CL5-EVS-21', name: 'Chapter 21' },
+        { code: 'CL5-EVS-22', name: 'Chapter 22' },
+      ],
+    },
+  },
 };

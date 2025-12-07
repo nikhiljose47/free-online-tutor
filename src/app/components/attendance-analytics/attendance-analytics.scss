@@ -1,0 +1,55 @@
+.analytics-wrapper {
+  max-width: 620px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e7e7e7;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.meeting-row {
+  margin-bottom: 20px;
+}
+
+.row-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.meeting-name {
+  font-weight: 600;
+}
+
+.percent {
+  font-weight: 600;
+  color: #4a4a4a;
+}
+
+/* Progress Bar */
+.progress {
+  height: 10px;
+  border-radius: 8px;
+  background: #e9e9e9;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, #4f8bff, #2c60ff);
+  border-radius: 8px;
+}
+
+/* Top student list */
+.top-students {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 2px;
+  border-bottom: 1px solid #eee;
+
+  .count {
+    font-weight: 600;
+  }
+}

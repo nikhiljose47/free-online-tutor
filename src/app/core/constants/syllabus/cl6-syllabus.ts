@@ -3,7 +3,8 @@ import { ClassSyllabus } from './syllabus.model';
 export const CLASS6_SYLLABUS: ClassSyllabus = {
   class: '6',
   code_prefix: 'CL6',
-
+  desc: '',
+  meta: '',
   subjects: {
     Mathematics: {
       code: 'CL6-MATH',
@@ -21,8 +22,8 @@ export const CLASS6_SYLLABUS: ClassSyllabus = {
         { code: 'CL6-MATH-11', name: 'Algebra' },
         { code: 'CL6-MATH-12', name: 'Ratio and Proportion' },
         { code: 'CL6-MATH-13', name: 'Symmetry' },
-        { code: 'CL6-MATH-14', name: 'Practical Geometry' }
-      ]
+        { code: 'CL6-MATH-14', name: 'Practical Geometry' },
+      ],
     },
 
     English: {
@@ -49,8 +50,8 @@ export const CLASS6_SYLLABUS: ClassSyllabus = {
         { code: 'CL6-ENG-16', name: 'The Wonder Called Sleep' },
         { code: 'CL6-ENG-17', name: 'A Pact With the Sun' },
         { code: 'CL6-ENG-18', name: 'What Happened to the Reptiles' },
-        { code: 'CL6-ENG-19', name: 'A Strange Wrestling Match' }
-      ]
+        { code: 'CL6-ENG-19', name: 'A Strange Wrestling Match' },
+      ],
     },
 
     Hindi: {
@@ -69,8 +70,8 @@ export const CLASS6_SYLLABUS: ClassSyllabus = {
         { code: 'CL6-HIN-11', name: 'पहाड़ और समुद्र' },
         { code: 'CL6-HIN-12', name: 'वीर कुवर सिंह' },
         { code: 'CL6-HIN-13', name: 'झाँसी की रानी' },
-        { code: 'CL6-HIN-14', name: 'सौरमंडल' }
-      ]
+        { code: 'CL6-HIN-14', name: 'सौरमंडल' },
+      ],
     },
 
     Science: {
@@ -91,8 +92,8 @@ export const CLASS6_SYLLABUS: ClassSyllabus = {
         { code: 'CL6-SCI-13', name: 'Fun with Magnets' },
         { code: 'CL6-SCI-14', name: 'Water' },
         { code: 'CL6-SCI-15', name: 'Air Around Us' },
-        { code: 'CL6-SCI-16', name: 'Garbage In, Garbage Out' }
-      ]
-    }
-  }
+        { code: 'CL6-SCI-16', name: 'Garbage In, Garbage Out' },
+      ],
+    },
+  },
 };

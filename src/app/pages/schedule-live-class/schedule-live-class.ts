@@ -1,11 +1,12 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Firestore, collection, addDoc, Timestamp, updateDoc, doc } from '@angular/fire/firestore';
-import { LIVE } from '../../core/constants/app.constants';
+import { COMPLETED, LIVE, PART1 } from '../../core/constants/app.constants';
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { Validator } from '../../utils/validator.util';
 import { Auth2Service } from '../../services/fire/auth2.service';
 import { UserProfileService } from '../../services/fire/user-profile.service';
+import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
 
 @Component({
   selector: 'schedule-live-class',
@@ -16,7 +17,7 @@ import { UserProfileService } from '../../services/fire/user-profile.service';
 })
 export class ScheduleLiveClass {
   profile = inject(UserProfileService).profile;
-  
+
   // Form as signals
   classId = signal('');
   subjectId = signal('');
@@ -41,7 +42,11 @@ export class ScheduleLiveClass {
 
   isMeetLinkValid = computed(() => Validator.isMeetingLink(this.meetLink()));
 
-  constructor(private db: Firestore) {
+  constructor(
+    private db: Firestore,
+    private fire: FirestoreDocService,
+    private user: UserProfileService
+  ) {
     effect(() => {
       console.log('🔥 Profile updated:', this.profile());
     });
@@ -56,11 +61,18 @@ export class ScheduleLiveClass {
       batchId: this.batchId(),
       meetLink: this.meetLink(),
       chapterCode: this.chapterCode(),
-      status: LIVE,
+      status: PART1,
       date: Timestamp.fromDate(new Date(this.date())),
+      teacherId: this.user.profile()?.name,
+      duration: 30,
+      attendence: [],
     };
 
     const ref = await addDoc(collection(this.db, 'global_meetings'), payload);
+    this.fire.add('classes/CL5/meetings', payload).subscribe((res) => {
+      if (res.ok) console.log('Created meeting!');
+      else console.error(res.message);
+    });
     this.meetingId.set(ref.id);
 
     this.submitting.set(false);
@@ -76,7 +88,7 @@ export class ScheduleLiveClass {
     const ref = doc(this.db, 'global_meetings', this.meetingId()!);
 
     await updateDoc(ref, {
-      status: 'completed',
+      status: COMPLETED,
       endedAt: Timestamp.now(),
     });
 
