@@ -1,33 +1,53 @@
 <div class="container mt-4">
-
   <h3 class="title">Schedule a Live Class</h3>
 
-  <!-- FORM -->
   <div class="card p-3 shadow-sm border-0 mb-4">
     <div class="row g-3">
-
-      <!-- CLASS ID -->
+      <!-- CLASS -->
       <div class="col-md-4">
-        <label class="form-label">Class ID</label>
-        <input
-          class="form-control"
+        <label class="form-label">Class</label>
+        <select
+          class="form-select"
           [value]="classId()"
-          (input)="classId.set($any($event.target).value)"
-        />
+          (change)="classId.set($any($event.target).value); subjectId.set(''); chapterCode.set('')"
+        >
+          <option value="">Select Class</option>
+          <option *ngFor="let c of classList()" [value]="c">{{ c }}</option>
+        </select>
       </div>
 
       <!-- SUBJECT -->
       <div class="col-md-4">
-        <label class="form-label">Subject ID</label>
-        <input
-          class="form-control"
+        <label class="form-label">Subject</label>
+        <select
+          class="form-select"
           [value]="subjectId()"
-          (input)="subjectId.set($any($event.target).value)"
-        />
+          [disabled]="!subjectList().length"
+          (change)="subjectId.set($any($event.target).value); chapterCode.set('')"
+        >
+          <option value="">Select Subject</option>
+          <option *ngFor="let s of subjectList()" [value]="s">{{ s }}</option>
+        </select>
+      </div>
+
+      <!-- CHAPTER -->
+      <div class="col-md-4">
+        <label class="form-label">Chapter</label>
+        <select
+          class="form-select"
+          [value]="chapterCode()"
+          [disabled]="!chapterList().length"
+          (change)="chapterCode.set($any($event.target).value)"
+        >
+          <option value="">Select Chapter</option>
+          <option *ngFor="let ch of chapterList()" [value]="ch.code">
+            {{ ch.code }} — {{ ch.name }}
+          </option>
+        </select>
       </div>
 
       <!-- BATCH -->
-      <div class="col-md-4">
+      <div class="col-md-6">
         <label class="form-label">Batch ID</label>
         <input
           class="form-control"
@@ -37,27 +57,16 @@
       </div>
 
       <!-- MEETING LINK -->
-      <div class="col-md-6">
-        <label class="form-label">Meeting Link</label>
-        <input
-          class="form-control"
-          [value]="meetLink()"
-          (input)="meetLink.set($any($event.target).value)"
-        />
-      </div>
+      <input
+        class="form-control"
+        [ngClass]="{ 'is-invalid': !isMeetLinkValid() }"
+        [value]="meetLink()"
+        (input)="onMeetLinkInput($event)"
+      />
 
-      <!-- CHAPTER -->
-      <div class="col-md-6">
-        <label class="form-label">Chapter Code</label>
-        <input
-          class="form-control"
-          [value]="chapterCode()"
-          (input)="chapterCode.set($any($event.target).value)"
-        />
-      </div>
-
+      <div class="invalid-feedback" *ngIf="!isMeetLinkValid()">Invalid meeting link.</div>
       <!-- DATE/TIME -->
-      <div class="col-md-6">
+      <div class="col-md-12">
         <label class="form-label">Class Date & Time</label>
         <input
           type="datetime-local"
@@ -67,15 +76,12 @@
         />
       </div>
 
-      <!-- Button -->
-      <div class="col-12">
-        <button class="btn btn-primary px-4"
-                [disabled]="submitting()"
-                (click)="scheduleClass()">
+      <!-- BUTTON -->
+      <div class="col-12 text-end">
+        <button class="btn btn-primary px-4" [disabled]="submitting()" (click)="scheduleClass()">
           Schedule Class
         </button>
       </div>
-
     </div>
   </div>
 
@@ -83,13 +89,8 @@
   <div class="card p-3 shadow-sm border-0" *ngIf="meetingId()">
     <h5>End Live Class</h5>
 
-    <p class="text-muted small">
-      Meeting ID: {{ meetingId() }}
-    </p>
+    <p class="text-muted small">Meeting ID: {{ meetingId() }}</p>
 
-    <button class="btn btn-danger" (click)="endClass()">
-      End Class & Mark Attendance
-    </button>
+    <button class="btn btn-danger" (click)="endClass()">End Class & Mark Attendance</button>
   </div>
-
 </div>

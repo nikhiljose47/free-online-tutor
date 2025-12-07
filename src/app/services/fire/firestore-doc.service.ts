@@ -169,6 +169,22 @@ export class FirestoreDocService {
     );
   }
 
+  multiWhere<T>(path: string, conditions: { field: string; op: any; value: any }[], limitTo = 5) {
+    let q = query(this.col<T>(path));
+
+    conditions.forEach((c) => {
+      q = query(q, where(c.field, c.op, c.value));
+    });
+
+    return from(getDocs(q)).pipe(
+      map((snap) => {
+        const out = snap.docs.map((d) => ({ id: d.id, ...(d.data() as T) }));
+        return { ok: true, data: out } as FireResponse<T>;
+      }),
+      catchError((err) => of({ ok: false, data: [], message: err.message } as FireResponse<T>))
+    );
+  }
+
   realtimeWhere<T>(
     path: string,
     field: string,

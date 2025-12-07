@@ -8,10 +8,15 @@ export const BUILD_INFO = {
   updatedOn: '2025-02-01',
 };
 
-export const UPCOMING = 'Upcoming';
-export const COMPLETED = 'Completed';
-export const LIVE = 'Live';
+export const UPCOMING = 'upcoming';
+export const COMPLETED = 'completed';
+export const LIVE = 'live';
 
 export const ADMIN = 'admin';
 export const USER = 'user';
 export const TEACHER = 'teacher';
+
+export const PART1 = 'part1';
+export const PART2 = 'part2';
+export const PART3 = 'part3';
+export const PART4 = 'part4';

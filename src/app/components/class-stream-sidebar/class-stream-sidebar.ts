@@ -1,5 +1,5 @@
 import { Component, OnDestroy, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import {
   Firestore,
   collection,
@@ -14,73 +14,56 @@ import { LIVE, UPCOMING } from '../../core/constants/app.constants';
 import { Meeting } from '../../models/meeting.model';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { SelectedMeetingService } from '../../services/shared/selected-meeting.service';
 
 @Component({
   selector: 'class-stream-sidebar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, DatePipe],
   templateUrl: './class-stream-sidebar.html',
   styleUrl: './class-stream-sidebar.scss',
-    host: {
-    '[class.collapsed]': 'collapsed()'   // ← THIS ENABLES THE LAYOUT
-  }
+  host: {
+    '[class.collapsed]': 'collapsed()', // ← THIS ENABLES THE LAYOUT
+  },
 })
 export class ClassStreamSidebar implements OnDestroy {
   live = signal<any[]>([]);
   upcoming = signal<any[]>([]);
 
   private sub = new Subscription();
-collapsed = signal(false);
+  collapsed = signal(false);
 
-toggleSidebar() {
-  this.collapsed.update(v => !v);
-}
+  toggleSidebar() {
+    this.collapsed.update((v) => !v);
+  }
   constructor(
     private firestore: Firestore,
     private fire: FirestoreDocService,
-    private router: Router
+    private router: Router,
+      private selectedMeeting: SelectedMeetingService
+
   ) {
-    // this.loadLive();
-    // this.loadUpcoming();
+    const nowPlus35Min = new Date(Date.now() + 35 * 60 * 1000);
 
     this.fire
-      .where<any>('global_meetings', 'status', '==', UPCOMING, 5)
+      .where<any>('global_meetings', 'date', '>=', nowPlus35Min, 5)
       .subscribe((res) => res && this.upcoming.set(res.data));
 
-    this.sub.add(
-      this.fire
-        .realtimeWhere<any>('global_meetings', 'status', '==', LIVE)
-        .subscribe((res) => this.live.set(res.data))
-    );
-  }
+    const now = new Date();
+    const thirtyFiveMinAgo = new Date(Date.now() - 35 * 60 * 1000);
 
-  private loadLive() {
-    const q = query(
-      collection(this.firestore, 'global_meetings'),
-      where('status', '==', 'live'),
-      orderBy('date', 'asc')
-    );
-
-    onSnapshot(q, (snap) => {
-      this.live.set(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
-    });
-  }
-
-  private loadUpcoming() {
-    const q = query(
-      collection(this.firestore, 'global_meetings'),
-      where('status', '==', 'upcoming'),
-      orderBy('date', 'asc'),
-      limit(5)
-    );
-
-    onSnapshot(q, (snap) => {
-      this.upcoming.set(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
-    });
+    this.fire
+      .multiWhere<any>('global_meetings', [
+        { field: 'date', op: '<=', value: now },
+        { field: 'date', op: '>=', value: thirtyFiveMinAgo },
+      ])
+      .subscribe((res) => {
+        this.live.set(res.data);
+      });
   }
 
   onClick(item: any) {
-    console.log('Open stream/class:', item);
+    this.selectedMeeting.setSelected(item);
     this.router.navigate(['/join-tution']);
   }
 

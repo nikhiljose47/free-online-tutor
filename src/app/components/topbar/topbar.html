@@ -1,6 +1,5 @@
 <nav class="topbar px-3">
   <div class="topbar-inner">
-
     <!-- LEFT -->
     <div class="brand-area">
       <img src="favicon.ico" class="app-logo" alt="logo" />
@@ -22,7 +21,6 @@
 
     <!-- RIGHT -->
     <div class="actions">
-
       <!-- BEFORE LOGIN -->
       <ng-container *ngIf="!user()">
         <button class="login-btn" routerLink="/login">Log In</button>
@@ -31,19 +29,14 @@
 
       <!-- AFTER LOGIN -->
       <ng-container *ngIf="user()">
-        <!-- Profile -->
+        <a class="topbar-link" routerLink="/profile" routerLinkActive="active"> Profile </a>
+        <a class="topbar-link" routerLink="/dashboard" routerLinkActive="active"> Dashboard </a>
+        <button class="topbar-link btn btn-dark" (click)="logout()">Logout</button>
+
         <div class="profile-wrapper" (click)="toggleProfile()">
           <i class="bi bi-person-circle profile-icon"></i>
         </div>
-
-        <div class="profile-dropdown" *ngIf="user()">
-          <a routerLink="/profile">My Profile</a>
-          <a routerLink="/dashboard">Dashboard</a>
-          <a (click)="logout()">Logout</a>
-        </div>
-
       </ng-container>
     </div>
-
   </div>
 </nav>

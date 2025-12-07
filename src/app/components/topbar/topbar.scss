@@ -115,24 +115,14 @@
   cursor: pointer;
 }
 
-.profile-dropdown {
-  position: absolute;
-  right: 0;
-  top: 58px;
-  background: #18181b;
-  border: 1px solid #2e2e32;
-  border-radius: 8px;
-  padding: 8px;
-  width: 160px;
-}
-
-.profile-dropdown a {
-  display: block;
-  padding: 6px 8px;
+.topbar-link {
   color: #dcdcdc;
-}
-
-.profile-dropdown a:hover {
-  background: #2f2f33;
-  color: #fff;
+  margin-right: 12px;
+  font-size: 0.88rem;
+  padding: 6px 8px;
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+  white-space: nowrap;
 }

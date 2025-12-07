@@ -1,7 +1,8 @@
-import { Component, ChangeDetectionStrategy, Input, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
-import { ClassDoc } from '../../models/fire/docs.model';
+import { SelectedMeetingService } from '../../services/shared/selected-meeting.service';
+import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 
 @Component({
   selector: 'join-tution',
@@ -13,7 +14,7 @@ import { ClassDoc } from '../../models/fire/docs.model';
 })
 export class JoinTution {
   @Input() banner = '/assets/fam-problem.jpg';
-  @Input() title = 'Chapter 1: Solar System';
+  @Input() title = '';
   @Input() teacher = 'Arjun Kumar';
   @Input() students = 143;
   @Input() rating = 4.7;
@@ -27,11 +28,25 @@ export class JoinTution {
   className = signal('Maths – Algebra Basics');
   duration = signal('1h 30m');
 
-  constructor(private docs: FirestoreDocService) {
-    this.docs.getOnce<ClassDoc>('classes', '27PYrAjjfBfpaTGXMd2W').subscribe((data) => {
-      console.log('came');
-      console.log(data);
-    });
+  selected = inject(SelectedMeetingService);
+
+  meeting = computed(() => this.selected.selected());
+
+  data = {};
+
+  constructor(private docs: FirestoreDocService, private syllabusService: SyllabusLookupService) {
+    // this.docs.getOnce<ClassDoc>('classes', '27PYrAjjfBfpaTGXMd2W').subscribe((data) => {
+    //   console.log('came');
+    //   console.log(data);
+    // });
+
+    let data = this.selected.selected();
+    if (data) {
+      let name = syllabusService.getChapterByCode(data.chapterCode);
+      this.title = name?.chapter.name??'';
+      this.joinLink = data.meetLink;
+      this.teacher = data.subjectId;
+    }
   }
 
   async goToJoin() {

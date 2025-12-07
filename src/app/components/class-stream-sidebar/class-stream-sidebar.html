@@ -1,7 +1,7 @@
 <aside class="stream-sidebar" [class.collapsed]="collapsed()">
   <!-- COLLAPSE BUTTON (mobile only) -->
   <button class="collapse-btn" (click)="toggleSidebar()">
-<i class="bi" [ngClass]="collapsed() ? 'bi-chevron-right' : 'bi-chevron-left'"></i>
+    <i class="bi" [ngClass]="collapsed() ? 'bi bi-arrow-bar-right' : 'bi bi-arrow-bar-left'"></i>
   </button>
 
   <!-- FULL MODE CONTENT -->
@@ -13,7 +13,7 @@
       <img class="avatar-live" [src]="item.image || 'assets/abbu.jpg'" />
       <div class="info">
         <div class="title">{{ item.chapterCode }}</div>
-        <div class="subject">{{ item.date }}</div>
+        <div class="subject">{{ item.date.toDate() | date : 'shortTime' }}</div>
       </div>
       <div class="status-box">
         <span class="red-dot"></span>
@@ -28,7 +28,7 @@
       <img class="avatar" [src]="item.image || 'assets/abbu.jpg'" />
       <div class="info">
         <div class="title">{{ item.chapterCode }}</div>
-        <div class="subject">{{ item.date }}</div>
+        <div class="subject">{{ item.date.toDate() | date : 'h:mm a, d MMM' }}</div>
       </div>
       <div class="status-box upcoming-clock">
         <i class="bi bi-clock"></i>
@@ -40,6 +40,14 @@
   <div class="collapsed-content" *ngIf="collapsed()">
     <img
       *ngFor="let item of live()"
+      class="collapsed-avatar"
+      [src]="item.image || 'assets/abbu.jpg'"
+      (click)="onClick(item)"
+    />
+
+    <!-- UPCOMING -->
+    <img
+      *ngFor="let item of upcoming()"
       class="collapsed-avatar"
       [src]="item.image || 'assets/abbu.jpg'"
       (click)="onClick(item)"

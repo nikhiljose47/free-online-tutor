@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { TopbarComponent } from './components/topbar/topbar';
+import { Topbar } from './components/topbar/topbar';
 import { Toast } from './components/toast/toast';
 import { Loading } from './components/loading/loading';
 import { CommonModule } from '@angular/common';
@@ -9,9 +9,17 @@ import { ClassStreamSidebar } from './components/class-stream-sidebar/class-stre
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, TopbarComponent, Toast, Loading, CommonModule, AnnouncementBar, ClassStreamSidebar],
+  imports: [
+    RouterOutlet,
+    Topbar,
+    Toast,
+    Loading,
+    CommonModule,
+    AnnouncementBar,
+    ClassStreamSidebar,
+  ],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
 export class App {
   protected readonly title = signal('free-online-tutor');
