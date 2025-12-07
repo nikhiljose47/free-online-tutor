@@ -1,6 +1,5 @@
-import { Component, ChangeDetectionStrategy, Input, signal, inject, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
 import { SelectedMeetingService } from '../../services/shared/selected-meeting.service';
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 
@@ -13,61 +12,63 @@ import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.s
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JoinTution {
+  // Inputs (fallbacks if no meeting selected)
   @Input() banner = '/assets/fam-problem.jpg';
-  @Input() title = '';
-  @Input() teacher = 'Arjun Kumar';
   @Input() students = 143;
   @Input() rating = 4.7;
+  
+ //temp
+ description = 'desc';
 
-  @Input() description = `
-    Learn the complete Solar System with visual explanations and interactive examples.
-    Perfect for Class 5 students. Covers NCERT & ICSE syllabus.
-  `;
-  joinLink = 'https://us04web.zoom.us/j/72047864567?pwd=iPTbcLLnhhoj0pHgEass0Q6IvdltGd.1'; // <— change this
+  private selectedStore = inject(SelectedMeetingService);
+  private syllabus = inject(SyllabusLookupService);
 
-  className = signal('Maths – Algebra Basics');
+  /** 🔥 The selected meeting (reactive signal) */
+  meeting = computed(() => this.selectedStore.selected());
+
+  /** 🔥 Derived title */
+  title = computed(() => {
+    const m = this.meeting();
+    if (!m) return '';
+    const chapter = this.syllabus.getChapterByCode(m.chapterCode);
+    return chapter?.chapter.name ?? '';
+  });
+
+  /** 🔥 Derived teacher (subjectId → display name expansion can be added later) */
+  teacher = computed(() => this.meeting()?.subjectId ?? '');
+
+  /** 🔥 Meeting link */
+  joinLink = computed(() => this.meeting()?.meetLink ?? '');
+
+  /** 🔥 Duration placeholder (if you want dynamic later) */
   duration = signal('1h 30m');
 
-  selected = inject(SelectedMeetingService);
-
-  meeting = computed(() => this.selected.selected());
-
-  data = {};
-
-  constructor(private docs: FirestoreDocService, private syllabusService: SyllabusLookupService) {
-    // this.docs.getOnce<ClassDoc>('classes', '27PYrAjjfBfpaTGXMd2W').subscribe((data) => {
-    //   console.log('came');
-    //   console.log(data);
-    // });
-
-    let data = this.selected.selected();
-    if (data) {
-      let name = syllabusService.getChapterByCode(data.chapterCode);
-      this.title = name?.chapter.name??'';
-      this.joinLink = data.meetLink;
-      this.teacher = data.subjectId;
-    }
+  constructor() {
+    // Debug — prints whenever selected meeting changes
+    // effect(() => console.log("Selected meeting:", this.meeting()));
   }
 
-  async goToJoin() {
-    window.open(this.joinLink, '_blank');
+  goToJoin() {
+    if (this.joinLink()) {
+      window.open(this.joinLink(), '_blank');
+    }
   }
 
   async shareClass() {
     const shareData = {
-      title: this.className(),
-      text: `Join ${this.className()} by ${this.teacher}`,
-      url: this.joinLink,
+      title: this.title(),
+      text: `Join ${this.title()} by ${this.teacher()}`,
+      url: this.joinLink(),
     };
 
     if (navigator.share) {
       try {
         await navigator.share(shareData);
-      } catch (e) {
-        console.error(e);
+      } catch (err) {
+        console.error(err);
       }
     } else {
-      await navigator.clipboard.writeText(this.joinLink);
+      await navigator.clipboard.writeText(this.joinLink());
       alert('Link copied to clipboard!');
     }
   }

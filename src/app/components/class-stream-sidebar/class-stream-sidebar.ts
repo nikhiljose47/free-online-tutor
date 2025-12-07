@@ -1,17 +1,6 @@
 import { Component, OnDestroy, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import {
-  Firestore,
-  collection,
-  query,
-  where,
-  orderBy,
-  onSnapshot,
-  limit,
-} from '@angular/fire/firestore';
 import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
-import { LIVE, UPCOMING } from '../../core/constants/app.constants';
-import { Meeting } from '../../models/meeting.model';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { SelectedMeetingService } from '../../services/shared/selected-meeting.service';
@@ -33,27 +22,22 @@ export class ClassStreamSidebar implements OnDestroy {
   private sub = new Subscription();
   collapsed = signal(false);
 
-  toggleSidebar() {
-    this.collapsed.update((v) => !v);
-  }
   constructor(
-    private firestore: Firestore,
     private fire: FirestoreDocService,
     private router: Router,
-      private selectedMeeting: SelectedMeetingService
-
+    private selectedMeeting: SelectedMeetingService
   ) {
     const nowPlus35Min = new Date(Date.now() + 35 * 60 * 1000);
 
     this.fire
-      .where<any>('global_meetings', 'date', '>=', nowPlus35Min, 5)
+      .realtimeWhere<any>('global_meetings', 'date', '>=', nowPlus35Min, 5)
       .subscribe((res) => res && this.upcoming.set(res.data));
 
     const now = new Date();
     const thirtyFiveMinAgo = new Date(Date.now() - 35 * 60 * 1000);
 
     this.fire
-      .multiWhere<any>('global_meetings', [
+      .realtimeMultiWhere<any>('global_meetings', [
         { field: 'date', op: '<=', value: now },
         { field: 'date', op: '>=', value: thirtyFiveMinAgo },
       ])
@@ -65,6 +49,10 @@ export class ClassStreamSidebar implements OnDestroy {
   onClick(item: any) {
     this.selectedMeeting.setSelected(item);
     this.router.navigate(['/join-tution']);
+  }
+
+  toggleSidebar() {
+    this.collapsed.update((v) => !v);
   }
 
   ngOnDestroy() {

@@ -1,9 +1,11 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Firestore, collection, addDoc, Timestamp, updateDoc, doc } from '@angular/fire/firestore';
 import { LIVE } from '../../core/constants/app.constants';
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { Validator } from '../../utils/validator.util';
+import { Auth2Service } from '../../services/fire/auth2.service';
+import { UserProfileService } from '../../services/fire/user-profile.service';
 
 @Component({
   selector: 'schedule-live-class',
@@ -13,6 +15,8 @@ import { Validator } from '../../utils/validator.util';
   styleUrl: './schedule-live-class.scss',
 })
 export class ScheduleLiveClass {
+  profile = inject(UserProfileService).profile;
+  
   // Form as signals
   classId = signal('');
   subjectId = signal('');
@@ -37,7 +41,11 @@ export class ScheduleLiveClass {
 
   isMeetLinkValid = computed(() => Validator.isMeetingLink(this.meetLink()));
 
-  constructor(private db: Firestore) {}
+  constructor(private db: Firestore) {
+    effect(() => {
+      console.log('🔥 Profile updated:', this.profile());
+    });
+  }
 
   async scheduleClass() {
     this.submitting.set(true);

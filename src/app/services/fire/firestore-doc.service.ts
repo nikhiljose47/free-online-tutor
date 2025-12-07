@@ -148,6 +148,24 @@ export class FirestoreDocService {
   // ⭐ WHERE QUERY
   // --------------------------------------------------
 
+  realtimeWhere<T>(
+    path: string,
+    field: string,
+    op: any,
+    value: any,
+    limitTo = 50
+  ): Observable<FireResponse<T>> {
+    const q = query(this.col<T>(path), where(field, op, value), limit(limitTo));
+
+    return collectionData(q, { idField: 'id' } as any).pipe(
+      map((arr) => {
+        const out = arr as T[];
+        return this.success<T>(out);
+      }),
+      catchError((err) => of(this.fail<T>(err.message ?? 'Firestore realtime where() error')))
+    );
+  }
+
   where<T>(
     path: string,
     field: string,
@@ -185,18 +203,22 @@ export class FirestoreDocService {
     );
   }
 
-  realtimeWhere<T>(
+  realtimeMultiWhere<T>(
     path: string,
-    field: string,
-    op: any,
-    value: any,
+    conditions: { field: string; op: any; value: any }[],
     limitTo = 50
   ): Observable<FireResponse<T>> {
-    const q = query(this.col<T>(path), where(field, op, value), limit(limitTo));
+    let q: any = this.col<T>(path);
+
+    for (const c of conditions) {
+      q = query(q, where(c.field, c.op, c.value));
+    }
+
+    q = query(q, limit(limitTo));
 
     return collectionData(q, { idField: 'id' } as any).pipe(
       map((arr) => this.success<T>(arr as T[])),
-      catchError((err) => of(this.fail<T>(err.message ?? 'Realtime Firestore error')))
+      catchError((err) => of(this.fail<T>(err.message ?? 'Realtime Firestore multiWhere error')))
     );
   }
 }
