@@ -1,10 +1,9 @@
 <nav class="topbar px-3">
   <div class="topbar-inner">
-    <!-- LEFT -->
-    <div class="brand-area">
+    <a class="brand-area" routerLink="/" style="text-decoration: none">
       <img src="favicon.ico" class="app-logo" alt="logo" />
       <span class="brand-text">FreeTutor</span>
-    </div>
+    </a>
 
     <!-- CENTER (Search) -->
     <div class="search-area d-none d-md-flex">
@@ -29,13 +28,31 @@
 
       <!-- AFTER LOGIN -->
       <ng-container *ngIf="user()">
-        <a class="topbar-link" routerLink="/profile" routerLinkActive="active"> Profile </a>
-        <a class="topbar-link" routerLink="/dashboard" routerLinkActive="active"> Dashboard </a>
-        <button class="topbar-link btn btn-dark" (click)="logout()">Logout</button>
+        <a class="topbar-link" routerLink="/schedule" routerLinkActive="active">
+          Schedule a Class
+        </a>
+        <a class="topbar-link" routerLink="/teachers" routerLinkActive="active"> Teachers </a>
+        <a class="topbar-link" routerLink="/hopin" routerLinkActive="active">Hop-in</a>
 
-        <div class="profile-wrapper" (click)="toggleProfile()">
-          <i class="bi bi-person-circle profile-icon"></i>
+        <div class="profile-container">
+          <div class="profile-wrapper" (click)="toggleMenu()">
+            <i class="bi bi-person-circle profile-icon"></i>
+          </div>
+
+          <div class="profile-menu" *ngIf="menuOpen()">
+            <a routerLink="/profile" class="menu-item" (click)="closeMenu()">My Profile</a>
+            <a routerLink="/about" class="menu-item" (click)="closeMenu()">About</a>
+
+            <button
+              class="menu-item btn btn-outline-dark"
+              (click)="logout(); closeMenu(); $event.stopPropagation()"
+            >
+              Logout
+            </button>
+          </div>
         </div>
+        <!-- CLICK OUTSIDE OVERLAY (Closes menu) -->
+        <div *ngIf="menuOpen()" class="menu-overlay" (click)="closeMenu()"></div>
       </ng-container>
     </div>
   </div>

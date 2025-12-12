@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SessionService } from '../../services/session.service';
 import { Router } from '@angular/router';
 import { AttendanceAnalytics } from '../../components/attendance-analytics/attendance-analytics';
+import { UserProfileService } from '../../services/fire/user-profile.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,6 +14,7 @@ import { AttendanceAnalytics } from '../../components/attendance-analytics/atten
 export class DashboardComponent {
   private svc = inject(SessionService);
   private router = inject(Router);
+  profile = inject(UserProfileService).profile;
 
   bookings: any[] = [];
 

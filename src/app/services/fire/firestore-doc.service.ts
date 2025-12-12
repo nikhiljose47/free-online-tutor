@@ -24,7 +24,7 @@ import { from, map, catchError, of, Observable } from 'rxjs';
 export interface FireResponse<T> {
   ok: boolean;
   data: T | T[] | null;
-  message?: string;
+  message?: string | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -81,7 +81,7 @@ export class FirestoreDocService {
     );
   }
 
-  // --------------------------------------------------
+  // -----------------------------------a---------------
   // ⭐ UPDATE
   // --------------------------------------------------
 

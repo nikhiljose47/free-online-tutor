@@ -1,5 +1,6 @@
 import { Injectable, signal, computed, effect } from '@angular/core';
 import { Meeting, MeetingsService } from '../fire/meetings/meetings.service';
+import { map, of, tap } from 'rxjs';
 
 export interface GroupedMeetings {
   live: Meeting[];
@@ -13,16 +14,27 @@ export class MeetingStore {
 
   constructor(private meetingApi: MeetingsService) {}
 
-  // 🔥 Fetch once per class & cache
   loadClassMeetings(classId: string) {
-    const existing = this.meetings()[classId];
-    if (existing) return; // cached
+    const cached = this.meetings()[classId];
 
-    this.meetingApi.getMeetingsForClass(classId).subscribe((res) => {
-      if (res.ok && res.data) {
-        this.meetings.update((m) => ({ ...m, [classId]: res.data! }));
-      }
-    });
+    if (cached) {
+      return of({ ok: true, data: cached, message: null });
+    }
+
+    return this.meetingApi.getMeetingsForClass(classId).pipe(
+      tap((res) => {
+        if (res.ok && res.data) {
+          this.meetings.update((m) => ({
+            ...m,
+            [classId]: res.data!,
+          }));
+        }
+      }),
+      map((res) => ({
+        ok: res.ok,
+        data: res.data ?? null
+      }))
+    );
   }
 
   // 🔥 Get raw meetings for a class (reactive)

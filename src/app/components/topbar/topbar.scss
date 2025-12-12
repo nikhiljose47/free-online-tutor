@@ -126,3 +126,50 @@
   transition: 0.2s ease;
   white-space: nowrap;
 }
+
+
+/* Overlay covers full screen when menu is open */
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  z-index: 1999;
+}
+
+/* Container */
+.profile-container {
+  position: relative;
+  z-index: 2001;
+}
+
+.profile-wrapper {
+  padding: 4px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Dropdown */
+.profile-menu {
+  position: absolute;
+  right: 0;
+  top: 45px;
+  background: #18181b;
+  border-radius: 10px;
+  border: 1px solid #2e2e32;
+  width: 105px;
+  padding: 6px 0;
+  animation: fadeIn .15s ease;
+  z-index: 2002;
+}
+
+.menu-item {
+  padding: 5px 15px;
+  display: block;
+  color: #ddd;
+  text-decoration: none;
+}
+
+.menu-item:hover {
+  background: #2a2a2d;
+}
+

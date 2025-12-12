@@ -4,7 +4,6 @@ import { RoadmapCacheService } from '../../services/cache/roadmap-cache.service'
 import { ToastService } from '../../services/toast.service';
 import { Router } from '@angular/router';
 import { Auth2Service } from '../../services/fire/auth2.service';
-import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
 import { Jam } from '../../models/jam.model';
 import { LearningSkeleton } from '../../components/learning-skeleton/learning-skeleton';
 
@@ -33,34 +32,23 @@ export class FreeOnlineTutor implements OnInit {
   classLoading = signal(true);
   jamLoading = signal(true);
 
-  skeletonCount = Array(6); // 6 placeholders
+  skeletonCount = Array(5); // 6 placeholders
   constructor(
     private toast: ToastService,
     private router: Router,
     private auth: Auth2Service,
-    private fire: FirestoreDocService
   ) {
     let user = this.auth.user;
     if (user()) {
-      console.log('Logged in found! ', user()?.uid);
+      // console.log('Logged in found! ', user()?.uid);
     } else {
       console.log('No logged in data!');
     }
-
-    let x = fire.getOnce('jam', 'fiEd16NQAKZAJM0qsqaD');
-    console.log(x);
-    this.fire.getOnce<Jam>('jam', 'fiEd16NQAKZAJM0qsqaD').subscribe((res) => {
-      if (res) {
-        console.log('DATA:', res);
-      } else {
-        console.log('ERROR:', res);
-      }
-    });
   }
 
   classCategories = signal([
     {
-      id: 'class1',
+      id: 'CL1',
       name: 'Class 1',
       students: 120,
       teachers: 4,
@@ -68,7 +56,7 @@ export class FreeOnlineTutor implements OnInit {
       image: '/assets/fam-problem.jpg',
     },
     {
-      id: 'class2',
+      id: 'CL2',
       name: 'Class 2',
       students: 160,
       teachers: 5,
@@ -76,7 +64,7 @@ export class FreeOnlineTutor implements OnInit {
       image: '/assets/fam-problem.jpg',
     },
     {
-      id: 'class3',
+      id: 'CL3',
       name: 'Class 3',
       students: 210,
       teachers: 6,
@@ -84,7 +72,7 @@ export class FreeOnlineTutor implements OnInit {
       image: '/assets/fam-problem.jpg',
     },
     {
-      id: 'class4',
+      id: 'CL4',
       name: 'Class 4',
       students: 10,
       teachers: 3,
@@ -92,8 +80,24 @@ export class FreeOnlineTutor implements OnInit {
       image: '/assets/fam-problem.jpg',
     },
     {
-      id: 'class5',
+      id: 'CL5',
       name: 'Class 5',
+      students: 10,
+      teachers: 3,
+      medium: ['HI'],
+      image: '/assets/fam-problem.jpg',
+    },
+        {
+      id: 'CL06',
+      name: 'Class 6',
+      students: 10,
+      teachers: 3,
+      medium: ['HI'],
+      image: '/assets/fam-problem.jpg',
+    },
+    {
+      id: 'CL7',
+      name: 'Class 7',
       students: 10,
       teachers: 3,
       medium: ['HI'],
@@ -122,6 +126,27 @@ export class FreeOnlineTutor implements OnInit {
     },
   ]);
 
+    actSessions = signal([
+    {
+      id: 'jam101',
+      title: 'Yoga Activity',
+      students: 180,
+      teacher: 'Prof. Rao',
+      lang: ['EN'],
+      time: 'Live',
+      image: '/assets/fam-problem.jpg',
+    },
+    {
+      id: 'jam202',
+      title: 'Violin Activity',
+      students: 140,
+      teacher: 'Ananya',
+      lang: ['HI'],
+      time: 'Soon',
+      image: '/assets/fam-problem.jpg',
+    },
+  ]);
+
   ngOnInit() {
     // Simulate Firestore load
     setTimeout(() => {
@@ -136,60 +161,6 @@ export class FreeOnlineTutor implements OnInit {
   joinJam(jam: any) {
     this.router.navigate(['/details', 'jam', jam.id]);
   }
-  // upcomingClasses = signal([
-  //   {
-  //     id: '1',
-  //     title: 'English – Grammar',
-  //     teacher: 'Priya',
-  //     time: '5:00 PM',
-  //     subject: 'Maths',
-  //     viewers: 3,
-  //     isLive: false,
-  //     image: './assets/abbu.jpg',
-  //   },
-  //   {
-  //     id: '2',
-  //     title: 'Chemistry – Bonds',
-  //     teacher: 'Vishal',
-  //     time: '1:30 PM',
-  //     subject: 'Maths',
-  //     viewers: 3,
-  //     isLive: false,
-  //     image: './assets/abbu.jpg',
-  //   },
-  //   {
-  //     id: '3',
-  //     title: 'Biology – Cells',
-  //     teacher: 'Nisha',
-  //     time: '3:00 PM',
-  //     subject: 'Maths',
-  //     viewers: 3,
-  //     isLive: false,
-  //     image: './assets/abbu.jpg',
-  //   },
-  // ]);
-  // liveClasses = signal([
-  //   {
-  //     id: '1',
-  //     title: 'Maths – Algebra',
-  //     teacher: 'Anjali',
-  //     time: 'Live Now',
-  //     isLive: true,
-  //     subject: 'Maths',
-  //     viewers: 3,
-  //     image: './assets/abbu.jpg',
-  //   },
-  //   {
-  //     id: '2',
-  //     title: 'Physics – Motion',
-  //     teacher: 'Rahul',
-  //     time: 'Starting in 10m',
-  //     subject: 'Maths',
-  //     viewers: 3,
-  //     isLive: false,
-  //     image: './assets/abbu.jpg',
-  //   },
-  // ]);
 
   // 12 sections for classes 1–12
   classSections = signal(
@@ -198,16 +169,4 @@ export class FreeOnlineTutor implements OnInit {
       cards: this.cache.cards(),
     }))
   );
-
-  // onUpcomingClick(live: LiveClassModel): void {
-  //   // Example: open modal, navigate, play video, etc.
-  //   // this.toast.show(`Opening ${live.title}`);
-  //   this.route.navigate(['/timetable']);
-  // }
-
-  // onLiveClick(live: LiveClassModel): void {
-  //   // Example: open modal, navigate, play video, etc.
-  //   // this.toast.show(`Opening ${live.title}`);
-  //   this.route.navigate(['/join-tution']);
-  // }
 }

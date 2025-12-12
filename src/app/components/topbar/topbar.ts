@@ -12,20 +12,22 @@ import { ToastService } from '../../services/toast.service';
   styleUrls: ['./topbar.scss'],
 })
 export class Topbar {
-  openProfile = signal(false);
   user = computed(() => this.auth.user());
+  menuOpen = signal(false);
 
-  constructor(private auth: Auth2Service, private toast: ToastService) {
+  constructor(private auth: Auth2Service, private toast: ToastService) {}
+
+  toggleMenu() {
+    this.menuOpen.update((v) => !v);
   }
 
-  toggleProfile() {
-    this.openProfile.update((v) => !v);
+  closeMenu() {
+    this.menuOpen.set(false);
   }
 
   logout() {
     this.auth.logout();
-    this.toast.show('Logged Out.')
-    // your logout logic
+    this.toast.show('Logged Out.');
   }
 
   onSearch(value: string) {

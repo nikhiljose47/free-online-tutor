@@ -4,7 +4,6 @@ import { Firestore, collection, addDoc, Timestamp, updateDoc, doc } from '@angul
 import { COMPLETED, LIVE, PART1 } from '../../core/constants/app.constants';
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { Validator } from '../../utils/validator.util';
-import { Auth2Service } from '../../services/fire/auth2.service';
 import { UserProfileService } from '../../services/fire/user-profile.service';
 import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
 
@@ -16,7 +15,7 @@ import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
   styleUrl: './schedule-live-class.scss',
 })
 export class ScheduleLiveClass {
-  profile = inject(UserProfileService).profile;
+   profile = inject(UserProfileService).profile;
 
   // Form as signals
   classId = signal('');
@@ -55,6 +54,11 @@ export class ScheduleLiveClass {
   async scheduleClass() {
     this.submitting.set(true);
 
+    let duration = 30;
+    const end = Timestamp.fromDate(
+      new Date(new Date(this.date()).getTime() + duration * 60 * 1000)
+    );
+
     const payload = {
       classId: this.classId(),
       subjectId: this.subjectId(),
@@ -64,12 +68,14 @@ export class ScheduleLiveClass {
       status: PART1,
       date: Timestamp.fromDate(new Date(this.date())),
       teacherId: this.user.profile()?.name,
-      duration: 30,
+      duration: duration,
       attendence: [],
+      createdAt: Timestamp.fromDate(new Date()),
+      endAt: end,
     };
 
     const ref = await addDoc(collection(this.db, 'global_meetings'), payload);
-    this.fire.add('classes/CL5/meetings', payload).subscribe((res) => {
+    this.fire.add('classes/CL06/meetings', payload).subscribe((res) => {
       if (res.ok) console.log('Created meeting!');
       else console.error(res.message);
     });
