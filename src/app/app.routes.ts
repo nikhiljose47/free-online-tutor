@@ -5,7 +5,6 @@ import { DashboardComponent } from './pages/dashboard/dashboard';
 import { RoadmapComponent } from './pages/roadmap/roadmap';
 import { LoginComponent } from './pages/login/login';
 import { ClassDetailsComponent } from './pages/class-details/class-details';
-import { SyllabusComponent } from './components/syllabus/syllabus';
 import { TeachersPage } from './pages/teachers/teachers';
 import { About } from './pages/about/about';
 import { FreeOnlineTutor } from './pages/free-online-tutor/free-online-tutor';
@@ -15,6 +14,7 @@ import { JoinTution } from './pages/join-tution/join-tution';
 import { Timetable } from './pages/timetable/timetable';
 import { ScheduleLiveClass } from './pages/schedule-live-class/schedule-live-class';
 import { Register } from './pages/register/register';
+import { StudentCreations } from './pages/student-creations/student-creations';
 
 export const routes: Routes = [
   { path: '', component: FreeOnlineTutor },
@@ -26,7 +26,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: Register },
   { path: 'upcoming', component: UpcomingClassesComponent },
-  { path: 'syllabus', component: SyllabusComponent },
+  { path: 'student-creations', component: StudentCreations },
   { path: 'about', component: About },
   { path: 'teachers', component: TeachersPage },
   { path: 'career', component: Career },

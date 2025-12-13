@@ -1,8 +1,14 @@
-import { Component, inject, OnDestroy, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnDestroy,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
-import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
 import { SelectedMeetingService } from '../../services/shared/selected-meeting.service';
 import { LiveMeetingStore } from '../../stores/meetings/meeting.store';
 
@@ -12,53 +18,63 @@ import { LiveMeetingStore } from '../../stores/meetings/meeting.store';
   imports: [CommonModule, DatePipe],
   templateUrl: './class-stream-sidebar.html',
   styleUrl: './class-stream-sidebar.scss',
-  host: {
-    '[class.collapsed]': 'collapsed()', // ← THIS ENABLES THE LAYOUT
-  },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClassStreamSidebar implements OnDestroy {
-  live = signal<any[]>([]);
-  upcoming = signal<any[]>([]);
+  private fire = inject(FirestoreDocService);
+  private router = inject(Router);
+  private selected = inject(SelectedMeetingService);
+  private store = inject(LiveMeetingStore);
 
-  private sub = new Subscription();
   collapsed = signal(false);
+  allMeetings = signal<any[]>([]);
+  now = signal(new Date());
+  private ticking: any;
 
-  store = inject(LiveMeetingStore);
+  constructor() {
+    // Real-time single query
+    const start = new Date(Date.now() - 2 * 60 * 60_000);
+    const end = new Date(Date.now() + 12 * 60 * 60_000);
 
-  constructor(
-    private fire: FirestoreDocService,
-    private router: Router,
-    private selectedMeeting: SelectedMeetingService
-  ) {
-    /// Live
-    const now = new Date();
     this.fire
       .realtimeMultiWhere<any>('global_meetings', [
-        { field: 'date', op: '<=', value: now },
-        { field: 'endAt', op: '>=', value: now },
+        { field: 'date', op: '>=', value: start },
+        { field: 'date', op: '<=', value: end },
       ])
       .subscribe((res) => {
-        this.live.set(res.data);
-        this.store.update(res.data);
+        this.allMeetings.set(res.data);
       });
 
-    /// Upcoming
-    const nowPlus35Min = new Date(Date.now() + 35 * 60 * 1000);
-    this.fire
-      .realtimeWhere<any>('global_meetings', 'date', '>=', nowPlus35Min, 5)
-      .subscribe((res) => res && this.upcoming.set(res.data));
+    // Time ticker for dynamic classification
+    this.ticking = setInterval(() => {
+      this.now.set(new Date());
+    }, 30_000);
   }
 
+  // Computed Buckets
+  live = computed(() => {
+    const n = this.now();
+    return this.allMeetings().filter(m => m.date <= n && m.endAt >= n);
+  });
+
+  upcoming = computed(() => {
+    const n = this.now();
+    return this.allMeetings()
+      .filter(m => m.date > n)
+      .sort((a, b) => a.date - b.date)
+      .slice(0, 5);
+  });
+
   onClick(item: any) {
-    this.selectedMeeting.setSelected(item);
+    this.selected.setSelected(item);
     this.router.navigate(['/join-tution']);
   }
 
   toggleSidebar() {
-    this.collapsed.update((v) => !v);
+    this.collapsed.update(v => !v);
   }
 
   ngOnDestroy() {
-    this.sub.unsubscribe();
+    clearInterval(this.ticking);
   }
 }

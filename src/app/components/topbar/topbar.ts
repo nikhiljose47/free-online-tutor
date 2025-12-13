@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Auth2Service } from '../../services/fire/auth2.service';
 import { ToastService } from '../../services/toast.service';
+import { SearchService } from '../../services/search.service';
 
 @Component({
   selector: 'topbar',
@@ -10,12 +11,13 @@ import { ToastService } from '../../services/toast.service';
   imports: [RouterLink, CommonModule],
   templateUrl: './topbar.html',
   styleUrls: ['./topbar.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Topbar {
   user = computed(() => this.auth.user());
   menuOpen = signal(false);
 
-  constructor(private auth: Auth2Service, private toast: ToastService) {}
+  constructor(private auth: Auth2Service, private toast: ToastService, public ss: SearchService) {}
 
   toggleMenu() {
     this.menuOpen.update((v) => !v);

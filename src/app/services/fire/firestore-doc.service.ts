@@ -14,6 +14,7 @@ import {
   collectionData,
   docData,
   addDoc,
+  orderBy,
 } from '@angular/fire/firestore';
 
 import { from, map, catchError, of, Observable } from 'rxjs';
@@ -229,9 +230,9 @@ export class FirestoreDocService {
     for (const c of conditions) {
       q = query(q, where(c.field, c.op, c.value));
     }
-
+    //q = query(q, orderBy('createdAt', 'desc'));
     q = query(q, limit(limitTo));
-
+  
     return collectionData(q, { idField: 'id' } as any).pipe(
       map((arr) => this.success<T>(arr as T[])),
       catchError((err) => of(this.fail<T>(err.message ?? 'Realtime Firestore multiWhere error')))

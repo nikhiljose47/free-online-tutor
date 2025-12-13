@@ -3,7 +3,7 @@
   border-bottom: 1px solid #1f1f23;
   position: sticky;
   top: 0;
-  z-index: 2000;
+  z-index: 99;
   height: 52px;
   display: flex;
   align-items: center;
@@ -133,13 +133,13 @@
   position: fixed;
   inset: 0;
   background: transparent;
-  z-index: 1999;
+  z-index: 100;
 }
 
 /* Container */
 .profile-container {
   position: relative;
-  z-index: 2001;
+  z-index: 101;
 }
 
 .profile-wrapper {
@@ -159,7 +159,7 @@
   width: 105px;
   padding: 6px 0;
   animation: fadeIn .15s ease;
-  z-index: 2002;
+  z-index: 102;
 }
 
 .menu-item {
