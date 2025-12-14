@@ -3,17 +3,14 @@ import {
   Component,
   Input,
   OnInit,
-  computed,
   inject,
   signal,
 } from '@angular/core';
 import { ClassSyllabus } from '../../core/constants/syllabus/syllabus.model';
-import { CLASS5_SYLLABUS } from '../../core/constants/syllabus/cl5-syllabus';
 import { CommonModule } from '@angular/common';
-import { MeetingStore } from '../../services/store/meeting-store';
-import { LiveMeetingStore } from '../../stores/meetings/meeting.store';
 import { DataStoreService } from '../../services/store/data-store';
 import { CLASS6_SYLLABUS } from '../../core/constants/syllabus/cl6-syllabus';
+import { MeetingsService } from '../../domain/meetings/meetings.service';
 
 const SUBJECT_MAP: Record<string, string> = {
   ENG: 'English',
@@ -38,13 +35,16 @@ export class Timetable implements OnInit {
   isInvalid = true;
   syllabus: ClassSyllabus = CLASS6_SYLLABUS;
 
-  private store = inject(MeetingStore);
+  private meetApi = inject(MeetingsService);
   private docCache = inject(DataStoreService);
+
+  mathUpcoming = signal<any>([]);
+  mathCurrentChapter = signal<any>([]);
 
   current = signal<Record<string, string>>({});
 
   ngOnInit(): void {
-    this.store.loadClassMeetings(this.classId);
+    this.meetApi.getMeetingsForClass(this.classId);
     this.docCache.getDoc('classes', 'CL06').subscribe((res) => {
       if (res.ok) {
         console.log('data');
@@ -70,23 +70,26 @@ export class Timetable implements OnInit {
   // -------------------------------------------------------------------
   // 🔥 REPLACEMENT: Get upcoming meetings for Class 5 — MATH only
   // -------------------------------------------------------------------
+ 
 
-  mathUpcoming = computed(() => {
-    const groups = this.store.groupedFor('CL5')(); // { live, upcoming, completed }
-    return groups.upcoming.filter((m) => m.subjectId === 'Mathematics');
-  });
+  //TODO
 
-  // 🔥 REPLACEMENT: Auto-detect current mathematics chapter from latest completed meeting
-  mathCurrentChapter = computed(() => {
-    const completed = this.store.groupedFor('CL5')().completed;
+  // mathUpcoming = computed(() => {
+  //   const groups = this.meetApi.groupedFor('CL5')(); // { live, upcoming, completed }
+  //   return groups.upcoming.filter((m) => m.subjectId === 'Mathematics');
+  // });
 
-    // find latest completed meeting of Maths
-    const math = completed
-      .filter((m) => m.subjectId === 'Mathematics')
-      .sort((a, b) => b.date.toDate().getTime() - a.date.toDate().getTime());
+  // // 🔥 REPLACEMENT: Auto-detect current mathematics chapter from latest completed meeting
+  // mathCurrentChapter = computed(() => {
+  //   const completed = this.meetApi.groupedFor('CL5')().completed;
 
-    return math[0]?.chapterCode ?? this.current()['Mathematics'];
-  });
+  //   // find latest completed meeting of Maths
+  //   const math = completed
+  //     .filter((m) => m.subjectId === 'Mathematics')
+  //     .sort((a, b) => b.date.toDate().getTime() - a.date.toDate().getTime());
+
+  //   return math[0]?.chapterCode ?? this.current()['Mathematics'];
+  // });
 
   // Utility: Get chapter name from syllabus
   getChapterName(subjectKey: string, chapterCode: string): string {

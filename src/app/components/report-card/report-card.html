@@ -1,0 +1,48 @@
+<div class="container py-4">
+
+  <h4 class="fw-bold mb-3">📊 Class Report Card</h4>
+
+  <!-- Skeleton -->
+  <div *ngIf="loading()" class="text-muted">Loading reports...</div>
+
+  <!-- Table -->
+  <div
+    *ngIf="!loading() && meetings().length"
+    class="table-responsive"
+  >
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Class</th>
+          <th>Subject</th>
+          <th>Date</th>
+          <th>Attendance</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let m of meetings(); index as i">
+          <td>{{ i + 1 }}</td>
+          <td>{{ m.classId }}</td>
+          <td>{{ m.subjectId }}</td>
+          <td>{{ m.date?.toDate() | date:'dd MMM yyyy, hh:mm a' }}</td>
+          <td>
+            <span class="badge bg-success">
+              {{ m.attendance?.length || 0 }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Empty -->
+  <div
+    *ngIf="!loading() && !meetings().length"
+    class="text-muted"
+  >
+    No records found.
+  </div>
+
+</div>

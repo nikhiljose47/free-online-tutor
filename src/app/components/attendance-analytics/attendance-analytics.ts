@@ -1,7 +1,7 @@
 import { Component, Input, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AttendanceAnalyticsService } from '../../services/fire/analytics/attendance-analytics.service';
-import { Meeting } from '../../services/fire/meetings/meetings.service';
+import { Meeting } from '../../models/meeting.model';
 
 @Component({
   selector: 'attendance-analytics',

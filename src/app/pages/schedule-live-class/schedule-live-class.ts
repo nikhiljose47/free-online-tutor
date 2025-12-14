@@ -1,11 +1,19 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Firestore, collection, addDoc, Timestamp, updateDoc, doc } from '@angular/fire/firestore';
-import { COMPLETED, LIVE, PART1 } from '../../core/constants/app.constants';
+import { COMPLETED, GLOBAL_MEETINGS, LIVE, PART1 } from '../../core/constants/app.constants';
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { Validator } from '../../utils/validator.util';
 import { UserProfileService } from '../../services/fire/user-profile.service';
 import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
+import { Meeting } from '../../models/meeting.model';
 
 @Component({
   selector: 'schedule-live-class',
@@ -13,9 +21,10 @@ import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
   imports: [CommonModule],
   templateUrl: './schedule-live-class.html',
   styleUrl: './schedule-live-class.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScheduleLiveClass {
-   profile = inject(UserProfileService).profile;
+  profile = inject(UserProfileService).profile;
 
   // Form as signals
   classId = signal('');
@@ -59,7 +68,8 @@ export class ScheduleLiveClass {
       new Date(new Date(this.date()).getTime() + duration * 60 * 1000)
     );
 
-    const payload = {
+    const payload: Meeting = {
+      id: '',
       classId: this.classId(),
       subjectId: this.subjectId(),
       batchId: this.batchId(),
@@ -67,19 +77,23 @@ export class ScheduleLiveClass {
       chapterCode: this.chapterCode(),
       status: PART1,
       date: Timestamp.fromDate(new Date(this.date())),
-      teacherId: this.user.profile()?.name,
+      teacherId: this.user.profile()?.uid ?? '',
+      teacherName: this.user.profile()?.name ?? '',
       duration: duration,
-      attendence: [],
+      attendance: [],
       createdAt: Timestamp.fromDate(new Date()),
       endAt: end,
     };
 
-    const ref = await addDoc(collection(this.db, 'global_meetings'), payload);
+    this.fire.add(GLOBAL_MEETINGS, payload).subscribe((res) => {
+      if (res.ok) console.log('Created meeting! in GM');
+      else console.error(res.message);
+    });
     this.fire.add('classes/CL06/meetings', payload).subscribe((res) => {
       if (res.ok) console.log('Created meeting!');
       else console.error(res.message);
     });
-    this.meetingId.set(ref.id);
+    // this.meetingId.set(ref.id);
 
     this.submitting.set(false);
   }
@@ -91,7 +105,7 @@ export class ScheduleLiveClass {
   async endClass() {
     if (!this.meetingId()) return;
 
-    const ref = doc(this.db, 'global_meetings', this.meetingId()!);
+    const ref = doc(this.db, GLOBAL_MEETINGS, this.meetingId()!);
 
     await updateDoc(ref, {
       status: COMPLETED,

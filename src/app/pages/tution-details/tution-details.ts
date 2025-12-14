@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Timetable } from '../timetable/timetable';
 import { ContentPlaceholder } from '../../components/content-placeholder/content-placeholder';
-import { MeetingStore } from '../../services/store/meeting-store';
+import { MeetingsService } from '../../domain/meetings/meetings.service';
 
 @Component({
   selector: 'tution-details',
@@ -41,18 +41,12 @@ export class TutionDetails implements OnInit {
     participants: 140,
   });
 
-  constructor(private meetingStore: MeetingStore) {}
+  constructor(private meetApi: MeetingsService) {}
 
   ngOnInit(): void {
-          console.log('came onINit');
-
-    this.meetingStore.loadClassMeetings(this.id).subscribe((res) => {
-      console.log('came onINit in', res.ok, res.data);
-      if (res.data?.length == 0) {
-              console.log('came onINit not ok');
-
-        this.hasValidData.set(false);
-      }
+    this.meetApi.getMeetingsForClass(this.id).subscribe((res) => {
+      console.log(res.data);
+      this.hasValidData.set(false);
     });
   }
 }

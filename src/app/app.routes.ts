@@ -15,6 +15,7 @@ import { Timetable } from './pages/timetable/timetable';
 import { ScheduleLiveClass } from './pages/schedule-live-class/schedule-live-class';
 import { Register } from './pages/register/register';
 import { StudentCreations } from './pages/student-creations/student-creations';
+import { ReportCard } from './components/report-card/report-card';
 
 export const routes: Routes = [
   { path: '', component: FreeOnlineTutor },
@@ -33,6 +34,8 @@ export const routes: Routes = [
   { path: 'profile', component: DashboardComponent },
   { path: 'join-tution', component: JoinTution },
   { path: 'timetable', component: Timetable },
+  { path: 'report-card', component: ReportCard },
+
   { path: 'schedule', component: ScheduleLiveClass },
 
   {

@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
-import { Meeting } from '../meetings/meetings.service';
+import { Meeting } from '../../../models/meeting.model';
 
 @Injectable({ providedIn: 'root' })
 export class AttendanceAnalyticsService {
   /** ✔ Count total attendance */
   countAttendance(meeting: Meeting) {
-    return meeting.attendence?.length ?? 0;
+    return meeting.attendance?.length ?? 0;
   }
 
   /** ✔ Check if student attended */
   hasAttended(meeting: Meeting, studentId: string) {
-    return meeting.attendence?.includes(studentId) ?? false;
+    return meeting.attendance?.includes(studentId) ?? false;
   }
 
   /** ✔ Get attendance percentage */
   attendancePercentage(meeting: Meeting, totalStudents: number) {
-    const attended = meeting.attendence?.length ?? 0;
+    const attended = meeting.attendance?.length ?? 0;
     return totalStudents > 0 ? Math.round((attended / totalStudents) * 100) : 0;
   }
 
@@ -24,7 +24,7 @@ export class AttendanceAnalyticsService {
     const counts: Record<string, number> = {};
 
     for (const m of meetings) {
-      for (const id of m.attendence ?? []) {
+      for (const id of m.attendance ?? []) {
         counts[id] = (counts[id] || 0) + 1;
       }
     }
