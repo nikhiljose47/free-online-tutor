@@ -20,3 +20,7 @@ export const PART1 = 'part1';
 export const PART2 = 'part2';
 export const PART3 = 'part3';
 export const PART4 = 'part4';
+
+
+//Collection ID
+export const GLOBAL_MEETINGS = 'global_meetings'

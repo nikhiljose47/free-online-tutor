@@ -15,6 +15,7 @@ import {
   docData,
   addDoc,
   orderBy,
+  Timestamp,
 } from '@angular/fire/firestore';
 
 import { from, map, catchError, of, Observable } from 'rxjs';
@@ -223,7 +224,7 @@ export class FirestoreDocService {
   realtimeMultiWhere<T>(
     path: string,
     conditions: { field: string; op: any; value: any }[],
-    limitTo = 50
+    limitTo = 15
   ): Observable<FireResponse<T>> {
     let q: any = this.col<T>(path);
 
@@ -232,10 +233,21 @@ export class FirestoreDocService {
     }
     //q = query(q, orderBy('createdAt', 'desc'));
     q = query(q, limit(limitTo));
-  
+
     return collectionData(q, { idField: 'id' } as any).pipe(
       map((arr) => this.success<T>(arr as T[])),
       catchError((err) => of(this.fail<T>(err.message ?? 'Realtime Firestore multiWhere error')))
+    );
+  }
+
+  realtimeNotEnded<T>(path: string, limitTo = 15): Observable<FireResponse<T[]>> {
+    const nowTs = Timestamp.fromDate(new Date()); // 🔑 CRITICAL FIX
+    const past = Timestamp.fromMillis(0);
+    const q = query(this.col<T>(path), where('endAt', '>=', past), limit(limitTo));
+
+    return collectionData(q, { idField: 'id' } as any).pipe(
+      map((arr) => this.success<T[]>(arr as T[])),
+      catchError((err) => of(this.fail<T[]>(err?.message ?? 'Firestore realtime query failed')))
     );
   }
 }

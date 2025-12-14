@@ -9,7 +9,7 @@
     <!-- LIVE STREAMING -->
     <h6 class="section-title">Live Now</h6>
 
-    <div class="live-item" *ngFor="let item of live()" (click)="onClick(item)">
+    <div class="live-item" *ngFor="let item of live()" (click)="open(item)">
       <img class="avatar-live" [src]="item.image || 'assets/abbu.jpg'" />
       <div class="info">
         <div class="title">{{ item.chapterCode }}</div>
@@ -24,7 +24,7 @@
     <!-- UPCOMING -->
     <h6 class="section-title mt-4">Upcoming</h6>
 
-    <div class="live-item" *ngFor="let item of upcoming()" (click)="onClick(item)">
+    <div class="live-item" *ngFor="let item of upcoming()" (click)="open(item)">
       <img class="avatar" [src]="item.image || 'assets/abbu.jpg'" />
       <div class="info">
         <div class="title">{{ item.chapterCode }}</div>
@@ -42,7 +42,7 @@
       *ngFor="let item of live()"
       class="collapsed-avatar"
       [src]="item.image || 'assets/abbu.jpg'"
-      (click)="onClick(item)"
+      (click)="open(item)"
     />
 
     <!-- UPCOMING -->
@@ -50,7 +50,7 @@
       *ngFor="let item of upcoming()"
       class="collapsed-avatar"
       [src]="item.image || 'assets/abbu.jpg'"
-      (click)="onClick(item)"
+      (click)="open(item)"
     />
   </div>
 </aside>
