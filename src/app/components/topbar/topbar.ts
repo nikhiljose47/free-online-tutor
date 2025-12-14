@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Auth2Service } from '../../services/fire/auth2.service';
-import { ToastService } from '../../services/toast.service';
+import { ToastService } from '../../services/shared/toast.service';
 import { SearchService } from '../../services/search.service';
 
 @Component({

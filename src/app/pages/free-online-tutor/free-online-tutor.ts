@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RoadmapCacheService } from '../../services/cache/roadmap-cache.service';
-import { ToastService } from '../../services/toast.service';
+import { ToastService } from '../../services/shared/toast.service';
 import { Router } from '@angular/router';
 import { Auth2Service } from '../../services/fire/auth2.service';
 import { Jam } from '../../models/jam.model';

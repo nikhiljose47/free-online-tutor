@@ -21,4 +21,19 @@
     <button class="btn btn-primary px-4">Contact Sales</button>
   </div>
 </div>
+<div class="quote-wrapper my-5">
+  <div class="quote-card mx-auto text-center">
+    <p class="quote-text mb-3">
+      “{{ quote.text }}”
+    </p>
+
+    <small
+      *ngIf="quote.author"
+      class="quote-author d-block"
+    >
+      — {{ quote.author }}
+    </small>
+  </div>
+</div>
+
 <testimonials></testimonials>

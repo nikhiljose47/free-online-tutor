@@ -1,0 +1,24 @@
+.quote-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.quote-card {
+  max-width: 720px;
+  padding: 2rem 2.5rem;
+  border-radius: 20px;
+}
+
+.quote-text {
+  font-size: 1.25rem;
+  line-height: 1.7;
+  font-weight: 500;
+  color: #2d3436;
+}
+
+.quote-author {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #6c757d;
+  letter-spacing: 0.04em;
+}

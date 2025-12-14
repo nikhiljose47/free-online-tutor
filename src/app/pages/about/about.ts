@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Testimonials } from '../testimonials/testimonials';
 import { CommonModule } from '@angular/common';
+import { QuoteUtil } from '../../utils/quote.utils';
 
 @Component({
   selector: 'app-about',
@@ -29,4 +30,5 @@ export class About {
       description: 'Monitors teacher delivery quality and engagement signals.',
     },
   ];
+  quote = QuoteUtil.getRandom();
 }

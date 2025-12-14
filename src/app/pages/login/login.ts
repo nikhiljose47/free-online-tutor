@@ -4,7 +4,7 @@ import { AuthService } from '../../services/fire/auth.service';
 import { Router } from '@angular/router';
 import { Auth2Service } from '../../services/fire/auth2.service';
 import { Toast } from '../../components/toast/toast';
-import { ToastService } from '../../services/toast.service';
+import { ToastService } from '../../services/shared/toast.service';
 
 @Component({
   selector: 'login',
