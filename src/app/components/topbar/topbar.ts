@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Auth2Service } from '../../services/fire/auth2.service';
 import { ToastService } from '../../services/shared/toast.service';
 import { SearchService } from '../../services/search.service';
@@ -11,13 +11,18 @@ import { SearchService } from '../../services/search.service';
   imports: [RouterLink, CommonModule],
   templateUrl: './topbar.html',
   styleUrls: ['./topbar.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Topbar {
   user = computed(() => this.auth.user());
   menuOpen = signal(false);
 
-  constructor(private auth: Auth2Service, private toast: ToastService, public ss: SearchService) {}
+  constructor(
+    private auth: Auth2Service,
+    private toast: ToastService,
+    public ss: SearchService,
+    private router: Router
+  ) {}
 
   toggleMenu() {
     this.menuOpen.update((v) => !v);
@@ -30,6 +35,7 @@ export class Topbar {
   logout() {
     this.auth.logout();
     this.toast.show('Logged Out.');
+    this.router.navigate(['']);
   }
 
   onSearch(value: string) {
