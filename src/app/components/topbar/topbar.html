@@ -36,6 +36,8 @@
 
     <!-- RIGHT -->
     <div class="actions">
+      <a class="topbar-link" routerLink="/" routerLinkActive="active"> Home </a>
+
       <!-- BEFORE LOGIN -->
       <ng-container *ngIf="!user()">
         <button class="login-btn" routerLink="/login">Log In</button>

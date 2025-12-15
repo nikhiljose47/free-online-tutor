@@ -8,8 +8,7 @@ import {
 } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
-import { MeetingDomainService } from '../../domain/firestore-docs/meeting.domain';
-import { Subscription, TimeoutConfig, timer } from 'rxjs';
+import { MeetingsService } from '../../domain/meetings/meetings.service';
 
 @Component({
   selector: 'class-stream-sidebar',
@@ -20,7 +19,7 @@ import { Subscription, TimeoutConfig, timer } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClassStreamSidebar implements OnDestroy {
-  private meetingDomain = inject(MeetingDomainService);
+  private meetApi = inject(MeetingsService);
   private router = inject(Router);
 
   allMeetings = signal<any[]>([]);
@@ -32,7 +31,7 @@ export class ClassStreamSidebar implements OnDestroy {
 
   private clockId!: any;
   constructor() {
-    this.meetingDomain.listenActiveMeetings().subscribe((res) => {
+    this.meetApi.getLiveMeetings().subscribe((res) => {
       this.loading.set(false);
 
       if (!res.ok) {

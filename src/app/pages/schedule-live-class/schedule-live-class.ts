@@ -2,18 +2,20 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
+  OnInit,
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Firestore, collection, addDoc, Timestamp, updateDoc, doc } from '@angular/fire/firestore';
-import { COMPLETED, GLOBAL_MEETINGS, LIVE, PART1 } from '../../core/constants/app.constants';
+import { Timestamp } from '@angular/fire/firestore';
+
+import { MeetingsService } from '../../domain/meetings/meetings.service';
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
-import { Validator } from '../../utils/validator.util';
 import { UserProfileService } from '../../services/fire/user-profile.service';
 import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
 import { Meeting } from '../../models/meeting.model';
+import { PART1, COMPLETED, GLOBAL_MEETINGS } from '../../core/constants/app.constants';
+import { Auth2Service } from '../../services/fire/auth2.service';
 
 @Component({
   selector: 'schedule-live-class',
@@ -21,97 +23,121 @@ import { Meeting } from '../../models/meeting.model';
   imports: [CommonModule],
   templateUrl: './schedule-live-class.html',
   styleUrl: './schedule-live-class.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ScheduleLiveClass {
+export class ScheduleLiveClass implements OnInit {
+  /* ------------------ services ------------------ */
+  private meetApi = inject(MeetingsService);
+  private syllabus = inject(SyllabusLookupService);
+  private user = inject(UserProfileService);
+  private fire = inject(FirestoreDocService);
+  private authApi = inject(Auth2Service);
   profile = inject(UserProfileService).profile;
-
-  // Form as signals
-  classId = signal('');
-  subjectId = signal('');
-  batchId = signal('');
-  meetLink = signal('');
-  chapterCode = signal('');
-  date = signal(''); // datetime-local → string
-
+  /* ------------------ UI state ------------------ */
+  meetings = signal<Meeting[]>([]);
+  selectedMeeting = signal<Meeting | null>(null);
+  mode = signal<'view' | 'create'>('view');
   submitting = signal(false);
-  meetingId = signal<string | null>(null);
-  syllabus = inject(SyllabusLookupService);
+  teacherId: string | undefined;
 
+  /* ------------------ form (single object) ------------------ */
+  form = signal({
+    classId: '',
+    subjectId: '',
+    chapterCode: '',
+    batchId: '',
+    meetLink: '',
+    date: '',
+    duration: 30,
+  });
+
+  /* ------------------ lookups ------------------ */
   classList = computed(() => this.syllabus.getClassNames());
 
-  subjectList = computed(() => (this.classId() ? this.syllabus.getSubjects(this.classId()) : []));
+  subjectList = computed(() =>
+    this.form().classId ? this.syllabus.getSubjects(this.form().classId) : []
+  );
 
   chapterList = computed(() =>
-    this.classId() && this.subjectId()
-      ? this.syllabus.getChapters(this.classId(), this.subjectId())
+    this.form().classId && this.form().subjectId
+      ? this.syllabus.getChapters(this.form().classId, this.form().subjectId)
       : []
   );
 
-  isMeetLinkValid = computed(() => Validator.isMeetingLink(this.meetLink()));
+  ngOnInit(): void {
+    this.teacherId = this.authApi.uid;
+    if (!this.teacherId) return;
 
-  constructor(
-    private db: Firestore,
-    private fire: FirestoreDocService,
-    private user: UserProfileService
-  ) {
-    effect(() => {
-      console.log('🔥 Profile updated:', this.profile());
+    this.meetApi.getLiveMeetingsByTeacher(this.teacherId).subscribe((res) => {
+      if (res.ok && res.data) {
+        this.meetings.set(res.data as Meeting[]);
+      }
     });
   }
 
-  async scheduleClass() {
+  trackByMeetingId(index: number, m: Meeting) {
+  return m.id;
+}
+
+
+  /* ------------------ UI actions ------------------ */
+  selectMeeting(m: Meeting) {
+    this.selectedMeeting.set(m);
+    this.mode.set('view');
+  }
+
+  startCreate() {
+    this.selectedMeeting.set(null);
+    this.mode.set('create');
+  }
+
+  /* ------------------ business actions ------------------ */
+  scheduleClass() {
+    const f = this.form();
+
+    if (!this.teacherId || !f.date) return;
+
     this.submitting.set(true);
 
-    let duration = 30;
-    const end = Timestamp.fromDate(
-      new Date(new Date(this.date()).getTime() + duration * 60 * 1000)
-    );
+    const start = new Date(f.date);
+    const end = new Date(start.getTime() + f.duration * 60000);
 
     const payload: Meeting = {
       id: '',
-      classId: this.classId(),
-      subjectId: this.subjectId(),
-      batchId: this.batchId(),
-      meetLink: this.meetLink(),
-      chapterCode: this.chapterCode(),
+      classId: f.classId,
+      subjectId: f.subjectId,
+      chapterCode: f.chapterCode,
+      batchId: f.batchId,
+      meetLink: f.meetLink,
       status: PART1,
-      date: Timestamp.fromDate(new Date(this.date())),
-      teacherId: this.user.profile()?.uid ?? '',
-      teacherName: this.user.profile()?.name ?? '',
-      duration: duration,
+      date: Timestamp.fromDate(start),
+      teacherId: this.teacherId,
+      teacherName: this.user.profile?.name ?? '',
+      duration: f.duration,
       attendance: [],
-      createdAt: Timestamp.fromDate(new Date()),
-      endAt: end,
+      createdAt: Timestamp.now(),
+      endAt: Timestamp.fromDate(end),
     };
 
-    this.fire.add(GLOBAL_MEETINGS, payload).subscribe((res) => {
-      if (res.ok) console.log('Created meeting! in GM');
-      else console.error(res.message);
+    this.fire.add(GLOBAL_MEETINGS, payload).subscribe(() => {
+      this.submitting.set(false);
+      this.mode.set('view');
     });
-    this.fire.add('classes/CL06/meetings', payload).subscribe((res) => {
-      if (res.ok) console.log('Created meeting!');
-      else console.error(res.message);
-    });
-    // this.meetingId.set(ref.id);
-
-    this.submitting.set(false);
   }
 
-  onMeetLinkInput(event: any) {
-    this.meetLink.set(event.target.value);
+  updateField<K extends keyof typeof this.form extends never ? never : any>(
+    key: 'classId' | 'subjectId' | 'chapterCode' | 'batchId' | 'meetLink' | 'date',
+    value: string
+  ) {
+    this.form.update((f) => ({ ...f, [key]: value }));
   }
 
-  async endClass() {
-    if (!this.meetingId()) return;
+  endClass() {
+    const m = this.selectedMeeting();
+    if (!m) return;
 
-    const ref = doc(this.db, GLOBAL_MEETINGS, this.meetingId()!);
-
-    await updateDoc(ref, {
+    this.fire.update(GLOBAL_MEETINGS, m.id, {
       status: COMPLETED,
-      endedAt: Timestamp.now(),
+      endAt: Timestamp.now(),
     });
-
-    alert('Class ended & attendance recorded.');
   }
 }

@@ -41,8 +41,8 @@ export class Auth2Service {
   get currentUser() {
     return this.auth.currentUser;
   }
-  
+
   get uid() {
-    return this.user()?.uid ?? null;
+    return this.auth.currentUser?.uid;
   }
 }

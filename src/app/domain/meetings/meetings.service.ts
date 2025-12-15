@@ -1,10 +1,15 @@
 import { Injectable, signal } from '@angular/core';
-import { of, map } from 'rxjs';
-import { Timestamp } from '@angular/fire/firestore';
+import { of, map, Observable, shareReplay } from 'rxjs';
+import { endAt, Timestamp } from '@angular/fire/firestore';
 
 import { Meeting } from '../../models/meeting.model';
-import { FireResponse, FirestoreDocService } from '../../services/fire/firestore-doc.service';
+import {
+  FireResponse,
+  FireResponse2,
+  FirestoreDocService,
+} from '../../services/fire/firestore-doc.service';
 import { GLOBAL_MEETINGS } from '../../core/constants/app.constants';
+import { TeachersPage } from '../../pages/teachers/teachers';
 
 @Injectable({ providedIn: 'root' })
 export class MeetingsService {
@@ -14,6 +19,36 @@ export class MeetingsService {
   // 🔥 Local domain cache (classId → meetings[])
   // --------------------------------------------------
   private classCache = signal<Record<string, Meeting[]>>({});
+
+  /// For live/realtime caching
+  private live$?: Observable<FireResponse<Meeting[]>>;
+
+  getLiveMeetings(): Observable<FireResponse<Meeting[]>> {
+    if (!this.live$) {
+      this.live$ = this.fs.realtimeNotEnded<Meeting>(GLOBAL_MEETINGS).pipe(
+        shareReplay({
+          bufferSize: 1,
+          refCount: true, // auto-unsubscribe when no subscribers
+        })
+      );
+    }
+    return this.live$;
+  }
+
+  getLiveMeetingsByTeacher(teacherId: string): Observable<FireResponse2<Meeting[]>> {
+    return this.getLiveMeetings().pipe(
+      map((res): FireResponse2<Meeting[]> => {
+        if (!res.ok || !res.data) {
+          return res as FireResponse2<Meeting[]>;
+        }
+        const data = res.data as Meeting[];
+        return {
+          ok: true,
+          data: data.filter((m) => m.teacherId == teacherId),
+        };
+      })
+    );
+  }
 
   private cacheMeetings(classId: string, meetings: Meeting[]) {
     this.classCache.set({

@@ -29,6 +29,13 @@ export interface FireResponse<T> {
   message?: string | null;
 }
 
+export interface FireResponse2<T> {
+  ok: boolean;
+  data: T | null;
+  message?: string | null;
+}
+
+
 @Injectable({ providedIn: 'root' })
 export class FirestoreDocService {
   private db = inject(Firestore);
@@ -241,9 +248,8 @@ export class FirestoreDocService {
   }
 
   realtimeNotEnded<T>(path: string, limitTo = 15): Observable<FireResponse<T[]>> {
-    const nowTs = Timestamp.fromDate(new Date()); // 🔑 CRITICAL FIX
-    const past = Timestamp.fromMillis(0);
-    const q = query(this.col<T>(path), where('endAt', '>=', past), limit(limitTo));
+    const now = Timestamp.fromDate(new Date());
+    const q = query(this.col<T>(path), where('endAt', '>=', now), limit(limitTo));
 
     return collectionData(q, { idField: 'id' } as any).pipe(
       map((arr) => this.success<T[]>(arr as T[])),

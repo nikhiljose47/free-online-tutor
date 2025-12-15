@@ -1,46 +1,150 @@
-<div class="container mt-4">
+<div class="container py-4">
 
-  <h3 class="title">Schedule a Live Class</h3>
+  <!-- Header -->
+  <div class="d-flex align-items-center mb-3">
+    <h4 class="fw-bold mb-0 flex-grow-1">
+      {{ profile()?.name }}’s Classes
+    </h4>
+  </div>
 
-  <div class="card p-3 shadow-sm border-0 mb-4">
+  <!-- Horizontal Rail -->
+  <div class="meetings-rail-wrapper mb-4" *ngIf="meetings().length">
+
+    <!-- Right Arrow -->
+    <button
+      class="rail-arrow"
+      type="button"
+      (click)="rail.scrollBy({ left: 260, behavior: 'smooth' })"
+    >
+      →
+    </button>
+
+    <!-- Scrollable strip -->
+    <div #rail class="meetings-strip">
+
+      <!-- SCHEDULE CARD (always first) -->
+      <div
+        class="meeting-card schedule-card"
+        (click)="startCreate()"
+        [class.active]="mode() === 'create'"
+      >
+        <div class="schedule-plus">＋</div>
+        <div class="schedule-text">
+          Schedule<br />Class
+        </div>
+      </div>
+
+      <!-- EXISTING MEETINGS -->
+      <div
+        class="meeting-card"
+        *ngFor="let m of meetings(); trackBy: trackByMeetingId"
+        [class.live]="m.status === 'LIVE'"
+        [class.active]="mode() === 'view' && selectedMeeting()?.id === m.id"
+        (click)="selectMeeting(m)"
+      >
+        <!-- TOP -->
+        <div class="card-top">
+          <div class="class-id">
+            Class {{ m.classId }}
+          </div>
+          <div class="subject">
+            {{ m.subjectId }}
+          </div>
+        </div>
+
+        <!-- BOTTOM -->
+        <div class="card-bottom">
+          <span class="time">
+            {{ m.date.toDate() | date : 'hh:mm a, MMM d' }}
+          </span>
+
+          <span
+            *ngIf="m.status === 'LIVE'"
+            class="live-pill"
+          >
+            LIVE
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- VIEW MODE -->
+  <div
+    *ngIf="mode() === 'view' && selectedMeeting()"
+    class="details-card mx-auto"
+  >
+    <h6 class="fw-bold mb-2">Class Details</h6>
+
+    <div class="detail-row">
+      <span>Chapter</span>
+      <span>{{ selectedMeeting()!.chapterCode }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span>Batch</span>
+      <span>{{ selectedMeeting()!.batchId }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span>Attendance</span>
+      <span>{{ selectedMeeting()!.attendance.length }}</span>
+    </div>
+
+    <button
+      class="btn btn-danger btn-sm mt-3"
+      (click)="endClass()"
+    >
+      End Class
+    </button>
+  </div>
+
+  <!-- CREATE MODE -->
+  <div
+    *ngIf="mode() === 'create'"
+    class="details-card mx-auto"
+  >
+    <h6 class="fw-bold mb-3">Schedule New Class</h6>
+
     <div class="row g-3">
+
       <!-- CLASS -->
-      <div class="col-md-4">
-        <label class="form-label">Class</label>
+      <div class="col-md-6">
         <select
           class="form-select"
-          [value]="classId()"
-          (change)="classId.set($any($event.target).value); subjectId.set(''); chapterCode.set('')"
+          #classSel
+          (change)="updateField('classId', classSel.value)"
         >
-          <option value="">Select Class</option>
-          <option *ngFor="let c of classList()" [value]="c">{{ c }}</option>
+          <option value="">Class</option>
+          <option *ngFor="let c of classList()" [value]="c">
+            {{ c }}
+          </option>
         </select>
       </div>
 
       <!-- SUBJECT -->
-      <div class="col-md-4">
-        <label class="form-label">Subject</label>
+      <div class="col-md-6">
         <select
           class="form-select"
-          [value]="subjectId()"
-          [disabled]="!subjectList().length"
-          (change)="subjectId.set($any($event.target).value); chapterCode.set('')"
+          #subjectSel
+          (change)="updateField('subjectId', subjectSel.value)"
         >
-          <option value="">Select Subject</option>
-          <option *ngFor="let s of subjectList()" [value]="s">{{ s }}</option>
+          <option value="">Subject</option>
+          <option *ngFor="let s of subjectList()" [value]="s">
+            {{ s }}
+          </option>
         </select>
       </div>
 
       <!-- CHAPTER -->
-      <div class="col-md-4">
-        <label class="form-label">Chapter</label>
+      <div class="col-md-12">
         <select
           class="form-select"
-          [value]="chapterCode()"
-          [disabled]="!chapterList().length"
-          (change)="chapterCode.set($any($event.target).value)"
+          #chapterSel
+          (change)="updateField('chapterCode', chapterSel.value)"
         >
-          <option value="">Select Chapter</option>
+          <option value="">Chapter</option>
           <option *ngFor="let ch of chapterList()" [value]="ch.code">
             {{ ch.code }} — {{ ch.name }}
           </option>
@@ -49,49 +153,46 @@
 
       <!-- BATCH -->
       <div class="col-md-6">
-        <label class="form-label">Batch ID</label>
         <input
           class="form-control"
-          [value]="batchId()"
-          (input)="batchId.set($any($event.target).value)"
+          placeholder="Batch ID"
+          #batchInput
+          (input)="updateField('batchId', batchInput.value)"
         />
       </div>
 
-      <!-- MEETING LINK -->
-      <input
-        class="form-control"
-        [ngClass]="{ 'is-invalid': !isMeetLinkValid() }"
-        [value]="meetLink()"
-        (input)="onMeetLinkInput($event)"
-      />
+      <!-- MEET LINK -->
+      <div class="col-md-6">
+        <input
+          class="form-control"
+          placeholder="Meeting Link"
+          #meetInput
+          (input)="updateField('meetLink', meetInput.value)"
+        />
+      </div>
 
-      <div class="invalid-feedback" *ngIf="!isMeetLinkValid()">Invalid meeting link.</div>
-      <!-- DATE/TIME -->
+      <!-- DATE -->
       <div class="col-md-12">
-        <label class="form-label">Class Date & Time</label>
         <input
           type="datetime-local"
           class="form-control"
-          [value]="date()"
-          (input)="date.set($any($event.target).value)"
+          #dateInput
+          (change)="updateField('date', dateInput.value)"
         />
       </div>
 
-      <!-- BUTTON -->
+      <!-- ACTION -->
       <div class="col-12 text-end">
-        <button class="btn btn-primary px-4" [disabled]="submitting()" (click)="scheduleClass()">
-          Schedule Class
+        <button
+          class="btn btn-primary btn-sm px-4"
+          [disabled]="submitting()"
+          (click)="scheduleClass()"
+        >
+          Schedule
         </button>
       </div>
+
     </div>
   </div>
 
-  <!-- END CLASS SECTION -->
-  <div class="card p-3 shadow-sm border-0" *ngIf="meetingId()">
-    <h5>End Live Class</h5>
-
-    <p class="text-muted small">Meeting ID: {{ meetingId() }}</p>
-
-    <button class="btn btn-danger" (click)="endClass()">End Class & Mark Attendance</button>
-  </div>
 </div>
