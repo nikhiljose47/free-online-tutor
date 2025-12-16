@@ -1,28 +1,24 @@
-import { Firestore, doc, docData } from '@angular/fire/firestore';
 import { Auth2Service } from './auth2.service';
 import { UserProfile } from '../../models/user-profile.model';
-import { effect, inject, Injectable, signal } from '@angular/core';
+import { effect, Injectable, signal } from '@angular/core';
+import { FirestoreDocService } from './firestore-doc.service';
 
 @Injectable({ providedIn: 'root' })
 export class UserProfileService {
-  private db = inject(Firestore);
-  private auth = inject(Auth2Service);
-
   profile = signal<UserProfile | null>(null);
 
-  constructor() {
+  constructor(private fire: FirestoreDocService, private auth: Auth2Service) {
     effect(() => {
-      const firebaseUser = this.auth.user();
+      const user = this.auth.user();
 
-      if (!firebaseUser) {
+      if (!user) {
         this.profile.set(null);
         return;
       }
 
-      const ref = doc(this.db, 'users', firebaseUser.uid);
-      docData(ref).subscribe((data) => {
-        this.profile.set(data as UserProfile);
-      });
+      this.fire
+        .getOnce('users', user.uid)
+        .subscribe((res) => this.profile.set(res.data as UserProfile));
     });
   }
 }

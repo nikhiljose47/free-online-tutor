@@ -36,20 +36,23 @@
 
     <!-- RIGHT -->
     <div class="actions">
-      <a class="topbar-link" routerLink="/" routerLinkActive="active"> Home </a>
-
       <!-- BEFORE LOGIN -->
-      <ng-container *ngIf="!user()">
+      <ng-container *ngIf="!profile()">
         <button class="login-btn" routerLink="/login">Log In</button>
         <button class="signup-btn" routerLink="/register">Sign Up</button>
       </ng-container>
 
       <!-- AFTER LOGIN -->
-      <ng-container *ngIf="user()">
-        <a class="topbar-link" routerLink="/schedule" routerLinkActive="active">
+      <ng-container *ngIf="profile()">
+        <a
+          *ngIf="profile()?.role === 'teacher'"
+          class="topbar-link"
+          routerLink="/schedule"
+          routerLinkActive="active"
+        >
           Schedule a Class
         </a>
-        <a class="topbar-link" routerLink="/teachers" routerLinkActive="active"> Teachers </a>
+        <a class="topbar-link" routerLink="/teachers" routerLinkActive="active">Teachers</a>
         <a class="topbar-link" routerLink="/hopin" routerLinkActive="active">Hop-in</a>
         <a class="topbar-link" routerLink="/report-card" routerLinkActive="active">Report Card</a>
 

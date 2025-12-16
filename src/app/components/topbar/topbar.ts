@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Auth2Service } from '../../services/fire/auth2.service';
 import { ToastService } from '../../services/shared/toast.service';
 import { SearchService } from '../../services/search.service';
+import { UserProfileService } from '../../services/fire/user-profile.service';
 
 @Component({
   selector: 'topbar',
@@ -14,7 +15,9 @@ import { SearchService } from '../../services/search.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Topbar {
-  user = computed(() => this.auth.user());
+  profileApi = inject(UserProfileService);
+
+  profile = computed(() => this.profileApi.profile());
   menuOpen = signal(false);
 
   constructor(
