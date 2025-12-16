@@ -33,11 +33,7 @@ export class FreeOnlineTutor implements OnInit {
   jamLoading = signal(true);
 
   skeletonCount = Array(5); // 6 placeholders
-  constructor(
-    private toast: ToastService,
-    private router: Router,
-    private auth: Auth2Service,
-  ) {
+  constructor(private toast: ToastService, private router: Router, private auth: Auth2Service) {
     let user = this.auth.user;
     if (user()) {
       // console.log('Logged in found! ', user()?.uid);
@@ -87,7 +83,7 @@ export class FreeOnlineTutor implements OnInit {
       medium: ['HI'],
       image: '/assets/fam-problem.jpg',
     },
-        {
+    {
       id: 'CL06',
       name: 'Class 6',
       students: 10,
@@ -126,7 +122,7 @@ export class FreeOnlineTutor implements OnInit {
     },
   ]);
 
-    actSessions = signal([
+  actSessions = signal([
     {
       id: 'jam101',
       title: 'Yoga Activity',
@@ -149,10 +145,12 @@ export class FreeOnlineTutor implements OnInit {
 
   ngOnInit() {
     // Simulate Firestore load
-    setTimeout(() => {
-      this.classLoading.set(false);
-      this.jamLoading.set(false);
-    }, 1200);
+    // setTimeout(() => {
+    //   this.classLoading.set(false);
+    //   this.jamLoading.set(false);
+    // }, 1200);
+     this.classLoading.set(false);
+    this.jamLoading.set(false);
   }
   openCategory(cls: any) {
     this.router.navigate(['/details', 'class', cls.id]);

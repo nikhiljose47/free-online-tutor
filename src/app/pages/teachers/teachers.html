@@ -1,29 +1,39 @@
-<div class="carousel-wrapper position-relative">
+<div class="container py-4">
+  <h4 class="fw-bold mb-4 text-center">Meet Our Teachers</h4>
 
-  <!-- IMAGE -->
-  <div class="carousel-inner rounded-4 shadow-lg">
-    <img [src]="images[current]" class="carousel-img d-block w-100">
+  <div class="row g-4">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let t of teachers()">
+      <div class="teacher-card">
+        <!-- IMAGE (80%) -->
+        <div class="teacher-image">
+          <img [src]="t.imageUrl" [alt]="t.name" />
+        </div>
+
+        <!-- DETAILS (20%) -->
+        <div class="teacher-info">
+          <div class="name">
+            {{ t.name }}
+          </div>
+
+          <div class="qualification">
+            {{ t.qualification }}
+          </div>
+
+          <div class="domains">
+            <span *ngFor="let d of t.domains" class="domain-chip">
+              {{ d }}
+            </span>
+          </div>
+
+          <div class="note">
+            {{ t.note }}
+          </div>
+
+          <div class="contact">
+            {{ t.contact }}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <!-- PREV BUTTON -->
-  <button class="nav-btn prev-btn" (click)="prev()">
-    ‹
-  </button>
-
-  <!-- NEXT BUTTON -->
-  <button class="nav-btn next-btn" (click)="next()">
-    ›
-  </button>
-
-  <!-- DOT INDICATORS -->
-  <div class="indicators">
-    @for (img of images; let i = $index; track i) {
-      <span 
-        class="dot"
-        [class.active]="i === current"
-        (click)="goTo(i)">
-      </span>
-    }
-  </div>
-
 </div>
