@@ -1,28 +1,31 @@
+<!-- BANNER -->
 <div class="join-banner position-relative">
   <img [src]="banner" class="banner-img" alt="class banner" />
 
   <div class="banner-overlay"></div>
 
-  <!-- SHARE BUTTON (added) -->
-  <button class="share-btn d-flex align-items-center gap-1"
-          (click)="shareClass()">
+  <!-- SHARE BUTTON -->
+  <button class="share-btn d-flex align-items-center gap-1" (click)="shareClass()">
     <i class="bi bi-share"></i> Share
   </button>
 
   <div class="banner-content d-flex justify-content-between align-items-end">
     <div>
-      <h1 class="title">{{ title() }}</h1>
+      <h1 class="title">
+        {{ title }}
+      </h1>
 
-      <p class="teacher">By {{ teacher() }}</p>
+      <p class="teacher">By {{ teacher }}</p>
 
       <!-- Duration -->
-      <span class="duration small">{{ duration() }}</span>
+      <span class="duration small">
+        {{ duration }}
+      </span>
     </div>
 
-    <!-- DESKTOP JOIN BUTTON (moved right) -->
-    <button class="btn btn-danger join-btn d-none d-md-inline-flex"
-            (click)="goToJoin()">
-      Join Class
+    <!-- DESKTOP JOIN BUTTON -->
+    <button class="btn btn-danger join-btn d-none d-md-inline-flex" (click)="goToJoin()">
+      {{ !isUpcoming ? 'Join Class' : 'Interested' }}
     </button>
   </div>
 </div>
@@ -30,30 +33,34 @@
 <!-- MOBILE JOIN BUTTON -->
 <div class="mobile-join d-md-none">
   <button class="btn btn-danger w-100 py-3" (click)="goToJoin()">
-    Join Class
+    {{ !isUpcoming ? 'Join Class' : 'Interested' }}
   </button>
 </div>
 
-<!-- DETAILS SECTION -->
+<!-- DETAILS -->
 <div class="container mt-4">
   <h3 class="section-title">About this class</h3>
 
-  <p class="desc">{{ description }}</p>
+  <p class="desc">
+    {{ description }}
+  </p>
 
   <div class="stats-box mt-4">
     <div class="stat">
-      <span class="value">{{ students }}+</span>
-      <span class="label">Students Joined</span>
+      <span class="value"> {{ students }}+ </span>
+      <span class="label"> Students Joined </span>
     </div>
 
     <div class="stat">
-      <span class="value">{{ rating }}</span>
-      <span class="label">Rating</span>
+      <span class="value">
+        {{ rating }}
+      </span>
+      <span class="label"> Rating </span>
     </div>
 
     <div class="stat">
-      <span class="value">NCERT + ICSE</span>
-      <span class="label">Curriculum</span>
+      <span class="value"> NCERT + ICSE </span>
+      <span class="label"> Curriculum </span>
     </div>
   </div>
 </div>

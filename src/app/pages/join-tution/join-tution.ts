@@ -1,9 +1,10 @@
-import { Component, ChangeDetectionStrategy, Input, inject, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { ActivatedRoute } from '@angular/router';
 import { Meeting } from '../../models/meeting.model';
 import { UiStateUtil } from '../../utils/ui-state.utils';
+import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
+import { Timestamp } from '@angular/fire/firestore';
 
 @Component({
   selector: 'join-tution',
@@ -13,67 +14,64 @@ import { UiStateUtil } from '../../utils/ui-state.utils';
   styleUrls: ['./join-tution.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JoinTution {
+export class JoinTution implements OnInit {
   private route = inject(ActivatedRoute);
-  private uiUtil = inject(UiStateUtil)
-  
-  meetingId = this.route.snapshot.paramMap.get('meetingId')!;
- 
-  // Inputs (fallbacks if no meeting selected)
-  @Input() banner = '/assets/fam-problem.jpg';
-  @Input() students = 15;
-  @Input() rating = 4.7;
-
-  //temp
-  description = 'desc';
-
-  meeting = computed(() => this.uiUtil.get<Meeting>(this.meetingId));
-
+  private uiUtil = inject(UiStateUtil);
   private syllabus = inject(SyllabusLookupService);
 
-  /** 🔥 Derived title */
-  title = computed(() => {
-    const m = this.meeting();
-    if (!m) return '';
+  /* ---------------- derived (simple values) ---------------- */
+  meeting = signal<Meeting | null>(null);
+  banner: string = '/assets/fam-problem.jpg';
+  meetingId!: string;
+  students: number = 15;
+  rating: number = 4.7;
+  title = '';
+  teacher = '';
+  joinLink = '';
+  duration = '30m - 40 min';
+  description = 'desc';
+  isUpcoming: boolean = false;
+
+  ngOnInit(): void {
+    this.meetingId = this.route.snapshot.paramMap.get('meetingId')!;
+
+    const m = this.uiUtil.get<Meeting>(this.meetingId);
+    if (!m) return;
+
+    this.meeting.set(m);
+
+    /* hydrate UI fields once */
+    this.teacher = m.teacherName;
+    this.joinLink = m.meetLink;
+
+    if (m.date > Timestamp.fromDate(new Date())) {
+      this.isUpcoming = true;
+    }
+
     const chapter = this.syllabus.getChapterByCode(m.chapterCode);
-    return chapter?.chapter.name ?? '';
-  });
-
-  /** 🔥 Derived teacher (subjectId → display name expansion can be added later) */
-  teacher = computed(() => this.meeting()?.teacherName ?? '');
-
-  /** 🔥 Meeting link */
-  joinLink = computed(() => this.meeting()?.meetLink ?? '');
-
-  /** 🔥 Duration placeholder (if you want dynamic later) */
-  duration = signal('1h 30m');
-
-  constructor() {
-    // Debug — prints whenever selected meeting changes
-    // effect(() => console.log("Selected meeting:", this.meeting()));
+    this.title = chapter?.chapter.name ?? '';
   }
 
-  goToJoin() {
-    if (this.joinLink()) {
-      window.open(this.joinLink(), '_blank');
+  goToJoin(): void {
+    if (this.isUpcoming) {
+      return;
+    }
+    if (this.joinLink) {
+      window.open(this.joinLink, '_blank');
     }
   }
 
-  async shareClass() {
+  async shareClass(): Promise<void> {
     const shareData = {
-      title: this.title(),
-      text: `Join ${this.title()} by ${this.teacher()}`,
-      url: this.joinLink(),
+      title: this.title,
+      text: `Join ${this.title} by ${this.teacher}`,
+      url: this.joinLink,
     };
 
     if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch (err) {
-        console.error(err);
-      }
+      await navigator.share(shareData);
     } else {
-      await navigator.clipboard.writeText(this.joinLink());
+      await navigator.clipboard.writeText(this.joinLink);
       alert('Link copied to clipboard!');
     }
   }
