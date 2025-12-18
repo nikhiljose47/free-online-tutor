@@ -31,8 +31,11 @@ export const routes: Routes = [
   { path: 'about', component: About },
   { path: 'teachers', component: TeachersPage },
   { path: 'career', component: Career },
+  {
+    path: 'join-tution/:meetingId',
+    loadComponent: () => import('./pages/join-tution/join-tution').then((m) => m.JoinTution),
+  },
   { path: 'profile', component: DashboardComponent },
-  { path: 'join-tution', component: JoinTution },
   { path: 'timetable', component: Timetable },
   { path: 'report-card', component: ReportCard },
 

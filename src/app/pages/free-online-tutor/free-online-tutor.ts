@@ -3,9 +3,6 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { RoadmapCacheService } from '../../services/cache/roadmap-cache.service';
 import { ToastService } from '../../services/shared/toast.service';
 import { Router } from '@angular/router';
-import { Auth2Service } from '../../services/fire/auth2.service';
-import { Jam } from '../../models/jam.model';
-import { LearningSkeleton } from '../../components/learning-skeleton/learning-skeleton';
 
 export interface RoadmapCard {
   title: string;
@@ -23,7 +20,7 @@ export interface LiveClassModel {
 
 @Component({
   selector: 'free-online-tutor',
-  imports: [CommonModule, LearningSkeleton],
+  imports: [CommonModule],
   templateUrl: './free-online-tutor.html',
   styleUrl: './free-online-tutor.scss',
 })
@@ -33,13 +30,7 @@ export class FreeOnlineTutor implements OnInit {
   jamLoading = signal(true);
 
   skeletonCount = Array(5); // 6 placeholders
-  constructor(private toast: ToastService, private router: Router, private auth: Auth2Service) {
-    let user = this.auth.user;
-    if (user()) {
-      // console.log('Logged in found! ', user()?.uid);
-    } else {
-      console.log('No logged in data!');
-    }
+  constructor(private toast: ToastService, private router: Router) {
   }
 
   classCategories = signal([
@@ -141,6 +132,15 @@ export class FreeOnlineTutor implements OnInit {
       time: 'Soon',
       image: '/assets/fam-problem.jpg',
     },
+    {
+      id: 'jam222',
+      title: 'General Aptitude',
+      students: 140,
+      teacher: 'Ananya',
+      lang: ['HI'],
+      time: 'Soon',
+      image: '/assets/fam-problem.jpg',
+    },
   ]);
 
   ngOnInit() {
@@ -149,7 +149,7 @@ export class FreeOnlineTutor implements OnInit {
     //   this.classLoading.set(false);
     //   this.jamLoading.set(false);
     // }, 1200);
-     this.classLoading.set(false);
+    this.classLoading.set(false);
     this.jamLoading.set(false);
   }
   openCategory(cls: any) {

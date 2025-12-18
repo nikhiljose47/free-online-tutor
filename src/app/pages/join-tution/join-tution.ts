@@ -1,7 +1,9 @@
 import { Component, ChangeDetectionStrategy, Input, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SelectedMeetingService } from '../../services/shared/selected-meeting.service';
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
+import { ActivatedRoute } from '@angular/router';
+import { Meeting } from '../../models/meeting.model';
+import { UiStateUtil } from '../../utils/ui-state.utils';
 
 @Component({
   selector: 'join-tution',
@@ -12,19 +14,22 @@ import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.s
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JoinTution {
+  private route = inject(ActivatedRoute);
+  private uiUtil = inject(UiStateUtil)
+  
+  meetingId = this.route.snapshot.paramMap.get('meetingId')!;
+ 
   // Inputs (fallbacks if no meeting selected)
   @Input() banner = '/assets/fam-problem.jpg';
-  @Input() students = 143;
+  @Input() students = 15;
   @Input() rating = 4.7;
-  
- //temp
- description = 'desc';
 
-  private selectedStore = inject(SelectedMeetingService);
+  //temp
+  description = 'desc';
+
+  meeting = computed(() => this.uiUtil.get<Meeting>(this.meetingId));
+
   private syllabus = inject(SyllabusLookupService);
-
-  /** 🔥 The selected meeting (reactive signal) */
-  meeting = computed(() => this.selectedStore.selected());
 
   /** 🔥 Derived title */
   title = computed(() => {
@@ -35,7 +40,7 @@ export class JoinTution {
   });
 
   /** 🔥 Derived teacher (subjectId → display name expansion can be added later) */
-  teacher = computed(() => this.meeting()?.subjectId ?? '');
+  teacher = computed(() => this.meeting()?.teacherName ?? '');
 
   /** 🔥 Meeting link */
   joinLink = computed(() => this.meeting()?.meetLink ?? '');

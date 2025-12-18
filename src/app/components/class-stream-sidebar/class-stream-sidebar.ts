@@ -9,6 +9,7 @@ import {
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { MeetingsService } from '../../domain/meetings/meetings.service';
+import { UiStateUtil } from '../../utils/ui-state.utils';
 
 @Component({
   selector: 'class-stream-sidebar',
@@ -21,7 +22,7 @@ import { MeetingsService } from '../../domain/meetings/meetings.service';
 export class ClassStreamSidebar implements OnDestroy {
   private meetApi = inject(MeetingsService);
   private router = inject(Router);
-
+  private uiUtil = inject(UiStateUtil)
   allMeetings = signal<any[]>([]);
   now = signal(new Date());
   error = signal<string | null>(null);
@@ -74,9 +75,8 @@ export class ClassStreamSidebar implements OnDestroy {
   });
 
   open(item: any) {
-    this.router.navigate(['/join-tution'], {
-      state: { meeting: item },
-    });
+    this.uiUtil.set(item.id, item);
+    this.router.navigate(['/join-tution', item.id]);
   }
 
   toggleSidebar() {
