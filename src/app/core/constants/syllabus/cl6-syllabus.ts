@@ -1,4 +1,4 @@
-import { ClassSyllabus } from './syllabus.model';
+import { ClassSyllabus } from '../../../models/syllabus.model';
 
 export const CLASS6_SYLLABUS: ClassSyllabus = {
   class: '6',

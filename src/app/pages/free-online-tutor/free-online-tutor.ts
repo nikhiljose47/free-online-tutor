@@ -3,6 +3,10 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { RoadmapCacheService } from '../../services/cache/roadmap-cache.service';
 import { ToastService } from '../../services/shared/toast.service';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { buildSvg, SvgCardConfig } from '../../utils/svg-loader.utils';
 
 export interface RoadmapCard {
   title: string;
@@ -28,9 +32,20 @@ export class FreeOnlineTutor implements OnInit {
   private cache = inject(RoadmapCacheService);
   classLoading = signal(true);
   jamLoading = signal(true);
+  svg = signal<SafeHtml>('');
 
   skeletonCount = Array(5); // 6 placeholders
-  constructor(private toast: ToastService, private router: Router) {
+  constructor(
+    private http: HttpClient,
+    private toast: ToastService,
+    private router: Router,
+    private sanitizer: DomSanitizer
+  ) {
+    this.load({
+      title: 'Activities',
+      start: '#1e3c72',
+      end: '#2a5298',
+    });
   }
 
   classCategories = signal([
@@ -152,6 +167,14 @@ export class FreeOnlineTutor implements OnInit {
     this.classLoading.set(false);
     this.jamLoading.set(false);
   }
+
+  load(cfg: SvgCardConfig) {
+    this.http.get('assets/svg/class-card.svg', { responseType: 'text' }).subscribe((svg) => {
+      const finalSvg = buildSvg(svg, cfg);
+      this.svg.set(this.sanitizer.bypassSecurityTrustHtml(finalSvg));
+    });
+  }
+
   openCategory(cls: any) {
     this.router.navigate(['/details', 'class', cls.id]);
   }

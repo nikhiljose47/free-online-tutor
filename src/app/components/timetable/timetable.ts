@@ -1,12 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-  inject,
-  signal,
-} from '@angular/core';
-import { ClassSyllabus } from '../../core/constants/syllabus/syllabus.model';
+import { ChangeDetectionStrategy, Component, Input, OnInit, inject, signal } from '@angular/core';
+import { ClassSyllabus } from '../../models/syllabus.model';
 import { CommonModule } from '@angular/common';
 import { DataStoreService } from '../../services/store/data-store';
 import { CLASS6_SYLLABUS } from '../../core/constants/syllabus/cl6-syllabus';
@@ -70,7 +63,6 @@ export class Timetable implements OnInit {
   // -------------------------------------------------------------------
   // 🔥 REPLACEMENT: Get upcoming meetings for Class 5 — MATH only
   // -------------------------------------------------------------------
- 
 
   //TODO
 

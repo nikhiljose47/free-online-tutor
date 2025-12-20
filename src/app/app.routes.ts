@@ -11,7 +11,7 @@ import { FreeOnlineTutor } from './pages/free-online-tutor/free-online-tutor';
 import { Career } from './pages/career/career';
 import { BookSlotComponent } from './components/book-slot/book-slot';
 import { JoinTution } from './pages/join-tution/join-tution';
-import { Timetable } from './pages/timetable/timetable';
+import { Timetable } from './components/timetable/timetable';
 import { ScheduleLiveClass } from './pages/schedule-live-class/schedule-live-class';
 import { Register } from './pages/register/register';
 import { StudentCreations } from './pages/student-creations/student-creations';

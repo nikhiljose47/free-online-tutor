@@ -69,7 +69,7 @@
     </section>
     <div class="grid">
       <div class="simple-card" *ngFor="let jam of actSessions()" (click)="joinJam(jam)">
-        <img src="./assets/jam-placeholder.jpg" class="banner" />
+        <div class="svg-card" [innerHTML]="svg()"></div>
 
         <div class="info">
           <div class="jam-head">

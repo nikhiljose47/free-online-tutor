@@ -16,6 +16,8 @@ import {
   addDoc,
   orderBy,
   Timestamp,
+  arrayUnion,
+  arrayRemove,
 } from '@angular/fire/firestore';
 
 import { from, map, catchError, of, Observable } from 'rxjs';
@@ -34,7 +36,6 @@ export interface FireResponse2<T> {
   data: T | null;
   message?: string | null;
 }
-
 
 @Injectable({ providedIn: 'root' })
 export class FirestoreDocService {
@@ -96,6 +97,38 @@ export class FirestoreDocService {
 
   update<T>(path: string, id: string, data: Partial<T>): Observable<FireResponse<T>> {
     return from(updateDoc(this.docRef<T>(path, id), data as any)).pipe(
+      map(() => this.success<T>(null)),
+      catchError((err) => of(this.fail<T>(err.message)))
+    );
+  }
+
+  addToArrayField<T>(
+    path: string,
+    id: string,
+    field: keyof T,
+    value: any
+  ): Observable<FireResponse<T>> {
+    return from(
+      updateDoc(this.docRef<T>(path, id), {
+        [field]: arrayUnion(value),
+      } as any)
+    ).pipe(
+      map(() => this.success<T>(null)),
+      catchError((err) => of(this.fail<T>(err.message)))
+    );
+  }
+
+  removeFromArrayField<T>(
+    path: string,
+    id: string,
+    field: keyof T,
+    value: any
+  ): Observable<FireResponse<T>> {
+    return from(
+      updateDoc(this.docRef<T>(path, id), {
+        [field]: arrayRemove(value),
+      } as any)
+    ).pipe(
       map(() => this.success<T>(null)),
       catchError((err) => of(this.fail<T>(err.message)))
     );

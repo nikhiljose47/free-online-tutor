@@ -1,65 +1,155 @@
+/* ===============================
+   Page Base
+================================ */
 .details-page {
-  padding: 1.5rem 1rem;
-  font-family: "Inter", sans-serif;
+  padding: 1.5rem 1rem 2.5rem;
+  font-family: 'Inter', sans-serif;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
-/* HEADER */
+/* ===============================
+   Header
+================================ */
 .page-header h1 {
   font-size: 1.6rem;
   font-weight: 800;
   margin-bottom: 1.2rem;
 }
 
-/* QUOTE */
-.quote-box {
-  background: #fff3cd;
-  border-left: 4px solid #f0ad4e;
-  padding: 14px 20px;
-  border-radius: 8px;
-  margin-bottom: 1.4rem;
-}
-
-.quote {
-  margin: 0;
-  font-style: italic;
-  color: #614d00;
-  font-weight: 600;
-}
-
-/* SECTION TITLES */
+/* ===============================
+   Section Titles
+================================ */
 .section-title {
   font-size: 1.3rem;
   font-weight: 800;
-  margin: 1.3rem 0 0.8rem;
+  margin: 1.6rem 0 0.9rem;
 }
 
-/* ROADMAP */
-.roadmap-list {
+/* ===============================
+   OVERVIEW SECTION
+================================ */
+.overview-section {
+  margin-bottom: 2.4rem;
+}
+
+.batch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+/* Batch Card */
+.batch-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 14px;
+}
+
+/* Header */
+.batch-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.batch-name {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.batch-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.75;
+}
+
+/* Progress */
+.batch-progress {
+  height: 8px;
+  width: 100%;
+  background: #edf0f3;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.batch-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.batch-percent {
+  font-size: 0.8rem;
+  color: #555;
+}
+
+/* Roadmap */
+.batch-roadmap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .roadmap-item {
-  background: #f8faff;
-  padding: 12px 14px;
-  border-radius: 10px;
+  font-size: 0.75rem;
+  color: #666;
   display: flex;
   justify-content: space-between;
-  border: 1px solid #e2e8f8;
+}
 
-  h3 {
-    margin: 0;
-    font-size: 15px;
+/* Empty State */
+.batch-empty {
+  font-size: 0.85rem;
+  color: #888;
+  font-style: italic;
+}
+
+.batch-hint {
+  font-size: 0.7rem;
+  color: #777;
+}
+
+/* Blue Batch */
+.batch-blue {
+  border-color: rgba(13, 110, 253, 0.3);
+
+  .batch-name {
+    color: #0d6efd;
   }
 
-  .duration {
-    font-size: 13px;
-    color: #4f5d75;
+  .batch-progress-fill {
+    background: linear-gradient(90deg, #0d6efd, #5fa8ff);
   }
 }
 
-/* EXAM PREP */
+/* Yellow Batch */
+.batch-yellow {
+  border-color: rgba(255, 193, 7, 0.35);
+
+  .batch-name {
+    color: #d39e00;
+  }
+
+  .batch-progress-fill {
+    background: linear-gradient(90deg, #ffc107, #ffdf7e);
+  }
+}
+
+/* ===============================
+   ROADMAP (Detailed timetable)
+================================ */
+.section timetable {
+  margin-top: 8px;
+}
+
+/* ===============================
+   EXAM PREP
+================================ */
 .prep-list {
   display: flex;
   flex-direction: column;
@@ -73,6 +163,7 @@
   border: 1px solid #f4e8a2;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 
   h3 {
     margin: 0;
@@ -89,7 +180,9 @@
   }
 }
 
-/* TEACHERS */
+/* ===============================
+   TEACHERS
+================================ */
 .teachers {
   display: flex;
   flex-wrap: wrap;
@@ -103,7 +196,7 @@
   padding: 12px;
   border-radius: 12px;
   border: 1px solid #e5e7eb;
-  width: 200px;
+  width: 220px;
   align-items: center;
 
   .avatar {
@@ -126,7 +219,9 @@
   }
 }
 
-/* JAM INFO */
+/* ===============================
+   JAM INFO
+================================ */
 .jam-box {
   padding: 14px;
   background: #edf2ff;
@@ -136,5 +231,39 @@
   p {
     margin: 4px 0;
     font-size: 14px;
+  }
+}
+
+/* ===============================
+   QUOTE (LAST)
+================================ */
+.quote-section {
+  margin-top: 3.5rem;
+  padding: 26px 22px;
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  border-radius: 14px;
+  border-left: 4px solid #f0ad4e;
+}
+
+.quote-text {
+  font-style: italic;
+  font-weight: 600;
+  color: #614d00;
+}
+
+/* ===============================
+   Responsive
+================================ */
+@media (max-width: 768px) {
+  .batch-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-card {
+    width: 100%;
+  }
+
+  .details-page {
+    padding: 1.2rem 0.8rem 2rem;
   }
 }

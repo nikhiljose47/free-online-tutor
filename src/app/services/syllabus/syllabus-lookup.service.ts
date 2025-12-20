@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { ClassSyllabus } from '../../core/constants/syllabus/syllabus.model';
+import { ClassSyllabus } from '../../models/syllabus.model';
 import { CLASS5_SYLLABUS } from '../../core/constants/syllabus/cl5-syllabus';
 import { CLASS6_SYLLABUS } from '../../core/constants/syllabus/cl6-syllabus';
 

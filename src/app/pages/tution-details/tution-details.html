@@ -1,61 +1,113 @@
-<content-placeholder
-  *ngIf="!hasValidData()"
-  message="This tuition class will be added soon. Check back shortly!"
-></content-placeholder>
+<div *ngIf="isLoading()">
+  <loader text="The classes are loading..."></loader>
+</div>
+<div *ngIf="!isLoading()">
+  <content-placeholder
+    *ngIf="!hasValidData()"
+    message="This tuition class will be added soon. Check back shortly!"
+  ></content-placeholder>
 
-<div class="details-page" *ngIf="hasValidData()">
-  <!-- ------------------ HEADER TITLE ------------------ -->
-  <header class="page-header">
-    <h1 *ngIf="type === 'class'">{{ id }}</h1>
-    <h1 *ngIf="type === 'jam'">JAM Session: {{ jamInfo().topic }}</h1>
-  </header>
+  <div class="details-page" *ngIf="hasValidData()">
+    <!-- ================= HEADER ================= -->
+    <header class="page-header">
+      <h1 *ngIf="type === 'class'">{{ id }}</h1>
+      <h1 *ngIf="type === 'jam'">JAM Session: {{ jamInfo().topic }}</h1>
+    </header>
 
-  <!-- ------------------ TODAY’S QUOTE ------------------ -->
-  <section class="quote-box">
-    <p class="quote">“{{ quote() }}”</p>
-  </section>
+    <!-- ================= OVERVIEW (FIRST) ================= -->
+    <section *ngIf="type === 'class'" class="section overview-section">
+      <h2 class="section-title">Class Progress Overview</h2>
 
-  <section *ngIf="type === 'class'" class="section">
-    <h2 class="section-title">Roadmap</h2>
-    <timetable [type]="type" [classId]="id"></timetable>
-  </section>
+      <div class="batch-grid">
+        <!-- 🔵 BLUE BATCH -->
+        <div class="batch-card batch-blue">
+          <div class="batch-header">
+            <span class="batch-name">Blue Batch</span>
+            <span class="batch-status">In Progress</span>
+          </div>
 
-  <!-- ------------------ EXAM PREP ------------------ -->
-  <section *ngIf="type === 'class'" class="section">
-    <h2 class="section-title">Exam Preparation</h2>
+          <div class="batch-progress">
+            <div class="batch-progress-fill" style="width: 45%"></div>
+          </div>
 
-    <div class="prep-list">
-      <div class="prep-item" *ngFor="let p of examPrep()">
-        <h3>{{ p.title }}</h3>
-        <span class="badge">{{ p.level }}</span>
-      </div>
-    </div>
-  </section>
+          <div class="batch-percent">45% completed</div>
 
-  <!-- ------------------ TEACHERS ------------------ -->
-  <section *ngIf="type === 'class'" class="section">
-    <h2 class="section-title">Teachers</h2>
+          <div class="batch-roadmap">
+            <div class="roadmap-item">
+              <span>Mathematics</span>
+              <span>5 / 12 chapters</span>
+            </div>
+            <div class="roadmap-item">
+              <span>Science</span>
+              <span>3 / 10 chapters</span>
+            </div>
+          </div>
 
-    <div class="teachers">
-      <div class="teacher-card" *ngFor="let t of teachers()">
-        <img [src]="t.avatar" class="avatar" />
-        <div class="info">
-          <h4>{{ t.name }}</h4>
-          <p>{{ t.subject }}</p>
+          <div class="batch-hint">
+            Progress is calculated subject-wise based on completed chapters
+          </div>
+        </div>
+
+        <!-- 🟡 YELLOW BATCH -->
+        <div class="batch-card batch-yellow">
+          <div class="batch-header">
+            <span class="batch-name">Yellow Batch</span>
+            <span class="batch-status">Yet to begin</span>
+          </div>
+
+          <div class="batch-empty">This batch has not started yet.</div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ------------------ JAM INFO ------------------ -->
-  <section *ngIf="type === 'jam'" class="section">
-    <h2 class="section-title">Session Details</h2>
+    <!-- ================= ROADMAP (DETAILED) ================= -->
+    <section *ngIf="type === 'class'" class="section">
+      <h2 class="section-title">Detailed Roadmap</h2>
+      <timetable [type]="type" [classId]="id"></timetable>
+    </section>
 
-    <div class="jam-box">
-      <p><b>Host:</b> {{ jamInfo().host }}</p>
-      <p><b>Topic:</b> {{ jamInfo().topic }}</p>
-      <p><b>Starts at:</b> {{ jamInfo().starts }}</p>
-      <p><b>Participants:</b> {{ jamInfo().participants }}</p>
-    </div>
-  </section>
+    <!-- ================= EXAM PREP ================= -->
+    <section *ngIf="type === 'class'" class="section">
+      <h2 class="section-title">Exam Preparation</h2>
+
+      <div class="prep-list">
+        <div class="prep-item" *ngFor="let p of examPrep()">
+          <h3>{{ p.title }}</h3>
+          <span class="badge">{{ p.level }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TEACHERS ================= -->
+    <section *ngIf="type === 'class'" class="section">
+      <h2 class="section-title">Teachers</h2>
+
+      <div class="teachers">
+        <div class="teacher-card" *ngFor="let t of teachers()">
+          <img [src]="t.avatar" class="avatar" />
+          <div class="info">
+            <h4>{{ t.name }}</h4>
+            <p>{{ t.subject }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= JAM INFO ================= -->
+    <section *ngIf="type === 'jam'" class="section">
+      <h2 class="section-title">Session Details</h2>
+
+      <div class="jam-box">
+        <p><b>Host:</b> {{ jamInfo().host }}</p>
+        <p><b>Topic:</b> {{ jamInfo().topic }}</p>
+        <p><b>Starts at:</b> {{ jamInfo().starts }}</p>
+        <p><b>Participants:</b> {{ jamInfo().participants }}</p>
+      </div>
+    </section>
+
+    <!-- ================= QUOTE (LAST) ================= -->
+    <section class="quote-section">
+      <p class="quote-text">“{{ quote() }}”</p>
+    </section>
+  </div>
 </div>
