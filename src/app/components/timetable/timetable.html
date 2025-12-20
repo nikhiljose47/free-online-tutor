@@ -1,60 +1,37 @@
-<div class="timetable">
-  <div class="subject-card" *ngFor="let sbj of syllabus.subjects | keyvalue">
-    <!-- Header -->
-    <div class="subject-header">
-      <h4>{{ sbj.key }}</h4>
-      <span class="code">{{ sbj.value.code }}</span>
-
-      <!-- 🔥 Current chapter -->
-      <div class="current-box" *ngIf="sbj.key === 'Mathematics'; else otherCurrent">
-        <small>Current</small>
-        <div class="current-name">
-          {{ getChapterName('Mathematics', mathCurrentChapter()) }}
-        </div>
+<section class="timetable-horizontal" *ngIf="syllabus() as data">
+  <div class="subject-card" *ngFor="let sbj of data.subjects | keyvalue">
+    <!-- SUBJECT HEADER -->
+    <header class="subject-header">
+      <div class="title">
+        <h4>{{ sbj.key }}</h4>
+        <span class="code">{{ sbj.value.code }}</span>
       </div>
 
-      <ng-template #otherCurrent>
-        <div class="current-box" *ngIf="current()[sbj.key] as cur">
-          <small>Current</small>
-          <div class="current-name">
-            {{ getChapterName(sbj.key, cur) }}
-          </div>
-        </div>
-      </ng-template>
-
-      <!-- 🔥 Upcoming Live for Mathematics -->
-      <div class="live-box" *ngIf="sbj.key === 'Mathematics'; else otherLive">
-        <h6>Next Live</h6>
-
-        <div class="live-row" *ngFor="let m of mathUpcoming()">
-          <span>{{ m.date.toDate() | date : 'shortTime' }} · Batch {{ m.batch }}</span>
-          <span class="status" [class.live]="true">Upcoming</span>
-        </div>
-
-        <div *ngIf="mathUpcoming().length === 0">
-          <small>No upcoming classes</small>
-        </div>
+      <!-- CURRENT CHAPTER -->
+      <div class="current-box" *ngIf="getCurrent(sbj.key) as cur">
+        <small>Current chapter</small>
+        <strong>{{ getChapterName(sbj.key, cur) }}</strong>
       </div>
+    </header>
 
-      <!-- Other subjects use existing live() mock -->
-      <ng-template #otherLive>
-        <div class="live-box" *ngIf="live()[sbj.key] as batches">
-          <h6>Next Live</h6>
-
-          <div class="live-row" *ngFor="let b of batches">
-            <span>{{ b.time }} · Batch {{ b.batch }}</span>
-            <span class="status" [class.live]="b.status === 'Live'">{{ b.status }}</span>
-          </div>
-        </div>
-      </ng-template>
-    </div>
-
-    <!-- Scrollable chapter list -->
+    <!-- CHAPTER LIST -->
     <div class="chapters">
-      <div class="chapter" *ngFor="let ch of sbj.value.chapters">
+      <div
+        class="chapter"
+        *ngFor="let ch of sbj.value.chapters; let idx = index"
+        [class.completed]="idx < getProgress(sbj.key)"
+        [class.current]="ch.code === getCurrent(sbj.key)"
+        [class.locked]="idx > getProgress(sbj.key)"
+      >
         <div class="chapter-left">
           <div class="chapter-name">{{ ch.name }}</div>
-          <div class="tag" *ngIf="notes()[ch.code]">{{ notes()[ch.code] }}</div>
+          <div class="chapter-desc" *ngIf="ch.desc">{{ ch.desc }}</div>
+
+          <span class="tag completed" *ngIf="idx < getProgress(sbj.key)"> Completed </span>
+
+          <span class="tag current" *ngIf="ch.code === getCurrent(sbj.key)"> In Progress </span>
+
+          <span class="tag locked" *ngIf="idx > getProgress(sbj.key)"> Not Started </span>
         </div>
 
         <div class="chapter-right">
@@ -63,4 +40,4 @@
       </div>
     </div>
   </div>
-</div>
+</section>

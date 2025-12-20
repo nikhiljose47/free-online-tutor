@@ -1,17 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, inject, signal } from '@angular/core';
-import { ClassSyllabus } from '../../models/syllabus.model';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataStoreService } from '../../services/store/data-store';
-import { CLASS6_SYLLABUS } from '../../core/constants/syllabus/cl6-syllabus';
-import { MeetingsService } from '../../domain/meetings/meetings.service';
-
-const SUBJECT_MAP: Record<string, string> = {
-  ENG: 'English',
-  HIN: 'Hindi',
-  MATH: 'Mathematics',
-  SCI: 'Science',
-  EVS: 'EVS',
-};
+import { ClassSyllabus } from '../../models/syllabus.model';
+import { UiStateUtil } from '../../utils/ui-state.utils';
 
 @Component({
   selector: 'timetable',
@@ -22,90 +12,80 @@ const SUBJECT_MAP: Record<string, string> = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Timetable implements OnInit {
-  @Input({ required: true }) type!: string;
-  @Input({ required: true }) classId!: string;
+  private uiState = inject(UiStateUtil);
 
-  isInvalid = true;
-  syllabus: ClassSyllabus = CLASS6_SYLLABUS;
+  /** syllabus always comes from resolver → UiStateUtil */
+  readonly syllabus = signal<ClassSyllabus | null>(null);
 
-  private meetApi = inject(MeetingsService);
-  private docCache = inject(DataStoreService);
+  /** current chapter code per subject */
+  readonly current = signal<Record<string, string>>({});
 
-  mathUpcoming = signal<any>([]);
-  mathCurrentChapter = signal<any>([]);
-
-  current = signal<Record<string, string>>({});
+  /** numeric progress index per subject */
+  readonly progressIndex = signal<Record<string, number>>({});
 
   ngOnInit(): void {
-    this.meetApi.getMeetingsForClass(this.classId);
-    this.docCache.getDoc('classes', 'CL06').subscribe((res) => {
-      if (res.ok) {
-        console.log('data');
-        console.log(res.data);
-        this.loadCurrentChaptersFromDb(res.data);
-      }
-    });
+    const data = this.uiState.get<ClassSyllabus>('syllabus');
+
+    if (!data) {
+      console.error('[Timetable] Syllabus missing in UiStateUtil');
+      return;
+    }
+
+    this.syllabus.set(data);
+    this.initRandomProgress(data);
   }
 
-  notes = signal<Record<string, string>>({
-    'CL5-MATH-04': 'Important chapter',
-    'CL5-ENG-03': 'Fun and easy to learn',
-    'CL5-HIN-07': 'Pivot chapter for exams',
-    'CL5-EVS-05': 'Good to attend this',
-  });
+  /* ------------------------------------ */
+  /* helpers                              */
+  /* ------------------------------------ */
 
-  live = signal<Record<string, any[]>>({
-    English: [{ time: '2:00 PM', batch: 'A', status: 'Upcoming' }],
-    Hindi: [],
-    EVS: [],
-  });
+  private initRandomProgress(data: ClassSyllabus): void {
+    const cur: Record<string, string> = {};
+    const prog: Record<string, number> = {};
 
-  // -------------------------------------------------------------------
-  // 🔥 REPLACEMENT: Get upcoming meetings for Class 5 — MATH only
-  // -------------------------------------------------------------------
+    Object.entries(data.subjects).forEach(([subjectKey, subject]) => {
+      const total = subject.chapters.length;
+      if (!total) return;
 
-  //TODO
+      // random current index: [0 .. total-1]
+      const idx = Math.floor(Math.random() * total);
 
-  // mathUpcoming = computed(() => {
-  //   const groups = this.meetApi.groupedFor('CL5')(); // { live, upcoming, completed }
-  //   return groups.upcoming.filter((m) => m.subjectId === 'Mathematics');
-  // });
+      prog[subjectKey] = idx;
+      cur[subjectKey] = subject.chapters[idx].code;
+    });
 
-  // // 🔥 REPLACEMENT: Auto-detect current mathematics chapter from latest completed meeting
-  // mathCurrentChapter = computed(() => {
-  //   const completed = this.meetApi.groupedFor('CL5')().completed;
+    this.progressIndex.set(prog);
+    this.current.set(cur);
+  }
 
-  //   // find latest completed meeting of Maths
-  //   const math = completed
-  //     .filter((m) => m.subjectId === 'Mathematics')
-  //     .sort((a, b) => b.date.toDate().getTime() - a.date.toDate().getTime());
-
-  //   return math[0]?.chapterCode ?? this.current()['Mathematics'];
-  // });
-
-  // Utility: Get chapter name from syllabus
   getChapterName(subjectKey: string, chapterCode: string): string {
-    const subject = this.syllabus.subjects[subjectKey];
-    return subject?.chapters?.find((ch) => ch.code === chapterCode)?.name ?? '';
+    const data = this.syllabus();
+    if (!data) return '';
+
+    return data.subjects[subjectKey]?.chapters.find((c) => c.code === chapterCode)?.name ?? '';
   }
 
-  loadCurrentChaptersFromDb(data: any) {
-    const result: Record<string, string> = {};
+  /* ------------------------------------ */
+  /* derived flags (used by template)     */
+  /* ------------------------------------ */
 
-    Object.entries(data).forEach(([code, obj]: any) => {
-      // Extract subject part -> CL06-MATH → MATH
-      const subjectCode = code.split('-')[1];
+  isCompleted(subjectKey: string, idx: number): boolean {
+    return idx < (this.progressIndex()[subjectKey] ?? -1);
+  }
 
-      // Convert to readable subject name
-      const subjectName = SUBJECT_MAP[subjectCode] ?? subjectCode;
+  isCurrent(subjectKey: string, code: string): boolean {
+    return this.current()[subjectKey] === code;
+  }
 
-      // If no current chapter, default to CLASS-SUB-01
-      const finalIndex = obj.curIndex && obj.curIndex.trim() !== '' ? obj.curIndex : `${code}-01`;
+  isLocked(subjectKey: string, idx: number): boolean {
+    return idx > (this.progressIndex()[subjectKey] ?? -1);
+  }
 
-      result[subjectName] = finalIndex;
-    });
+  getProgress(subjectKey: string): number {
+    return this.progressIndex()[subjectKey] ?? -1;
+  }
 
-    // Update signal
-    this.current.set(result);
+  getCurrent(subjectKey: string): string | null {
+    return this.current()[subjectKey] ?? null;
   }
 }

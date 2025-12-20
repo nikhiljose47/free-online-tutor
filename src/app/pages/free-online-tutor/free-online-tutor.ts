@@ -169,10 +169,10 @@ export class FreeOnlineTutor implements OnInit {
   }
 
   load(cfg: SvgCardConfig) {
-    this.http.get('assets/svg/class-card.svg', { responseType: 'text' }).subscribe((svg) => {
-      const finalSvg = buildSvg(svg, cfg);
-      this.svg.set(this.sanitizer.bypassSecurityTrustHtml(finalSvg));
-    });
+    // this.http.get('assets/svg/class-card.svg', { responseType: 'text' }).subscribe((svg) => {
+    //   const finalSvg = buildSvg(svg, cfg);
+    //   this.svg.set(this.sanitizer.bypassSecurityTrustHtml(finalSvg));
+    // });
   }
 
   openCategory(cls: any) {

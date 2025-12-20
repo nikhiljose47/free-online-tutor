@@ -16,6 +16,7 @@ import { ScheduleLiveClass } from './pages/schedule-live-class/schedule-live-cla
 import { Register } from './pages/register/register';
 import { StudentCreations } from './pages/student-creations/student-creations';
 import { ReportCard } from './components/report-card/report-card';
+import { syllabusResolver } from './resolvers/syllabus-resolver';
 
 export const routes: Routes = [
   { path: '', component: FreeOnlineTutor },
@@ -45,6 +46,7 @@ export const routes: Routes = [
     path: 'details/:type/:id',
     loadComponent: () =>
       import('./pages/tution-details/tution-details').then((m) => m.TutionDetails),
+    resolve: { preload: syllabusResolver }
   },
   { path: '**', redirectTo: '' },
 ];

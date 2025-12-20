@@ -15,7 +15,7 @@
     </header>
 
     <!-- ================= OVERVIEW (FIRST) ================= -->
-    <section *ngIf="type === 'class'" class="section overview-section">
+    <section class="section overview-section">
       <h2 class="section-title">Class Progress Overview</h2>
 
       <div class="batch-grid">
@@ -60,14 +60,56 @@
       </div>
     </section>
 
+    <!-- ================= UPCOMING CLASSES (SECOND) ================= -->
+    <section class="section upcoming-section" *ngIf="upcomingClasses()?.length">
+      <h2 class="section-title">Upcoming Classes</h2>
+
+      <div class="upcoming-grid">
+        <div
+          class="upcoming-card"
+          *ngFor="let cls of upcomingClasses(); let i = index"
+          (click)="openClass(cls)"
+        >
+          <!-- HEADER -->
+          <div class="upcoming-header">
+            <h3 class="upcoming-title">{{ cls.title }}</h3>
+            <span class="upcoming-subject">{{ cls.subject }}</span>
+          </div>
+
+          <!-- META -->
+          <div class="upcoming-meta">
+            <span>⏱ {{ cls.duration }} mins</span>
+            <span>👥 {{ cls.interested }} interested</span>
+            <span>📅 {{ cls.startsAt | date : 'mediumDate' }}</span>
+          </div>
+
+          <!-- ACTION -->
+          <div class="upcoming-action">
+            <button
+              class="btn btn-outline-primary btn-sm"
+              (click)="markInterested(cls); $event.stopPropagation()"
+            >
+              I'm Interested
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMPTY STATE -->
+      <content-placeholder
+        *ngIf="upcomingClasses()?.length === 0"
+        message="No upcoming classes scheduled yet."
+      ></content-placeholder>
+    </section>
+
     <!-- ================= ROADMAP (DETAILED) ================= -->
-    <section *ngIf="type === 'class'" class="section">
+    <section class="section">
       <h2 class="section-title">Detailed Roadmap</h2>
-      <timetable [type]="type" [classId]="id"></timetable>
+      <timetable></timetable>
     </section>
 
     <!-- ================= EXAM PREP ================= -->
-    <section *ngIf="type === 'class'" class="section">
+    <section class="section">
       <h2 class="section-title">Exam Preparation</h2>
 
       <div class="prep-list">
