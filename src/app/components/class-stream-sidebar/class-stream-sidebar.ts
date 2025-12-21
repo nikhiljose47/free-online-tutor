@@ -76,6 +76,8 @@ export class ClassStreamSidebar implements OnDestroy {
 
   open(item: any) {
     this.uiUtil.set(item.id, item);
+    console.log(item.id)
+    console.log(this.uiUtil.get(item.id));
     this.router.navigate(['/join-tution', item.id]);
   }
 

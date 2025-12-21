@@ -8,5 +8,7 @@ export const environment = {
     messagingSenderId: '1075520564177',
     appId: '1:1075520564177:web:120808765ddd8c64a70ef0',
   },
+  ADMIN_KEY: 'Z!gzag@07z55',
   syllabusApiBaseUrl: 'https://authentication-785fd.web.app',
+  attendanceApi: 'https://user-attendance.nikhiljose47.workers.dev',
 };

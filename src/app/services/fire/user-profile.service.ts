@@ -15,10 +15,11 @@ export class UserProfileService {
         this.profile.set(null);
         return;
       }
-
-      this.fire
-        .getOnce('users', user.uid)
-        .subscribe((res) => this.profile.set(res.data as UserProfile));
+      this.fire.getOnce('users', user.uid).subscribe((res) => {
+        let profile = res.data as UserProfile;
+        profile.uid = user.uid;
+        this.profile.set(profile);
+      });
     });
   }
 }

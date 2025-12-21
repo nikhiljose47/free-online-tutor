@@ -5,24 +5,41 @@ import { Meeting } from '../../models/meeting.model';
 import { UiStateUtil } from '../../utils/ui-state.utils';
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { Timestamp } from '@angular/fire/firestore';
+import { AttendanceApiService } from '../../services/http/attendance-api.service';
+import { UserProfileService } from '../../services/fire/user-profile.service';
+import { UserProfile } from '../../models/user-profile.model';
+import { forkJoin } from 'rxjs';
+import { ContentPlaceholder } from '../../components/content-placeholder/content-placeholder';
+import { DotLoader } from '../../components/dot-loader/dot-loader';
+import { error } from 'console';
+import { ToastService } from '../../services/shared/toast.service';
 
 @Component({
   selector: 'join-tution',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ContentPlaceholder, DotLoader],
   templateUrl: './join-tution.html',
   styleUrls: ['./join-tution.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JoinTution implements OnInit {
   private route = inject(ActivatedRoute);
+  private profileApi = inject(UserProfileService);
   private uiUtil = inject(UiStateUtil);
   private syllabus = inject(SyllabusLookupService);
+  private attendanceApi = inject(AttendanceApiService);
+  private toastApi = inject(ToastService);
 
   /* ---------------- derived (simple values) ---------------- */
-  meeting = signal<Meeting | null>(null);
+
+  isLoading = signal<boolean>(true);
+  hasErr = signal<boolean>(true);
+  errMsg = signal<string>('We are facing some issue..');
+  hasmarkedInterest = signal<boolean>(false);
+
+  meeting!: Meeting;
+  profile!: UserProfile;
   banner: string = '/assets/fam-problem.jpg';
-  meetingId!: string;
   students: number = 15;
   rating: number = 4.7;
   title = '';
@@ -30,33 +47,84 @@ export class JoinTution implements OnInit {
   joinLink = '';
   duration = '30m - 40 min';
   description = 'desc';
+  users: Array<string> = [];
   isUpcoming: boolean = false;
 
   ngOnInit(): void {
-    this.meetingId = this.route.snapshot.paramMap.get('meetingId')!;
+    const meetingId = this.route.snapshot.paramMap.get('meetingId')!;
+    const m = this.uiUtil.get<Meeting>(meetingId);
 
-    const m = this.uiUtil.get<Meeting>(this.meetingId);
-    if (!m) return;
+    if (!m) {
+      this.isLoading.set(false);
+      this.errMsg.set('No data found');
+      return;
+    }
+    this.meeting = m;
+    //Meeting data loaded.
 
-    this.meeting.set(m);
+    const profile = this.profileApi.profile();
+    if (!profile) {
+      this.isLoading.set(false);
+      this.errMsg.set('No user found!');
+      return;
+    }
+    this.profile = profile;
 
+    this.loadAttendanceAndUsers(m).subscribe({
+      next: (res) => {
+        this.hasmarkedInterest.set(res.attended.attended);
+        this.users = res.users.users;
+        this.isLoading.set(false);
+        this.hasErr.set(false);
+      },
+      error: (err) => {
+        //Attendance/User load failed' +
+        console.log('Attendance/User load failed');
+        console.log(err);
+        this.errMsg.set('Server error while fetching data..');
+        this.isLoading.set(false);
+        this.hasErr.set(true);
+      },
+    });
+
+    this.setData();
+  }
+
+  setData() {
+    let meeting = this.meeting;
     /* hydrate UI fields once */
-    this.teacher = m.teacherName;
-    this.joinLink = m.meetLink;
+    this.teacher = meeting.teacherName;
+    this.joinLink = meeting.meetLink;
 
-    if (m.date > Timestamp.fromDate(new Date())) {
+    if (meeting.date > Timestamp.fromDate(new Date())) {
       this.isUpcoming = true;
     }
 
-    const chapter = this.syllabus.getChapterByCode(m.chapterCode);
+    const chapter = this.syllabus.getChapterByCode(meeting.chapterCode);
     this.title = chapter?.chapter.name ?? '';
   }
 
-  goToJoin(): void {
-    if (this.isUpcoming) {
-      return;
-    }
-    if (this.joinLink) {
+  loadAttendanceAndUsers(meeting: Meeting) {
+    return forkJoin({
+      attended: this.attendanceApi.hasAttendedToday(this.profile.uid, meeting.classId),
+      users: this.attendanceApi.getUsersBySubjectCode(meeting.classId, 1, 50),
+    });
+  }
+
+  onClickInterestBtn(): void {
+    if (this.isUpcoming && !this.hasmarkedInterest()) {
+      this.attendanceApi
+        .markAttendanceOnce(this.profile.uid, this.meeting.classId ?? '')
+        .subscribe({
+          next: (s) => {
+            this.hasmarkedInterest.set(true);
+          },
+          error: (err) => {
+            let text = 'Err:' + err + '.Please try again.';
+            this.toastApi.show(text);
+          },
+        });
+    } else if (this.joinLink) {
       window.open(this.joinLink, '_blank');
     }
   }

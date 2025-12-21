@@ -1,66 +1,83 @@
-<!-- BANNER -->
-<div class="join-banner position-relative">
-  <img [src]="banner" class="banner-img" alt="class banner" />
+<dot-loader *ngIf="isLoading(); else hasError"></dot-loader>
 
-  <div class="banner-overlay"></div>
+<ng-template #hasError>
+  <content-placeholder *ngIf="hasErr(); else hasData" [message]="errMsg()"></content-placeholder>
+</ng-template>
 
-  <!-- SHARE BUTTON -->
-  <button class="share-btn d-flex align-items-center gap-1" (click)="shareClass()">
-    <i class="bi bi-share"></i> Share
-  </button>
+<ng-template #hasData>
+  <div class="join-banner position-relative">
+    <img [src]="banner" class="banner-img" alt="class banner" />
 
-  <div class="banner-content d-flex justify-content-between align-items-end">
-    <div>
-      <h1 class="title">
-        {{ title }}
-      </h1>
+    <div class="banner-overlay"></div>
 
-      <p class="teacher">By {{ teacher }}</p>
+    <!-- SHARE BUTTON -->
+    <button class="share-btn d-flex align-items-center gap-1" (click)="shareClass()">
+      <i class="bi bi-share"></i> Share
+    </button>
 
-      <!-- Duration -->
-      <span class="duration small">
-        {{ duration }}
-      </span>
+    <div class="banner-content d-flex justify-content-between align-items-end">
+      <div>
+        <h1 class="title">
+          {{ title }}
+        </h1>
+
+        <p class="teacher">By {{ teacher }}</p>
+
+        <!-- Duration -->
+        <span class="duration small">
+          {{ duration }}
+        </span>
+      </div>
+
+      <!-- DESKTOP JOIN BUTTON -->
+      <button
+        type="button"
+        class="btn btn-danger join-btn d-none d-md-inline-flex"
+        (click)="onClickInterestBtn()"
+        [disabled]="hasmarkedInterest()"
+      >
+        {{ hasmarkedInterest() ? 'Interested!' : !isUpcoming ? 'Join Class' : 'I will attend' }}
+      </button>
     </div>
+  </div>
 
-    <!-- DESKTOP JOIN BUTTON -->
-    <button class="btn btn-danger join-btn d-none d-md-inline-flex" (click)="goToJoin()">
-      {{ !isUpcoming ? 'Join Class' : 'Interested' }}
+  <!-- MOBILE JOIN BUTTON -->
+  <div class="mobile-join d-md-none">
+    <button
+      type="button"
+      class="btn btn-danger w-100 py-3"
+      (click)="onClickInterestBtn()"
+      [disabled]="hasmarkedInterest()"
+    >
+      {{ !isUpcoming ? 'Join Class' : 'I will attend' }}
     </button>
   </div>
-</div>
 
-<!-- MOBILE JOIN BUTTON -->
-<div class="mobile-join d-md-none">
-  <button class="btn btn-danger w-100 py-3" (click)="goToJoin()">
-    {{ !isUpcoming ? 'Join Class' : 'Interested' }}
-  </button>
-</div>
+  <!-- DETAILS -->
+  <div class="container mt-4">
+    <h3 class="section-title">About this class</h3>
 
-<!-- DETAILS -->
-<div class="container mt-4">
-  <h3 class="section-title">About this class</h3>
+    <p class="desc">
+      {{ description }}
+    </p>
 
-  <p class="desc">
-    {{ description }}
-  </p>
+    <div class="stats-box mt-4">
+      <div class="stat">
+        <span class="value"> {{ students }}+ </span>
+        <span class="label"> Students Joined </span>
+      </div>
 
-  <div class="stats-box mt-4">
-    <div class="stat">
-      <span class="value"> {{ students }}+ </span>
-      <span class="label"> Students Joined </span>
-    </div>
+      <div class="stat">
+        <span class="value">
+          {{ rating }}
+        </span>
+        <span class="label"> Rating </span>
+      </div>
 
-    <div class="stat">
-      <span class="value">
-        {{ rating }}
-      </span>
-      <span class="label"> Rating </span>
-    </div>
-
-    <div class="stat">
-      <span class="value"> NCERT + ICSE </span>
-      <span class="label"> Curriculum </span>
+      <div class="stat">
+        <span class="value"> NCERT + ICSE </span>
+        <span class="label"> Curriculum </span>
+      </div>
     </div>
   </div>
-</div>
+</ng-template>

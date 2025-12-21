@@ -1,6 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { of, tap } from 'rxjs';
-import { environment } from '../environments/environment.prod';
+import { environment } from '../../environments/environment.prod';
 
 const cache = new Map<string, any>();
 

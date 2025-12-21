@@ -5,6 +5,7 @@ export interface UserProfile {
   name: string;
   email: string;
   role: UserRole;
+  mobile?: string;
   avatar?: string;
-  createdAt?: number;
+  createdAt: number;
 }
