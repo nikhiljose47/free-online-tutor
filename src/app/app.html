@@ -1,13 +1,18 @@
 <div class="app-root">
   <topbar></topbar>
 
-  <div class="layout">
-    <class-stream-sidebar class="sidebar"></class-stream-sidebar>
+  <!-- 🔑 THIS LINE IS THE FIX -->
+  <div class="layout" [class.sidebar-collapsed]="isSidebarCollapsed()">
+    <class-stream-sidebar
+      class="sidebar"
+      (collapsedChange)="onSidebarToggle($event)">
+    </class-stream-sidebar>
+
     <div class="right">
       <announcement-bar></announcement-bar>
+
       <main class="content">
         <toast></toast>
-        <loader *ngIf="false" text="The classes are loading..."></loader>
         <router-outlet></router-outlet>
       </main>
     </div>

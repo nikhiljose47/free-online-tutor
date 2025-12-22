@@ -12,8 +12,8 @@
     <div class="live-item" *ngFor="let item of live()" (click)="open(item)">
       <img class="avatar-live" [src]="item.image || 'assets/abbu.jpg'" />
       <div class="info">
-        <div class="title">{{ item.chapterCode }}</div>
-        <div class="subject">{{ item.date.toDate() | date : 'shortTime' }}</div>
+        <div class="title">{{ item.subjectId }}</div>
+        <div class="subject">{{ item.date.toDate() | date : 'MMM d, y, h:mm:ss a' }}</div>
       </div>
       <div class="status-box">
         <span class="red-dot"></span>
@@ -27,8 +27,8 @@
     <div class="live-item" *ngFor="let item of upcoming()" (click)="open(item)">
       <img class="avatar" [src]="item.image || 'assets/abbu.jpg'" />
       <div class="info">
-        <div class="title">{{ item.chapterCode }}</div>
-        <div class="subject">{{ item.date.toDate() | date : 'h:mm a, d MMM' }}</div>
+        <div class="title">{{ item.subjectId }}</div>
+        <div class="subject">{{ item.date.toDate() | date : 'd/M, h:mm a' }}</div>
       </div>
       <div class="status-box upcoming-clock">
         <i class="bi bi-clock"></i>

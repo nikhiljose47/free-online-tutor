@@ -5,6 +5,8 @@ import {
   signal,
   computed,
   ChangeDetectionStrategy,
+  EventEmitter,
+  Output,
 } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
@@ -20,17 +22,20 @@ import { UiStateUtil } from '../../utils/ui-state.utils';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClassStreamSidebar implements OnDestroy {
+  @Output() collapsedChange = new EventEmitter<boolean>();
+
   private meetApi = inject(MeetingsService);
   private router = inject(Router);
-  private uiUtil = inject(UiStateUtil)
+  private uiUtil = inject(UiStateUtil);
+
   allMeetings = signal<any[]>([]);
   now = signal(new Date());
   error = signal<string | null>(null);
   loading = signal(true);
-
   collapsed = signal(false);
 
   private clockId!: any;
+  
   constructor() {
     this.meetApi.getLiveMeetings().subscribe((res) => {
       this.loading.set(false);
@@ -76,13 +81,12 @@ export class ClassStreamSidebar implements OnDestroy {
 
   open(item: any) {
     this.uiUtil.set(item.id, item);
-    console.log(item.id)
-    console.log(this.uiUtil.get(item.id));
     this.router.navigate(['/join-tution', item.id]);
   }
 
   toggleSidebar() {
     this.collapsed.update((v) => !v);
+    this.collapsedChange.emit(this.collapsed());
   }
 
   ngOnDestroy() {

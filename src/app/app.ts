@@ -23,4 +23,9 @@ import { ClassStreamSidebar } from './components/class-stream-sidebar/class-stre
 })
 export class App {
   protected readonly title = signal('free-online-tutor');
+  isSidebarCollapsed = signal(false);
+
+  onSidebarToggle(collapsed: boolean): void {
+    this.isSidebarCollapsed.set(collapsed);
+  }
 }

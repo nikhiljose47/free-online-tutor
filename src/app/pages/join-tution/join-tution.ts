@@ -11,8 +11,8 @@ import { UserProfile } from '../../models/user-profile.model';
 import { forkJoin } from 'rxjs';
 import { ContentPlaceholder } from '../../components/content-placeholder/content-placeholder';
 import { DotLoader } from '../../components/dot-loader/dot-loader';
-import { error } from 'console';
 import { ToastService } from '../../services/shared/toast.service';
+import { user } from '@angular/fire/auth';
 
 @Component({
   selector: 'join-tution',
@@ -40,7 +40,7 @@ export class JoinTution implements OnInit {
   meeting!: Meeting;
   profile!: UserProfile;
   banner: string = '/assets/fam-problem.jpg';
-  students: number = 15;
+  students: number = 1;
   rating: number = 4.7;
   title = '';
   teacher = '';
@@ -79,8 +79,6 @@ export class JoinTution implements OnInit {
       },
       error: (err) => {
         //Attendance/User load failed' +
-        console.log('Attendance/User load failed');
-        console.log(err);
         this.errMsg.set('Server error while fetching data..');
         this.isLoading.set(false);
         this.hasErr.set(true);
@@ -95,6 +93,7 @@ export class JoinTution implements OnInit {
     /* hydrate UI fields once */
     this.teacher = meeting.teacherName;
     this.joinLink = meeting.meetLink;
+    this.students = this.users.length + 2;
 
     if (meeting.date > Timestamp.fromDate(new Date())) {
       this.isUpcoming = true;

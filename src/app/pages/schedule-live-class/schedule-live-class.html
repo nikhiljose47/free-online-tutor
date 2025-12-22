@@ -56,24 +56,7 @@
 
   <!-- VIEW MODE -->
   <div *ngIf="mode() === 'view' && selectedMeeting()" class="details-card mx-auto">
-    <h6 class="fw-bold mb-2">Class Details</h6>
-
-    <div class="detail-row">
-      <span>Chapter</span>
-      <span>{{ selectedMeeting()!.chapterCode }}</span>
-    </div>
-
-    <div class="detail-row">
-      <span>Batch</span>
-      <span>{{ selectedMeeting()!.batchId }}</span>
-    </div>
-
-    <div class="detail-row">
-      <span>Attendance</span>
-      <span>{{ selectedMeeting()!.attendance.length }}</span>
-    </div>
-
-    <button class="btn btn-danger btn-sm mt-3" (click)="endClass()">End Class</button>
+    <class-wrapup [meetId]="selectedMeeting()?.id ?? ''"></class-wrapup>
   </div>
 
   <!-- CREATE MODE -->

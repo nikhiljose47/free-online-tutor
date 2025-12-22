@@ -16,11 +16,13 @@ import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
 import { Meeting } from '../../models/meeting.model';
 import { PART1, COMPLETED, GLOBAL_MEETINGS } from '../../core/constants/app.constants';
 import { Auth2Service } from '../../services/fire/auth2.service';
+import { ClassWrapup } from '../../components/class-wrapup/class-wrapup';
+import { UiStateUtil } from '../../utils/ui-state.utils';
 
 @Component({
   selector: 'schedule-live-class',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ClassWrapup],
   templateUrl: './schedule-live-class.html',
   styleUrl: './schedule-live-class.scss',
 })
@@ -31,6 +33,7 @@ export class ScheduleLiveClass implements OnInit {
   private user = inject(UserProfileService);
   private fire = inject(FirestoreDocService);
   private authApi = inject(Auth2Service);
+  private uiStateUtil = inject(UiStateUtil);
   profile = inject(UserProfileService).profile;
   /* ------------------ UI state ------------------ */
   meetings = signal<Meeting[]>([]);
@@ -70,14 +73,14 @@ export class ScheduleLiveClass implements OnInit {
     this.meetApi.getLiveMeetingsByTeacher(this.teacherId).subscribe((res) => {
       if (res.ok && res.data) {
         this.meetings.set(res.data as Meeting[]);
+        this.meetings().forEach((e) => this.uiStateUtil.set(e.id, e));
       }
     });
   }
 
   trackByMeetingId(index: number, m: Meeting) {
-  return m.id;
-}
-
+    return m.id;
+  }
 
   /* ------------------ UI actions ------------------ */
   selectMeeting(m: Meeting) {

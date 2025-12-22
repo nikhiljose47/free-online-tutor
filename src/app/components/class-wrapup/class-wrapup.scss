@@ -1,0 +1,188 @@
+/* ===============================
+   WRAP-UP CONTAINER
+================================ */
+.class-wrapup {
+  margin-top: 28px;
+  padding: 18px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #f9fafb, #ffffff);
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* ===============================
+   HEADER
+================================ */
+.wrapup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wrapup-header .info {
+  .class-name {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #111827;
+  }
+
+  .meta {
+    font-size: 0.8rem;
+    color: #6b7280;
+  }
+}
+
+.badge.ended {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ===============================
+   SECTION BASE
+================================ */
+.wrapup-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #1f2937;
+}
+
+/* ===============================
+   ATTENDANCE (PRIMARY)
+================================ */
+.wrapup-section.attendance {
+  padding: 14px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #eef6ff, #ffffff);
+  border: 1px solid #dbeafe;
+}
+
+/* Chips wrapper */
+.students-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Student chip */
+.student-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: 0.15s ease;
+
+  input {
+    display: none;
+  }
+
+  &:hover {
+    background: #e0e7ff;
+  }
+
+  input:checked + span {
+    color: #1d4ed8;
+  }
+
+  input:checked ~ &,
+  &:has(input:checked) {
+    background: #dbeafe;
+    border-color: #93c5fd;
+  }
+}
+
+/* Hint */
+.hint {
+  font-size: 0.7rem;
+  color: #6b7280;
+}
+
+/* ===============================
+   NEXT CLASS
+================================ */
+.wrapup-section.next-class {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+
+  .current {
+    font-size: 0.8rem;
+    color: #374151;
+  }
+}
+
+/* ===============================
+   FEEDBACK
+================================ */
+.wrapup-section.feedback textarea {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  resize: none;
+  outline: none;
+
+  &:focus {
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 2px rgba(147, 197, 253, 0.3);
+  }
+}
+
+/* ===============================
+   FOOTER ACTION
+================================ */
+.wrapup-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.end-btn {
+  padding: 10px 22px;
+  font-weight: 800;
+  border-radius: 12px;
+}
+
+/* ===============================
+   MOBILE TUNING
+================================ */
+@media (max-width: 768px) {
+  .wrapup-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .wrapup-section.next-class {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .end-btn {
+    width: 100%;
+  }
+}

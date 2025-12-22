@@ -1,0 +1,70 @@
+<dot-loader *ngIf="isLoading(); else loaded"></dot-loader>
+
+<ng-template #loaded>
+  <section class="class-wrapup">
+    <!-- ================= 1. CLASS SUMMARY ================= -->
+    <div class="wrapup-header">
+      <div class="info">
+        <h3 class="class-name">{{ meeting.classId }} · {{ meeting.subjectId }}</h3>
+        <span class="meta">
+          {{ meeting.date.toDate() | date : 'shortTime' }}
+          –
+          {{ meeting.endAt.toDate() | date : 'shortTime' }}
+        </span>
+      </div>
+
+      <span class="badge ended">Class Ended</span>
+    </div>
+
+    <!-- ================= 2. ATTENDANCE (PRIMARY) ================= -->
+    <div class="wrapup-section attendance">
+      <h4 class="section-title">Mark Attendance</h4>
+
+      <div class="students-wrap">
+        <label class="student-chip" *ngFor="let s of students()">
+          <input type="checkbox" [checked]="s.present" (change)="toggleAttendance(s)" />
+          <span>{{ s.name }}</span>
+        </label>
+      </div>
+
+      <small class="hint"> Tap names to quickly mark who attended </small>
+    </div>
+
+    <!-- ================= 3. NEXT CLASS ================= -->
+    <div class="wrapup-section next-class">
+      <div class="next-left">
+        <h4 class="section-title">Continue This Topic</h4>
+        <p class="current">
+          Current Chapter:
+          <b>{{ meeting.chapterCode }}</b>
+        </p>
+      </div>
+
+      <button class="btn btn-outline-primary" (click)="scheduleNextClass()">
+        Schedule Next Class
+      </button>
+    </div>
+
+    <!-- ================= 4. FEEDBACK ================= -->
+    <div class="wrapup-section feedback">
+      <h4 class="section-title">Class Feedback</h4>
+
+      <textarea
+        rows="3"
+        placeholder="How was today’s class? Any notes for yourself…"
+        (input)="feedback.set($any($event.target).value)"
+      ></textarea>
+    </div>
+
+    <!-- ================= 5. END ACTION ================= -->
+    <div class="wrapup-footer">
+      <button
+        class="btn btn-danger end-btn"
+        [disabled]="isSavingAttendance()"
+        (click)="endAndSaveClass()"
+      >
+        End & Save Class
+      </button>
+    </div>
+  </section>
+</ng-template>
