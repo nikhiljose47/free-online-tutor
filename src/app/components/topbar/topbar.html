@@ -7,18 +7,20 @@
     </a>
 
     <!-- SEARCH -->
-    <div class="search-area d-none d-md-flex">
+    <div class="search-area d-none d-md-flex" (click)="$event.stopPropagation()">
       <input
+        #myInput
         type="text"
         class="search-input"
         placeholder="Search classes, topics, exams..."
-        (input)="ss.query.set($any($event.target).value)"
+        (focus)="ss.open.set(true)"
+        (input)="onSearchInput($any($event.target).value)"
       />
-      <button class="search-btn">
+      <button class="search-btn" (click)="ss.open.set(true)">
         <i class="bi bi-search"></i>
       </button>
 
-      <ul *ngIf="ss.results().length" class="search-results">
+      <ul *ngIf="ss.open() && ss.results().length" class="search-results">
         <li *ngFor="let item of ss.results()" (mousedown)="ss.navigate(item.route)">
           {{ item.label }}
         </li>
@@ -36,6 +38,7 @@
         <a *ngIf="profile()?.role === 'teacher'" class="topbar-link" routerLink="/schedule"
           >Schedule</a
         >
+      
         <a class="topbar-link" routerLink="/teachers">Teachers</a>
         <a class="topbar-link" routerLink="/hopin">Hop-in</a>
         <a class="topbar-link" routerLink="/report-card">Report Card</a>

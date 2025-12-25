@@ -1,6 +1,9 @@
 <div class="learning-home container">
   <!-- SECTION: CLASS CATEGORY GRID -->
   <section class="section">
+    <home-intro-strip></home-intro-strip>
+  </section>
+  <section class="section">
     <h2 class="section-title">CBSE & ICSE Classes</h2>
 
     <!-- SKELETON -->
@@ -12,7 +15,7 @@
     <ng-template #classData>
       <div class="grid">
         <div class="simple-card" *ngFor="let cls of classCategories()" (click)="openCategory(cls)">
-          <img src="./assets/roadmap.jpg" class="banner" />
+          <img [src]="cls.image" class="banner" />
 
           <div class="info">
             <h3 class="title">{{ cls.name }}</h3>
@@ -69,7 +72,8 @@
     </section>
     <div class="grid">
       <div class="simple-card" *ngFor="let jam of actSessions()" (click)="joinJam(jam)">
-        <div class="svg-card" [innerHTML]="svg()"></div>
+        <img [src]="jam.image" class="banner" />
+        <!-- <div class="svg-card" [innerHTML]="svg()"></div> -->
 
         <div class="info">
           <div class="jam-head">

@@ -39,7 +39,7 @@ export class JoinTution implements OnInit {
 
   meeting!: Meeting;
   profile!: UserProfile;
-  banner: string = '/assets/fam-problem.jpg';
+  banner: string = '/assets/cover/hi-text.webp';
   students: number = 1;
   rating: number = 4.7;
   title = '';

@@ -46,7 +46,6 @@
   background: #35353c;
 }
 
-
 /* SEARCH */
 .search-area {
   position: relative;
@@ -59,6 +58,7 @@
   flex: 1;
   background: #18181b;
   border: none;
+  margin-right: 2px;
   padding: 6px 10px;
   color: #fff;
 }
@@ -78,10 +78,12 @@
   background: #111;
   z-index: 103;
   margin-top: 4px;
+  list-style-type: none;
+  padding-left: 16px;
 }
 
 .search-results li {
-  padding: 6px 12px;
+  padding: 6px 12px 6px 0px;
   color: #fff;
   cursor: pointer;
 }

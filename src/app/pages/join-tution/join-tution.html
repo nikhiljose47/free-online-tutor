@@ -1,83 +1,67 @@
 <dot-loader *ngIf="isLoading(); else hasError"></dot-loader>
 
 <ng-template #hasError>
-  <content-placeholder *ngIf="hasErr(); else hasData" [message]="errMsg()"></content-placeholder>
+  <content-placeholder *ngIf="hasErr(); else hasData" [message]="errMsg()"> </content-placeholder>
 </ng-template>
 
 <ng-template #hasData>
-  <div class="join-banner position-relative">
-    <img [src]="banner" class="banner-img" alt="class banner" />
+  <section class="class-layout">
+    <!-- LEFT : PURE BOOK COVER (NO UI ELEMENTS) -->
+    <aside class="class-cover">
+      <img [src]="banner" alt="class banner" class="cover-img" />
+    </aside>
 
-    <div class="banner-overlay"></div>
+    <!-- RIGHT : ALL CONTENT + ACTIONS -->
+    <main class="class-details">
+      <!-- TOP ACTION ROW -->
+      <div class="details-header">
+        <button class="share-btn" (click)="shareClass()"><i class="bi bi-share"></i> Share</button>
 
-    <!-- SHARE BUTTON -->
-    <button class="share-btn d-flex align-items-center gap-1" (click)="shareClass()">
-      <i class="bi bi-share"></i> Share
-    </button>
-
-    <div class="banner-content d-flex justify-content-between align-items-end">
-      <div>
-        <h1 class="title">
-          {{ title }}
-        </h1>
-
-        <p class="teacher">By {{ teacher }}</p>
-
-        <!-- Duration -->
-        <span class="duration small">
-          {{ duration }}
-        </span>
+        <button
+          class="cta-btn d-none d-md-inline-flex"
+          (click)="onClickInterestBtn()"
+          [disabled]="hasmarkedInterest()"
+        >
+          {{ hasmarkedInterest() ? 'Interested' : !isUpcoming ? 'Join Class' : 'I will attend' }}
+        </button>
       </div>
 
-      <!-- DESKTOP JOIN BUTTON -->
-      <button
-        type="button"
-        class="btn btn-danger join-btn d-none d-md-inline-flex"
-        (click)="onClickInterestBtn()"
-        [disabled]="hasmarkedInterest()"
-      >
-        {{ hasmarkedInterest() ? 'Interested!' : !isUpcoming ? 'Join Class' : 'I will attend' }}
-      </button>
-    </div>
-  </div>
+      <!-- TITLE BLOCK -->
+      <div class="title-block">
+        <h1 class="title">{{ title }}</h1>
+        <p class="teacher">By {{ teacher }}</p>
+        <span class="duration">{{ duration }}</span>
+      </div>
 
-  <!-- MOBILE JOIN BUTTON -->
+      <!-- DETAILS -->
+      <section class="details-block">
+        <h3 class="section-title">About this class</h3>
+        <p class="desc">{{ description }}</p>
+
+        <div class="stats-box">
+          <div class="stat">
+            <span class="value">{{ students }}+</span>
+            <span class="label">Students interested</span>
+          </div>
+
+          <div class="stat">
+            <span class="value">{{ rating }}</span>
+            <span class="label">Rating</span>
+          </div>
+
+          <div class="stat">
+            <span class="value">NCERT + ICSE</span>
+            <span class="label">Curriculum</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </section>
+
+  <!-- MOBILE CTA -->
   <div class="mobile-join d-md-none">
-    <button
-      type="button"
-      class="btn btn-danger w-100 py-3"
-      (click)="onClickInterestBtn()"
-      [disabled]="hasmarkedInterest()"
-    >
+    <button class="cta-btn w-100" (click)="onClickInterestBtn()" [disabled]="hasmarkedInterest()">
       {{ !isUpcoming ? 'Join Class' : 'I will attend' }}
     </button>
-  </div>
-
-  <!-- DETAILS -->
-  <div class="container mt-4">
-    <h3 class="section-title">About this class</h3>
-
-    <p class="desc">
-      {{ description }}
-    </p>
-
-    <div class="stats-box mt-4">
-      <div class="stat">
-        <span class="value"> {{ students }}+ </span>
-        <span class="label"> Students interested </span>
-      </div>
-
-      <div class="stat">
-        <span class="value">
-          {{ rating }}
-        </span>
-        <span class="label"> Rating </span>
-      </div>
-
-      <div class="stat">
-        <span class="value"> NCERT + ICSE </span>
-        <span class="label"> Curriculum </span>
-      </div>
-    </div>
   </div>
 </ng-template>

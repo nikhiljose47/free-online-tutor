@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { buildSvg, SvgCardConfig } from '../../utils/svg-loader.utils';
+import { HomeIntroStrip } from '../../components/home-intro-strip/home-intro-strip';
 
 export interface RoadmapCard {
   title: string;
@@ -24,7 +25,7 @@ export interface LiveClassModel {
 
 @Component({
   selector: 'free-online-tutor',
-  imports: [CommonModule],
+  imports: [CommonModule, HomeIntroStrip],
   templateUrl: './free-online-tutor.html',
   styleUrl: './free-online-tutor.scss',
 })
@@ -55,7 +56,7 @@ export class FreeOnlineTutor implements OnInit {
       students: 120,
       teachers: 4,
       medium: ['EN', 'HI'],
-      image: '/assets/fam-problem.jpg',
+      image: '/assets/card-covers/class1.webp',
     },
     {
       id: 'CL2',
@@ -63,7 +64,7 @@ export class FreeOnlineTutor implements OnInit {
       students: 160,
       teachers: 5,
       medium: ['EN'],
-      image: '/assets/fam-problem.jpg',
+      image: '/assets/card-covers/class2.webp',
     },
     {
       id: 'CL3',
@@ -71,7 +72,7 @@ export class FreeOnlineTutor implements OnInit {
       students: 210,
       teachers: 6,
       medium: ['HI'],
-      image: '/assets/fam-problem.jpg',
+      image: '/assets/card-covers/class3.webp',
     },
     {
       id: 'CL4',
@@ -79,7 +80,7 @@ export class FreeOnlineTutor implements OnInit {
       students: 10,
       teachers: 3,
       medium: ['HI'],
-      image: '/assets/fam-problem.jpg',
+      image: '/assets/card-covers/class4.webp',
     },
     {
       id: 'CL5',
@@ -87,7 +88,7 @@ export class FreeOnlineTutor implements OnInit {
       students: 10,
       teachers: 3,
       medium: ['HI'],
-      image: '/assets/fam-problem.jpg',
+      image: '/assets/card-covers/class5.webp',
     },
     {
       id: 'CL06',
@@ -95,7 +96,7 @@ export class FreeOnlineTutor implements OnInit {
       students: 10,
       teachers: 3,
       medium: ['HI'],
-      image: '/assets/fam-problem.jpg',
+      image: '/assets/card-covers/class6.webp',
     },
     {
       id: 'CL7',
@@ -154,7 +155,16 @@ export class FreeOnlineTutor implements OnInit {
       teacher: 'Ananya',
       lang: ['HI'],
       time: 'Soon',
-      image: '/assets/fam-problem.jpg',
+      image: '/assets/card-covers/general-aptitude.webp',
+    },
+       {
+      id: 'jam222',
+      title: 'Mental Support',
+      students: 140,
+      teacher: 'Ananya',
+      lang: ['HI'],
+      time: 'Soon',
+      image: '/assets/card-covers/general-aptitude.webp',
     },
   ]);
 

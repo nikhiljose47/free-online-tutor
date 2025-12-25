@@ -1,0 +1,107 @@
+<section class="pricing-section container my-5">
+  <h2 class="text-center mb-2">Simple, Transparent Pricing</h2>
+  <p class="text-center text-muted mb-4">Choose what fits you best. Upgrade anytime.</p>
+
+  <div class="row justify-content-center g-3">
+    <!-- FREE PLAN -->
+    <div class="col-md-5">
+      <div class="pricing-card free-card">
+        <h4 class="plan-title">Free</h4>
+        <p class="plan-desc">Ideal for getting started and exploring the platform.</p>
+
+        <!-- SECTION: Learning -->
+        <div class="feature-section">
+          <h6 class="section-title">Way of Teaching</h6>
+          <ul class="feature-list">
+            <li *ngFor="let f of freePlan.methodology"><span class="tick yes">{{f === ''?'&nbsp;': '✔' }}</span> {{ f }}</li>
+          </ul>
+        </div>
+
+        <!-- SECTION: Learning -->
+        <div class="feature-section">
+          <h6 class="section-title">Learning Access</h6>
+          <ul class="feature-list">
+            <li *ngFor="let f of freePlan.learning"><span class="tick yes">✔</span> {{ f }}</li>
+          </ul>
+        </div>
+
+        <!-- SECTION: Timings -->
+        <div class="feature-section">
+          <h6 class="section-title">Timings</h6>
+          <ul class="feature-list">
+            <li *ngFor="let f of freePlan.timings"><span class="tick yes">✔</span> {{ f }}</li>
+          </ul>
+        </div>
+
+        <!-- SECTION: Practice -->
+        <div class="feature-section">
+          <h6 class="section-title">Practice & Tests</h6>
+          <ul class="feature-list">
+            <li *ngFor="let f of freePlan.practice">
+              <span class="tick" [class.yes]="f.has" [class.no]="!f.has">
+                {{ f.has ? '✔' : '✖' }}
+              </span>
+              {{ f.label }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- PRICE + CTA -->
+        <div class="plan-footer">
+          <p class="plan-price">₹0<span>/month</span></p>
+          <button class="btn btn-outline-secondary w-100" (click)="selectFree()">
+            Continue Free
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRO PLAN -->
+    <div class="col-md-5">
+      <div class="pricing-card pro-card">
+        <div class="badge-popular">Most Popular</div>
+
+        <h4 class="plan-title">Pro</h4>
+        <p class="plan-desc">Designed for focused learning and exam success.</p>
+
+        <!-- SECTION: Learning -->
+        <div class="feature-section">
+          <h6 class="section-title">Way of Teaching</h6>
+          <ul class="feature-list">
+            <li *ngFor="let f of proPlan.methodology"><span class="tick yes">✔</span> {{ f }}</li>
+          </ul>
+        </div>
+
+        <!-- SECTION: Everything -->
+        <div class="feature-section">
+          <h6 class="section-title">Everything in Free</h6>
+          <ul class="feature-list">
+            <li *ngFor="let f of proPlan.core"><span class="tick yes">✔</span> {{ f }}</li>
+          </ul>
+        </div>
+
+        <!-- SECTION: Timings -->
+        <div class="feature-section">
+          <h6 class="section-title">Timings</h6>
+          <ul class="feature-list">
+            <li *ngFor="let f of proPlan.timings"><span class="tick yes">✔</span> {{ f }}</li>
+          </ul>
+        </div>
+
+        <!-- SECTION: Advanced -->
+        <div class="feature-section">
+          <h6 class="section-title">Advanced Features</h6>
+          <ul class="feature-list">
+            <li *ngFor="let f of proPlan.advanced"><span class="tick yes">✔</span> {{ f }}</li>
+          </ul>
+        </div>
+
+        <!-- PRICE + CTA -->
+        <div class="plan-footer">
+          <p class="plan-price">₹899<span>/month</span></p>
+          <button class="btn btn-dark w-100" (click)="selectPro()">Upgrade to Pro</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

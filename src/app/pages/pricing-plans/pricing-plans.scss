@@ -1,0 +1,155 @@
+.pricing-section {
+  max-width: 1100px;
+}
+
+/* ===============================
+   CARD BASE
+================================ */
+.pricing-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 26px 24px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+/* ===============================
+   FREE PLAN (muted)
+================================ */
+.free-card {
+  background: #f8f9fa;
+  border: 1px solid #e1e4e8;
+  opacity: 0.95;
+}
+
+/* ===============================
+   PRO PLAN (highlighted)
+================================ */
+.pro-card {
+  border: 2px solid #212529;
+  background: linear-gradient(
+    180deg,
+    #fdfdfd 0%,
+    #ffffff 100%
+  );
+}
+
+/* ===============================
+   BADGE
+================================ */
+.badge-popular {
+  position: absolute;
+  top: -12px;
+  right: 18px;
+  background: #212529;
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+/* ===============================
+   TEXT
+================================ */
+.plan-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.plan-desc {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 18px;
+}
+
+/* ===============================
+   FEATURE SECTIONS
+================================ */
+.feature-section {
+  margin-bottom: 18px;
+}
+
+.section-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #495057;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+/* ===============================
+   FEATURES LIST
+================================ */
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.feature-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  font-size: 0.9rem;
+  border-bottom: 1px dashed #dee2e6;
+}
+
+.feature-list li:last-child {
+  border-bottom: none;
+}
+
+.tick {
+  font-weight: 700;
+}
+
+.tick.yes {
+  color: #198754;
+}
+
+.tick.no {
+  color: #adb5bd;
+}
+
+/* ===============================
+   FOOTER (PRICE + CTA)
+================================ */
+.plan-footer {
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid #e9ecef;
+}
+
+.plan-price {
+  font-size: 1.9rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.plan-price span {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-left: 4px;
+}
+
+/* ===============================
+   BUTTONS
+================================ */
+.pricing-card .btn {
+  border-radius: 12px;
+  font-weight: 600;
+  padding: 10px;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+  .pricing-card {
+    padding: 22px 18px;
+  }
+}
