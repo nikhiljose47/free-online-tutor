@@ -2,6 +2,8 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.10.
 
+Syllabus data available at : https://nikhiljose47.github.io/free-online-tutor-syllabus/
+
 ## Development server
 
 To start a local development server, run:
