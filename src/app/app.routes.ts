@@ -18,9 +18,12 @@ import { StudentCreations } from './pages/student-creations/student-creations';
 import { ReportCard } from './components/report-card/report-card';
 import { syllabusResolver } from './resolvers/syllabus-resolver';
 import { PricingPlans } from './pages/pricing-plans/pricing-plans';
+import { syllabusIndexResolver } from './resolvers/index-resolver';
 
 export const routes: Routes = [
-  { path: '', component: FreeOnlineTutor },
+  { path: '', component: FreeOnlineTutor,
+    resolve: {preload: syllabusIndexResolver }
+   },
   { path: 'book/:id', component: BookingDrawerComponent },
   { path: 'class/:id', component: ClassDetailsComponent },
   { path: 'book-slot', component: BookSlotComponent },

@@ -9,7 +9,6 @@ import {
   FirestoreDocService,
 } from '../../services/fire/firestore-doc.service';
 import { GLOBAL_MEETINGS } from '../../core/constants/app.constants';
-import { TeachersPage } from '../../pages/teachers/teachers';
 
 @Injectable({ providedIn: 'root' })
 export class MeetingsService {

@@ -122,10 +122,8 @@ export class TutionDetails implements OnInit {
     participants: 140,
   });
 
-  /* ------------------ lifecycle ------------------ */
   ngOnInit(): void {
     this.loadClassDetails();
-    console.log(this.syllabus);
   }
 
   /* ------------------ helpers ------------------ */

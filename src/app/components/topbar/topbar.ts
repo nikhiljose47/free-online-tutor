@@ -54,7 +54,6 @@ export class Topbar {
         this.menuOpen.set(false);
         this.ss.open.set(false);
         if (this.myInput()) {
-          console.log(this.myInput()?.nativeElement);
           this.renderer.setProperty(this.myInput()?.nativeElement, 'value', '');
         }
         if (this.inputEleRef) {

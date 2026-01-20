@@ -13,7 +13,9 @@
         <div class="feature-section">
           <h6 class="section-title">Way of Teaching</h6>
           <ul class="feature-list">
-            <li *ngFor="let f of freePlan.methodology"><span class="tick yes">{{f === ''?'&nbsp;': '✔' }}</span> {{ f }}</li>
+            <li *ngFor="let f of freePlan.methodology">
+              <span class="tick yes">{{ f === '' ? '&nbsp;' : '✔' }}</span> {{ f }}
+            </li>
           </ul>
         </div>
 
@@ -21,7 +23,18 @@
         <div class="feature-section">
           <h6 class="section-title">Learning Access</h6>
           <ul class="feature-list">
-            <li *ngFor="let f of freePlan.learning"><span class="tick yes">✔</span> {{ f }}</li>
+            <li *ngFor="let f of freePlan.learning">
+              <span class="tick yes">{{ f === '' ? '&nbsp;' : '✔' }}</span> {{ f }}
+            </li>
+          </ul>
+        </div>
+
+        <div class="feature-section">
+          <h6 class="section-title">Curriculam</h6>
+          <ul class="feature-list">
+            <li *ngFor="let f of freePlan.curriculam">
+              <span class="tick yes">{{ f === '' ? '&nbsp;' : '✔' }}</span> {{ f }}
+            </li>
           </ul>
         </div>
 
@@ -33,15 +46,35 @@
           </ul>
         </div>
 
+        <!-- SECTION: Strength -->
+        <div class="feature-section">
+          <h6 class="section-title">Class Strength</h6>
+          <ul class="feature-list">
+            <li *ngFor="let f of freePlan.classStrength">
+              <span class="tick yes">{{ f === '' ? '&nbsp;' : '✔' }}</span> {{ f }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- SECTION: Performance Check -->
+        <div class="feature-section">
+          <h6 class="section-title">Performance Check</h6>
+          <ul class="feature-list">
+            <li *ngFor="let f of freePlan.performanceReport">
+              <span class="tick yes">{{ f === '' ? '&nbsp;' : '✔' }}</span> {{ f }}
+            </li>
+          </ul>
+        </div>
+
         <!-- SECTION: Practice -->
         <div class="feature-section">
           <h6 class="section-title">Practice & Tests</h6>
           <ul class="feature-list">
             <li *ngFor="let f of freePlan.practice">
               <span class="tick" [class.yes]="f.has" [class.no]="!f.has">
-                {{ f.has ? '✔' : '✖' }}
+                {{ f.has ? '✖' : '&nbsp;' }}
               </span>
-              {{ f.label }}
+              {{ f.label === '' ? '&nbsp;' : f.label }}
             </li>
           </ul>
         </div>
@@ -74,9 +107,18 @@
 
         <!-- SECTION: Everything -->
         <div class="feature-section">
-          <h6 class="section-title">Everything in Free</h6>
+          <h6 class="section-title">Learning Access</h6>
           <ul class="feature-list">
             <li *ngFor="let f of proPlan.core"><span class="tick yes">✔</span> {{ f }}</li>
+          </ul>
+        </div>
+
+        <div class="feature-section">
+          <h6 class="section-title">Curriculam</h6>
+          <ul class="feature-list">
+            <li *ngFor="let f of proPlan.curriculam">
+              <span class="tick yes">{{ f === '' ? '&nbsp;' : '✔' }}</span> {{ f }}
+            </li>
           </ul>
         </div>
 
@@ -85,6 +127,26 @@
           <h6 class="section-title">Timings</h6>
           <ul class="feature-list">
             <li *ngFor="let f of proPlan.timings"><span class="tick yes">✔</span> {{ f }}</li>
+          </ul>
+        </div>
+
+        <!-- SECTION: Strength -->
+        <div class="feature-section">
+          <h6 class="section-title">Class Strength</h6>
+          <ul class="feature-list">
+            <li *ngFor="let f of proPlan.classStrength">
+              <span class="tick yes">{{ f === '' ? '&nbsp;' : '✔' }}</span> {{ f }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- SECTION: Performance Check -->
+        <div class="feature-section">
+          <h6 class="section-title">Performance Check</h6>
+          <ul class="feature-list">
+            <li *ngFor="let f of proPlan.performanceReport">
+              <span class="tick yes">{{ f === '' ? '&nbsp;' : '✔' }}</span> {{ f }}
+            </li>
           </ul>
         </div>
 
@@ -98,7 +160,7 @@
 
         <!-- PRICE + CTA -->
         <div class="plan-footer">
-          <p class="plan-price">₹899<span>/month</span></p>
+          <p class="plan-price">₹899<span>/3 months</span></p>
           <button class="btn btn-dark w-100" (click)="selectPro()">Upgrade to Pro</button>
         </div>
       </div>

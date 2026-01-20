@@ -9,7 +9,7 @@ export const CLASS7_SYLLABUS: ClassSyllabus = {
     // ---------------- MATHEMATICS ----------------
     Mathematics: {
       code: 'CL07-MATH',
-      chapters: [
+      chapters: [ 
         {
           code: 'CL07-MATH-01',
           name: 'Integers',

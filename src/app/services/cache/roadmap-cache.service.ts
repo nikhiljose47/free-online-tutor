@@ -1,9 +1,8 @@
 import { Injectable, signal } from '@angular/core';
-import { RoadmapCard } from '../../pages/free-online-tutor/free-online-tutor';
 
 @Injectable({ providedIn: 'root' })
 export class RoadmapCacheService {
-  readonly cards = signal<RoadmapCard[]>([
+  readonly cards = signal<any[]>([
     {
       title: 'Roadmap',
       subtitle: 'Complete study path',

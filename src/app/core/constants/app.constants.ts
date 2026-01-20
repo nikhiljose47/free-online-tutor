@@ -26,3 +26,10 @@ export const PART4 = 'part4';
 //Collection ID
 export const GLOBAL_MEETINGS = 'global_meetings';
 export const USERS = 'users';
+
+export type SyllabusErrorCode =
+  | 'DATA_NOT_PUBLISHED'
+  | 'UNDER_REVIEW'
+  | 'MAINTENANCE'
+  | 'NETWORK_ERROR'
+  | 'INVALID_SCHEMA';
