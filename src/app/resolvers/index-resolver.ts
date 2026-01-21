@@ -19,6 +19,7 @@ export interface SyllabusIndex {
     ready: boolean;
     priority: number;
     availableFrom: string;
+    fileName: string;
     meta: {
       students: number;
       teachers: number;
@@ -34,6 +35,7 @@ export interface SyllabusIndex {
     isLive: boolean;
     startsAt: string;
     priority: number;
+    fileName: string;
     meta: {
       teacher: string;
       language: string[];
@@ -47,6 +49,8 @@ export interface SyllabusIndex {
     enabled: boolean;
     startsAt: string;
     priority: number;
+    fileName: string;
+
     meta: {
       teacher: string;
       image: string;
@@ -70,6 +74,6 @@ export const syllabusIndexResolver: ResolveFn<SyllabusIndex | null> = () => {
       console.error('Syllabus index load failed', err);
       router.navigate(['/error']); // hard fail – config is mandatory
       return of(null);
-    })
+    }),
   );
 };

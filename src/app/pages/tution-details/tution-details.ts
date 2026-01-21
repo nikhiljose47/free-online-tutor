@@ -10,8 +10,10 @@ import { UiStateUtil } from '../../utils/ui-state.utils';
 import { Timetable } from '../../components/timetable/timetable';
 import { Meeting } from '../../models/meeting.model';
 import { Timestamp } from '@angular/fire/firestore';
+import { HttpClient } from '@angular/common/http';
+import { catchError, of, tap } from 'rxjs';
 
-  export const DUMMY_MEETING: Meeting = {
+export const DUMMY_MEETING: Meeting = {
   id: 'meet_001',
   classId: 'CL06',
   subjectId: 'Mathematics',
@@ -28,8 +30,6 @@ import { Timestamp } from '@angular/fire/firestore';
   endAt: Timestamp.fromDate(new Date(Date.now() + 25 * 60 * 60 * 1000)),
 };
 
-
-
 @Component({
   selector: 'tution-details',
   standalone: true,
@@ -42,28 +42,24 @@ export class TutionDetails implements OnInit {
   private route = inject(ActivatedRoute);
   private meetApi = inject(MeetingsService);
   private uiState = inject(UiStateUtil);
+  private http = inject(HttpClient);
   /* ------------------ routing ------------------ */
   type = this.route.snapshot.paramMap.get('type')!; // class | jam
   id = this.route.snapshot.paramMap.get('id')!;
-  syllabus = this.uiState.get<ClassSyllabus>('syllabus');
-
+  syllabus = {};
   /* ------------------ state ------------------ */
   isLoading = signal(true);
   hasValidData = signal(false);
-
 
   private readonly meetings = signal<Meeting[]>([DUMMY_MEETING]);
 
   /** UPCOMING CLASSES (max 5, no scroll) */
   readonly upcomingClasses = computed(() =>
     this.meetings()
-      .filter(m => m.status === 'upcoming')
-      .sort(
-        (a, b) =>
-          a.date.toDate().getTime() - b.date.toDate().getTime()
-      )
+      .filter((m) => m.status === 'upcoming')
+      .sort((a, b) => a.date.toDate().getTime() - b.date.toDate().getTime())
       .slice(0, 5)
-      .map(m => ({
+      .map((m) => ({
         id: m.id,
         title: `Chapter ${m.chapterCode}`,
         subject: m.subjectId,
@@ -71,7 +67,7 @@ export class TutionDetails implements OnInit {
         startsAt: m.date.toDate(),
         interested: m.attendance?.length ?? 0,
         meeting: m, // keep original reference
-      }))
+      })),
   );
 
   /* ------------------ quote ------------------ */
@@ -123,7 +119,22 @@ export class TutionDetails implements OnInit {
   });
 
   ngOnInit(): void {
+    this.loadSyllabus();
     this.loadClassDetails();
+  }
+
+  private loadSyllabus(): void {
+    let fileId = this.uiState.get('curFile');
+    this.http.get<ClassSyllabus>(`data/${fileId}.json`).pipe(
+      tap((data) => {
+        this.syllabus = data;
+        this.uiState.set<ClassSyllabus>(this.id, data, 15 * 60 * 1000);
+      }),
+      catchError((err) => {
+        console.error('Syllabus load failed', err);
+        return of(null);
+      }),
+    );
   }
 
   /* ------------------ helpers ------------------ */
@@ -142,22 +153,21 @@ export class TutionDetails implements OnInit {
     });
   }
 
-    openClass(item: { meeting: Meeting }): void {
+  openClass(item: { meeting: Meeting }): void {
     window.open(item.meeting.meetLink, '_blank');
   }
 
   markInterested(item: { meeting: Meeting }): void {
     // Optimistic UI update only (no backend write here)
-    this.meetings.update(list =>
-      list.map(m =>
-        m.id === item.meeting.id &&
-        !m.attendance?.includes('me')
+    this.meetings.update((list) =>
+      list.map((m) =>
+        m.id === item.meeting.id && !m.attendance?.includes('me')
           ? {
               ...m,
               attendance: [...(m.attendance ?? []), 'me'],
             }
-          : m
-      )
+          : m,
+      ),
     );
   }
 
@@ -168,5 +178,4 @@ export class TutionDetails implements OnInit {
   setMeetings(data: Meeting[]): void {
     this.meetings.set(data);
   }
-
 }

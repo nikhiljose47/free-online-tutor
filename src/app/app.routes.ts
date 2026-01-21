@@ -21,9 +21,7 @@ import { PricingPlans } from './pages/pricing-plans/pricing-plans';
 import { syllabusIndexResolver } from './resolvers/index-resolver';
 
 export const routes: Routes = [
-  { path: '', component: FreeOnlineTutor,
-    resolve: {preload: syllabusIndexResolver }
-   },
+  { path: '', component: FreeOnlineTutor },
   { path: 'book/:id', component: BookingDrawerComponent },
   { path: 'class/:id', component: ClassDetailsComponent },
   { path: 'book-slot', component: BookSlotComponent },
@@ -51,7 +49,7 @@ export const routes: Routes = [
     path: 'details/:type/:id',
     loadComponent: () =>
       import('./pages/tution-details/tution-details').then((m) => m.TutionDetails),
-    resolve: { preload: syllabusResolver },
+    // resolve: { preload: syllabusResolver },
   },
   { path: '**', redirectTo: '' },
 ];

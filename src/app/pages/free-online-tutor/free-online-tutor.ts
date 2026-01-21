@@ -9,6 +9,8 @@ import { SvgCardConfig } from '../../utils/svg-loader.utils';
 import { HomeIntroStrip } from '../../components/home-intro-strip/home-intro-strip';
 import { UiStateUtil } from '../../utils/ui-state.utils';
 import { SyllabusIndex } from '../../resolvers/index-resolver';
+import { HttpClient } from '@angular/common/http';
+import { catchError, delay, Observable, of, retry, retryWhen, scan, tap } from 'rxjs';
 
 /* ===============================
    COMPONENT
@@ -29,6 +31,7 @@ export class FreeOnlineTutor implements OnInit {
   private cache = inject(RoadmapCacheService);
   private sanitizer = inject(DomSanitizer);
   private uiState = inject(UiStateUtil);
+  private http = inject(HttpClient);
 
   /* ===============================
      UI STATE
@@ -49,21 +52,51 @@ export class FreeOnlineTutor implements OnInit {
      INIT
   =============================== */
   ngOnInit() {
-    const index = this.uiState.get<SyllabusIndex>('syllabusIndex');
+    this.loadClasses().subscribe((data) => {
+      if (!data) {
+        // this.handleNoDataState();
+        this.toast.show('Homepage data unavailable');
+        this.classLoading.set(false);
+        this.jamLoading.set(false);
+        return;
+      }
 
-    if (!index) {
-      this.toast.show('Homepage data unavailable');
+      this.processClasses(data.classes);
+      this.processJams(data.jamSessions);
+      this.processActivities(data.activities);
+
       this.classLoading.set(false);
       this.jamLoading.set(false);
-      return;
+    });
+  }
+
+  private loadClasses(): Observable<SyllabusIndex | null> {
+    const cached = this.uiState.get<SyllabusIndex>('syllabusIndex');
+
+    if (cached) {
+      return of(cached);
     }
 
-    this.processClasses(index.classes);
-    this.processJams(index.jamSessions);
-    this.processActivities(index.activities);
-
-    this.classLoading.set(false);
-    this.jamLoading.set(false);
+    return this.http.get<SyllabusIndex>('data/syllabus-index.json').pipe(
+      retryWhen((errors) =>
+        errors.pipe(
+          scan((retryCount, err) => {
+            if (retryCount >= 2) {
+              throw err;
+            }
+            return retryCount + 1;
+          }, 0),
+          delay(1000),
+        ),
+      ),
+      tap((data) => {
+        this.uiState.set<SyllabusIndex>('syllabusIndex', data, 15 * 60 * 1000);
+      }),
+      catchError((err) => {
+        console.error('Syllabus index load failed', err);
+        return of(null);
+      }),
+    );
   }
 
   /* ===============================
@@ -78,7 +111,7 @@ export class FreeOnlineTutor implements OnInit {
           c?.enabled === true &&
           c?.ready === true &&
           !!c.availableFrom &&
-          new Date(c.availableFrom).getTime() <= now
+          new Date(c.availableFrom).getTime() <= now,
       )
       .sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0))
       .map((c) => ({
@@ -135,10 +168,13 @@ export class FreeOnlineTutor implements OnInit {
      NAVIGATION
   =============================== */
   openCategory(cls: any) {
+    console.log(cls);
+    this.uiState.set('curFile', cls.fileName);
     this.router.navigate(['/details', 'class', cls.id]);
   }
 
   joinJam(jam: any) {
+    this.uiState.set('curFile', jam.fileName);
     this.router.navigate(['/details', 'jam', jam.id]);
   }
 
@@ -149,7 +185,7 @@ export class FreeOnlineTutor implements OnInit {
     Array.from({ length: 12 }, (_, i) => ({
       class: `Class ${i + 1}`,
       cards: this.cache.cards(),
-    }))
+    })),
   );
 }
 
