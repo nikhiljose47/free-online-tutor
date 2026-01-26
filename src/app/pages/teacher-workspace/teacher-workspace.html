@@ -1,0 +1,181 @@
+<section class="teacher-dashboard container-fluid py-4">
+
+  <!-- HEADER -->
+  <header class="dashboard-header d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h3 class="mb-0">Teacher Dashboard</h3>
+      <small class="text-muted">Your teaching overview & progress</small>
+    </div>
+
+    <div class="header-actions">
+      <button class="notification-btn">
+        <i class="bi bi-bell"></i>
+        <span class="dot"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- STATS ROW -->
+  <div class="row g-3 mb-4">
+
+    <div class="col-md-3">
+      <div class="stat-card">
+        <h6>Total Classes</h6>
+        <h3>{{ stats().total }}</h3>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="stat-card">
+        <h6>Completed</h6>
+        <h3>{{ stats().completed }}</h3>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="stat-card">
+        <h6>Upcoming</h6>
+        <h3>{{ stats().upcoming }}</h3>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="stat-card muted">
+        <h6>Not Taken</h6>
+        <h3>{{ stats().missed }}</h3>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PROGRESS / STREAK -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-8">
+      <div class="panel-card">
+        <h6>Teaching Consistency</h6>
+
+        <div class="progress-streak mt-3">
+          <div class="streak-bar" style="width: 72%"></div>
+        </div>
+
+        <small class="text-muted mt-2 d-block">
+          You maintained a 72% weekly teaching streak 🌱
+        </small>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="panel-card">
+        <h6>Motivation</h6>
+        <p class="mb-0">
+          “Consistency builds trust with students. One great class at a time.”
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPCOMING CLASSES -->
+  <div class="panel-card mb-4">
+    <h6>Upcoming Classes</h6>
+
+    <table class="table table-sm mt-2">
+      <thead>
+        <tr>
+          <th>Class</th>
+          <th>Time</th>
+          <th>Topic</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cls of upcomingClasses()">
+          <td>{{ cls.name }}</td>
+          <td>{{ cls.time }}</td>
+          <td>{{ cls.topic }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CLASS HISTORY -->
+  <div class="panel-card mb-4">
+    <h6>Classes Conducted</h6>
+
+    <table class="table table-sm mt-2">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Topic</th>
+          <th>Attendance</th>
+          <th>Agenda Met</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cls of completedClasses()">
+          <td>{{ cls.date }}</td>
+          <td>{{ cls.topic }}</td>
+          <td>{{ cls.attended }}/{{ cls.total }}</td>
+          <td>
+            <span [class.text-success]="cls.agendaMet"
+                  [class.text-danger]="!cls.agendaMet">
+              {{ cls.agendaMet ? 'Yes' : 'No' }}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-link btn-sm">View</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FEEDBACK + MESSAGES -->
+  <div class="row g-3 mb-4">
+
+    <div class="col-md-6">
+      <div class="panel-card">
+        <h6>Student Feedback</h6>
+        <ul class="feedback-list mt-2">
+          <li *ngFor="let fb of feedback()">
+            “{{ fb }}”
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="panel-card">
+        <h6>Messages from Admin</h6>
+        <ul class="message-list mt-2">
+          <li *ngFor="let msg of messages()">
+            {{ msg }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- WEEKLY PRACTICE / TEST -->
+  <div class="panel-card mb-4">
+    <h6>Weekly Teaching Check</h6>
+    <p>
+      A short reflection helps improve teaching quality.
+    </p>
+    <button class="btn btn-outline-dark btn-sm">
+      Take Weekly Check
+    </button>
+  </div>
+
+  <!-- TEACHING GUIDELINES -->
+  <div class="panel-card">
+    <h6>Good Online Teaching Practices</h6>
+    <ul class="guide-list mt-2">
+      <li>Use examples students can relate to</li>
+      <li>Pause frequently to check understanding</li>
+      <li>Encourage questions in chat</li>
+      <li>Summarize key points at the end</li>
+    </ul>
+  </div>
+
+</section>

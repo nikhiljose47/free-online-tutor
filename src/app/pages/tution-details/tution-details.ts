@@ -12,6 +12,7 @@ import { Meeting } from '../../models/meeting.model';
 import { Timestamp } from '@angular/fire/firestore';
 import { HttpClient } from '@angular/common/http';
 import { catchError, of, tap } from 'rxjs';
+import { IdFileMap } from '../../utils/id-map.utils';
 
 export const DUMMY_MEETING: Meeting = {
   id: 'meet_001',
@@ -124,7 +125,10 @@ export class TutionDetails implements OnInit {
   }
 
   private loadSyllabus(): void {
-    let fileId = this.uiState.get('curFile');
+    const map = this.uiState.get<IdFileMap>('idFileMap');
+    const fileId = map?.[this.id] ?? null;
+    console.log(map);
+    console.log(this.id);
     this.http.get<ClassSyllabus>(`data/${fileId}.json`).pipe(
       tap((data) => {
         this.syllabus = data;

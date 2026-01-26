@@ -33,12 +33,15 @@
         <button class="login-btn" routerLink="/login">Log In</button>
         <button class="signup-btn" routerLink="/register">Sign Up</button>
       </ng-container>
-
+      
       <ng-container *ngIf="profile()">
+                <a *ngIf="profile()?.role === 'teacher'" class="topbar-link" routerLink="/teacher-workspace"
+          >Dashboard</a
+        >
         <a *ngIf="profile()?.role === 'teacher'" class="topbar-link" routerLink="/schedule"
           >Schedule</a
         >
-      
+       
         <a class="topbar-link" routerLink="/teachers">Teachers</a>
         <a class="topbar-link" routerLink="/hopin">Hop-in</a>
         <a class="topbar-link" routerLink="/report-card">Report Card</a>

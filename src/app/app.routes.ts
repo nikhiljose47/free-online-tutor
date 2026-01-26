@@ -19,6 +19,7 @@ import { ReportCard } from './components/report-card/report-card';
 import { syllabusResolver } from './resolvers/syllabus-resolver';
 import { PricingPlans } from './pages/pricing-plans/pricing-plans';
 import { syllabusIndexResolver } from './resolvers/index-resolver';
+import { TeacherWorkspace} from './pages/teacher-workspace/teacher-workspace';
 
 export const routes: Routes = [
   { path: '', component: FreeOnlineTutor },
@@ -35,6 +36,7 @@ export const routes: Routes = [
   { path: 'teachers', component: TeachersPage },
   { path: 'career', component: Career },
   { path: 'plans', component: PricingPlans },
+  {path: 'teacher-workspace', component: TeacherWorkspace},
   {
     path: 'join-tution/:meetingId',
     loadComponent: () => import('./pages/join-tution/join-tution').then((m) => m.JoinTution),

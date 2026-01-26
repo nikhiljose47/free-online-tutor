@@ -8,9 +8,10 @@ import { ToastService } from '../../services/shared/toast.service';
 import { SvgCardConfig } from '../../utils/svg-loader.utils';
 import { HomeIntroStrip } from '../../components/home-intro-strip/home-intro-strip';
 import { UiStateUtil } from '../../utils/ui-state.utils';
-import { SyllabusIndex } from '../../resolvers/index-resolver';
 import { HttpClient } from '@angular/common/http';
 import { catchError, delay, Observable, of, retry, retryWhen, scan, tap } from 'rxjs';
+import { SyllabusIndex } from '../../models/syllabus-index.model';
+import { IdFileMap, IdMapUtil } from '../../utils/id-map.utils';
 
 /* ===============================
    COMPONENT
@@ -60,6 +61,8 @@ export class FreeOnlineTutor implements OnInit {
         this.jamLoading.set(false);
         return;
       }
+      const idFileMap = IdMapUtil.buildIdFileMap(data);
+      this.uiState.set<IdFileMap>('idFileMap', idFileMap, 15 * 60 * 1000);
 
       this.processClasses(data.classes);
       this.processJams(data.jamSessions);

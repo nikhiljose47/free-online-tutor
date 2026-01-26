@@ -4,59 +4,12 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { catchError, of, tap } from 'rxjs';
 import { UiStateUtil } from '../utils/ui-state.utils';
+import { SyllabusIndex } from '../models/syllabus-index.model';
 
 /* ===============================
    MODELS
 ================================ */
-export interface SyllabusIndex {
-  version: string;
-  generatedAt: string;
 
-  classes: {
-    id: string;
-    label: string;
-    enabled: boolean;
-    ready: boolean;
-    priority: number;
-    availableFrom: string;
-    fileName: string;
-    meta: {
-      students: number;
-      teachers: number;
-      medium: string[];
-      image: string;
-    };
-  }[];
-
-  jamSessions: {
-    id: string;
-    title: string;
-    enabled: boolean;
-    isLive: boolean;
-    startsAt: string;
-    priority: number;
-    fileName: string;
-    meta: {
-      teacher: string;
-      language: string[];
-      image: string;
-    };
-  }[];
-
-  activities: {
-    id: string;
-    title: string;
-    enabled: boolean;
-    startsAt: string;
-    priority: number;
-    fileName: string;
-
-    meta: {
-      teacher: string;
-      image: string;
-    };
-  }[];
-}
 
 /* ===============================
    RESOLVER

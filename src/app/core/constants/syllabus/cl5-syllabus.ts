@@ -32,7 +32,7 @@ export const CLASS5_SYLLABUS: ClassSyllabus = {
         { code: 'CL5-ENG-01', name: 'Ice-cream Man' },
         { code: 'CL5-ENG-02', name: 'Wonderful Waste!' },
         { code: 'CL5-ENG-03', name: 'Teamwork' },
-        { code: 'CL5-ENG-04', name: 'Flying Together' },
+        { code: 'CL5-ENG-04', name: 'F lying Together' },
         { code: 'CL5-ENG-05', name: 'My Shadow' },
         { code: 'CL5-ENG-06', name: 'Robinson Crusoe Discovers a Footprint' },
         { code: 'CL5-ENG-07', name: 'Crying' },
