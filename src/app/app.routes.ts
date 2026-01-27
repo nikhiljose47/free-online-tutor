@@ -20,6 +20,7 @@ import { syllabusResolver } from './resolvers/syllabus-resolver';
 import { PricingPlans } from './pages/pricing-plans/pricing-plans';
 import { syllabusIndexResolver } from './resolvers/index-resolver';
 import { TeacherWorkspace} from './pages/teacher-workspace/teacher-workspace';
+import { ChapterBrowser } from './pages/chapter-browser/chapter-browser';
 
 export const routes: Routes = [
   { path: '', component: FreeOnlineTutor },
@@ -44,7 +45,7 @@ export const routes: Routes = [
   { path: 'profile', component: DashboardComponent },
   { path: 'timetable', component: Timetable },
   { path: 'report-card', component: ReportCard },
-
+  { path: 'chapter-browser', component: ChapterBrowser },
   { path: 'schedule', component: ScheduleLiveClass },
 
   {

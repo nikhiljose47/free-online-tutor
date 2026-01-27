@@ -1,0 +1,104 @@
+<section class="chapter-browser container-fluid py-4">
+  <!-- FILTER BAR -->
+  <div class="filter-bar mb-3">
+    <div class="row g-2 align-items-center">
+      <div class="col-md-3">
+        <select class="form-select">
+          <option selected disabled>Select Class</option>
+          <option *ngFor="let c of classes()">{{ c }}</option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <select class="form-select">
+          <option selected disabled>Select Subject</option>
+          <option *ngFor="let s of subjects()">{{ s }}</option>
+        </select>
+      </div>
+
+      <div class="col-md-6 text-end">
+        <small class="text-muted"> Showing official syllabus chapters </small>
+      </div>
+    </div>
+  </div>
+
+  <!-- OFFLINE / SYNC STATUS -->
+  <div class="sync-status mb-2">
+    <small class="text-muted"> Data cached locally. Changes will sync when online. </small>
+  </div>
+
+  <!-- CHAPTER TABLE -->
+  <div class="table-responsive">
+    <table class="table chapter-table align-middle">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Chapter</th>
+          <th>Description</th>
+          <th>Subsections</th>
+          <th>Status</th>
+          <th>Need correction</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <ng-container *ngFor="let ch of chapters(); let i = index">
+          <!-- CHAPTER ROW -->
+          <tr>
+            <td>{{ i + 1 }}</td>
+
+            <td class="fw-semibold">
+              {{ ch.title }}
+            </td>
+
+            <td class="text-muted">
+              {{ ch.description }}
+            </td>
+
+            <!-- SUBSECTIONS -->
+            <td>
+              <button class="btn btn-link btn-sm" (click)="toggleSubsections(ch)">
+                {{ ch.show ? 'Hide' : 'View' }}
+              </button>
+            </td>
+
+            <td>
+              <span
+                class="badge"
+                [class.bg-success]="ch.verified"
+                [class.bg-warning]="!ch.verified"
+              >
+                {{ ch.verified ? 'Verified' : 'Needs Review' }}
+              </span>
+            </td>
+
+            <td>
+              <button class="btn btn-outline-secondary btn-sm" (click)="notifyAdmin(ch)">
+                Notify
+              </button>
+            </td>
+          </tr>
+
+          <!-- SUBSECTION ROW -->
+          <tr *ngIf="ch.show" class="subsection-row">
+            <td></td>
+            <td colspan="5">
+              <ul class="subsection-list">
+                <li *ngFor="let sub of ch.subsections">
+                  {{ sub }}
+                </li>
+              </ul>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CHANGE REQUEST CONFIRMATION -->
+  <div class="change-confirmation mt-3">
+    <small class="text-muted">
+      Change requests are reviewed by academic admins before publishing.
+    </small>
+  </div>
+</section>
