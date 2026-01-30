@@ -11,7 +11,7 @@ import {
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { MeetingsService } from '../../domain/meetings/meetings.service';
-import { UiStateUtil } from '../../utils/ui-state.utils';
+import { UiStateUtil } from '../../core/state/ui-state.utils';
 
 @Component({
   selector: 'class-stream-sidebar',

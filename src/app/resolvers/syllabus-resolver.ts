@@ -3,7 +3,7 @@ import { inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, of, tap } from 'rxjs';
 import { ClassSyllabus } from '../models/syllabus.model';
-import { UiStateUtil } from '../utils/ui-state.utils';
+import { UiStateUtil } from '../core/state/ui-state.utils';
 
 export const syllabusResolver: ResolveFn<ClassSyllabus | null> = () => {
   const http = inject(HttpClient);

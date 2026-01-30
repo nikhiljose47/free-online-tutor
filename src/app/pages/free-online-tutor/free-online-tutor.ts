@@ -7,11 +7,9 @@ import { RoadmapCacheService } from '../../services/cache/roadmap-cache.service'
 import { ToastService } from '../../shared/toast.service';
 import { SvgCardConfig } from '../../utils/svg-loader.utils';
 import { HomeIntroStrip } from '../../components/home-intro-strip/home-intro-strip';
-import { UiStateUtil } from '../../utils/ui-state.utils';
-import { HttpClient } from '@angular/common/http';
-import { catchError, delay, Observable, of, retry, retryWhen, scan, tap } from 'rxjs';
+import { UiStateUtil } from '../../core/state/ui-state.utils';
 import { SyllabusIndex } from '../../models/syllabus-index.model';
-import { IdFileMap, IdMapUtil } from '../../utils/id-map.utils';
+import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
 
 /* ===============================
    COMPONENT
@@ -32,7 +30,7 @@ export class FreeOnlineTutor implements OnInit {
   private cache = inject(RoadmapCacheService);
   private sanitizer = inject(DomSanitizer);
   private uiState = inject(UiStateUtil);
-  private http = inject(HttpClient);
+  private syllRepo = inject(SyllabusRepository);
 
   /* ===============================
      UI STATE
@@ -53,58 +51,28 @@ export class FreeOnlineTutor implements OnInit {
      INIT
   =============================== */
   ngOnInit() {
-    this.loadClasses().subscribe((data) => {
+    this.syllRepo.loadIndex().subscribe((data) => {
       if (!data) {
         // this.handleNoDataState();
         this.toast.show('Homepage data unavailable');
         this.classLoading.set(false);
         this.jamLoading.set(false);
         return;
-      }
-      const idFileMap = IdMapUtil.buildIdFileMap(data);
-      this.uiState.set<IdFileMap>('idFileMap', idFileMap, 15 * 60 * 1000);
+      }      
 
-      this.processClasses(data.classes);
-      this.processJams(data.jamSessions);
-      this.processActivities(data.activities);
-
+      this.processData(data);
+      // Set loaders to false
       this.classLoading.set(false);
       this.jamLoading.set(false);
     });
   }
 
-  private loadClasses(): Observable<SyllabusIndex | null> {
-    const cached = this.uiState.get<SyllabusIndex>('syllabusIndex');
-
-    if (cached) {
-      return of(cached);
-    }
-
-    return this.http.get<SyllabusIndex>('data/syllabus-index.json').pipe(
-      retryWhen((errors) =>
-        errors.pipe(
-          scan((retryCount, err) => {
-            if (retryCount >= 2) {
-              throw err;
-            }
-            return retryCount + 1;
-          }, 0),
-          delay(1000),
-        ),
-      ),
-      tap((data) => {
-        this.uiState.set<SyllabusIndex>('syllabusIndex', data, 15 * 60 * 1000);
-      }),
-      catchError((err) => {
-        console.error('Syllabus index load failed', err);
-        return of(null);
-      }),
-    );
+  private processData(data: any) {
+    this.processClasses(data.classes);
+    this.processJams(data.jamSessions);
+    this.processActivities(data.activities);
   }
 
-  /* ===============================
-     PROCESSORS
-  =============================== */
   private processClasses(classes: SyllabusIndex['classes']) {
     const now = Date.now();
 

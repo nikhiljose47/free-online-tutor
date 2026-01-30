@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ClassSyllabus } from '../../models/syllabus.model';
-import { UiStateUtil } from '../../utils/ui-state.utils';
+import { UiStateUtil } from '../../core/state/ui-state.utils';
 
 @Component({
   selector: 'timetable',

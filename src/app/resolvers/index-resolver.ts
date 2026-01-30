@@ -3,7 +3,7 @@ import { inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { catchError, of, tap } from 'rxjs';
-import { UiStateUtil } from '../utils/ui-state.utils';
+import { UiStateUtil } from '../core/state/ui-state.utils';
 import { SyllabusIndex } from '../models/syllabus-index.model';
 
 /* ===============================

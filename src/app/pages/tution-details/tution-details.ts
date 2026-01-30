@@ -15,7 +15,7 @@ import { Loading } from '../../components/loading/loading';
 import { Timetable } from '../../components/timetable/timetable';
 
 import { MeetingsService } from '../../domain/meetings/meetings.service';
-import { UiStateUtil } from '../../utils/ui-state.utils';
+import { UiStateUtil } from '../../core/state/ui-state.utils';
 import { ClassSyllabus } from '../../models/syllabus.model';
 import { Meeting } from '../../models/meeting.model';
 import { IdFileMap } from '../../utils/id-map.utils';
