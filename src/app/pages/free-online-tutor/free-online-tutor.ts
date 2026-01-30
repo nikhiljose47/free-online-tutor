@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { RoadmapCacheService } from '../../services/cache/roadmap-cache.service';
-import { ToastService } from '../../services/shared/toast.service';
+import { ToastService } from '../../shared/toast.service';
 import { SvgCardConfig } from '../../utils/svg-loader.utils';
 import { HomeIntroStrip } from '../../components/home-intro-strip/home-intro-strip';
 import { UiStateUtil } from '../../utils/ui-state.utils';

@@ -11,11 +11,12 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { environment } from './environments/environment.prod';
-import { baseUrlInterceptor } from './services/http/base-url-interceptor.service';
+import { baseUrlInterceptor } from './core/interceptors/base-url-interceptor.service';
+import { httpCacheInterceptor } from './core/interceptors/http-cache.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideHttpClient(withInterceptors([baseUrlInterceptor])),
+    provideHttpClient(withInterceptors([baseUrlInterceptor, httpCacheInterceptor])),
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideFirebaseApp(() => initializeApp(environment.firebase)),

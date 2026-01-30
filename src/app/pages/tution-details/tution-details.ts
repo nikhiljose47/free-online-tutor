@@ -1,20 +1,28 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
-import { ContentPlaceholder } from '../../components/content-placeholder/content-placeholder';
-import { MeetingsService } from '../../domain/meetings/meetings.service';
-import { Loading } from '../../components/loading/loading';
-import { ClassSyllabus } from '../../models/syllabus.model';
-import { UiStateUtil } from '../../utils/ui-state.utils';
-import { Timetable } from '../../components/timetable/timetable';
-import { Meeting } from '../../models/meeting.model';
-import { Timestamp } from '@angular/fire/firestore';
 import { HttpClient } from '@angular/common/http';
 import { catchError, of, tap } from 'rxjs';
-import { IdFileMap } from '../../utils/id-map.utils';
 
-export const DUMMY_MEETING: Meeting = {
+import { ContentPlaceholder } from '../../components/content-placeholder/content-placeholder';
+import { Loading } from '../../components/loading/loading';
+import { Timetable } from '../../components/timetable/timetable';
+
+import { MeetingsService } from '../../domain/meetings/meetings.service';
+import { UiStateUtil } from '../../utils/ui-state.utils';
+import { ClassSyllabus } from '../../models/syllabus.model';
+import { Meeting } from '../../models/meeting.model';
+import { IdFileMap } from '../../utils/id-map.utils';
+import { Timestamp } from '@angular/fire/firestore';
+
+/* ------------------ dummy fallback ------------------ */
+const DUMMY_MEETING: Meeting = {
   id: 'meet_001',
   classId: 'CL06',
   subjectId: 'Mathematics',
@@ -22,11 +30,11 @@ export const DUMMY_MEETING: Meeting = {
   meetLink: 'https://meet.google.com/abc-defg-hij',
   chapterCode: 'CL06-MATH-04',
   status: 'upcoming',
-  date: Timestamp.fromDate(new Date(Date.now() + 24 * 60 * 60 * 1000)), // tomorrow
+  date: Timestamp.fromDate(new Date(Date.now() + 24 * 60 * 60 * 1000)),
   teacherId: 'TCH_101',
   teacherName: 'Mr. Arun Kumar',
   duration: 60,
-  attendance: ['u1', 'u2', 'u3', 'u4'],
+  attendance: ['u1', 'u2'],
   createdAt: Timestamp.now(),
   endAt: Timestamp.fromDate(new Date(Date.now() + 25 * 60 * 60 * 1000)),
 };
@@ -39,43 +47,45 @@ export const DUMMY_MEETING: Meeting = {
   styleUrl: './tution-details.scss',
 })
 export class TutionDetails implements OnInit {
-  /* ------------------ services ------------------ */
+  /* ================= ROUTING ================= */
   private route = inject(ActivatedRoute);
+  private http = inject(HttpClient);
   private meetApi = inject(MeetingsService);
   private uiState = inject(UiStateUtil);
-  private http = inject(HttpClient);
-  /* ------------------ routing ------------------ */
-  type = this.route.snapshot.paramMap.get('type')!; // class | jam
-  id = this.route.snapshot.paramMap.get('id')!;
-  syllabus = {};
-  /* ------------------ state ------------------ */
-  isLoading = signal(true);
-  hasValidData = signal(false);
+
+  readonly type = this.route.snapshot.paramMap.get('type') as 'class' | 'jam';
+  readonly id = this.route.snapshot.paramMap.get('id')!;
+
+  /* ================= UI STATE ================= */
+  readonly isLoading = signal(true);
+  readonly hasValidData = signal(false);
+  readonly activeTab = signal<
+    'overview' | 'roadmap' | 'upcoming' | 'exam' | 'teachers' | 'jam'
+  >('overview');
+
+  /* ================= DATA ================= */
+  syllabus = signal<ClassSyllabus | null>(null);
 
   private readonly meetings = signal<Meeting[]>([DUMMY_MEETING]);
 
-  /** UPCOMING CLASSES (max 5, no scroll) */
+  /* ================= COMPUTED ================= */
   readonly upcomingClasses = computed(() =>
     this.meetings()
       .filter((m) => m.status === 'upcoming')
       .sort((a, b) => a.date.toDate().getTime() - b.date.toDate().getTime())
       .slice(0, 5)
       .map((m) => ({
-        id: m.id,
         title: `Chapter ${m.chapterCode}`,
         subject: m.subjectId,
         duration: m.duration,
         startsAt: m.date.toDate(),
         interested: m.attendance?.length ?? 0,
-        meeting: m, // keep original reference
+        meeting: m,
       })),
   );
 
-  /* ------------------ quote ------------------ */
-  quote = signal('Learning never exhausts the mind. — Leonardo da Vinci');
-
-  /* ------------------ overview / batches ------------------ */
-  blueBatch = signal({
+  /* ================= OVERVIEW ================= */
+  readonly blueBatch = signal({
     started: true,
     percent: 45,
     roadmap: [
@@ -84,21 +94,21 @@ export class TutionDetails implements OnInit {
     ],
   });
 
-  yellowBatch = signal({
+  readonly yellowBatch = signal({
     started: false,
     percent: 0,
     roadmap: [] as { subject: string; done: number; total: number }[],
   });
 
-  /* ------------------ exam prep ------------------ */
-  examPrep = signal([
+  /* ================= EXAM PREP ================= */
+  readonly examPrep = signal([
     { title: 'NCERT-Based Revision', level: 'High Yield' },
     { title: 'Previous Year Analysis', level: 'Important' },
     { title: 'Speed Maths / Logic', level: 'Tricky' },
   ]);
 
-  /* ------------------ teachers ------------------ */
-  teachers = signal([
+  /* ================= TEACHERS ================= */
+  readonly teachers = signal([
     {
       name: 'Aditi Sharma',
       subject: 'Mathematics',
@@ -111,45 +121,58 @@ export class TutionDetails implements OnInit {
     },
   ]);
 
-  /* ------------------ JAM info ------------------ */
-  jamInfo = signal({
+  /* ================= JAM ================= */
+  readonly jamInfo = signal({
     host: 'Rohit Sen',
     topic: 'GATE Quick Problem Solving',
     starts: '5:30 PM',
     participants: 140,
   });
 
+  readonly quote = signal(
+    'Learning never exhausts the mind. — Leonardo da Vinci',
+  );
+
+  /* ================= INIT ================= */
   ngOnInit(): void {
     this.loadSyllabus();
     this.loadClassDetails();
   }
 
+  /* ================= LOAD SYLLABUS ================= */
   private loadSyllabus(): void {
+    const cached = this.uiState.get<ClassSyllabus>(this.id);
+    if (cached) {
+      this.syllabus.set(cached);
+      return;
+    }
+
     const map = this.uiState.get<IdFileMap>('idFileMap');
-    const fileId = map?.[this.id] ?? null;
-    console.log(map);
-    console.log(this.id);
-    this.http.get<ClassSyllabus>(`data/${fileId}.json`).pipe(
-      tap((data) => {
-        this.syllabus = data;
-        this.uiState.set<ClassSyllabus>(this.id, data, 15 * 60 * 1000);
-      }),
-      catchError((err) => {
-        console.error('Syllabus load failed', err);
-        return of(null);
-      }),
-    );
+    const fileId = map?.[this.id];
+
+    if (!fileId) return;
+
+    this.http
+      .get<ClassSyllabus>(`data/${fileId}.json`)
+      .pipe(
+        tap((data) => {
+          this.syllabus.set(data);
+          this.uiState.set<ClassSyllabus>(this.id, data, 15 * 60 * 1000);
+        }),
+        catchError(() => of(null)),
+      )
+      .subscribe();
   }
 
-  /* ------------------ helpers ------------------ */
+  /* ================= LOAD DETAILS ================= */
   private loadClassDetails(): void {
     this.meetApi.getMeetingsForClass(this.id).subscribe({
       next: (res) => {
-        // Later: use this data to compute batch % dynamically
+        this.setMeetings(res as any);
         this.hasValidData.set(true);
       },
       error: () => {
-        this.isLoading.set(false);
+        this.hasValidData.set(false);
       },
       complete: () => {
         this.isLoading.set(false);
@@ -157,28 +180,22 @@ export class TutionDetails implements OnInit {
     });
   }
 
+  /* ================= ACTIONS ================= */
   openClass(item: { meeting: Meeting }): void {
     window.open(item.meeting.meetLink, '_blank');
   }
 
   markInterested(item: { meeting: Meeting }): void {
-    // Optimistic UI update only (no backend write here)
     this.meetings.update((list) =>
       list.map((m) =>
         m.id === item.meeting.id && !m.attendance?.includes('me')
-          ? {
-              ...m,
-              attendance: [...(m.attendance ?? []), 'me'],
-            }
+          ? { ...m, attendance: [...(m.attendance ?? []), 'me'] }
           : m,
       ),
     );
   }
 
-  /* ------------------------------------ */
-  /* TEMP: setter until service wired     */
-  /* ------------------------------------ */
-
+  /* ================= HELPERS ================= */
   setMeetings(data: Meeting[]): void {
     this.meetings.set(data);
   }

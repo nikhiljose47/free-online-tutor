@@ -1,251 +1,209 @@
 /* ===============================
-   THEME TOKENS
-================================ */
-:root {
-  --bg-main: linear-gradient(180deg, #f7f9fc 0%, #ffffff 100%);
-  --bg-soft: linear-gradient(135deg, #eef4ff, #ffffff);
-  --primary: #2563eb;
-  --primary-soft: #e8efff;
-  --accent: #f59e0b;
-  --text-main: #1f2937;
-  --text-subtle: #6b7280;
-  --card-border: rgba(0, 0, 0, 0.06);
-}
-
-/* ===============================
-   PAGE BASE
+   PAGE BASE (REFINED)
 ================================ */
 .details-page {
   background: var(--bg-main);
-  padding: 2rem 1.2rem 3rem;
+  padding: 2.2rem 1.4rem 3rem;
   max-width: 1120px;
   margin: 0 auto;
-  font-family: 'Inter', system-ui, sans-serif;
   color: var(--text-main);
 }
 
 /* ===============================
-   HEADER
+   HEADER + TABS
 ================================ */
-.page-header h1 {
-  font-size: 1.8rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
   margin-bottom: 1.6rem;
 }
 
-/* ===============================
-   SECTION TITLES
-================================ */
-.section-title {
-  font-size: 1.35rem;
+.page-header h1 {
+  font-size: 1.85rem;
   font-weight: 800;
-  letter-spacing: -0.015em;
-  margin: 2rem 0 1.2rem;
-  position: relative;
-
-  &::after {
-    content: '';
-    display: block;
-    width: 36px;
-    height: 4px;
-    border-radius: 999px;
-    background: linear-gradient(90deg, var(--primary), #60a5fa);
-    margin-top: 6px;
-  }
+  letter-spacing: -0.02em;
+  margin: 0;
 }
 
-/* ===============================
-   OVERVIEW SECTION
-================================ */
-.batch-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-.batch-card {
-  background: var(--bg-soft);
-  border-radius: 18px;
-  padding: 20px;
-  border: 1px solid var(--card-border);
+/* TAB NAV */
+.details-tabs {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.batch-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.batch-name {
-  font-size: 1.05rem;
-  font-weight: 800;
-}
-
-.batch-status {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--text-subtle);
-}
-
-/* Progress */
-.batch-progress {
-  height: 9px;
-  background: #e5e7eb;
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.batch-progress-fill {
-  height: 100%;
-  border-radius: 999px;
-}
-
-/* Percent */
-.batch-percent {
-  font-size: 0.8rem;
-  color: var(--text-subtle);
-}
-
-/* Roadmap */
-.batch-roadmap {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.roadmap-item {
-  font-size: 0.75rem;
-  color: var(--text-subtle);
-  display: flex;
-  justify-content: space-between;
-}
-
-.batch-hint {
-  font-size: 0.7rem;
-  color: var(--text-subtle);
-}
-
-/* Variants */
-.batch-blue {
-  .batch-name {
-    color: var(--primary);
-  }
-
-  .batch-progress-fill {
-    background: linear-gradient(90deg, #2563eb, #60a5fa);
-  }
-}
-
-.batch-yellow {
-  .batch-name {
-    color: #d97706;
-  }
-
-  .batch-progress-fill {
-    background: linear-gradient(90deg, #f59e0b, #facc15);
-  }
-}
-
-/* ===============================
-   UPCOMING CLASSES
-================================ */
-.upcoming-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 18px;
-}
-
-.upcoming-card {
-  background: linear-gradient(135deg, #ffffff, #f9fafb);
-  border-radius: 16px;
-  padding: 16px;
-  border: 1px solid var(--card-border);
-  cursor: pointer;
-  transition: 0.25s ease;
-}
-
-.upcoming-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.08);
-}
-
-.upcoming-title {
-  font-size: 1rem;
-  font-weight: 800;
-}
-
-.upcoming-subject {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--primary);
-}
-
-.upcoming-meta {
-  margin-top: 8px;
-  font-size: 0.75rem;
-  color: var(--text-subtle);
-  display: flex;
-  gap: 12px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
-.upcoming-action {
-  margin-top: 12px;
-  display: flex;
-  justify-content: flex-end;
+.tab-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-subtle);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
 
-  .btn {
-    border-radius: 999px;
-    font-weight: 700;
+.tab-btn:hover {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--primary), #60a5fa);
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+}
+
+/* ===============================
+   SECTION SPACING
+================================ */
+.section {
+  margin-top: 1.4rem;
+}
+
+/* ===============================
+   OVERVIEW HERO EMPHASIS
+================================ */
+.overview-hero {
+  background: linear-gradient(180deg, #f8fafc, #ffffff);
+  border-radius: 22px;
+  padding: 24px 22px 28px;
+  margin-top: 1rem;
+}
+
+/* Batch grid emphasis */
+.batch-grid.emphasis {
+  margin-top: 1.2rem;
+}
+
+/* ===============================
+   BATCH CARD RESTORE POWER
+================================ */
+.batch-card {
+  position: relative;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.batch-card:hover {
+  transform: translateY(-4px);
+}
+
+/* BLUE BATCH */
+.batch-blue {
+  border-left: 6px solid var(--primary);
+  box-shadow: 0 18px 40px rgba(37, 99, 235, 0.18);
+}
+
+.batch-blue .batch-name {
+  font-size: 1.15rem;
+}
+
+/* YELLOW BATCH */
+.batch-yellow {
+  border-left: 6px solid #f59e0b;
+  box-shadow: 0 16px 36px rgba(245, 158, 11, 0.18);
+}
+
+.batch-yellow .batch-name {
+  font-size: 1.15rem;
+}
+
+/* STATUS POP */
+.batch-status {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* ===============================
+   OVERVIEW SECTION (POLISH)
+================================ */
+.batch-card {
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.06);
+}
+
+.batch-hint {
+  line-height: 1.4;
+}
+
+/* ===============================
+   UPCOMING CLASSES (SOFTER)
+================================ */
+.upcoming-card {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.upcoming-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.1);
+}
+
+/* ===============================
+   TAB CONTENT FADE (SUBTLE)
+================================ */
+.section {
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
 /* ===============================
-   TIMETABLE + OTHER SECTIONS
-================================ */
-.section timetable {
-  margin-top: 10px;
-}
-
-/* ===============================
-   QUOTE
+   QUOTE SECTION (REFINED)
 ================================ */
 .quote-section {
-  margin-top: 3.5rem;
-  padding: 28px 24px;
+  margin-top: 3.8rem;
+  padding: 28px 26px;
   background: linear-gradient(135deg, #fff7ed, #ffffff);
-  border-radius: 18px;
-  border-left: 5px solid var(--accent);
+  border-radius: 20px;
+  border-left: 6px solid var(--accent);
 }
 
 .quote-text {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   font-style: italic;
   color: #92400e;
 }
 
 /* ===============================
-   RESPONSIVE
+   RESPONSIVE TABS
 ================================ */
 @media (max-width: 768px) {
-  .page-header h1 {
-    font-size: 1.45rem;
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
   }
 
-  .section-title {
-    font-size: 1.2rem;
+  .details-tabs {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .tab-btn {
+    white-space: nowrap;
   }
 
   .details-page {
-    padding: 1.4rem 0.8rem 2.4rem;
-  }
-
-  .upcoming-meta {
-    gap: 8px;
+    padding: 1.6rem 1rem 2.6rem;
   }
 }

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, Input, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AttendanceApiService } from '../../services/http/attendance-api.service';
+import { AttendanceApiService } from '../../features/attendance/attendance-api.service';
 import { UiStateUtil } from '../../utils/ui-state.utils';
 import { Meeting } from '../../models/meeting.model';
 import { DotLoader } from '../dot-loader/dot-loader';

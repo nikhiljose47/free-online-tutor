@@ -25,7 +25,7 @@ export class PricingPlans {
     classStrength: ['May have 20-50+ students/class', '', ''],
     practice: [
       { label: 'No tests', has: false },
-      { label: 'May have 20-50+ students/class', has: false },
+      { label: '', has: false },
       { label: '', has: false },
       { label: '', has: false },
     ] as FeatureItem[],
@@ -58,6 +58,7 @@ export class PricingPlans {
       'We will be working on having good teachers for classes',
     ],
     advanced: [
+      '1-1 test for a specific chapter weak students',
       'Limited students only, so more attention to one',
       'Live doubt solving',
       'Full recorded sessions',

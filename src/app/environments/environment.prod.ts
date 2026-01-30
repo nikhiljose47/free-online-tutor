@@ -10,5 +10,5 @@ export const environment = {
   },
   ADMIN_KEY: 'Z!gzag@07z55',
   syllabusApiBaseUrl: 'https://authentication-785fd.web.app',
-  attendanceApi: 'https://user-attendance.nikhiljose47.workers.dev',
+  attendanceApiBaseUrl: 'https://user-attendance.nikhiljose47.workers.dev',
 };

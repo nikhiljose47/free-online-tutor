@@ -14,7 +14,7 @@ type QueryKey = string;
 
 @Injectable({ providedIn: 'root' })
 export class AttendanceApiService {
-  private readonly api = environment.attendanceApi; // e.g. https://user-attendance...workers.dev
+  private readonly api = environment.attendanceApiBaseUrl; // e.g. https://user-attendance...workers.dev
 
   // ----- UI State (Signals) -----
   readonly loading = signal(false);

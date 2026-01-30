@@ -14,7 +14,7 @@ import {
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Auth2Service } from '../../services/fire/auth2.service';
-import { ToastService } from '../../services/shared/toast.service';
+import { ToastService } from '../../shared/toast.service';
 import { SearchService } from '../../services/search.service';
 import { UserProfileService } from '../../services/fire/user-profile.service';
 
