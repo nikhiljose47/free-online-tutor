@@ -5,41 +5,53 @@
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(320px, 1fr);
-  gap: 16px;
-  padding: 12px;
+  gap: 18px;
+  padding: 14px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
 
-  /* Max 2 cards visible on desktop */
+  background: linear-gradient(180deg, #f8fafc, #f1f5f9);
+
   @media (min-width: 768px) {
-    grid-auto-columns: calc(50% - 8px);
+    grid-auto-columns: calc(50% - 10px);
   }
 
   scrollbar-width: thin;
+  scrollbar-color: #cbd5f5 transparent;
 }
 
 /* ===============================
-   SUBJECT CARD (SUBTLE)
+   SUBJECT CARD
 ================================ */
 .subject-card {
   scroll-snap-align: start;
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 14px;
+  background: linear-gradient(180deg, #ffffff, #fbfdff);
+  border-radius: 16px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   height: 75vh;
-  border: 1px solid #eaeaea;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+  border: 1px solid #e5e7eb;
+  box-shadow:
+    0 4px 14px rgba(15, 23, 42, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  }
 }
 
 /* ===============================
    HEADER
 ================================ */
 .subject-header {
-  margin-bottom: 10px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed #e5e7eb;
 
   .title {
     display: flex;
@@ -49,54 +61,64 @@
 
   h4 {
     margin: 0;
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #1f2937;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.2px;
   }
 
   .code {
     font-size: 12px;
-    color: #6b7280;
-    font-weight: 600;
-  }
-}
-
-/* Current chapter */
-.current-box {
-  margin-top: 8px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #eef6ff, #f8fbff);
-
-  small {
-    font-size: 11px;
-    font-weight: 600;
-    color: #2563eb;
-  }
-
-  strong {
-    display: block;
-    margin-top: 2px;
-    font-size: 0.9rem;
-    color: #1e3a8a;
+    color: #64748b;
+    font-weight: 700;
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 8px;
   }
 }
 
 /* ===============================
-   CHAPTER LIST (EMPHASIZED)
+   CURRENT CHAPTER (HIGHLIGHT)
+================================ */
+.current-box {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  border: 1px solid #c7d2fe;
+
+  small {
+    font-size: 11px;
+    font-weight: 700;
+    color: #4f46e5;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  strong {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1e1b4b;
+  }
+}
+
+/* ===============================
+   CHAPTER LIST
 ================================ */
 .chapters {
   flex: 1;
-  margin-top: 8px;
+  margin-top: 10px;
   overflow-y: auto;
-  padding-right: 4px;
+  padding-right: 6px;
 }
 
 .chapters::-webkit-scrollbar {
   width: 4px;
 }
 .chapters::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: #c7d2fe;
   border-radius: 6px;
 }
 
@@ -106,28 +128,29 @@
 .chapter {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
-  padding: 12px;
-  margin-bottom: 10px;
-  border-radius: 12px;
-  background: #f9fafb;
+  gap: 12px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  border-radius: 14px;
+  background: #f8fafc;
+
+  border: 1px solid #e5e7eb;
   transition: all 0.2s ease;
-  border: 1px solid transparent;
 
   &.completed {
-    background: #ecfdf3;
+    background: linear-gradient(135deg, #ecfdf3, #f0fdf4);
     border-color: #bbf7d0;
   }
 
   &.current {
-    background: #eef2ff;
-    border-color: #c7d2fe;
-    box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.15);
+    background: linear-gradient(135deg, #eef2ff, #f8fafc);
+    border-color: #a5b4fc;
+    box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.2);
   }
 
   &.locked {
     opacity: 0.55;
-    background: #f3f4f6;
+    background: #f1f5f9;
   }
 
   &:hover {
@@ -142,13 +165,7 @@
 .chapter-name {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #111827;
-}
-
-.chapter-desc {
-  margin-top: 2px;
-  font-size: 0.8rem;
-  color: #6b7280;
+  color: #020617;
 }
 
 /* ===============================
@@ -157,10 +174,11 @@
 .tag {
   display: inline-block;
   margin-top: 6px;
-  padding: 3px 8px;
+  padding: 3px 10px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   border-radius: 999px;
+  letter-spacing: 0.3px;
 
   &.completed {
     background: #dcfce7;
@@ -169,7 +187,7 @@
 
   &.current {
     background: #e0e7ff;
-    color: #3730a3;
+    color: #312e81;
   }
 
   &.locked {
@@ -187,10 +205,10 @@
 }
 
 .chip {
-  padding: 4px 10px;
+  padding: 5px 12px;
   font-size: 11px;
-  font-weight: 700;
-  background: #e5e7eb;
-  border-radius: 8px;
-  color: #374151;
+  font-weight: 800;
+  background: linear-gradient(135deg, #e5e7eb, #f1f5f9);
+  border-radius: 10px;
+  color: #334155;
 }

@@ -8,10 +8,6 @@ export const baseUrlInterceptor: HttpInterceptorFn = (req, next) => {
 
   let baseUrl = environment.syllabusApiBaseUrl;
 
-  if (req.url.startsWith('syllabus/')) {
-    baseUrl = environment.syllabusApiBaseUrl;
-  }
-
   if (req.url.startsWith('attendance/')) {  
     baseUrl = environment.attendanceApiBaseUrl;
   }

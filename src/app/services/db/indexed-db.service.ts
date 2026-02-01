@@ -1,10 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 
-export type DBStore =
-  | 'syllabus_by_class'
-  | 'syllabus_index'
-  | 'session_timelines';
+export type DBStore = 'syllabus_by_class' | 'syllabus_index' | 'session_timelines';
 
 export interface DBConfig {
   dbName: string;
@@ -41,10 +38,7 @@ export class IndexedDbService {
   /* ---------- INIT ---------- */
   private init(): void {
     this.ready = new Promise((resolve, reject) => {
-      const req = window.indexedDB.open(
-        this.config.dbName,
-        this.config.version
-      );
+      const req = window.indexedDB.open(this.config.dbName, this.config.version);
 
       req.onupgradeneeded = () => {
         const db = req.result;
@@ -80,7 +74,7 @@ export class IndexedDbService {
   private async tx<T>(
     store: DBStore,
     mode: IDBTransactionMode,
-    cb: (s: IDBObjectStore) => IDBRequest<T>
+    cb: (s: IDBObjectStore) => IDBRequest<T>,
   ): Promise<T> {
     if (!this.isBrowser) {
       return Promise.resolve(null as T);
@@ -105,7 +99,7 @@ export class IndexedDbService {
   /* ---------- CRUD ---------- */
 
   set<T extends { id: string }>(store: DBStore, data: T): Promise<void> {
-    return this.tx(store, 'readwrite', s => s.put(data)).then(() => {});
+    return this.tx(store, 'readwrite', (s) => s.put(data)).then(() => {});
   }
 
   bulkSet<T extends { id: string }>(store: DBStore, list: T[]): Promise<void> {
@@ -117,7 +111,7 @@ export class IndexedDbService {
         const os = tx.objectStore(store);
 
         try {
-          list.forEach(item => os.put(item));
+          list.forEach((item) => os.put(item));
           tx.oncomplete = () => resolve();
           tx.onerror = () => reject(tx.error);
           tx.onabort = () => reject(tx.error);
@@ -129,19 +123,19 @@ export class IndexedDbService {
   }
 
   get<T>(store: DBStore, id: string): Promise<T | null> {
-    return this.tx(store, 'readonly', s => s.get(id)).then(r => r ?? null);
+    return this.tx(store, 'readonly', (s) => s.get(id)).then((r) => r ?? null);
   }
 
   getAll<T>(store: DBStore): Promise<T[]> {
-    return this.tx(store, 'readonly', s => s.getAll());
+    return this.tx(store, 'readonly', (s) => s.getAll());
   }
 
   delete(store: DBStore, id: string): Promise<void> {
-    return this.tx(store, 'readwrite', s => s.delete(id)).then(() => {});
+    return this.tx(store, 'readwrite', (s) => s.delete(id)).then(() => {});
   }
 
   clear(store: DBStore): Promise<void> {
-    return this.tx(store, 'readwrite', s => s.clear()).then(() => {});
+    return this.tx(store, 'readwrite', (s) => s.clear()).then(() => {});
   }
 
   /* ---------- RECOVERY ---------- */

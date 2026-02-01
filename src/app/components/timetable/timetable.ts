@@ -1,7 +1,16 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ClassSyllabus } from '../../models/syllabus.model';
+
 import { UiStateUtil } from '../../core/state/ui-state.utils';
+import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
+import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
 
 @Component({
   selector: 'timetable',
@@ -12,27 +21,42 @@ import { UiStateUtil } from '../../core/state/ui-state.utils';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Timetable implements OnInit {
-  private uiState = inject(UiStateUtil);
+  private syllRepo = inject(SyllabusRepository);
 
-  /** syllabus always comes from resolver → UiStateUtil */
+  /** full syllabus */
   readonly syllabus = signal<ClassSyllabus | null>(null);
 
-  /** current chapter code per subject */
+  /** current chapter code per subjectCode */
   readonly current = signal<Record<string, string>>({});
 
-  /** numeric progress index per subject */
+  /** numeric progress index per subjectCode */
   readonly progressIndex = signal<Record<string, number>>({});
 
+  readonly subjects = computed(() => {
+    const data = this.syllabus();
+    if (!data) return [];
+
+    return Array.isArray(data.subjects)
+      ? data.subjects
+      : Object.values(data.subjects ?? {}).map((s: any) => ({
+          ...s,
+          chapters: Array.isArray(s.chapters) ? s.chapters : Object.values(s.chapters ?? {}),
+        }));
+  });
+
   ngOnInit(): void {
-    const data = this.uiState.get<ClassSyllabus>('syllabus');
+    this.syllRepo.loadClass('syllabus-class-8').subscribe((data) => {
+      if (!data) {
+        console.error('[Timetable] Syllabus missing');
+        return;
+      }
 
-    if (!data) {
-      console.error('[Timetable] Syllabus missing in UiStateUtil');
-      return;
-    }
+      const normalized = this.normalizeSyllabus(data);
 
-    this.syllabus.set(data);
-    this.initRandomProgress(data);
+      this.syllabus.set(normalized);
+      console.log(normalized);
+      this.initRandomProgress(normalized);
+    });
   }
 
   /* ------------------------------------ */
@@ -43,49 +67,61 @@ export class Timetable implements OnInit {
     const cur: Record<string, string> = {};
     const prog: Record<string, number> = {};
 
-    Object.entries(data.subjects).forEach(([subjectKey, subject]) => {
-      const total = subject.chapters.length;
-      if (!total) return;
+    data.subjects.forEach((subject) => {
+      const chapters = subject.chapters; // already normalized
 
-      // random current index: [0 .. total-1]
+      const total = chapters.length;
+      if (total === 0) return;
+
       const idx = Math.floor(Math.random() * total);
 
-      prog[subjectKey] = idx;
-      cur[subjectKey] = subject.chapters[idx].code;
+      prog[subject.code] = idx;
+      cur[subject.code] = chapters[idx].code; // ✅ FIXED
     });
 
     this.progressIndex.set(prog);
     this.current.set(cur);
   }
 
-  getChapterName(subjectKey: string, chapterCode: string): string {
+  normalizeSyllabus(data: any): ClassSyllabus {
+    return {
+      ...data,
+      subjects: Object.values(data.subjects ?? {}).map((s: any) => ({
+        ...s,
+        chapters: Object.values(s.chapters ?? {}),
+      })),
+    };
+  }
+
+  getChapterName(subjectCode: string, chapterCode: string): string {
     const data = this.syllabus();
     if (!data) return '';
 
-    return data.subjects[subjectKey]?.chapters.find((c) => c.code === chapterCode)?.name ?? '';
+    const subject = data.subjects.find((s) => s.code === subjectCode);
+    return subject?.chapters.find((c) => c.code === chapterCode)?.name ?? '';
   }
 
   /* ------------------------------------ */
-  /* derived flags (used by template)     */
+  /* derived flags (template helpers)     */
   /* ------------------------------------ */
 
-  isCompleted(subjectKey: string, idx: number): boolean {
-    return idx < (this.progressIndex()[subjectKey] ?? -1);
+  isCompleted(subjectCode: string, idx: number): boolean {
+    return idx < (this.progressIndex()[subjectCode] ?? -1);
   }
 
-  isCurrent(subjectKey: string, code: string): boolean {
-    return this.current()[subjectKey] === code;
+  isCurrent(subjectCode: string, chapterCode: string): boolean {
+    return this.current()[subjectCode] === chapterCode;
   }
 
-  isLocked(subjectKey: string, idx: number): boolean {
-    return idx > (this.progressIndex()[subjectKey] ?? -1);
+  isLocked(subjectCode: string, idx: number): boolean {
+    return idx > (this.progressIndex()[subjectCode] ?? -1);
   }
 
-  getProgress(subjectKey: string): number {
-    return this.progressIndex()[subjectKey] ?? -1;
+  getProgress(subjectCode: string): number {
+    return this.progressIndex()[subjectCode] ?? -1;
   }
 
-  getCurrent(subjectKey: string): string | null {
-    return this.current()[subjectKey] ?? null;
+  getCurrent(subjectCode: string): string | null {
+    return this.current()[subjectCode] ?? null;
   }
 }

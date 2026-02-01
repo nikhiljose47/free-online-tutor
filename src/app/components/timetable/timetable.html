@@ -1,16 +1,17 @@
-<section class="timetable-horizontal" *ngIf="syllabus() as data">
-  <div class="subject-card" *ngFor="let sbj of data.subjects | keyvalue">
+<section class="timetable-horizontal">
+  
+  <div class="subject-card" *ngFor="let sbj of subjects()">
     <!-- SUBJECT HEADER -->
     <header class="subject-header">
       <div class="title">
-        <h4>{{ sbj.key }}</h4>
-        <span class="code">{{ sbj.value.code }}</span>
+        <h4>{{ sbj.code }}</h4>
+        <span class="code">{{ sbj.code }}</span>
       </div>
 
       <!-- CURRENT CHAPTER -->
-      <div class="current-box" *ngIf="getCurrent(sbj.key) as cur">
+      <div class="current-box" *ngIf="getCurrent(sbj.code) as cur">
         <small>Current chapter</small>
-        <strong>{{ getChapterName(sbj.key, cur) }}</strong>
+        <strong>{{ getChapterName(sbj.code, cur) }}</strong>
       </div>
     </header>
 
@@ -18,20 +19,25 @@
     <div class="chapters">
       <div
         class="chapter"
-        *ngFor="let ch of sbj.value.chapters; let idx = index"
-        [class.completed]="idx < getProgress(sbj.key)"
-        [class.current]="ch.code === getCurrent(sbj.key)"
-        [class.locked]="idx > getProgress(sbj.key)"
+        *ngFor="let ch of sbj.chapters; let idx = index"
+        [class.completed]="isCompleted(sbj.code, idx)"
+        [class.current]="isCurrent(sbj.code, ch.code)"
+        [class.locked]="isLocked(sbj.code, idx)"
       >
         <div class="chapter-left">
           <div class="chapter-name">{{ ch.name }}</div>
-          <div class="chapter-desc" *ngIf="ch.desc">{{ ch.desc }}</div>
 
-          <span class="tag completed" *ngIf="idx < getProgress(sbj.key)"> Completed </span>
+          <span class="tag completed" *ngIf="isCompleted(sbj.code, idx)">
+            Completed
+          </span>
 
-          <span class="tag current" *ngIf="ch.code === getCurrent(sbj.key)"> In Progress </span>
+          <span class="tag current" *ngIf="isCurrent(sbj.code, ch.code)">
+            In Progress
+          </span>
 
-          <span class="tag locked" *ngIf="idx > getProgress(sbj.key)"> Not Started </span>
+          <span class="tag locked" *ngIf="isLocked(sbj.code, idx)">
+            Not Started
+          </span>
         </div>
 
         <div class="chapter-right">

@@ -8,7 +8,7 @@ import { ToastService } from '../../shared/toast.service';
 import { SvgCardConfig } from '../../utils/svg-loader.utils';
 import { HomeIntroStrip } from '../../components/home-intro-strip/home-intro-strip';
 import { UiStateUtil } from '../../core/state/ui-state.utils';
-import { SyllabusIndex } from '../../models/syllabus-index.model';
+import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
 import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
 
 /* ===============================
@@ -58,13 +58,20 @@ export class FreeOnlineTutor implements OnInit {
         this.classLoading.set(false);
         this.jamLoading.set(false);
         return;
-      }      
+      }
 
       this.processData(data);
       // Set loaders to false
       this.classLoading.set(false);
       this.jamLoading.set(false);
+
+      // After all home methods happened
+      this.loadClasses();
     });
+  }
+
+  private loadClasses() {
+    this.syllRepo.loadMultipleClasses(['syllabus-class-8']);
   }
 
   private processData(data: any) {

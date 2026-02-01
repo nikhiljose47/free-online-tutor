@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { catchError, of, tap } from 'rxjs';
 import { UiStateUtil } from '../core/state/ui-state.utils';
-import { SyllabusIndex } from '../models/syllabus-index.model';
+import { SyllabusIndex } from '../models/syllabus/syllabus-index.model';
 
 /* ===============================
    MODELS

@@ -1,4 +1,4 @@
-import { SyllabusIndex } from '../models/syllabus-index.model';
+import { SyllabusIndex } from '../models/syllabus/syllabus-index.model';
 
 export type IdFileMap = Record<string, string>;
 
