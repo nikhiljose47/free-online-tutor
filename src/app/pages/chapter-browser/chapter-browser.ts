@@ -2,18 +2,18 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  OnInit,
+  inject,
   signal,
   computed,
 } from '@angular/core';
 
-interface Chapter {
-  id: string;
-  title: string;
-  description: string;
-  subsections: string[];
-  verified: boolean;
-  show?: boolean;
-}
+import {
+  ClassSyllabus,
+  Chapter,
+  Subject,
+} from '../../models/syllabus/class-syllabus';
+import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
 
 @Component({
   selector: 'chapter-browser',
@@ -23,95 +23,70 @@ interface Chapter {
   styleUrls: ['./chapter-browser.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChapterBrowser {
-  /* ===============================
-     FILTER DATA
-  =============================== */
-  readonly classes = signal<string[]>([
-    'Class 6',
-    'Class 7',
-    'Class 8',
-    'Class 9',
-    'Class 10',
-  ]);
+export class ChapterBrowser implements OnInit {
+  private syllabusRepo = inject(SyllabusRepository);
 
-  readonly subjects = signal<string[]>([
-    'Mathematics',
-    'Science',
-    'English',
-    'Social Studies',
-  ]);
+  readonly syllabus = signal<ClassSyllabus | null>(null);
 
   readonly selectedClass = signal<string | null>(null);
-  readonly selectedSubject = signal<string | null>(null);
+  readonly selectedSubjectCode = signal<string | null>(null);
 
-  /* ===============================
-     OFFLINE / SYNC STATE
-  =============================== */
   readonly isOnline = signal<boolean>(navigator.onLine);
   readonly syncing = signal<boolean>(false);
 
-  /* ===============================
-     CHAPTER DATA (DUMMY)
-  =============================== */
-  readonly chapters = signal<Chapter[]>([
-    {
-      id: 'ch1',
-      title: 'Introduction to Algebra',
-      description: 'Basic algebraic concepts and expressions',
-      subsections: [
-        'Variables and constants',
-        'Simple expressions',
-        'Algebra in daily life',
-      ],
-      verified: true,
-      show: false,
-    },
-    {
-      id: 'ch2',
-      title: 'Linear Equations',
-      description: 'Understanding and solving linear equations',
-      subsections: [
-        'Equation formation',
-        'Solving one-variable equations',
-        'Word problems',
-      ],
-      verified: false,
-      show: false,
-    },
-    {
-      id: 'ch3',
-      title: 'Geometry Basics',
-      description: 'Shapes, lines, and angles',
-      subsections: [
-        'Points and lines',
-        'Angles and types',
-        'Basic constructions',
-      ],
-      verified: true,
-      show: false,
-    },
-  ]);
-
-  /* ===============================
-     DERIVED DATA
-  =============================== */
-  readonly filteredChapters = computed(() => {
-    return this.chapters();
+  readonly subjects = computed<Subject[]>(() => {
+    return this.syllabus()?.subjects ?? [];
   });
 
-  /* ===============================
-     ACTIONS
-  =============================== */
-  toggleSubsections(chapter: Chapter) {
-    this.chapters.update(list =>
-      list.map(c =>
-        c.id === chapter.id ? { ...c, show: !c.show } : c
-      )
+
+
+  readonly chapters = computed<Chapter[]>(() => {
+    const syllabus = this.syllabus();
+    const subjectCode = this.selectedSubjectCode();
+
+    if (!syllabus || !subjectCode) return [];
+
+    return (
+      syllabus.subjects.find(s => s.code === subjectCode)?.chapters ?? []
     );
+  });
+
+
+  readonly expanded = signal<Record<string, boolean>>({});
+
+toggleExpand(chapterCode: string): void {
+  this.expanded.update(m => ({
+    ...m,
+    [chapterCode]: !m[chapterCode],
+  }));
+}
+
+
+
+  ngOnInit(): void {
+    this.syllabusRepo.loadClass('syllabus-class-8').subscribe(data => {
+      if (!data) return;
+ 
+
+      this.syllabus.set(data);
+      this.selectedClass.set(data.classId);
+      console.log(data);
+      console.log(data.classId)
+          console.log(data.subjects[0])
+      if (data.subjects.length) {
+        this.selectedSubjectCode.set(data.subjects[0].code);
+      }
+                 console.log(this.selectedSubjectCode())
+
+    });
   }
 
-  notifyAdmin(chapter: Chapter) {
+
+  selectSubject(subjectCode: string): void {
+    this.selectedSubjectCode.set(subjectCode);
+  }
+
+  notifyAdmin(chapter: Chapter): void {
     if (!this.isOnline()) {
       this.queueOfflineRequest(chapter);
       return;
@@ -121,28 +96,11 @@ export class ChapterBrowser {
 
     setTimeout(() => {
       this.syncing.set(false);
-      alert(`Change request sent for "${chapter.title}"`);
+      alert(`Change request sent for "${chapter.name}"`);
     }, 800);
   }
 
-  /* ===============================
-     OFFLINE QUEUE (PLACEHOLDER)
-  =============================== */
-  private queueOfflineRequest(chapter: Chapter) {
-    console.warn(
-      'Offline: change request queued for',
-      chapter.id
-    );
-  }
-
-  /* ===============================
-     FILTER HANDLERS
-  =============================== */
-  selectClass(value: string) {
-    this.selectedClass.set(value);
-  }
-
-  selectSubject(value: string) {
-    this.selectedSubject.set(value);
+  private queueOfflineRequest(chapter: Chapter): void {
+    console.warn('Offline: change request queued for', chapter.code);
   }
 }

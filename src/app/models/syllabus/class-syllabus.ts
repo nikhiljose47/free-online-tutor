@@ -1,4 +1,4 @@
-export interface ClassSyllabus {
+export interface  ClassSyllabus {
   classId: string;
   className: string;
   code_prefix: string;
@@ -9,6 +9,7 @@ export interface ClassSyllabus {
 }
 
 export interface Subject {
+  name: string;
   code: string;
   chapters: Chapter[];
 }

@@ -1,10 +1,4 @@
-import {
-  Component,
-  computed,
-  inject,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -16,10 +10,11 @@ import { Timetable } from '../../components/timetable/timetable';
 
 import { MeetingsService } from '../../domain/meetings/meetings.service';
 import { UiStateUtil } from '../../core/state/ui-state.utils';
-import { ClassSyllabus } from '../../models/syllabus/syllabus.model';
 import { Meeting } from '../../models/meeting.model';
-import { IdFileMap } from '../../utils/id-map.utils';
+import { IdFileMap } from '../../core/utils/id-map.utils';
 import { Timestamp } from '@angular/fire/firestore';
+import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
+import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
 
 /* ------------------ dummy fallback ------------------ */
 const DUMMY_MEETING: Meeting = {
@@ -52,6 +47,7 @@ export class TutionDetails implements OnInit {
   private http = inject(HttpClient);
   private meetApi = inject(MeetingsService);
   private uiState = inject(UiStateUtil);
+  private syllRepo = inject(SyllabusRepository);
 
   readonly type = this.route.snapshot.paramMap.get('type') as 'class' | 'jam';
   readonly id = this.route.snapshot.paramMap.get('id')!;
@@ -59,9 +55,9 @@ export class TutionDetails implements OnInit {
   /* ================= UI STATE ================= */
   readonly isLoading = signal(true);
   readonly hasValidData = signal(false);
-  readonly activeTab = signal<
-    'overview' | 'roadmap' | 'upcoming' | 'exam' | 'teachers' | 'jam'
-  >('overview');
+  readonly activeTab = signal<'overview' | 'roadmap' | 'upcoming' | 'exam' | 'teachers' | 'jam'>(
+    'overview',
+  );
 
   /* ================= DATA ================= */
   syllabus = signal<ClassSyllabus | null>(null);
@@ -129,40 +125,48 @@ export class TutionDetails implements OnInit {
     participants: 140,
   });
 
-  readonly quote = signal(
-    'Learning never exhausts the mind. — Leonardo da Vinci',
-  );
+  readonly quote = signal('Learning never exhausts the mind. — Leonardo da Vinci');
+
+  classFileId: string = '';
 
   /* ================= INIT ================= */
   ngOnInit(): void {
-    this.loadSyllabus();
-    this.loadClassDetails();
+    const map = this.uiState.get<IdFileMap>('idFileMap');
+    if (map) {
+      this.classFileId = map![this.id];
+      this.syllRepo.loadClass(this.classFileId).subscribe((data) => {
+        if (data) {
+          this.syllabus.set(data);
+        }
+      });
+      this.loadClassDetails();
+    }
   }
 
   /* ================= LOAD SYLLABUS ================= */
-  private loadSyllabus(): void {
-    const cached = this.uiState.get<ClassSyllabus>(this.id);
-    if (cached) {
-      this.syllabus.set(cached);
-      return;
-    }
+  // private loadSyllabus(): void {
+  //   const cached = this.uiState.get<ClassSyllabus>(this.id);
+  //   if (cached) {
+  //     this.syllabus.set(cached);
+  //     return;
+  //   }
 
-    const map = this.uiState.get<IdFileMap>('idFileMap');
-    const fileId = map?.[this.id];
+  //   const map = this.uiState.get<IdFileMap>('idFileMap');
+  //   const fileId = map?.[this.id];
 
-    if (!fileId) return;
+  //   if (!fileId) return;
 
-    this.http
-      .get<ClassSyllabus>(`data/${fileId}.json`)
-      .pipe(
-        tap((data) => {
-          this.syllabus.set(data);
-          this.uiState.set<ClassSyllabus>(this.id, data, 15 * 60 * 1000);
-        }),
-        catchError(() => of(null)),
-      )
-      .subscribe();
-  }
+  //   this.http
+  //     .get<ClassSyllabus>(`data/${fileId}.json`)
+  //     .pipe(
+  //       tap((data) => {
+  //         this.syllabus.set(data);
+  //         this.uiState.set<ClassSyllabus>(this.id, data, 15 * 60 * 1000);
+  //       }),
+  //       catchError(() => of(null)),
+  //     )
+  //     .subscribe();
+  // }
 
   /* ================= LOAD DETAILS ================= */
   private loadClassDetails(): void {

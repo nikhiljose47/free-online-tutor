@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  Input,
   OnInit,
   computed,
   inject,
@@ -21,6 +22,8 @@ import { SyllabusRepository } from '../../data/repositories/syllabus.repository'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Timetable implements OnInit {
+  @Input({ required: true }) classFileId!: string;
+  
   private syllRepo = inject(SyllabusRepository);
 
   /** full syllabus */
@@ -45,7 +48,7 @@ export class Timetable implements OnInit {
   });
 
   ngOnInit(): void {
-    this.syllRepo.loadClass('syllabus-class-8').subscribe((data) => {
+    this.syllRepo.loadClass(this.classFileId).subscribe((data) => {
       if (!data) {
         console.error('[Timetable] Syllabus missing');
         return;

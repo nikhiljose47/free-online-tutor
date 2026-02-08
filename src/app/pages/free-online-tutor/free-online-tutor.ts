@@ -5,11 +5,12 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { RoadmapCacheService } from '../../services/cache/roadmap-cache.service';
 import { ToastService } from '../../shared/toast.service';
-import { SvgCardConfig } from '../../utils/svg-loader.utils';
+import { SvgCardConfig } from '../../core/utils/svg-loader.utils';
 import { HomeIntroStrip } from '../../components/home-intro-strip/home-intro-strip';
 import { UiStateUtil } from '../../core/state/ui-state.utils';
 import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
 import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
+import { IdFileMap } from '../../core/utils/id-map.utils';
 
 /* ===============================
    COMPONENT
@@ -59,19 +60,23 @@ export class FreeOnlineTutor implements OnInit {
         this.jamLoading.set(false);
         return;
       }
-
+     
       this.processData(data);
       // Set loaders to false
       this.classLoading.set(false);
       this.jamLoading.set(false);
 
       // After all home methods happened
-      this.loadClasses();
+      this.loadAllClasses();
     });
   }
 
-  private loadClasses() {
-    this.syllRepo.loadMultipleClasses(['syllabus-class-8']);
+  private loadAllClasses() {
+    const map = this.uiState.get<IdFileMap>('idFileMap');
+     if(map){
+       let mapToArr = Object.values(map);
+       this.syllRepo.loadMultipleClasses(mapToArr);
+     }
   }
 
   private processData(data: any) {

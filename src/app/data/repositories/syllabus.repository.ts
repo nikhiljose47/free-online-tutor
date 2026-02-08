@@ -4,7 +4,7 @@ import { from, Observable, of, switchMap, tap, retry, catchError, forkJoin } fro
 import { IndexedDbService } from '../../services/db/indexed-db.service';
 import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
 import { UiStateUtil } from '../../core/state/ui-state.utils';
-import { IdFileMap, IdMapUtil } from '../../utils/id-map.utils';
+import { IdFileMap, IdMapUtil } from '../../core/utils/id-map.utils';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
 
 @Injectable({ providedIn: 'root' })
@@ -87,7 +87,7 @@ export class SyllabusRepository {
         }
 
         // network
-        return this.http.get<ClassSyllabus>(`syllabus/${classId}.json`).pipe(
+        return this.http.get<ClassSyllabus>(`syllabus/${classId}`).pipe(
           retry({ count: 2, delay: 1000 }),
           tap((data) => {
             this.uiState.set(CACHE_KEY, data, TTL);
