@@ -10,6 +10,9 @@ export const BUILD_INFO = {
 
 export const SYLL_DATA_BASE_URL = 'https://authentication-785fd.web.app/data/';
 
+
+export const SYLL_INDEX_CACHE_KEY = 'syllabus_index_ckey';
+
 export const UPCOMING = 'upcoming';
 export const COMPLETED = 'completed';
 export const LIVE = 'live';

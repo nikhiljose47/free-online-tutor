@@ -9,7 +9,7 @@ import { Loading } from '../../components/loading/loading';
 import { Timetable } from '../../components/timetable/timetable';
 
 import { MeetingsService } from '../../domain/meetings/meetings.service';
-import { UiStateUtil } from '../../core/state/ui-state.utils';
+import { UiStateUtil } from '../../state/ui-state.utils';
 import { Meeting } from '../../models/meeting.model';
 import { IdFileMap } from '../../core/utils/id-map.utils';
 import { Timestamp } from '@angular/fire/firestore';

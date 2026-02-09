@@ -3,13 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { from, Observable, of, switchMap, tap, retry, catchError, forkJoin } from 'rxjs';
 import { IndexedDbService } from '../../services/db/indexed-db.service';
 import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
-import { UiStateUtil } from '../../core/state/ui-state.utils';
+import { UiStateUtil } from '../../state/ui-state.utils';
 import { IdFileMap, IdMapUtil } from '../../core/utils/id-map.utils';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
+import { SYLL_INDEX_CACHE_KEY } from '../../core/constants/app.constants';
 
 @Injectable({ providedIn: 'root' })
 export class SyllabusRepository {
-  private readonly CACHE_KEY = 'syllabusIndex';
   private readonly TTL = 15 * 60 * 1000;
 
   constructor(
@@ -19,21 +19,20 @@ export class SyllabusRepository {
   ) {}
 
   loadIndex(): Observable<SyllabusIndex | null> {
-    const uiCached = this.uiState.get<SyllabusIndex>(this.CACHE_KEY);
+    const uiCached = this.uiState.get<SyllabusIndex>(SYLL_INDEX_CACHE_KEY);
     if (uiCached) return of(uiCached);
 
     return from(
       this.indexDb.get<{ id: string; data: SyllabusIndex; ts: number }>(
         'syllabus_index',
-        this.CACHE_KEY,
+        SYLL_INDEX_CACHE_KEY,
       ),
     ).pipe(
       switchMap((dbCached) => {
         const now = Date.now();
 
         if (dbCached) {
-          this.uiState.set(this.CACHE_KEY, dbCached.data, this.TTL);
-          this.uiState.set<IdFileMap>('idFileMap', IdMapUtil.buildIdFileMap(dbCached.data));
+          this.uiState.set(SYLL_INDEX_CACHE_KEY, dbCached.data, this.TTL);
         }
 
         if (dbCached && now - dbCached.ts < this.TTL) {
@@ -43,12 +42,11 @@ export class SyllabusRepository {
         return this.http.get<SyllabusIndex>('data/syllabus-index.json').pipe(
           retry({ count: 2, delay: 1000 }),
           tap((data) => {
-            this.uiState.set(this.CACHE_KEY, data, this.TTL);
-            this.uiState.set<IdFileMap>('idFileMap', IdMapUtil.buildIdFileMap(data));
+            this.uiState.set(SYLL_INDEX_CACHE_KEY, data, this.TTL);
 
             this.indexDb
               .set('syllabus_index', {
-                id: this.CACHE_KEY,
+                id: SYLL_INDEX_CACHE_KEY,
                 data,
                 ts: Date.now(),
               })

@@ -17,7 +17,7 @@ import { Meeting } from '../../models/meeting.model';
 import { PART1, COMPLETED, GLOBAL_MEETINGS } from '../../core/constants/app.constants';
 import { Auth2Service } from '../../services/fire/auth2.service';
 import { ClassWrapup } from '../../components/class-wrapup/class-wrapup';
-import { UiStateUtil } from '../../core/state/ui-state.utils';
+import { UiStateUtil } from '../../state/ui-state.utils';
 
 @Component({
   selector: 'schedule-live-class',
@@ -25,6 +25,7 @@ import { UiStateUtil } from '../../core/state/ui-state.utils';
   imports: [CommonModule, ClassWrapup],
   templateUrl: './schedule-live-class.html',
   styleUrl: './schedule-live-class.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScheduleLiveClass implements OnInit {
   /* ------------------ services ------------------ */
@@ -69,6 +70,9 @@ export class ScheduleLiveClass implements OnInit {
   ngOnInit(): void {
     this.teacherId = this.authApi.uid;
     if (!this.teacherId) return;
+
+    console.log('inside')
+    console.log(this.classList())
 
     this.meetApi.getLiveMeetingsByTeacher(this.teacherId).subscribe((res) => {
       if (res.ok && res.data) {

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@ang
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Meeting } from '../../models/meeting.model';
-import { UiStateUtil } from '../../core/state/ui-state.utils';
+import { UiStateUtil } from '../../state/ui-state.utils';
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { Timestamp } from '@angular/fire/firestore';
 import { AttendanceApiService } from '../../features/attendance/attendance-api.service';
@@ -39,7 +39,7 @@ export class JoinTution implements OnInit {
 
   meeting!: Meeting;
   profile!: UserProfile;
-  banner: string = '/assets/cover/hi-text.webp';
+  banner: string = '/assets/book-covers/hi-text.webp';
   students: number = 1;
   rating: number = 4.7;
   title = '';
