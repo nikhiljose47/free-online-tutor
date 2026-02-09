@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Prevent crawling of internal routes if needed
+# Disallow: /admin
+# Disallow: /private
+
+Sitemap: https://yourdomain.com/sitemap.xml
