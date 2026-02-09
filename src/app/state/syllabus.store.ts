@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of, forkJoin } from 'rxjs';
-import { map, switchMap, shareReplay, filter, take, tap } from 'rxjs/operators';
+import { map, switchMap, shareReplay, filter, take, tap, catchError } from 'rxjs/operators';
 
 import { SyllabusRepository } from '../data/repositories/syllabus.repository';
 import { UiStateUtil } from './ui-state.utils';
@@ -27,32 +27,39 @@ export class SyllabusStore {
             take(1),
             map((index) => (index ? IdMapUtil.buildIdFileMap(index) : {})),
             tap((map) => this.uiState.set('idFileMap', map)),
-            shareReplay(1)
+            shareReplay(1),
           );
     }
 
     return this.idMap$;
   }
 
-  /** --------------------------------------------------
-   * LOAD ALL CLASSES USING INDEX (efficient)
-   * -------------------------------------------------- */
   getAllClasses$(): Observable<ClassSyllabus[]> {
     return this.getIdMap$().pipe(
-      map((map) => Object.values(map)),
-      switchMap((ids) => {
-        if (!ids.length) return of([]);
+      map((map) => Object.values(map ?? {})),
 
-        return forkJoin(
-          ids.map((id) =>
-            this.repo.loadClass(id).pipe(
-              take(1),
-              filter((cls): cls is ClassSyllabus => !!cls)
+      /* load all classes in parallel */
+      switchMap((ids) =>
+        ids.length
+          ? forkJoin(
+              ids.map((id) =>
+                this.repo.loadClass(id).pipe(
+                  take(1),
+                  catchError(() => of(null)), // prevent forkJoin crash
+                ),
+              ),
             )
-          )
-        );
-      }),
-      shareReplay(1)
+          : of([]),
+      ),
+
+      /* remove failed/null loads */
+      map((classes) => classes.filter((c): c is ClassSyllabus => !!c)),
+
+      /* avoid caching empty forever */
+      filter((classes) => classes.length > 0),
+
+      /* cache latest valid result */
+      shareReplay({ bufferSize: 1, refCount: true }),
     );
   }
 }

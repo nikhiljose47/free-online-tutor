@@ -6,26 +6,59 @@ import { SyllabusStore } from '../../state/syllabus.store';
 export class SyllabusLookupService {
   private syllabusStore = inject(SyllabusStore);
 
+  /* ================= RAW LIST ================= */
+
   private readonly _list = signal<ClassSyllabus[]>([]);
   readonly list = computed(() => this._list());
 
-  constructor() {
+  /* ================= READY PROMISE (optional imperative wait) ================= */
+
+  private _resolveReady!: () => void;
+  private readonly _ready = new Promise<void>((res) => (this._resolveReady = res));
+
+  async waitUntilReady() {
+    await this._ready;
+  }
+
+  /* ================= INIT (called once from bootstrap/resolver) ================= */
+
+  init() {
     this.syllabusStore.getAllClasses$().subscribe((data) => {
-       console.log('LOADED CLASSES', data);
       this._list.set(data ?? []);
+      this._resolveReady();
     });
   }
 
-  private readonly classMap = computed(
-    () => new Map(this.list().map((s) => [s.className, s]))
-  );
+  /* ================= DERIVED SIGNALS ================= */
 
-  private readonly codeMap = computed(
-    () => new Map(this.list().map((s) => [s.code_prefix, s]))
-  );
+  readonly classNames = computed(() => this.list().map((c) => c.className));
+
+  private readonly classMap = computed(() => new Map(this.list().map((s) => [s.className, s])));
+
+  private readonly codeMap = computed(() => new Map(this.list().map((s) => [s.code_prefix, s])));
+
+  private readonly chapterMap = computed(() => {
+    const map = new Map<string, { className: string; subjectName: string; chapter: Chapter }>();
+
+    for (const cls of this.list()) {
+      for (const subject of cls.subjects) {
+        for (const chapter of subject.chapters) {
+          map.set(chapter.code, {
+            className: cls.className,
+            subjectName: subject.name,
+            chapter,
+          });
+        }
+      }
+    }
+
+    return map;
+  });
+
+  /* ================= PUBLIC SYNC LOOKUPS ================= */
 
   getClassNames(): string[] {
-    return [...this.classMap().keys()];
+    return this.classNames();
   }
 
   getClass(className: string): ClassSyllabus | undefined {
@@ -50,7 +83,11 @@ export class SyllabusLookupService {
   }
 
   getSubject(className: string, subjectName: string): Subject | null {
-    return this.classMap().get(className)?.subjects.find((s) => s.name === subjectName) ?? null;
+    return (
+      this.classMap()
+        .get(className)
+        ?.subjects.find((s) => s.name === subjectName) ?? null
+    );
   }
 
   hasSubject(className: string, subjectName: string): boolean {
@@ -67,17 +104,7 @@ export class SyllabusLookupService {
     );
   }
 
-  getChapterByCode(
-    code: string
-  ): { className: string; subjectName: string; chapter: Chapter } | null {
-    for (const cls of this.list()) {
-      for (const subject of cls.subjects) {
-        const chapter = subject.chapters.find((c) => c.code === code);
-        if (chapter) {
-          return { className: cls.className, subjectName: subject.name, chapter };
-        }
-      }
-    }
-    return null;
+  getChapterByCode(code: string) {
+    return this.chapterMap().get(code) ?? null;
   }
 }

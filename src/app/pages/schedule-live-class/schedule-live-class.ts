@@ -18,6 +18,7 @@ import { PART1, COMPLETED, GLOBAL_MEETINGS } from '../../core/constants/app.cons
 import { Auth2Service } from '../../services/fire/auth2.service';
 import { ClassWrapup } from '../../components/class-wrapup/class-wrapup';
 import { UiStateUtil } from '../../state/ui-state.utils';
+import { SyllabusStore } from '../../state/syllabus.store';
 
 @Component({
   selector: 'schedule-live-class',
@@ -25,7 +26,7 @@ import { UiStateUtil } from '../../state/ui-state.utils';
   imports: [CommonModule, ClassWrapup],
   templateUrl: './schedule-live-class.html',
   styleUrl: './schedule-live-class.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScheduleLiveClass implements OnInit {
   /* ------------------ services ------------------ */
@@ -35,16 +36,19 @@ export class ScheduleLiveClass implements OnInit {
   private fire = inject(FirestoreDocService);
   private authApi = inject(Auth2Service);
   private uiStateUtil = inject(UiStateUtil);
-  profile = inject(UserProfileService).profile;
+  private syllabusStore = inject(SyllabusStore)
+
+  readonly profile = this.user.profile;
+
   /* ------------------ UI state ------------------ */
-  meetings = signal<Meeting[]>([]);
-  selectedMeeting = signal<Meeting | null>(null);
-  mode = signal<'view' | 'create'>('view');
-  submitting = signal(false);
-  teacherId: string | undefined;
+  readonly meetings = signal<Meeting[]>([]);
+  readonly selectedMeeting = signal<Meeting | null>(null);
+  readonly mode = signal<'view' | 'create'>('view');
+  readonly submitting = signal(false);
+  private teacherId: string | undefined;
 
   /* ------------------ form (single object) ------------------ */
-  form = signal({
+  readonly form = signal({
     classId: '',
     subjectId: '',
     chapterCode: '',
@@ -54,34 +58,47 @@ export class ScheduleLiveClass implements OnInit {
     duration: 30,
   });
 
-  /* ------------------ lookups ------------------ */
-  classList = computed(() => this.syllabus.getClassNames());
+  /* ------------------ lookups (signal-safe) ------------------ */
+  readonly classList = this.syllabus.classNames;
 
-  subjectList = computed(() =>
-    this.form().classId ? this.syllabus.getSubjects(this.form().classId) : []
-  );
+  readonly subjectList = computed(() => {
+    const f = this.form();
+    return f.classId ? this.syllabus.getSubjects(f.classId) : [];
+  });
 
-  chapterList = computed(() =>
-    this.form().classId && this.form().subjectId
-      ? this.syllabus.getChapters(this.form().classId, this.form().subjectId)
-      : []
-  );
+  readonly chapterList = computed(() => {
+    const f = this.form();
+    return f.classId && f.subjectId ? this.syllabus.getChapters(f.classId, f.subjectId) : [];
+  });
 
+  /* ------------------ lifecycle ------------------ */
   ngOnInit(): void {
     this.teacherId = this.authApi.uid;
     if (!this.teacherId) return;
 
-    console.log('inside')
-    console.log(this.classList())
+    /* ensure lookup initialized once */
+    this.syllabus.init();
+    
+      this.syllabusStore.getAllClasses$().subscribe((data) => {
+           console.log('Syllabus 1:', data);
 
+    });
+    this.syllabus.waitUntilReady().then(() => {
+      console.log('✅ Syllabus ready:', this.syllabus.getClassNames());
+    });
+    /* load meetings */
     this.meetApi.getLiveMeetingsByTeacher(this.teacherId).subscribe((res) => {
       if (res.ok && res.data) {
-        this.meetings.set(res.data as Meeting[]);
-        this.meetings().forEach((e) => this.uiStateUtil.set(e.id, e));
+        const list = res.data as Meeting[];
+        this.meetings.set(list);
+
+        /* cache in UI state */
+        list.forEach((m) => this.uiStateUtil.set(m.id, m));
       }
     });
   }
 
+  /* ------------------ template helpers ------------------ */
   trackByMeetingId(index: number, m: Meeting) {
     return m.id;
   }
@@ -118,7 +135,7 @@ export class ScheduleLiveClass implements OnInit {
       status: PART1,
       date: Timestamp.fromDate(start),
       teacherId: this.teacherId,
-      teacherName: this.user.profile?.name ?? '',
+      teacherName: this.profile?.name ?? '',
       duration: f.duration,
       attendance: [],
       createdAt: Timestamp.now(),
@@ -131,9 +148,9 @@ export class ScheduleLiveClass implements OnInit {
     });
   }
 
-  updateField<K extends keyof typeof this.form extends never ? never : any>(
+  updateField(
     key: 'classId' | 'subjectId' | 'chapterCode' | 'batchId' | 'meetLink' | 'date',
-    value: string
+    value: string,
   ) {
     this.form.update((f) => ({ ...f, [key]: value }));
   }
