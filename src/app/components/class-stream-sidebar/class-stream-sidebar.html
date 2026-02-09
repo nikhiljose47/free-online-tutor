@@ -21,8 +21,11 @@
       </div>
     </div>
 
+    <div class="section-gap"></div>
+
+
     <!-- UPCOMING -->
-    <h6 class="section-title mt-4">Upcoming</h6>
+    <h6 class="section-title mt-2">Upcoming</h6>
 
     <div class="live-item" *ngFor="let item of upcoming()" (click)="open(item)">
       <img class="avatar" [src]="item.image || 'assets/abbu.jpg'" />

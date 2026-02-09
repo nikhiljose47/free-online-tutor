@@ -1,16 +1,16 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { Chapter, ClassSyllabus, Subject } from '../../models/syllabus/class-syllabus';
-import { SyllabusParser } from '../../state/syllabus.store';
+import { SyllabusStore } from '../../state/syllabus.store';
 
 @Injectable({ providedIn: 'root' })
 export class SyllabusLookupService {
-  private syllabusParser = inject(SyllabusParser);
+  private syllabusStore = inject(SyllabusStore);
 
   private readonly _list = signal<ClassSyllabus[]>([]);
   readonly list = computed(() => this._list());
 
   constructor() {
-    this.syllabusParser.getAllClasses().subscribe((data) => {
+    this.syllabusStore.getAllClasses$().subscribe((data) => {
        console.log('LOADED CLASSES', data);
       this._list.set(data ?? []);
     });

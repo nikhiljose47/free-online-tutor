@@ -1,53 +1,58 @@
 import { Injectable, inject } from '@angular/core';
+import { Observable, of, forkJoin } from 'rxjs';
+import { map, switchMap, shareReplay, filter, take, tap } from 'rxjs/operators';
+
 import { SyllabusRepository } from '../data/repositories/syllabus.repository';
 import { UiStateUtil } from './ui-state.utils';
 import { IdFileMap, IdMapUtil } from '../core/utils/id-map.utils';
 import { ClassSyllabus } from '../models/syllabus/class-syllabus';
-import { Observable } from 'rxjs/internal/Observable';
-import { filter, firstValueFrom, forkJoin, from, of, switchMap, take } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
-export class SyllabusParser {
+export class SyllabusStore {
   private repo = inject(SyllabusRepository);
   private uiState = inject(UiStateUtil);
 
-  // PURE getter
-  async getIdMap(): Promise<IdFileMap> {
-    const map = this.uiState.get<IdFileMap>('idFileMap');
+  /** --------------------------------------------------
+   * ID MAP STREAM (cached & shared)
+   * -------------------------------------------------- */
+  private idMap$?: Observable<IdFileMap>;
 
-    if (map) {
-      return map;
+  getIdMap$(): Observable<IdFileMap> {
+    if (!this.idMap$) {
+      const uiCached = this.uiState.get<IdFileMap>('idFileMap');
+
+      this.idMap$ = uiCached
+        ? of(uiCached)
+        : this.repo.loadIndex().pipe(
+            take(1),
+            map((index) => (index ? IdMapUtil.buildIdFileMap(index) : {})),
+            tap((map) => this.uiState.set('idFileMap', map)),
+            shareReplay(1)
+          );
     }
-    return this.loadIdMap();
+
+    return this.idMap$;
   }
 
-  async loadIdMap(): Promise<IdFileMap> {
-    const dbCached = await firstValueFrom(this.repo.loadIndex().pipe(take(1)));
-
-    if (!dbCached) return {};
-
-    const fileMap = IdMapUtil.buildIdFileMap(dbCached);
-    this.uiState.set<IdFileMap>('idFileMap', fileMap);
-
-    return fileMap;
-  }
-
-  getAllClasses(): Observable<ClassSyllabus[]> {
-    return from(this.getIdMap()).pipe(
-      switchMap((map) => {
-        const ids = Object.values(map);
-
+  /** --------------------------------------------------
+   * LOAD ALL CLASSES USING INDEX (efficient)
+   * -------------------------------------------------- */
+  getAllClasses$(): Observable<ClassSyllabus[]> {
+    return this.getIdMap$().pipe(
+      map((map) => Object.values(map)),
+      switchMap((ids) => {
         if (!ids.length) return of([]);
 
-        const calls$ = ids.map((id) =>
-          this.repo.loadClass(id).pipe(
-            take(1),
-            filter((data): data is ClassSyllabus => !!data),
-          ),
+        return forkJoin(
+          ids.map((id) =>
+            this.repo.loadClass(id).pipe(
+              take(1),
+              filter((cls): cls is ClassSyllabus => !!cls)
+            )
+          )
         );
-
-        return forkJoin(calls$);
       }),
+      shareReplay(1)
     );
   }
 }
