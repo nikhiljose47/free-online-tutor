@@ -8,12 +8,8 @@ import {
   computed,
 } from '@angular/core';
 
-import {
-  ClassSyllabus,
-  Chapter,
-  Subject,
-} from '../../models/syllabus/class-syllabus';
-import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
+import { ClassSyllabus, Chapter, Subject } from '../../models/syllabus/class-syllabus';
+import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 
 @Component({
   selector: 'chapter-browser',
@@ -24,8 +20,11 @@ import { SyllabusRepository } from '../../data/repositories/syllabus.repository'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChapterBrowser implements OnInit {
-  private syllabusRepo = inject(SyllabusRepository);
+  /* ------------------ services ------------------ */
+  private syllabusLookup = inject(SyllabusLookupService);
 
+  /* ------------------ core state ------------------ */
+  readonly classes = signal<string[]>(["Class"]);
   readonly syllabus = signal<ClassSyllabus | null>(null);
 
   readonly selectedClass = signal<string | null>(null);
@@ -34,11 +33,10 @@ export class ChapterBrowser implements OnInit {
   readonly isOnline = signal<boolean>(navigator.onLine);
   readonly syncing = signal<boolean>(false);
 
+  /* ------------------ derived data ------------------ */
   readonly subjects = computed<Subject[]>(() => {
     return this.syllabus()?.subjects ?? [];
   });
-
-
 
   readonly chapters = computed<Chapter[]>(() => {
     const syllabus = this.syllabus();
@@ -46,41 +44,48 @@ export class ChapterBrowser implements OnInit {
 
     if (!syllabus || !subjectCode) return [];
 
-    return (
-      syllabus.subjects.find(s => s.code === subjectCode)?.chapters ?? []
-    );
+    return syllabus.subjects.find((s) => s.code === subjectCode)?.chapters ?? [];
   });
 
-
+  /* ------------------ UI helpers ------------------ */
   readonly expanded = signal<Record<string, boolean>>({});
 
-toggleExpand(chapterCode: string): void {
-  this.expanded.update(m => ({
-    ...m,
-    [chapterCode]: !m[chapterCode],
-  }));
-}
-
-
-
-  ngOnInit(): void {
-    this.syllabusRepo.loadClass('syllabus-class-8').subscribe(data => {
-      if (!data) return;
- 
-
-      this.syllabus.set(data);
-      this.selectedClass.set(data.classId);
-      console.log(data);
-      console.log(data.classId)
-          console.log(data.subjects[0])
-      if (data.subjects.length) {
-        this.selectedSubjectCode.set(data.subjects[0].code);
-      }
-                 console.log(this.selectedSubjectCode())
-
-    });
+  toggleExpand(chapterCode: string): void {
+    this.expanded.update((m) => ({
+      ...m,
+      [chapterCode]: !m[chapterCode],
+    }));
   }
 
+  /* ------------------ lifecycle ------------------ */
+  async ngOnInit(): Promise<void> {
+    /* ensure lookup initialized */
+    this.syllabusLookup.init();
+
+    /* wait until syllabus data is ready */
+    await this.syllabusLookup.waitUntilReady();
+
+    /* use already-loaded class instead of re-fetching */
+    const classNames = this.syllabusLookup.getClassNames();
+    this.classes.set(classNames);
+
+    if (!classNames.length) return;
+
+    const firstClass = this.syllabusLookup.getClass(classNames[0]);
+    if (!firstClass) return;
+
+    this.syllabus.set(firstClass);
+    this.selectedClass.set(firstClass.classId);
+
+    if (firstClass.subjects.length) {
+      this.selectedSubjectCode.set(firstClass.subjects[0].code);
+    }
+  }
+
+  /* ------------------ interactions ------------------ */
+  selectClass(className: string): void {
+    this.selectedSubjectCode.set(className);
+  }
 
   selectSubject(subjectCode: string): void {
     this.selectedSubjectCode.set(subjectCode);

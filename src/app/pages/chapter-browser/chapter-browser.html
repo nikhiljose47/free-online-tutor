@@ -3,6 +3,20 @@
   <!-- FILTER BAR -->
   <div class="filter-bar mb-3">
     <div class="row g-2 align-items-center">
+
+          <div class="col-md-3">
+        <select
+          class="form-select"
+          [value]="classes()"
+          (change)="selectClass($any($event.target).value)"
+        >
+          <option disabled value="">Select Subject</option>
+          <option *ngFor="let s of classes()" [value]="s">
+            {{ s }}
+          </option>
+        </select>
+      </div>
+
       <div class="col-md-3">
         <select
           class="form-select"

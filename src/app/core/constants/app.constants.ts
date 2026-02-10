@@ -36,3 +36,7 @@ export type SyllabusErrorCode =
   | 'MAINTENANCE'
   | 'NETWORK_ERROR'
   | 'INVALID_SCHEMA';
+
+
+  //Assets
+  export const PLACEHOLDER__COVER_IMG = 'assets/placeholder-cover.webp';

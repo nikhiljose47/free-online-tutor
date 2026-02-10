@@ -15,7 +15,13 @@
     <ng-template #classData>
       <div class="grid">
         <div class="simple-card" *ngFor="let cls of classCategories()" (click)="openCategory(cls)">
-          <img [src]="cls.image" class="banner" />
+          <img
+            class="banner"
+            [src]="getBannerSrc(cls.meta?.image)"
+            [alt]="getBannerAlt(cls)"
+            loading="lazy"
+            (error)="onImgError($event)"
+          />
 
           <div class="info">
             <h3 class="title">{{ cls.name }}</h3>
@@ -45,7 +51,13 @@
       <ng-container *ngIf="jamSessions().length > 0; else noJam">
         <div class="grid">
           <div class="simple-card" *ngFor="let jam of jamSessions()" (click)="joinJam(jam)">
-            <img src="./assets/jam-placeholder.jpg" class="banner" />
+            <img
+              class="banner"
+              [src]="getBannerSrc(jam.meta?.image)"
+              [alt]="getBannerAlt(jam)"
+              loading="lazy"
+              (error)="onImgError($event)"
+            />
 
             <div class="info">
               <div class="jam-head">
@@ -72,8 +84,13 @@
     </section>
     <div class="grid">
       <div class="simple-card" *ngFor="let jam of actSessions()" (click)="joinJam(jam)">
-        <img [src]="jam.image" class="banner" />
-        <!-- <div class="svg-card" [innerHTML]="svg()"></div> -->
+        <img
+          class="banner"
+          [src]="getBannerSrc(jam.meta?.image)"
+          [alt]="getBannerAlt(jam)"
+          loading="lazy"
+          (error)="onImgError($event)"
+        />
 
         <div class="info">
           <div class="jam-head">

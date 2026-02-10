@@ -11,6 +11,7 @@ import { UiStateUtil } from '../../state/ui-state.utils';
 import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
 import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
 import { IdFileMap } from '../../core/utils/id-map.utils';
+import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
 
 /* ===============================
    COMPONENT
@@ -60,24 +61,24 @@ export class FreeOnlineTutor implements OnInit {
         this.jamLoading.set(false);
         return;
       }
-     
+
       this.processData(data);
       // Set loaders to false
       this.classLoading.set(false);
       this.jamLoading.set(false);
 
       // After all home methods happened
-      
+
       this.loadAllClasses();
     });
   }
 
   private loadAllClasses() {
     const map = this.uiState.get<IdFileMap>('idFileMap');
-     if(map){
-       let mapToArr = Object.values(map);
-       this.syllRepo.loadMultipleClasses(mapToArr);
-     }
+    if (map) {
+      let mapToArr = Object.values(map);
+      this.syllRepo.loadMultipleClasses(mapToArr);
+    }
   }
 
   private processData(data: any) {
@@ -105,7 +106,9 @@ export class FreeOnlineTutor implements OnInit {
         teachers: c.meta?.teachers ?? 0,
         medium: Array.isArray(c.meta?.medium) ? c.meta.medium : [],
         image: c.meta?.image ?? '',
+        meta: c.meta,
       }));
+    console.log(result);
     this.classCategories.set(result);
   }
 
@@ -121,6 +124,7 @@ export class FreeOnlineTutor implements OnInit {
         time: j.isLive ? 'Live' : 'Soon',
         isLive: j.isLive,
         image: j.meta.image,
+        meta: j.meta,
       }));
 
     this.jamSessions.set(result);
@@ -136,6 +140,7 @@ export class FreeOnlineTutor implements OnInit {
         teacher: a.meta.teacher,
         time: 'Soon',
         image: a.meta.image,
+        meta: a.meta,
       }));
 
     this.actSessions.set(result);
@@ -146,6 +151,19 @@ export class FreeOnlineTutor implements OnInit {
   =============================== */
   load(cfg: SvgCardConfig) {
     // intentionally unchanged
+  }
+
+  getBannerSrc(src?: string | null): string {
+    console.log(src);
+    return src || PLACEHOLDER__COVER_IMG;
+  }
+
+  onImgError(event: Event) {
+    (event.target as HTMLImageElement).src = PLACEHOLDER__COVER_IMG;
+  }
+
+  getBannerAlt(cls: any): string {
+    return cls?.className ? `${cls.className} cover` : 'Class cover';
   }
 
   /* ===============================
