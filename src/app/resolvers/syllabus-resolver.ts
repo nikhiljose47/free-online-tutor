@@ -2,8 +2,8 @@ import { ResolveFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, of, tap } from 'rxjs';
-import { ClassSyllabus } from '../models/syllabus/syllabus.model';
 import { UiStateUtil } from '../state/ui-state.utils';
+import { ClassSyllabus } from '../models/syllabus/class-syllabus';
 
 export const syllabusResolver: ResolveFn<ClassSyllabus | null> = () => {
   const http = inject(HttpClient);

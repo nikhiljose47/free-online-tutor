@@ -12,7 +12,6 @@ import { forkJoin } from 'rxjs';
 import { ContentPlaceholder } from '../../components/content-placeholder/content-placeholder';
 import { DotLoader } from '../../components/dot-loader/dot-loader';
 import { ToastService } from '../../shared/toast.service';
-import { user } from '@angular/fire/auth';
 
 @Component({
   selector: 'join-tution',
@@ -53,6 +52,8 @@ export class JoinTution implements OnInit {
   ngOnInit(): void {
     const meetingId = this.route.snapshot.paramMap.get('meetingId')!;
     const m = this.uiUtil.get<Meeting>(meetingId);
+
+    console.log('meet details at init', m)
 
     if (!m) {
       this.isLoading.set(false);

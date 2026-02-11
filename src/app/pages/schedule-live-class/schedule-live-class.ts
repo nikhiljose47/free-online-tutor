@@ -18,7 +18,6 @@ import { PART1, COMPLETED, GLOBAL_MEETINGS } from '../../core/constants/app.cons
 import { Auth2Service } from '../../services/fire/auth2.service';
 import { ClassWrapup } from '../../components/class-wrapup/class-wrapup';
 import { UiStateUtil } from '../../state/ui-state.utils';
-import { SyllabusStore } from '../../state/syllabus.store';
 
 @Component({
   selector: 'schedule-live-class',
@@ -36,7 +35,6 @@ export class ScheduleLiveClass implements OnInit {
   private fire = inject(FirestoreDocService);
   private authApi = inject(Auth2Service);
   private uiStateUtil = inject(UiStateUtil);
-  private syllabusStore = inject(SyllabusStore)
 
   readonly profile = this.user.profile;
 
@@ -78,11 +76,7 @@ export class ScheduleLiveClass implements OnInit {
 
     /* ensure lookup initialized once */
     this.syllabus.init();
-    
-      this.syllabusStore.getAllClasses$().subscribe((data) => {
-           console.log('Syllabus 1:', data);
 
-    });
     this.syllabus.waitUntilReady().then(() => {
       console.log('✅ Syllabus ready:', this.syllabus.getClassNames());
     });
@@ -133,11 +127,11 @@ export class ScheduleLiveClass implements OnInit {
       batchId: f.batchId,
       meetLink: f.meetLink,
       status: PART1,
-      date: Timestamp.fromDate(start),
       teacherId: this.teacherId,
-      teacherName: this.profile?.name ?? '',
+      teacherName: this.profile()?.name ?? '',
       duration: f.duration,
       attendance: [],
+      date: Timestamp.fromDate(start),
       createdAt: Timestamp.now(),
       endAt: Timestamp.fromDate(end),
     };

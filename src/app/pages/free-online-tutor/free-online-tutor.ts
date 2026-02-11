@@ -108,7 +108,6 @@ export class FreeOnlineTutor implements OnInit {
         image: c.meta?.image ?? '',
         meta: c.meta,
       }));
-    console.log(result);
     this.classCategories.set(result);
   }
 
@@ -170,7 +169,6 @@ export class FreeOnlineTutor implements OnInit {
      NAVIGATION
   =============================== */
   openCategory(cls: any) {
-    console.log(cls);
     this.uiState.set('curFile', cls.fileName);
     this.router.navigate(['/details', 'class', cls.id]);
   }

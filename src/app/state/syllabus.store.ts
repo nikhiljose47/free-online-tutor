@@ -6,6 +6,14 @@ import { SyllabusRepository } from '../data/repositories/syllabus.repository';
 import { UiStateUtil } from './ui-state.utils';
 import { IdFileMap, IdMapUtil } from '../core/utils/id-map.utils';
 import { ClassSyllabus } from '../models/syllabus/class-syllabus';
+import { DashboardComponent } from '../pages/dashboard/dashboard';
+
+
+//// readme
+
+// 1.Ensure initialize service before use
+// 2.This is sub store for syllabus repo, made with intention of load reduction in syll repo
+
 
 @Injectable({ providedIn: 'root' })
 export class SyllabusStore {

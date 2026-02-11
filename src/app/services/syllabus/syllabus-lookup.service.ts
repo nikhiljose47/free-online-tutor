@@ -42,7 +42,7 @@ export class SyllabusLookupService {
 
     for (const cls of this.list()) {
       for (const subject of cls.subjects) {
-        for (const chapter of subject.chapters) {
+        for (const chapter of this.normalizeChapters(subject.chapters)) {
           map.set(chapter.code, {
             className: cls.className,
             subjectName: subject.name,
@@ -54,6 +54,15 @@ export class SyllabusLookupService {
 
     return map;
   });
+
+ private normalizeChapters(input: any): Chapter[] {
+  if (!input) return [];
+
+  return Array.isArray(input)
+    ? input
+    : Object.values(input);
+}
+
 
   /* ================= PUBLIC SYNC LOOKUPS ================= */
 
