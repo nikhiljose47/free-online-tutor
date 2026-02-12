@@ -62,12 +62,12 @@ export class FreeOnlineTutor implements OnInit {
         return;
       }
 
-      this.processData(data);
+      this.processIndexData(data);
       // Set loaders to false
       this.classLoading.set(false);
       this.jamLoading.set(false);
 
-      // After all home methods happened
+      // After all home methods happened - start parallel of next data
 
       this.loadAllClasses();
     });
@@ -81,7 +81,7 @@ export class FreeOnlineTutor implements OnInit {
     }
   }
 
-  private processData(data: any) {
+  private processIndexData(data: any) {
     this.processClasses(data.classes);
     this.processJams(data.jamSessions);
     this.processActivities(data.activities);
@@ -120,8 +120,6 @@ export class FreeOnlineTutor implements OnInit {
         title: j.title,
         teacher: j.meta.teacher,
         lang: j.meta.language,
-        time: j.isLive ? 'Live' : 'Soon',
-        isLive: j.isLive,
         image: j.meta.image,
         meta: j.meta,
       }));
@@ -153,7 +151,6 @@ export class FreeOnlineTutor implements OnInit {
   }
 
   getBannerSrc(src?: string | null): string {
-    console.log(src);
     return src || PLACEHOLDER__COVER_IMG;
   }
 

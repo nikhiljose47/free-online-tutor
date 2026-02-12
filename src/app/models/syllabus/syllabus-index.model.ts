@@ -22,7 +22,8 @@ export interface SyllabusIndex {
     id: string;
     title: string;
     enabled: boolean;
-    isLive: boolean;
+    ready: boolean;
+
     startsAt: string;
     priority: number;
     fileName: string;
@@ -37,12 +38,16 @@ export interface SyllabusIndex {
     id: string;
     title: string;
     enabled: boolean;
+    ready: boolean;
+
     startsAt: string;
     priority: number;
     fileName: string;
 
     meta: {
       teacher: string;
+      language: string[];
+
       image: string;
     };
   }[];

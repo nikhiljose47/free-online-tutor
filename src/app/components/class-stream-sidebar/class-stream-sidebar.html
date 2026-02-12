@@ -13,7 +13,7 @@
       <img class="avatar-live" [src]="item.image || 'assets/abbu.jpg'" />
       <div class="info">
         <div class="title">{{ item.subjectId }}</div>
-        <div class="subject">{{ item.date.toDate() | date : 'MMM d, y, h:mm:ss a' }}</div>
+        <div class="subject">{{ item.date.toDate() | date : 'd/M, h:mm a' }}</div>
       </div>
       <div class="status-box">
         <span class="red-dot"></span>
