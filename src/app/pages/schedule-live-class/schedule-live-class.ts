@@ -121,7 +121,7 @@ export class ScheduleLiveClass implements OnInit {
 
     const payload: Meeting = {
       id: '',
-      classId: f.classId,
+      classId: this.syllabus.getClass(f.classId)?.classId??'',
       subjectId: f.subjectId,
       chapterCode: f.chapterCode,
       batchId: f.batchId,
