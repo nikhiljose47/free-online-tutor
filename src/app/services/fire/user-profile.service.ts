@@ -7,7 +7,10 @@ import { FirestoreDocService } from './firestore-doc.service';
 export class UserProfileService {
   profile = signal<UserProfile | null>(null);
 
-  constructor(private fire: FirestoreDocService, private auth: Auth2Service) {
+  constructor(
+    private fire: FirestoreDocService,
+    private auth: Auth2Service,
+  ) {
     effect(() => {
       const user = this.auth.user();
 
@@ -16,9 +19,13 @@ export class UserProfileService {
         return;
       }
       this.fire.getOnce('users', user.uid).subscribe((res) => {
-        let profile = res.data as UserProfile;
-        profile.uid = user.uid;
-        this.profile.set(profile);
+        if (res.ok && res.data) {
+          const profile = res.data as UserProfile;
+          profile.uid = user.uid;
+          this.profile.set(profile);
+        } else {
+          this.profile.set(null);
+        }
       });
     });
   }

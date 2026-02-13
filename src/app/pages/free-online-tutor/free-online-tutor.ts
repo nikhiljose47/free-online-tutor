@@ -6,7 +6,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { RoadmapCacheService } from '../../services/cache/roadmap-cache.service';
 import { ToastService } from '../../shared/toast.service';
 import { HomeIntroStrip } from '../../components/home-intro-strip/home-intro-strip';
-import { UiStateUtil } from '../../state/ui-state.utils';
+import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
 import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
 import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';

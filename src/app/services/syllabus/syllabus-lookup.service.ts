@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { Chapter, ClassSyllabus, Subject } from '../../models/syllabus/class-syllabus';
-import { SyllabusStore } from '../../state/syllabus.store';
+import { SyllabusStore } from '../../shared/state/syllabus.store';
 
 @Injectable({ providedIn: 'root' })
 export class SyllabusLookupService {

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { from, Observable, of, switchMap, tap, retry, catchError, forkJoin } from 'rxjs';
 import { IndexedDbService } from '../../services/db/indexed-db.service';
 import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
-import { UiStateUtil } from '../../state/ui-state.utils';
+import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
 import { SYLL_INDEX_CACHE_KEY } from '../../core/constants/app.constants';
 

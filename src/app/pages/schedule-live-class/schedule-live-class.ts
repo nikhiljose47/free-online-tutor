@@ -16,7 +16,7 @@ import { Meeting } from '../../models/meeting.model';
 import { PART1, COMPLETED, GLOBAL_MEETINGS } from '../../core/constants/app.constants';
 import { Auth2Service } from '../../services/fire/auth2.service';
 import { ClassWrapup } from '../../components/class-wrapup/class-wrapup';
-import { UiStateUtil } from '../../state/ui-state.utils';
+import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { MeetingsService } from '../../services/meetings/meetings.service';
 
 @Component({

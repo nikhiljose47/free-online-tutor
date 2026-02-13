@@ -2,12 +2,11 @@ import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@ang
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Meeting } from '../../models/meeting.model';
-import { UiStateUtil } from '../../state/ui-state.utils';
+import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { Timestamp } from '@angular/fire/firestore';
 import { AttendanceApiService } from '../../services/attendance/attendance-api.service';
 import { UserProfileService } from '../../services/fire/user-profile.service';
-import { UserProfile } from '../../models/user-profile.model';
 import { forkJoin } from 'rxjs';
 import { ContentPlaceholder } from '../../components/content-placeholder/content-placeholder';
 import { DotLoader } from '../../components/dot-loader/dot-loader';
@@ -23,7 +22,7 @@ import { ToastService } from '../../shared/toast.service';
 })
 export class JoinTution implements OnInit {
   private route = inject(ActivatedRoute);
-  private profileApi = inject(UserProfileService);
+  private user = inject(UserProfileService);
   private uiUtil = inject(UiStateUtil);
   private syllabus = inject(SyllabusLookupService);
   private attendanceApi = inject(AttendanceApiService);
@@ -31,13 +30,13 @@ export class JoinTution implements OnInit {
 
   /* ---------------- derived (simple values) ---------------- */
 
+  readonly profile = this.user.profile();
   isLoading = signal<boolean>(true);
   hasErr = signal<boolean>(true);
   errMsg = signal<string>('We are facing some issue..');
   hasmarkedInterest = signal<boolean>(false);
 
   meeting!: Meeting;
-  profile!: UserProfile;
   banner: string = '/assets/book-covers/hi-text.webp';
   students: number = 1;
   rating: number = 4.7;
@@ -51,30 +50,32 @@ export class JoinTution implements OnInit {
 
   ngOnInit(): void {
     const meetingId = this.route.snapshot.paramMap.get('meetingId')!;
-    const m = this.uiUtil.get<Meeting>(meetingId);
 
-    console.log('meet details at init', m)
+    if (!meetingId) {
+      this.errMsg.set('Invalid route');
+      this.isLoading.set(false);
+      return;
+    }
+    const meetData = this.uiUtil.get<Meeting>(meetingId);
 
-    if (!m) {
+    if (!meetData) {
       this.isLoading.set(false);
       this.errMsg.set('No data found');
       return;
     }
-    this.meeting = m;
-    //Meeting data loaded.
+    this.meeting = meetData;
 
-    const profile = this.profileApi.profile();
-    if (!profile) {
+    if (!this.profile) {
       this.isLoading.set(false);
       this.errMsg.set('No user found!');
       return;
     }
-    this.profile = profile;
-
-    this.loadAttendanceAndUsers(m).subscribe({
+    this.loadAttendanceAndUsers(meetData).subscribe({
       next: (res) => {
         this.hasmarkedInterest.set(res.attended.attended);
         this.users = res.users.users;
+        this.setData();
+
         this.isLoading.set(false);
         this.hasErr.set(false);
       },
@@ -85,8 +86,6 @@ export class JoinTution implements OnInit {
         this.hasErr.set(true);
       },
     });
-
-    this.setData();
   }
 
   setData() {
@@ -106,7 +105,7 @@ export class JoinTution implements OnInit {
 
   loadAttendanceAndUsers(meeting: Meeting) {
     return forkJoin({
-      attended: this.attendanceApi.hasAttendedToday(this.profile.uid, meeting.classId),
+      attended: this.attendanceApi.hasAttendedToday(this.profile!.uid, meeting.classId),
       users: this.attendanceApi.getUsersBySubjectCode(meeting.classId, 1, 50),
     });
   }
@@ -114,7 +113,7 @@ export class JoinTution implements OnInit {
   onClickInterestBtn(): void {
     if (this.isUpcoming && !this.hasmarkedInterest()) {
       this.attendanceApi
-        .markAttendanceOnce(this.profile.uid, this.meeting.classId ?? '')
+        .markAttendanceOnce(this.profile!.uid, this.meeting.classId ?? '')
         .subscribe({
           next: (s) => {
             this.hasmarkedInterest.set(true);

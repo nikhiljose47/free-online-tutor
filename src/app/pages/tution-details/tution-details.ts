@@ -9,7 +9,7 @@ import { Timestamp } from '@angular/fire/firestore';
 import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
 import { DotLoader } from '../../components/dot-loader/dot-loader';
-import { SyllabusStore } from '../../state/syllabus.store';
+import { SyllabusStore } from '../../shared/state/syllabus.store';
 import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
 import { MeetingsService } from '../../services/meetings/meetings.service';
 
