@@ -1,20 +1,18 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { catchError, of, tap } from 'rxjs';
-
 import { ContentPlaceholder } from '../../components/content-placeholder/content-placeholder';
 import { Loading } from '../../components/loading/loading';
 import { Timetable } from '../../components/timetable/timetable';
 
 import { MeetingsService } from '../../domain/meetings/meetings.service';
-import { UiStateUtil } from '../../state/ui-state.utils';
 import { Meeting } from '../../models/meeting.model';
-import { IdFileMap } from '../../core/utils/id-map.utils';
 import { Timestamp } from '@angular/fire/firestore';
 import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
+import { DotLoader } from '../../components/dot-loader/dot-loader';
+import { SyllabusStore } from '../../state/syllabus.store';
+import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
 
 /* ------------------ dummy fallback ------------------ */
 const DUMMY_MEETING: Meeting = {
@@ -37,17 +35,16 @@ const DUMMY_MEETING: Meeting = {
 @Component({
   selector: 'tution-details',
   standalone: true,
-  imports: [CommonModule, Timetable, ContentPlaceholder, Loading],
+  imports: [CommonModule, Timetable, ContentPlaceholder, Loading, DotLoader],
   templateUrl: './tution-details.html',
   styleUrl: './tution-details.scss',
 })
 export class TutionDetails implements OnInit {
   /* ================= ROUTING ================= */
   private route = inject(ActivatedRoute);
-  private http = inject(HttpClient);
   private meetApi = inject(MeetingsService);
-  private uiState = inject(UiStateUtil);
   private syllRepo = inject(SyllabusRepository);
+  private syllabusStore = inject(SyllabusStore);
 
   readonly type = this.route.snapshot.paramMap.get('type') as 'class' | 'jam';
   readonly id = this.route.snapshot.paramMap.get('id')!;
@@ -129,44 +126,54 @@ export class TutionDetails implements OnInit {
 
   classFileId: string = '';
 
-  /* ================= INIT ================= */
   ngOnInit(): void {
-    const map = this.uiState.get<IdFileMap>('idFileMap');
-    if (map) {
-      this.classFileId = map![this.id];
-      this.syllRepo.loadClass(this.classFileId).subscribe((data) => {
-        if (data) {
-          this.syllabus.set(data);
-        }
-      });
-      this.loadClassDetails();
-    }
+    this.loadData();
   }
 
-  /* ================= LOAD SYLLABUS ================= */
-  // private loadSyllabus(): void {
-  //   const cached = this.uiState.get<ClassSyllabus>(this.id);
-  //   if (cached) {
-  //     this.syllabus.set(cached);
-  //     return;
-  //   }
+  loadData() {
+    this.syllabusStore
+      .getIdMap$()
+      .pipe(
+        switchMap((map) => {
+          if (!map) return of(null);
 
-  //   const map = this.uiState.get<IdFileMap>('idFileMap');
-  //   const fileId = map?.[this.id];
+          this.classFileId = map[this.id];
 
-  //   if (!fileId) return;
+          return forkJoin({
+            syllabus: this.syllRepo.loadClass(this.classFileId).pipe(catchError(() => of(null))),
+            meetings: this.meetApi.getMeetingsForClass(this.id).pipe(catchError(() => of(null))),
+          });
+        }),
+        tap((res) => {
+          if (!res) {
+            this.isLoading.set(false);
+            return;
+          }
 
-  //   this.http
-  //     .get<ClassSyllabus>(`data/${fileId}.json`)
-  //     .pipe(
-  //       tap((data) => {
-  //         this.syllabus.set(data);
-  //         this.uiState.set<ClassSyllabus>(this.id, data, 15 * 60 * 1000);
-  //       }),
-  //       catchError(() => of(null)),
-  //     )
-  //     .subscribe();
-  // }
+          const { syllabus, meetings } = res;
+
+          if (syllabus) {
+            this.syllabus.set(syllabus);
+          }
+
+          if (meetings) {
+            this.setMeetings(meetings as any);
+          }
+
+          /* BOTH must be valid */
+          const valid = !!syllabus && !!meetings;
+          this.hasValidData.set(valid);
+          this.isLoading.set(false);
+
+          if (valid) console.log('came in');
+        }),
+        catchError(() => {
+          this.isLoading.set(false);
+          return of(null);
+        }),
+      )
+      .subscribe();
+  }
 
   /* ================= LOAD DETAILS ================= */
   private loadClassDetails(): void {
@@ -174,11 +181,9 @@ export class TutionDetails implements OnInit {
       next: (res) => {
         this.setMeetings(res as any);
         this.hasValidData.set(true);
+        this.isLoading.set(false);
       },
       error: () => {
-        this.hasValidData.set(false);
-      },
-      complete: () => {
         this.isLoading.set(false);
       },
     });
@@ -199,7 +204,6 @@ export class TutionDetails implements OnInit {
     );
   }
 
-  /* ================= HELPERS ================= */
   setMeetings(data: Meeting[]): void {
     this.meetings.set(data);
   }
