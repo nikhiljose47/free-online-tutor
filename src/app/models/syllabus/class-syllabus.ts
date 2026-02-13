@@ -1,4 +1,4 @@
-export interface  ClassSyllabus {
+export interface ClassSyllabus {
   classId: string;
   className: string;
   code_prefix: string;
@@ -11,12 +11,16 @@ export interface  ClassSyllabus {
 export interface Subject {
   name: string;
   code: string;
+  enabled: boolean;
+  meta: Record<string, unknown>;
   chapters: Chapter[];
 }
 
 export interface Chapter {
   code: string;
   name: string;
+  enabled: boolean;
+  meta: Object;
   agenda: string[];
   session_instructions: SessionInstruction[];
   teacher_aids: string[];

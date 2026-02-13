@@ -2,10 +2,8 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ContentPlaceholder } from '../../components/content-placeholder/content-placeholder';
-import { Loading } from '../../components/loading/loading';
 import { Timetable } from '../../components/timetable/timetable';
 
-import { MeetingsService } from '../../domain/meetings/meetings.service';
 import { Meeting } from '../../models/meeting.model';
 import { Timestamp } from '@angular/fire/firestore';
 import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
@@ -13,6 +11,7 @@ import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
 import { DotLoader } from '../../components/dot-loader/dot-loader';
 import { SyllabusStore } from '../../state/syllabus.store';
 import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
+import { MeetingsService } from '../../services/meetings/meetings.service';
 
 /* ------------------ dummy fallback ------------------ */
 const DUMMY_MEETING: Meeting = {
@@ -35,7 +34,7 @@ const DUMMY_MEETING: Meeting = {
 @Component({
   selector: 'tution-details',
   standalone: true,
-  imports: [CommonModule, Timetable, ContentPlaceholder, Loading, DotLoader],
+  imports: [CommonModule, Timetable, ContentPlaceholder, DotLoader],
   templateUrl: './tution-details.html',
   styleUrl: './tution-details.scss',
 })

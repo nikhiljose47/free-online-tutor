@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Testimonials } from '../testimonials/testimonials';
 import { CommonModule } from '@angular/common';
-import { QuoteUtil } from '../../core/utils/quote.utils';
+import { QuoteUtil } from '../../shared/utils/quote.utils';
 
 @Component({
   selector: 'app-about',

@@ -5,7 +5,7 @@ import { Meeting } from '../../models/meeting.model';
 import { UiStateUtil } from '../../state/ui-state.utils';
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { Timestamp } from '@angular/fire/firestore';
-import { AttendanceApiService } from '../../features/attendance/attendance-api.service';
+import { AttendanceApiService } from '../../services/attendance/attendance-api.service';
 import { UserProfileService } from '../../services/fire/user-profile.service';
 import { UserProfile } from '../../models/user-profile.model';
 import { forkJoin } from 'rxjs';

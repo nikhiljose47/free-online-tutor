@@ -4,7 +4,6 @@ import { from, Observable, of, switchMap, tap, retry, catchError, forkJoin } fro
 import { IndexedDbService } from '../../services/db/indexed-db.service';
 import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
 import { UiStateUtil } from '../../state/ui-state.utils';
-import { IdFileMap, IdMapUtil } from '../../core/utils/id-map.utils';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
 import { SYLL_INDEX_CACHE_KEY } from '../../core/constants/app.constants';
 

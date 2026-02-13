@@ -57,7 +57,7 @@ export class Timetable implements OnInit {
       const normalized = this.normalizeSyllabus(data);
 
       this.syllabus.set(normalized);
-      console.log(normalized);
+      console.log('syllabus - timetable', normalized);
       this.initRandomProgress(normalized);
     });
   }

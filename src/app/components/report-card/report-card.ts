@@ -1,8 +1,8 @@
 import { Component, ChangeDetectionStrategy, inject, signal, effect, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { UserProfileService } from '../../services/fire/user-profile.service';
-import { MeetingsService } from '../../domain/meetings/meetings.service';
+
 import { Auth2Service } from '../../services/fire/auth2.service';
+import { MeetingsService } from '../../services/meetings/meetings.service';
 
 @Component({
   selector: 'report-card',

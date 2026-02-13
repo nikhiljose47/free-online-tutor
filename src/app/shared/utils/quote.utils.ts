@@ -1,5 +1,5 @@
 // utils/quote.util.ts
-import { MOTIVATION_QUOTES } from '../constants/motivation-quotes';
+import { MOTIVATION_QUOTES } from '../../core/constants/motivation-quotes';
 import { Quote } from '../../models/quote.model';
 
 export class QuoteUtil {

@@ -9,7 +9,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { Timestamp } from '@angular/fire/firestore';
 
-import { MeetingsService } from '../../domain/meetings/meetings.service';
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { UserProfileService } from '../../services/fire/user-profile.service';
 import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
@@ -18,6 +17,7 @@ import { PART1, COMPLETED, GLOBAL_MEETINGS } from '../../core/constants/app.cons
 import { Auth2Service } from '../../services/fire/auth2.service';
 import { ClassWrapup } from '../../components/class-wrapup/class-wrapup';
 import { UiStateUtil } from '../../state/ui-state.utils';
+import { MeetingsService } from '../../services/meetings/meetings.service';
 
 @Component({
   selector: 'schedule-live-class',

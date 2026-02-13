@@ -5,13 +5,13 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { RoadmapCacheService } from '../../services/cache/roadmap-cache.service';
 import { ToastService } from '../../shared/toast.service';
-import { SvgCardConfig } from '../../core/utils/svg-loader.utils';
 import { HomeIntroStrip } from '../../components/home-intro-strip/home-intro-strip';
 import { UiStateUtil } from '../../state/ui-state.utils';
 import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
 import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
-import { IdFileMap } from '../../core/utils/id-map.utils';
 import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
+import { IdFileMap } from '../../shared/utils/id-map.utils';
+import { SvgCardConfig } from '../../shared/utils/svg-loader.utils';
 
 /* ===============================
    COMPONENT

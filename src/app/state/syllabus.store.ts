@@ -4,10 +4,9 @@ import { map, switchMap, shareReplay, filter, take, tap, catchError } from 'rxjs
 
 import { SyllabusRepository } from '../data/repositories/syllabus.repository';
 import { UiStateUtil } from './ui-state.utils';
-import { IdFileMap, IdMapUtil } from '../core/utils/id-map.utils';
 import { ClassSyllabus } from '../models/syllabus/class-syllabus';
-import { DashboardComponent } from '../pages/dashboard/dashboard';
 import { SyllabusIndex } from '../models/syllabus/syllabus-index.model';
+import { IdFileMap, IdMapUtil } from '../shared/utils/id-map.utils';
 
 //// readme
 

@@ -13,13 +13,13 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 
-import { MeetingsService } from '../../domain/meetings/meetings.service';
 import { UiStateUtil } from '../../state/ui-state.utils';
 import { SyllabusStore } from '../../state/syllabus.store';
 import { Meeting } from '../../models/meeting.model';
 
 import { combineLatest, map, timer } from 'rxjs';
 import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
+import { MeetingsService } from '../../services/meetings/meetings.service';
 
 @Component({
   selector: 'class-stream-sidebar',
