@@ -1,11 +1,11 @@
 import { Auth2Service } from './auth2.service';
-import { UserProfile } from '../../models/user-profile.model';
 import { effect, Injectable, signal } from '@angular/core';
 import { FirestoreDocService } from './firestore-doc.service';
+import { UserModel } from '../../models/fire/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserProfileService {
-  profile = signal<UserProfile | null>(null);
+  profile = signal<UserModel | null>(null);
 
   constructor(
     private fire: FirestoreDocService,
@@ -20,7 +20,7 @@ export class UserProfileService {
       }
       this.fire.getOnce('users', user.uid).subscribe((res) => {
         if (res.ok && res.data) {
-          const profile = res.data as UserProfile;
+          const profile = res.data as UserModel;
           profile.uid = user.uid;
           this.profile.set(profile);
         } else {

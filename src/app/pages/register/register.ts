@@ -3,14 +3,7 @@ import { Auth2Service } from '../../services/fire/auth2.service';
 import { ToastService } from '../../shared/toast.service';
 import { Router } from '@angular/router';
 import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
-
-interface UserProfile {
-  uid: string;
-  name: string;
-  email: string;
-  createdAt: number;
-  role: 'user' | 'admin';
-}
+import { UserModel } from '../../models/fire/user.model';
 
 @Component({
   selector: 'register',
@@ -23,7 +16,7 @@ export class Register {
     private auth: Auth2Service,
     private toast: ToastService,
     private router: Router,
-    private fire: FirestoreDocService
+    private fire: FirestoreDocService,
   ) {}
 
   name = signal('');
@@ -41,15 +34,28 @@ export class Register {
       const uid = res.user.uid;
       this.toast.show('Registed!. Creating setup..');
 
-      const userDoc: UserProfile = {
+      const userDoc: UserModel = {
         uid,
         name: this.name(),
         email: res.user.email ?? '',
-        createdAt: Date.now(),
+        joinedAt: Date.now(),
         role: 'user',
+        age: 26,
+        photoUrl: null,
+        phone: '9876543210',
+        abilities: ['mentoring', 'problem-solving'],
+        skills: ['Angular', 'TypeScript', 'Firebase'],
+        expList: ['CBSE Coaching', 'Online Tutoring'],
+        expYrs: 4,
+        subjects: ['Math', 'Physics'],
+        bio: 'Passionate educator with strong fundamentals.',
+        rating: 4.5,
+        specialization: ['Algebra', 'Trigonometry'],
+        meta: {},
+        updatedAt: null,
       };
 
-      this.fire.set<UserProfile>('users', uid, userDoc).subscribe((saveRes) => {
+      this.fire.set<UserModel>('users', uid, userDoc).subscribe((saveRes) => {
         if (saveRes.ok) {
           this.router.navigateByUrl('');
         } else {

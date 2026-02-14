@@ -46,12 +46,7 @@ export class ClassStreamSidebar implements OnInit, OnDestroy {
   readonly error = signal<string | null>(null);
   readonly collapsed = signal(false);
 
-  /* ================= CLOCK ================= */
   private clockId!: any;
-
-  /* ============================================================
-     🔹 PURE RXJS DATA PIPELINE
-     ============================================================ */
 
   private readonly merged$ = combineLatest([
     this.meetApi.getLiveMeetings(),
@@ -109,15 +104,6 @@ export class ClassStreamSidebar implements OnInit, OnDestroy {
     initialValue: { live: [], upcoming: [] },
   });
 
-  private readonly mergedEffect = effect(() => {
-    const data = this.mergedSignal();
-
-    this.live.set(data.live);
-    this.upcoming.set(data.upcoming);
-    this.loading.set(false);
-  });
-
-  constructor() {}
 
   /* ================= LIFECYCLE ================= */
 

@@ -49,7 +49,7 @@ export class JoinTution implements OnInit {
   isUpcoming: boolean = false;
 
   ngOnInit(): void {
-    const meetingId = this.route.snapshot.paramMap.get('meetingId')!;
+    const meetingId = this.route.snapshot.paramMap.get('meetingId');
 
     if (!meetingId) {
       this.errMsg.set('Invalid route');
