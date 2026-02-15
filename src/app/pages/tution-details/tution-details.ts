@@ -5,36 +5,22 @@ import { ContentPlaceholder } from '../../components/content-placeholder/content
 import { Timetable } from '../../components/timetable/timetable';
 
 import { Meeting } from '../../models/meeting.model';
-import { Timestamp } from '@angular/fire/firestore';
 import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
 import { DotLoader } from '../../components/dot-loader/dot-loader';
 import { SyllabusStore } from '../../shared/state/syllabus.store';
 import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
 import { MeetingsService } from '../../services/meetings/meetings.service';
+import { QuoteUtil } from '../../shared/utils/quote.utils';
+import { Quote } from '../../models/quote.model';
+import { IndexingService } from '../../services/indexing/indexing.service';
+import { ClassOverviewBatchesComponent } from '../../shared/components/class-overview-batches/class-overview-batches';
 
-/* ------------------ dummy fallback ------------------ */
-const DUMMY_MEETING: Meeting = {
-  id: 'meet_001',
-  classId: 'CL06',
-  subjectId: 'Mathematics',
-  batchId: 'BLUE',
-  meetLink: 'https://meet.google.com/abc-defg-hij',
-  chapterCode: 'CL06-MATH-04',
-  status: 'upcoming',
-  date: Timestamp.fromDate(new Date(Date.now() + 24 * 60 * 60 * 1000)),
-  teacherId: 'TCH_101',
-  teacherName: 'Mr. Arun Kumar',
-  duration: 60,
-  attendance: ['u1', 'u2'],
-  createdAt: Timestamp.now(),
-  endAt: Timestamp.fromDate(new Date(Date.now() + 25 * 60 * 60 * 1000)),
-};
 
 @Component({
   selector: 'tution-details',
   standalone: true,
-  imports: [CommonModule, Timetable, ContentPlaceholder, DotLoader],
+  imports: [CommonModule, Timetable, ContentPlaceholder, DotLoader, ClassOverviewBatchesComponent],
   templateUrl: './tution-details.html',
   styleUrl: './tution-details.scss',
 })
@@ -44,6 +30,7 @@ export class TutionDetails implements OnInit {
   private meetApi = inject(MeetingsService);
   private syllRepo = inject(SyllabusRepository);
   private syllabusStore = inject(SyllabusStore);
+  private indexApi = inject(IndexingService);
 
   readonly type = this.route.snapshot.paramMap.get('type') as 'class' | 'jam';
   readonly id = this.route.snapshot.paramMap.get('id')!;
@@ -58,7 +45,7 @@ export class TutionDetails implements OnInit {
   /* ================= DATA ================= */
   syllabus = signal<ClassSyllabus | null>(null);
 
-  private readonly meetings = signal<Meeting[]>([DUMMY_MEETING]);
+  private readonly meetings = signal<Meeting[]>([]);
 
   /* ================= COMPUTED ================= */
   readonly upcomingClasses = computed(() =>
@@ -121,12 +108,14 @@ export class TutionDetails implements OnInit {
     participants: 140,
   });
 
-  readonly quote = signal('Learning never exhausts the mind. — Leonardo da Vinci');
+  readonly quote = signal<Quote>({'text': ''});
 
   classFileId: string = '';
 
   ngOnInit(): void {
     this.loadData();
+    this.indexApi.getAllBatches$().subscribe((e)=> console.log(e))
+    this.quote.set(QuoteUtil.getRandom())
   }
 
   loadData() {
@@ -172,20 +161,6 @@ export class TutionDetails implements OnInit {
         }),
       )
       .subscribe();
-  }
-
-  /* ================= LOAD DETAILS ================= */
-  private loadClassDetails(): void {
-    this.meetApi.getMeetingsForClass(this.id).subscribe({
-      next: (res) => {
-        this.setMeetings(res as any);
-        this.hasValidData.set(true);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.isLoading.set(false);
-      },
-    });
   }
 
   /* ================= ACTIONS ================= */

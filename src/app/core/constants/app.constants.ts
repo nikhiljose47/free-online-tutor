@@ -10,7 +10,6 @@ export const BUILD_INFO = {
 
 export const SYLL_DATA_BASE_URL = 'https://authentication-785fd.web.app/data/';
 
-
 export const SYLL_INDEX_CACHE_KEY = 'syllabus_index_ckey';
 
 export const UPCOMING = 'upcoming';
@@ -37,6 +36,10 @@ export type SyllabusErrorCode =
   | 'NETWORK_ERROR'
   | 'INVALID_SCHEMA';
 
+export const CACHE_TTL = {
+  TEACHERS_LIST: 5 * 24 * 60 * 60 * 1000, // 5 days
+  TEACHER_BY_ID: 2 * 60 * 60 * 1000, // 2 hour
+} as const;
 
-  //Assets
-  export const PLACEHOLDER__COVER_IMG = 'assets/placeholder-cover.webp';
+//Assets
+export const PLACEHOLDER__COVER_IMG = 'assets/placeholder-cover.webp';

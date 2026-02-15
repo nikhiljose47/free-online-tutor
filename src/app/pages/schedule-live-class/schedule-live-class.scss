@@ -71,10 +71,18 @@
    ========================= */
 .schedule-card {
   background: linear-gradient(135deg, #eef3ff, #ffffff);
-  border: 1px dashed rgba(13, 110, 253, 0.35);
+  max-width: 820px;
+  border-radius: 14px;
   align-items: center;
   justify-content: center;
   text-align: center;
+}
+
+
+.section-title {
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #374151;
 }
 
 .schedule-card:hover {

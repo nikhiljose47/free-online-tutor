@@ -61,15 +61,23 @@ export class ScheduleLiveClass implements OnInit {
   /* ------------------ lookups (signal-safe) ------------------ */
   readonly classList = this.syllabus.classNames;
 
+  readonly selectedClassId = computed(() => this.form().classId);
+  readonly selectedSubjectId = computed(() => this.form().subjectId);
   readonly subjectList = computed(() => {
-    const f = this.form();
-    return f.classId ? this.syllabus.getSubjects(f.classId) : [];
+    const classId = this.selectedClassId();
+    return classId ? this.syllabus.getSubjects(classId) : [];
+  });
+  readonly chapterList = computed(() => {
+    const classId = this.selectedClassId();
+    const subjectId = this.selectedSubjectId();
+    this.getCurrentChapter('batch-blue', subjectId);
+
+    if (!classId || !subjectId) return [];
+
+    return this.syllabus.getChapters(classId, subjectId);
   });
 
-  readonly chapterList = computed(() => {
-    const f = this.form();
-    return f.classId && f.subjectId ? this.syllabus.getChapters(f.classId, f.subjectId) : [];
-  });
+  batchList = signal<Array<string>>([]);
 
   /* ------------------ lifecycle ------------------ */
   ngOnInit(): void {
@@ -79,7 +87,6 @@ export class ScheduleLiveClass implements OnInit {
     /* ensure lookup initialized once */
     this.syllabus.init();
 
-    this.getCurrentChapter('batch-blue', 'CL09-MATH');
     /* load meetings */
     this.meetApi.getLiveMeetingsByTeacher(this.teacherId).subscribe((res) => {
       if (res.ok && res.data) {
@@ -90,6 +97,15 @@ export class ScheduleLiveClass implements OnInit {
         list.forEach((m) => this.uiStateUtil.set(m.id, m));
       }
     });
+  }
+
+  isValidUrl(url: string): boolean {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   getCurrentChapter(batchId: string, subCode: string) {
@@ -149,7 +165,7 @@ export class ScheduleLiveClass implements OnInit {
   }
 
   updateField(
-    key: 'classId' | 'subjectId' | 'chapterCode' | 'batchId' | 'meetLink' | 'date',
+    key: 'classId' | 'subjectId' | 'chapterCode' | 'batchId' | 'meetLink' | 'date' | 'time',
     value: string,
   ) {
     this.form.update((f) => ({ ...f, [key]: value }));

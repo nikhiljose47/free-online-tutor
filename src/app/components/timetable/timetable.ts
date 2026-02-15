@@ -8,8 +8,6 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
 import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
 
