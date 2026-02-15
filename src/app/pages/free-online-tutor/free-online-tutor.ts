@@ -3,7 +3,6 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-import { RoadmapCacheService } from '../../services/cache/roadmap-cache.service';
 import { ToastService } from '../../shared/toast.service';
 import { HomeIntroStrip } from '../../components/home-intro-strip/home-intro-strip';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
@@ -29,7 +28,6 @@ export class FreeOnlineTutor implements OnInit {
   =============================== */
   private router = inject(Router);
   private toast = inject(ToastService);
-  private cache = inject(RoadmapCacheService);
   private sanitizer = inject(DomSanitizer);
   private uiState = inject(UiStateUtil);
   private syllRepo = inject(SyllabusRepository);
@@ -174,16 +172,6 @@ export class FreeOnlineTutor implements OnInit {
     this.uiState.set('curFile', jam.fileName);
     this.router.navigate(['/details', 'jam', jam.id]);
   }
-
-  /* ===============================
-     CLASS SECTIONS (UNCHANGED)
-  =============================== */
-  classSections = signal(
-    Array.from({ length: 12 }, (_, i) => ({
-      class: `Class ${i + 1}`,
-      cards: this.cache.cards(),
-    })),
-  );
 }
 
 // classCategories = signal([

@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { RoadmapCacheService } from './roadmap-cache.service';
+import { TeachersService } from './teachers.service';
 
-describe('RoadmapCacheService', () => {
-  let service: RoadmapCacheService;
+describe('TeachersService', () => {
+  let service: TeachersService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(RoadmapCacheService);
+    service = TestBed.inject(TeachersService);
   });
 
   it('should be created', () => {

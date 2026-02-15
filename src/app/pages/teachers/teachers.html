@@ -6,7 +6,13 @@
       <div class="teacher-card">
         <!-- IMAGE (80%) -->
         <div class="teacher-image">
-          <img [src]="t.imageUrl" [alt]="t.name" />
+          <img
+            class="banner"
+            [src]="getBannerSrc(t.photoUrl)"
+            [alt]="getBannerAlt(t.name)"
+            loading="lazy"
+            (error)="onImgError($event)"
+          />
         </div>
 
         <!-- DETAILS (20%) -->
@@ -16,21 +22,21 @@
           </div>
 
           <div class="qualification">
-            {{ t.qualification }}
+            {{ t.bio }}
           </div>
 
           <div class="domains">
-            <span *ngFor="let d of t.domains" class="domain-chip">
+            <span *ngFor="let d of t.subjects" class="domain-chip">
               {{ d }}
             </span>
           </div>
 
           <div class="note">
-            {{ t.note }}
+            {{ t.bio }}
           </div>
 
           <div class="contact">
-            {{ t.contact }}
+            {{ t.phone }}
           </div>
         </div>
       </div>

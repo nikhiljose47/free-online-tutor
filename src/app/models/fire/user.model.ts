@@ -11,7 +11,7 @@ export interface UserModel {
   abilities: Array<string> | null;
   skills: Array<string> | null;
   expList: Array<string> | null;
-  expYrs: number;
+  expYrs: number | null;
   subjects: Array<String> | null;
   bio: string | null;
   rating: number;

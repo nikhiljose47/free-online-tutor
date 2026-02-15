@@ -18,6 +18,7 @@ import { Auth2Service } from '../../services/fire/auth2.service';
 import { ClassWrapup } from '../../components/class-wrapup/class-wrapup';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { MeetingsService } from '../../services/meetings/meetings.service';
+import { IndexingService } from '../../services/indexing/indexing.service';
 
 @Component({
   selector: 'schedule-live-class',
@@ -35,6 +36,7 @@ export class ScheduleLiveClass implements OnInit {
   private fire = inject(FirestoreDocService);
   private authApi = inject(Auth2Service);
   private uiStateUtil = inject(UiStateUtil);
+  private indexService = inject(IndexingService);
 
   readonly profile = this.user.profile;
 
@@ -77,9 +79,7 @@ export class ScheduleLiveClass implements OnInit {
     /* ensure lookup initialized once */
     this.syllabus.init();
 
-    this.syllabus.waitUntilReady().then(() => {
-      console.log('✅ Syllabus ready:', this.syllabus.getClassNames());
-    });
+    this.getCurrentChapter('batch-blue', 'CL09-MATH');
     /* load meetings */
     this.meetApi.getLiveMeetingsByTeacher(this.teacherId).subscribe((res) => {
       if (res.ok && res.data) {
@@ -89,6 +89,12 @@ export class ScheduleLiveClass implements OnInit {
         /* cache in UI state */
         list.forEach((m) => this.uiStateUtil.set(m.id, m));
       }
+    });
+  }
+
+  getCurrentChapter(batchId: string, subCode: string) {
+    this.indexService.getCurrentChapterCode$(batchId, subCode).subscribe((e) => {
+      console.log('value got', e);
     });
   }
 
@@ -121,7 +127,7 @@ export class ScheduleLiveClass implements OnInit {
 
     const payload: Meeting = {
       id: '',
-      classId: this.syllabus.getClass(f.classId)?.classId??'',
+      classId: this.syllabus.getClass(f.classId)?.classId ?? '',
       subjectId: f.subjectId,
       chapterCode: f.chapterCode,
       batchId: f.batchId,
