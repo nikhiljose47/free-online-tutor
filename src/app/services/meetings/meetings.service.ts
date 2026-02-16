@@ -3,11 +3,7 @@ import { of, map, Observable, shareReplay } from 'rxjs';
 import { endAt, Timestamp } from '@angular/fire/firestore';
 
 import { Meeting } from '../../models/meeting.model';
-import {
-  FireResponse,
-  FireResponse2,
-  FirestoreDocService,
-} from '../../services/fire/firestore-doc.service';
+import { FireResponse, FirestoreDocService } from '../../services/fire/firestore-doc.service';
 import { GLOBAL_MEETINGS } from '../../core/constants/app.constants';
 
 @Injectable({ providedIn: 'root' })
@@ -28,24 +24,24 @@ export class MeetingsService {
         shareReplay({
           bufferSize: 1,
           refCount: true, // auto-unsubscribe when no subscribers
-        })
+        }),
       );
     }
     return this.live$;
   }
 
-  getLiveMeetingsByTeacher(teacherId: string): Observable<FireResponse2<Meeting[]>> {
+  getLiveMeetingsByTeacher(teacherId: string): Observable<FireResponse<Meeting[]>> {
     return this.getLiveMeetings().pipe(
-      map((res): FireResponse2<Meeting[]> => {
+      map((res): FireResponse<Meeting[]> => {
         if (!res.ok || !res.data) {
-          return res as FireResponse2<Meeting[]>;
+          return res as FireResponse<Meeting[]>;
         }
         const data = res.data as Meeting[];
         return {
           ok: true,
           data: data.filter((m) => m.teacherId == teacherId),
         };
-      })
+      }),
     );
   }
 
@@ -70,7 +66,7 @@ export class MeetingsService {
         this.cacheMeetings(id, meetings);
 
         return { ok: true, data: meetings } as FireResponse<Meeting>;
-      })
+      }),
     );
   }
 
@@ -83,15 +79,18 @@ export class MeetingsService {
       return of({ ok: true, data: cached } as FireResponse<Meeting>);
     }
 
-    return this.fs.getAllOnce<Meeting>(`classes/${classId}/meetings`).pipe(
+    return this.fs.getAllOnce<Meeting>(GLOBAL_MEETINGS).pipe(
       map((res) => {
         if (!res.ok || !res.data) return res;
 
         const meetings = res.data as Meeting[];
         this.cacheMeetings(classId, meetings);
 
-        return { ok: true, data: meetings } as FireResponse<Meeting>;
-      })
+        return {
+          ok: true,
+          data: meetings.filter((m) => m.classId == classId),
+        } as FireResponse<Meeting>;
+      }),
     );
   }
 
@@ -107,7 +106,7 @@ export class MeetingsService {
           .map((m) => m.chapterCode);
 
         return { ok: true, data: completed };
-      })
+      }),
     );
   }
 
@@ -124,7 +123,7 @@ export class MeetingsService {
         }
 
         return { ok: true, data: meeting.attendance };
-      })
+      }),
     );
   }
 
@@ -141,7 +140,7 @@ export class MeetingsService {
         }
 
         return { ok: true, data: meeting };
-      })
+      }),
     );
   }
 

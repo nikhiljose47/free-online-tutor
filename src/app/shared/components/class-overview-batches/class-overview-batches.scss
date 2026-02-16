@@ -1,0 +1,166 @@
+:host {
+  display: block;
+}
+
+/* ===============================
+   HERO CONTAINER
+================================ */
+.overview-hero {
+  background: linear-gradient(180deg, #f8fafc, #ffffff);
+  border-radius: 22px;
+  padding: 26px 24px 30px;
+  border: 1px solid var(--card-border);
+}
+
+/* ===============================
+   TITLE
+================================ */
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  margin-bottom: 1.2rem;
+}
+
+/* ===============================
+   GRID
+================================ */
+.batch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* ===============================
+   CARD BASE
+================================ */
+.batch-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 20px;
+  border: 1px solid var(--card-border);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.batch-card:hover {
+  transform: translateY(-4px);
+}
+
+/* ===============================
+   HEADER
+================================ */
+.batch-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.batch-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.batch-status {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-subtle);
+}
+
+/* ===============================
+   PROGRESS BAR
+================================ */
+.batch-progress {
+  height: 9px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.batch-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+/* ===============================
+   PERCENT TEXT
+================================ */
+.batch-percent {
+  font-size: 0.8rem;
+  color: var(--text-subtle);
+}
+
+/* ===============================
+   ROADMAP LIST
+================================ */
+.batch-roadmap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.roadmap-item {
+  font-size: 0.78rem;
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-subtle);
+}
+
+/* ===============================
+   HINT TEXT
+================================ */
+.batch-hint {
+  font-size: 0.72rem;
+  color: var(--text-subtle);
+  line-height: 1.45;
+}
+
+/* ===============================
+   BLUE EMPHASIS
+================================ */
+.batch-blue {
+  border-left: 6px solid var(--primary);
+  box-shadow: 0 18px 42px rgba(37, 99, 235, 0.16);
+}
+
+.batch-blue .batch-name {
+  color: var(--primary);
+}
+
+.batch-blue .batch-progress-fill {
+  background: linear-gradient(90deg, var(--primary), #60a5fa);
+}
+
+/* ===============================
+   YELLOW EMPHASIS
+================================ */
+.batch-yellow {
+  border-left: 6px solid #f59e0b;
+  box-shadow: 0 16px 36px rgba(245, 158, 11, 0.16);
+}
+
+.batch-yellow .batch-name {
+  color: #d97706;
+}
+
+.batch-yellow .batch-progress-fill {
+  background: linear-gradient(90deg, #f59e0b, #facc15);
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+  .overview-hero {
+    padding: 22px 18px 24px;
+  }
+
+  .batch-card {
+    padding: 18px;
+  }
+}

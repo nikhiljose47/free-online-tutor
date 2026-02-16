@@ -160,7 +160,7 @@ export class FreeOnlineTutor implements OnInit {
     return cls?.className ? `${cls.className} cover` : 'Class cover';
   }
 
-  /* ===============================
+/* ===============================
      NAVIGATION
   =============================== */
   openCategory(cls: any) {

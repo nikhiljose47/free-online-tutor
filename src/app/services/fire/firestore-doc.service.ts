@@ -31,12 +31,6 @@ export interface FireResponse<T> {
   message?: string | null;
 }
 
-export interface FireResponse2<T> {
-  ok: boolean;
-  data: T | null;
-  message?: string | null;
-}
-
 @Injectable({ providedIn: 'root' })
 export class FirestoreDocService {
   private db = inject(Firestore);

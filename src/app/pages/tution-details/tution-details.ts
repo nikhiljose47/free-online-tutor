@@ -15,7 +15,8 @@ import { QuoteUtil } from '../../shared/utils/quote.utils';
 import { Quote } from '../../models/quote.model';
 import { IndexingService } from '../../services/indexing/indexing.service';
 import { ClassOverviewBatchesComponent } from '../../shared/components/class-overview-batches/class-overview-batches';
-
+import { ClassSubjectService } from '../../services/class/class-subject/class-subject.service';
+import { ClassAssignmentsService } from '../../services/class/class-assignments/class-assignments.service';
 
 @Component({
   selector: 'tution-details',
@@ -31,6 +32,8 @@ export class TutionDetails implements OnInit {
   private syllRepo = inject(SyllabusRepository);
   private syllabusStore = inject(SyllabusStore);
   private indexApi = inject(IndexingService);
+  private classSubService = inject(ClassSubjectService);
+  private classAssignmentsService = inject(ClassAssignmentsService);
 
   readonly type = this.route.snapshot.paramMap.get('type') as 'class' | 'jam';
   readonly id = this.route.snapshot.paramMap.get('id')!;
@@ -108,14 +111,17 @@ export class TutionDetails implements OnInit {
     participants: 140,
   });
 
-  readonly quote = signal<Quote>({'text': ''});
+  readonly quote = signal<Quote>({ text: '' });
 
   classFileId: string = '';
 
   ngOnInit(): void {
     this.loadData();
-    this.indexApi.getAllBatches$().subscribe((e)=> console.log(e))
-    this.quote.set(QuoteUtil.getRandom())
+    this.quote.set(QuoteUtil.getRandom());
+    this.classAssignmentsService.getAll('CL06').subscribe({
+      next: (value) => console.log('Received for subservive:', value),
+      error: () => console.log('e'),
+    });
   }
 
   loadData() {
