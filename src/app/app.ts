@@ -5,10 +5,11 @@ import { Toast } from './components/toast/toast';
 import { CommonModule } from '@angular/common';
 import { AnnouncementBar } from './components/announcement-bar/announcement-bar';
 import { ClassStreamSidebar } from './components/class-stream-sidebar/class-stream-sidebar';
+import { Footer } from './components/footer/footer';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Topbar, Toast, CommonModule, AnnouncementBar, ClassStreamSidebar],
+  imports: [RouterOutlet, Topbar, Footer, Toast, CommonModule, AnnouncementBar, ClassStreamSidebar],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
