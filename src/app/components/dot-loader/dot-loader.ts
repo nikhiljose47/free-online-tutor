@@ -6,6 +6,4 @@ import { Component } from '@angular/core';
   templateUrl: './dot-loader.html',
   styleUrl: './dot-loader.scss',
 })
-export class DotLoader {
-
-}
+export class DotLoader {}

@@ -21,6 +21,7 @@ import { syllabusIndexResolver } from './resolvers/index-resolver';
 import { TeacherWorkspace} from './pages/teacher-workspace/teacher-workspace';
 import { ChapterBrowser } from './pages/chapter-browser/chapter-browser';
 import { seoResolver } from './resolvers/seo-resolver';
+import { ClassDetailsPage } from './pages/class-details-page/class-details-page';
 
 
 export const routes: Routes = [
@@ -141,6 +142,7 @@ export const routes: Routes = [
   { path: 'report-card', component: ReportCard, data: { noIndex: true }, resolve: { seo: seoResolver } },
   { path: 'chapter-browser', component: ChapterBrowser, data: { noIndex: true }, resolve: { seo: seoResolver } },
   { path: 'schedule', component: ScheduleLiveClass, data: { noIndex: true }, resolve: { seo: seoResolver } },
+  { path: 'test', component: ClassDetailsPage , data: { noIndex: true }, resolve: { seo: seoResolver } },
 
   {
     path: 'join-tution/:meetingId',

@@ -1,0 +1,234 @@
+:host {
+  display: block;
+}
+
+/* ===============================
+   CARD BASE
+================================ */
+.mcq-game-card {
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  border-radius: 18px;
+  border: 1px solid var(--card-border);
+  padding: 18px 16px 20px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
+  max-width: 420px;
+}
+
+/* ===============================
+   HEADER
+================================ */
+.mcq-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.mcq-title {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.mcq-level {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.mcq-status {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+/* ===============================
+   COMPLETED STATE
+================================ */
+.mcq-completed-view {
+  text-align: center;
+  padding: 16px 8px;
+}
+
+.completed-text {
+  font-size: 0.85rem;
+  color: var(--text-subtle);
+  margin-bottom: 10px;
+}
+
+.completed-answer {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+/* ===============================
+   QUESTION
+================================ */
+.mcq-question {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  line-height: 1.45;
+}
+
+/* ===============================
+   OPTIONS
+================================ */
+.mcq-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mcq-option {
+  appearance: none;
+  border: 1px solid var(--card-border);
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.mcq-option:hover:not(:disabled) {
+  border-color: var(--primary);
+  background: #f5f9ff;
+}
+
+.mcq-option:disabled {
+  cursor: default;
+  opacity: 0.95;
+}
+
+/* ===============================
+   CORRECT / WRONG STATES
+================================ */
+.mcq-option.correct {
+  border-color: #16a34a;
+  background: #ecfdf5;
+  animation: popCorrect 0.28s ease;
+}
+
+.mcq-option.wrong {
+  border-color: #dc2626;
+  background: #fef2f2;
+  animation: shakeWrong 0.32s ease;
+}
+
+/* ===============================
+   FEEDBACK TEXT
+================================ */
+.mcq-feedback {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.feedback-correct {
+  color: #16a34a;
+  animation: fadeIn 0.25s ease;
+}
+
+.feedback-wrong {
+  color: #dc2626;
+  animation: fadeIn 0.25s ease;
+}
+
+/* ===============================
+   FOOTER ACTIONS
+================================ */
+.mcq-footer {
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+.next-btn,
+.retry-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.next-btn {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  color: #ffffff;
+}
+
+.retry-btn {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  color: #ffffff;
+}
+
+.next-btn:hover,
+.retry-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* ===============================
+   ANIMATIONS
+================================ */
+@keyframes popCorrect {
+  0% {
+    transform: scale(0.96);
+  }
+  60% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes shakeWrong {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+  75% {
+    transform: translateX(-2px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 480px) {
+  .mcq-game-card {
+    padding: 16px 14px 18px;
+  }
+
+  .mcq-question {
+    font-size: 0.9rem;
+  }
+}

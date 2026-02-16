@@ -1,5 +1,12 @@
+<dot-loader *ngIf="isLoading(); else hasError"></dot-loader>
+
+<ng-template #hasError>
+  <content-placeholder *ngIf="hasErr(); else hasData" [message]="errMsg()"> </content-placeholder>
+</ng-template>
+
+<ng-template #hasData>
+
 <section class="timetable-horizontal">
-  
   <div class="subject-card" *ngFor="let sbj of subjects()">
     <!-- SUBJECT HEADER -->
     <header class="subject-header">
@@ -27,17 +34,11 @@
         <div class="chapter-left">
           <div class="chapter-name">{{ ch.name }}</div>
 
-          <span class="tag completed" *ngIf="isCompleted(sbj.code, idx)">
-            Completed
-          </span>
+          <span class="tag completed" *ngIf="isCompleted(sbj.code, idx)"> Completed </span>
 
-          <span class="tag current" *ngIf="isCurrent(sbj.code, ch.code)">
-            In Progress
-          </span>
+          <span class="tag current" *ngIf="isCurrent(sbj.code, ch.code)"> In Progress </span>
 
-          <span class="tag locked" *ngIf="isLocked(sbj.code, idx)">
-            Not Started
-          </span>
+          <span class="tag locked" *ngIf="isLocked(sbj.code, idx)"> Not Started </span>
         </div>
 
         <div class="chapter-right">
@@ -47,3 +48,4 @@
     </div>
   </div>
 </section>
+</ng-template>

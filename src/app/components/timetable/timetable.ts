@@ -10,19 +10,25 @@ import {
 import { CommonModule } from '@angular/common';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
 import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
+import { ContentPlaceholder } from '../content-placeholder/content-placeholder';
+import { DotLoader } from '../dot-loader/dot-loader';
 
 @Component({
   selector: 'timetable',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ContentPlaceholder, DotLoader],
   templateUrl: './timetable.html',
   styleUrls: ['./timetable.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Timetable implements OnInit {
   @Input({ required: true }) classFileId!: string;
-  
+
   private syllRepo = inject(SyllabusRepository);
+
+  isLoading = signal<boolean>(true);
+  hasErr = signal<boolean>(false);
+  errMsg = signal<string>('We are facing some issue..');
 
   /** full syllabus */
   readonly syllabus = signal<ClassSyllabus | null>(null);
@@ -49,6 +55,8 @@ export class Timetable implements OnInit {
     this.syllRepo.loadClass(this.classFileId).subscribe((data) => {
       if (!data) {
         console.error('[Timetable] Syllabus missing');
+        this.isLoading.set(false);
+        this.hasErr.set(true);
         return;
       }
 
@@ -57,6 +65,7 @@ export class Timetable implements OnInit {
       this.syllabus.set(normalized);
       console.log('syllabus - timetable', normalized);
       this.initRandomProgress(normalized);
+      this.isLoading.set(false);
     });
   }
 
