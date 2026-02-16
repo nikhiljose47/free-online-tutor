@@ -2,16 +2,18 @@ import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import { McqPuzzleCardComponent } from '../../components/mcq-puzzle-card/mcq-puzzle-card';
 import { Timetable } from '../../components/timetable/timetable';
 import { CommonModule } from '@angular/common';
+import { TeacherListComponent } from '../../components/teacher-list/teacher-list';
 
 @Component({
   selector: 'class-details-page',
   standalone: true,
   templateUrl: './class-details-page.html',
   styleUrl: './class-details-page.scss',
-  imports: [McqPuzzleCardComponent, Timetable, CommonModule],
+  imports: [McqPuzzleCardComponent, Timetable, CommonModule, TeacherListComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClassDetailsPage {
+  classId = 'CL09';
   classTitle = 'Class 6 – Blue Batch';
   puzzleId = 'puzzle_001';
 

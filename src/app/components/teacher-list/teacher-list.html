@@ -1,0 +1,39 @@
+<section class="teacher-list-wrap">
+  <div class="teacher-item" *ngFor="let t of teacherSignal(); let i = index">
+    <div class="num">{{ i + 1 }}</div>
+
+    <img
+      class="photo"
+      [src]="getBannerSrc(t?.photo)"
+      [alt]="getBannerAlt(t.name)"
+      loading="lazy"
+      (error)="onImgError($event)"
+    />
+
+    <div class="info">
+      <div class="head">
+        <h2 class="name">{{ t.name }}</h2>
+
+        <span
+          class="perf"
+          [class.ex]="t.weekPerformance === 'excellent'"
+          [class.good]="t.weekPerformance === 'good'"
+          [class.imp]="t.weekPerformance === 'improving'"
+        >
+          {{ t.weekPerformance }}
+        </span>
+      </div>
+
+      <p class="bio">{{ t.bio }}</p>
+
+      <div class="meta">
+        <span class="last">Last session: {{ t.lastSession }}</span>
+        <span class="rating">★ {{ t.rating }}</span>
+      </div>
+
+      <div class="skills">
+        <span *ngFor="let s of t.skills">{{ s }}</span>
+      </div>
+    </div>
+  </div>
+</section>
