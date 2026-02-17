@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, shareReplay, map, tap, of } from 'rxjs';
 import { ClassSubject } from '../../../models/classes/class-subject.model';
-import { FireResponse, FirestoreDocService } from '../../fire/firestore-doc.service';
+import { FireResponse, FirestoreDocService } from '../../../core/services/fire/firestore-doc.service';
 
 @Injectable({ providedIn: 'root' })
 export class ClassSubjectService {
@@ -102,7 +102,7 @@ export class ClassSubjectService {
     this.cache.set(key, req$);
     return req$;
   }
-  
+
   // ---------- HYBRID (MEMORY → REALTIME) ----------
   get(classId: string): Observable<ClassSubject[]> {
     const mem = this.memory()[classId];

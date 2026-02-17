@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
-import { FireResponse, FirestoreDocService } from '../fire/firestore-doc.service';
+import { FireResponse, FirestoreDocService } from '../../core/services/fire/firestore-doc.service';
 import { UserModel } from '../../models/fire/user.model';
 import { CACHE_TTL } from '../../core/constants/app.constants';
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Meeting } from '../../../models/meeting.model';
+import { Meeting } from '../../../../models/meeting.model';
 
 @Injectable({ providedIn: 'root' })
 export class AttendanceAnalyticsService {

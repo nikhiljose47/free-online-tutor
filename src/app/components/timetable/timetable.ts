@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
-import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
+import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
 import { ContentPlaceholder } from '../content-placeholder/content-placeholder';
 import { DotLoader } from '../dot-loader/dot-loader';
 

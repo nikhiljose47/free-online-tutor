@@ -1,8 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/fire/auth.service';
+import { AuthService } from '../../core/services/fire/auth.service';
 import { Router } from '@angular/router';
-import { Auth2Service } from '../../services/fire/auth2.service';
+import { Auth2Service } from '../../core/services/fire/auth2.service';
 import { Toast } from '../../components/toast/toast';
 import { ToastService } from '../../shared/toast.service';
 

@@ -8,6 +8,7 @@ export interface SyllabusIndex {
     enabled: boolean;
     ready: boolean;
     priority: number;
+    group: string;
     availableFrom: string;
     fileName: string;
     meta: {
@@ -23,9 +24,9 @@ export interface SyllabusIndex {
     title: string;
     enabled: boolean;
     ready: boolean;
-
     startsAt: string;
     priority: number;
+    group: string;
     fileName: string;
     meta: {
       teacher: string;
@@ -39,15 +40,13 @@ export interface SyllabusIndex {
     title: string;
     enabled: boolean;
     ready: boolean;
-
     startsAt: string;
     priority: number;
+    group: string;
     fileName: string;
-
     meta: {
       teacher: string;
       language: string[];
-
       image: string;
     };
   }[];

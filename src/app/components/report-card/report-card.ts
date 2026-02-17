@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, inject, signal, effect, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 
-import { Auth2Service } from '../../services/fire/auth2.service';
+import { Auth2Service } from '../../core/services/fire/auth2.service';
 import { MeetingsService } from '../../services/meetings/meetings.service';
 
 @Component({

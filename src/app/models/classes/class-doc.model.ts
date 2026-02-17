@@ -1,6 +1,6 @@
 import { Timestamp } from '@angular/fire/firestore';
 
-export type ClassStatus = 'active' | 'paused' | 'completed' | 'archived' | '';
+export type ClassStatus = 'active' | 'paused' | 'completed' | 'archived' | 'idle';
 
 export interface ClassMeta {
   [key: string]: unknown;
@@ -8,7 +8,7 @@ export interface ClassMeta {
 
 export interface ClassDoc {
   academicYear: string;
-  board: Array<string>;
+  board: string[];
   completionPercent: number;
   enrollmentOpen: boolean;
   languages: string[];

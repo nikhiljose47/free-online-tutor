@@ -3,7 +3,7 @@ import { of, map, Observable, shareReplay } from 'rxjs';
 import { endAt, Timestamp } from '@angular/fire/firestore';
 
 import { Meeting } from '../../models/meeting.model';
-import { FireResponse, FirestoreDocService } from '../../services/fire/firestore-doc.service';
+import { FireResponse, FirestoreDocService } from '../../core/services/fire/firestore-doc.service';
 import { GLOBAL_MEETINGS } from '../../core/constants/app.constants';
 
 @Injectable({ providedIn: 'root' })

@@ -6,7 +6,7 @@ import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { Timestamp } from '@angular/fire/firestore';
 import { AttendanceApiService } from '../../services/attendance/attendance-api.service';
-import { UserProfileService } from '../../services/fire/user-profile.service';
+import { UserProfileService } from '../../core/services/fire/user-profile.service';
 import { forkJoin } from 'rxjs';
 import { ContentPlaceholder } from '../../components/content-placeholder/content-placeholder';
 import { DotLoader } from '../../components/dot-loader/dot-loader';

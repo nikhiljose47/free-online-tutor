@@ -2,7 +2,7 @@ import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { from, of, switchMap, tap } from 'rxjs';
 
-import { IndexedDbService } from '../../services/db/indexed-db.service';
+import { IndexedDbService } from '../services/db/indexed-db.service';
 import { buildCacheKey, getCacheRule } from '../../config/http-cache.config';
 
 interface CachedPayload<T = unknown> {

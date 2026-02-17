@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, of, forkJoin } from 'rxjs';
 import { map, switchMap, shareReplay, filter, take, tap, catchError } from 'rxjs/operators';
 
-import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
+import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
 import { UiStateUtil } from './ui-state.utils';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
 import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';

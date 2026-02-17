@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { Observable, of, tap, map } from 'rxjs';
-import { FireResponse, FirestoreDocService } from '../fire/firestore-doc.service';
+import { FireResponse, FirestoreDocService } from '../../core/services/fire/firestore-doc.service';
 
 interface CacheState {
   docs: Record<string, any>;        // key = "path/id"

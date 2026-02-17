@@ -5,7 +5,7 @@ import { ContentPlaceholder } from '../../components/content-placeholder/content
 import { Timetable } from '../../components/timetable/timetable';
 
 import { Meeting } from '../../models/meeting.model';
-import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
+import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
 import { DotLoader } from '../../components/dot-loader/dot-loader';
 import { SyllabusStore } from '../../shared/state/syllabus.store';
@@ -13,7 +13,6 @@ import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
 import { MeetingsService } from '../../services/meetings/meetings.service';
 import { QuoteUtil } from '../../shared/utils/quote.utils';
 import { Quote } from '../../models/quote.model';
-import { IndexingService } from '../../services/indexing/indexing.service';
 import { ClassOverviewBatchesComponent } from '../../shared/components/class-overview-batches/class-overview-batches';
 import { ClassSubjectService } from '../../services/class/class-subject/class-subject.service';
 import { ClassAssignmentsService } from '../../services/class/class-assignments/class-assignments.service';
@@ -31,7 +30,6 @@ export class TutionDetails implements OnInit {
   private meetApi = inject(MeetingsService);
   private syllRepo = inject(SyllabusRepository);
   private syllabusStore = inject(SyllabusStore);
-  private indexApi = inject(IndexingService);
   private classSubService = inject(ClassSubjectService);
   private classAssignmentsService = inject(ClassAssignmentsService);
 

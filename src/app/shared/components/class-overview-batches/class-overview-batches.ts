@@ -13,7 +13,6 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { IndexingService } from '../../../services/indexing/indexing.service';
 
 /* ===============================
    MODELS
@@ -53,7 +52,6 @@ export class ClassOverviewBatchesComponent implements OnInit {
   private batchApi = inject<BatchService>(Object as any); // replace with real service
   private readonly _classId = signal<string | null>(null);
 
-  private indexApi = inject(IndexingService);
 
   @Input({ required: true })
   set classId(value: string | null) {
@@ -62,7 +60,7 @@ export class ClassOverviewBatchesComponent implements OnInit {
 
   readonly batchList = toSignal(
     toObservable(this._classId).pipe(
-      switchMap((id) => (id ? this.indexApi.getAllBatches$() : of([]))),
+      switchMap((id) => ( of([]))),
     ),
     { initialValue: [] },
   );

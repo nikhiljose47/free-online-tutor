@@ -1,5 +1,5 @@
 import { Component, computed } from '@angular/core';
-import { Auth2Service } from '../../services/fire/auth2.service';
+import { Auth2Service } from '../../core/services/fire/auth2.service';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 

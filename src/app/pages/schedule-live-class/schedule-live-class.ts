@@ -10,15 +10,14 @@ import { CommonModule } from '@angular/common';
 import { Timestamp } from '@angular/fire/firestore';
 
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
-import { UserProfileService } from '../../services/fire/user-profile.service';
-import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
+import { UserProfileService } from '../../core/services/fire/user-profile.service';
+import { FirestoreDocService } from '../../core/services/fire/firestore-doc.service';
 import { Meeting } from '../../models/meeting.model';
 import { PART1, COMPLETED, GLOBAL_MEETINGS } from '../../core/constants/app.constants';
-import { Auth2Service } from '../../services/fire/auth2.service';
+import { Auth2Service } from '../../core/services/fire/auth2.service';
 import { ClassWrapup } from '../../components/class-wrapup/class-wrapup';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { MeetingsService } from '../../services/meetings/meetings.service';
-import { IndexingService } from '../../services/indexing/indexing.service';
 
 @Component({
   selector: 'schedule-live-class',
@@ -36,7 +35,6 @@ export class ScheduleLiveClass implements OnInit {
   private fire = inject(FirestoreDocService);
   private authApi = inject(Auth2Service);
   private uiStateUtil = inject(UiStateUtil);
-  private indexService = inject(IndexingService);
 
   readonly profile = this.user.profile;
 
@@ -67,6 +65,7 @@ export class ScheduleLiveClass implements OnInit {
     const classId = this.selectedClassId();
     return classId ? this.syllabus.getSubjects(classId) : [];
   });
+
   readonly chapterList = computed(() => {
     const classId = this.selectedClassId();
     const subjectId = this.selectedSubjectId();
@@ -109,9 +108,9 @@ export class ScheduleLiveClass implements OnInit {
   }
 
   getCurrentChapter(batchId: string, subCode: string) {
-    this.indexService.getCurrentChapterCode$(batchId, subCode).subscribe((e) => {
-      console.log('value got', e);
-    });
+    // this.indexService.getCurrentChapterCode$(batchId, subCode).subscribe((e) => {
+    //   console.log('value got', e);
+    // });
   }
 
   /* ------------------ template helpers ------------------ */

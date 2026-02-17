@@ -11,13 +11,10 @@ export interface ClassTest {
 
   maxMarks: number;
   passMarks: number;
-
   scheduledAt: Timestamp | null;
   startedAt: Timestamp | null;
   endedAt: Timestamp | null;
-
   status: TestStatus;
-
   attemptCount: number;
   submissionCount: number;
   evaluatedCount: number;

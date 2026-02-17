@@ -1,8 +1,8 @@
 import { Component, signal } from '@angular/core';
-import { Auth2Service } from '../../services/fire/auth2.service';
+import { Auth2Service } from '../../core/services/fire/auth2.service';
 import { ToastService } from '../../shared/toast.service';
 import { Router } from '@angular/router';
-import { FirestoreDocService } from '../../services/fire/firestore-doc.service';
+import { FirestoreDocService } from '../../core/services/fire/firestore-doc.service';
 import { UserModel } from '../../models/fire/user.model';
 
 @Component({

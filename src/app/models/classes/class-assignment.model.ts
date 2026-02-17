@@ -1,6 +1,6 @@
 import { Timestamp } from '@angular/fire/firestore';
 
-export type AssignmentStatus = 'draft' | 'published' | 'closed' | 'archived';
+export type AssignmentStatus = 'draft' | 'published' | 'closed' | 'archived' | 'idle';
 
 export interface ClassAssignment {
   assignmentId: string;

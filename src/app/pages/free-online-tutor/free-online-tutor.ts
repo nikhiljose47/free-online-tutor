@@ -7,7 +7,7 @@ import { ToastService } from '../../shared/toast.service';
 import { HomeIntroStrip } from '../../components/home-intro-strip/home-intro-strip';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
-import { SyllabusRepository } from '../../data/repositories/syllabus.repository';
+import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
 import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
 import { IdFileMap } from '../../shared/utils/id-map.utils';
 import { SvgCardConfig } from '../../shared/utils/svg-loader.utils';

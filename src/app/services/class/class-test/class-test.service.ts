@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, shareReplay, map, tap, of } from 'rxjs';
 import { ClassTest } from '../../../models/classes/class-test.model';
-import { FireResponse, FirestoreDocService } from '../../fire/firestore-doc.service';
+import { FireResponse, FirestoreDocService } from '../../../core/services/fire/firestore-doc.service';
 
 @Injectable({ providedIn: 'root' })
 export class ClassTestService {

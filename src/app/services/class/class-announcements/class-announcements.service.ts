@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, shareReplay, map, tap, of } from 'rxjs';
-import { FireResponse, FirestoreDocService } from '../../fire/firestore-doc.service';
+import { FireResponse, FirestoreDocService } from '../../../core/services/fire/firestore-doc.service';
 import { ClassAnnouncement } from '../../../models/classes/class-announcement.model';
 
 @Injectable({ providedIn: 'root' })

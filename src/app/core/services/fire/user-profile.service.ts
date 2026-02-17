@@ -1,7 +1,7 @@
 import { Auth2Service } from './auth2.service';
 import { effect, Injectable, signal } from '@angular/core';
 import { FirestoreDocService } from './firestore-doc.service';
-import { UserModel } from '../../models/fire/user.model';
+import { UserModel } from '../../../models/fire/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserProfileService {
