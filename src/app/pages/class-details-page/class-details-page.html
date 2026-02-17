@@ -43,9 +43,13 @@
     </div>
   </section>
 
+    <section>
+      <h2 class="section-title my-3">Overview :</h2>
+    <class-overview></class-overview>
+  </section>
+
   <!-- 📊 MAIN DETAIL -->
   <section class="detail-section">
-    <timetable classFileId="CL09" *ngIf="activeTab() === 'Overview'"></timetable>
     <timetable classFileId="CL09" *ngIf="activeTab() === 'Timetable'"></timetable>
     <timetable classFileId="CL09" *ngIf="activeTab() === 'Tests'"></timetable>
     <timetable classFileId="CL09" *ngIf="activeTab() === 'Announcements'"></timetable>
@@ -58,13 +62,61 @@
     -->
   </section>
 
+
+
   <!-- ⚡ EXTRA SECTION -->
   <section class="extra-section">
     <!-- <app-class-activity></app-class-activity> -->
   </section>
 
   <section>
-    <h2>Teachers :</h2>
+    <h2 class="section-title mb-4">Teachers :</h2>
     <teacher-list [classId]="classId"></teacher-list>
+  </section>
+
+  <section class="class-stats-banner">
+    <div class="banner-fade banner-fade-left"></div>
+    <div class="banner-fade banner-fade-right"></div>
+
+    <div class="banner-inner">
+      <!-- Top row: image + title -->
+      <div class="banner-head container-fluid">
+        <div class="head-wrap">
+          <img class="banner-img" src="assets/up-wooden-bg.webp" alt="Class overview" />
+
+          <h2 class="banner-title">Trusted learning journey across India</h2>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div class="stats-row container-fluid">
+        <div class="stat" *ngFor="let s of stats()">
+          <h3>{{ s.value }}</h3>
+          <p>{{ s.label }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-wrap container py-4">
+    <h2 class="section-title mb-4">Frequently Asked Questions</h2>
+
+    <div class="faq-list">
+      <div class="faq-item" *ngFor="let f of faqs(); let i = index">
+        <button
+          class="faq-q"
+          type="button"
+          (click)="toggle(i)"
+          [attr.aria-expanded]="openIndex() === i"
+        >
+          <span>{{ f.q }}</span>
+          <span class="icon" [class.open]="openIndex() === i">+</span>
+        </button>
+
+        <div class="faq-a" *ngIf="openIndex() === i">
+          {{ f.a }}
+        </div>
+      </div>
+    </div>
   </section>
 </section>

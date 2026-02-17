@@ -1,0 +1,58 @@
+<section class="class-overview container py-4">
+
+  <header class="overview-head mb-4">
+
+    <div class="enroll" [class.open]="data().enrollmentOpen">
+      {{ data().enrollmentOpen ? 'Enrollment Open' : 'Enrollment Closed' }}
+    </div>
+  </header>
+
+  <div class="overview-stats">
+
+    <div class="stat">
+      <h3>{{ data().totalStudents }}</h3>
+      <p>Students Enrolled</p>
+    </div>
+
+    <div class="stat">
+      <h3>{{ data().totalBatches }}</h3>
+      <p>Active Batches</p>
+    </div>
+
+    <div class="stat">
+      <h3>{{ data().upcomingClass }}</h3>
+      <p>Next Class In</p>
+    </div>
+
+  </div>
+
+  <section class="subjects mt-4">
+
+    <div class="subject" *ngFor="let s of data().subjects">
+
+      <div class="subject-head">
+        <h4>{{ s.name }}</h4>
+        <button class="interest-btn" type="button">
+          Show Interest
+        </button>
+      </div>
+
+      <div class="roadmap">
+
+        <div
+          class="chapter"
+          *ngFor="let c of s.chapters; let i = index"
+          [class.current]="i === s.currentIndex">
+
+          <span class="icon" *ngIf="i === s.currentIndex">📍</span>
+          <span class="text">{{ c }}</span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</section>
