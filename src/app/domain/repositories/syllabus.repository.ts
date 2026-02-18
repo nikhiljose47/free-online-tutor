@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { from, Observable, of, switchMap, tap, retry, catchError, forkJoin } from 'rxjs';
-import { IndexedDbService } from '../../core/services/db/indexed-db.service';
+import { IndexedDbService } from '../../core/services/cache/db/indexed-db.service';
 import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus';

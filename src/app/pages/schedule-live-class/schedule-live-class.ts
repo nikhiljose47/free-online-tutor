@@ -18,11 +18,12 @@ import { Auth2Service } from '../../core/services/fire/auth2.service';
 import { ClassWrapup } from '../../components/class-wrapup/class-wrapup';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { MeetingsService } from '../../services/meetings/meetings.service';
+import { ScheduleLiveClassForm } from '../../components/schedule-live-class-form/schedule-live-class-form';
 
 @Component({
   selector: 'schedule-live-class',
   standalone: true,
-  imports: [CommonModule, ClassWrapup],
+  imports: [CommonModule, ClassWrapup, ScheduleLiveClassForm],
   templateUrl: './schedule-live-class.html',
   styleUrl: './schedule-live-class.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

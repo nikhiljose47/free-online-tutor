@@ -2,6 +2,7 @@ export interface SyllabusIndex {
   version: string;
   generatedAt: string;
 
+  groupsBySubject: string[];
   classes: {
     id: string;
     label: string;
