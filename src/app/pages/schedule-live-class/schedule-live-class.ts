@@ -84,9 +84,6 @@ export class ScheduleLiveClass implements OnInit {
     this.teacherId = this.authApi.uid;
     if (!this.teacherId) return;
 
-    /* ensure lookup initialized once */
-    this.syllabus.init();
-
     /* load meetings */
     this.meetApi.getLiveMeetingsByTeacher(this.teacherId).subscribe((res) => {
       if (res.ok && res.data) {

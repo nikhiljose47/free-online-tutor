@@ -1,6 +1,20 @@
-import { Component, ChangeDetectionStrategy, input, output, signal, computed, inject, Injectable } from '@angular/core';
-import { combineLatest, map, startWith } from 'rxjs';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  input,
+  output,
+  signal,
+  computed,
+  inject,
+  OnInit,
+  Injectable
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { startWith } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
+
+import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
+import { CatalogLookupService } from '../../domain/syllabus-index/catalog-lookup.service';
 
 type Chapter = { code: string; name: string };
 
@@ -9,10 +23,10 @@ type Chapter = { code: string; name: string };
   standalone: true,
   imports: [CommonModule],
   templateUrl: './schedule-live-class-form.html',
-  styleUrl:  './schedule-live-class-form.scss',
+  styleUrl: './schedule-live-class-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ScheduleLiveClassForm {
+export class ScheduleLiveClassForm implements OnInit {
 
   /* ================= INPUT / OUTPUT ================= */
 
@@ -26,10 +40,13 @@ export class ScheduleLiveClassForm {
   private readonly chapterApi = inject(ChapterDataService);
   private readonly batchApi = inject(BatchDataService);
   private readonly sessionApi = inject(SessionDataService);
+  private readonly syllabusLookup = inject(SyllabusLookupService);
+  private readonly catalogLookup = inject(CatalogLookupService);
 
-  /* ================= STATE ================= */
+  /* ================= FORM STATE ================= */
 
-  private readonly form = signal({
+  readonly form = signal({
+    group: '' as string,
     classId: this.presetClassId(),
     subjectId: '',
     chapterCode: '',
@@ -40,6 +57,10 @@ export class ScheduleLiveClassForm {
   });
 
   readonly submitting = signal(false);
+
+  /* ================= GROUPS ================= */
+
+  readonly groupList = this.catalogLookup.groups;
 
   /* ================= DATA STREAMS ================= */
 
@@ -58,6 +79,7 @@ export class ScheduleLiveClassForm {
   readonly isValid = computed(() => {
     const f = this.form();
     return !!(
+      f.group &&
       f.classId &&
       f.subjectId &&
       f.chapterCode &&
@@ -68,11 +90,17 @@ export class ScheduleLiveClassForm {
     );
   });
 
+  /* ================= INIT ================= */
+
+  ngOnInit(): void {
+    console.log('Available classes:', this.syllabusLookup.getClassNames());
+  }
+
+  /* ================= HELPERS ================= */
+
   isValidUrl(url: string): boolean {
     try { return !!new URL(url); } catch { return false; }
   }
-
-  /* ================= FORM UPDATE ================= */
 
   updateField<K extends keyof ReturnType<typeof this.form>>(key: K, value: string) {
     this.form.update(f => ({ ...f, [key]: value }));
@@ -85,15 +113,27 @@ export class ScheduleLiveClassForm {
 
     this.submitting.set(true);
 
+    const f = this.form();
+
     const payload = {
-      ...this.form(),
-      scheduledAt: new Date(`${this.form().date}T${this.form().time}`)
+      ...f,
+      scheduledAt: new Date(`${f.date}T${f.time}`)
     };
 
     try {
       const res = await this.sessionApi.create(payload);
       this.scheduled.emit(res);
-      this.form.set({ classId: this.presetClassId(), subjectId: '', chapterCode: '', batchId: '', meetLink: '', date: '', time: '' });
+
+      this.form.set({
+        group: '',
+        classId: this.presetClassId(),
+        subjectId: '',
+        chapterCode: '',
+        batchId: '',
+        meetLink: '',
+        date: '',
+        time: ''
+      });
     } finally {
       this.submitting.set(false);
     }
@@ -102,7 +142,6 @@ export class ScheduleLiveClassForm {
 
 
 import { delay, of } from 'rxjs';
-import { CommonModule } from '@angular/common';
 
 /* ================= TYPES ================= */
 

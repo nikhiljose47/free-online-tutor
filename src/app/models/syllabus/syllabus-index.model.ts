@@ -1,54 +1,44 @@
 export interface SyllabusIndex {
   version: string;
   generatedAt: string;
+  groups: CatalogGroup[];
+  catalog: CatalogItem[];
+}
 
-  groupsBySubject: string[];
-  classes: {
-    id: string;
-    label: string;
-    enabled: boolean;
-    ready: boolean;
-    priority: number;
-    group: string;
-    availableFrom: string;
-    fileName: string;
-    meta: {
-      students: number;
-      teachers: number;
-      medium: string[];
-      image: string;
-    };
-  }[];
+export type CatalogGroup =
+  | 'school-class'
+  | 'exam-jam'
+  | 'wellness'
+  | 'music'
+  | 'coding'
+  | 'aptitude';
 
-  jamSessions: {
-    id: string;
-    title: string;
-    enabled: boolean;
-    ready: boolean;
-    startsAt: string;
-    priority: number;
-    group: string;
-    fileName: string;
-    meta: {
-      teacher: string;
-      language: string[];
-      image: string;
-    };
-  }[];
 
-  activities: {
-    id: string;
-    title: string;
-    enabled: boolean;
-    ready: boolean;
-    startsAt: string;
-    priority: number;
-    group: string;
-    fileName: string;
-    meta: {
-      teacher: string;
-      language: string[];
-      image: string;
-    };
-  }[];
+export interface CatalogItem {
+  id: string;
+  /** class | exam | activity | future: course | bundle */
+  type: CatalogType;
+  group: CatalogGroup;
+  title: string;
+  enabled: boolean;
+  ready: boolean;
+  priority: number;
+  file: string;
+  availableFrom?: string;
+  startsAt?: string;
+  isLive?: boolean;
+  meta: CatalogMeta;
+}
+
+
+export type CatalogType = 'class' | 'exam' | 'activity' | 'course' | 'bundle';
+
+
+export interface CatalogMeta {
+  students?: number;
+  teachers?: number;
+  medium?: string[];
+  teacher?: string;
+  language?: string[];
+  image: string;
 }

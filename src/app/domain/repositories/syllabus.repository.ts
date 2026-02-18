@@ -4,7 +4,7 @@ import { from, Observable, of, switchMap, tap, retry, catchError, forkJoin } fro
 import { IndexedDbService } from '../../core/services/cache/db/indexed-db.service';
 import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
-import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
+import { ClassSyllabus } from '../../models/syllabus/class-syllabus.model';
 import { SYLL_INDEX_CACHE_KEY } from '../../core/constants/app.constants';
 
 @Injectable({ providedIn: 'root' })

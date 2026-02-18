@@ -8,7 +8,7 @@ import {
   computed,
 } from '@angular/core';
 
-import { ClassSyllabus, Chapter, Subject } from '../../models/syllabus/class-syllabus';
+import { ClassSyllabus, Chapter, Subject } from '../../models/syllabus/class-syllabus.model';
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 
 @Component({
@@ -59,11 +59,6 @@ export class ChapterBrowser implements OnInit {
 
   /* ------------------ lifecycle ------------------ */
   async ngOnInit(): Promise<void> {
-    /* ensure lookup initialized */
-    this.syllabusLookup.init();
-
-    /* wait until syllabus data is ready */
-    await this.syllabusLookup.waitUntilReady();
 
     /* use already-loaded class instead of re-fetching */
     const classNames = this.syllabusLookup.getClassNames();

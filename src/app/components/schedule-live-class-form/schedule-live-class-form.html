@@ -1,12 +1,26 @@
-<div class="schedule-wrap container py-4">
-  <div class="schedule-card mx-auto">
-
+<div class="schedule-card">
+  <div class="schedule-wrap py-4">
+    <!-- HEADER -->
     <div class="mb-4">
       <h4 class="title mb-1">Schedule Live Session</h4>
       <p class="subtitle mb-0">Create a simple, focused meeting setup</p>
     </div>
 
-    <!-- ACADEMIC -->
+    <!-- ================= GROUP ================= -->
+    <div class="section mb-4">
+      <div class="section-label">Group</div>
+
+      <div class="row g-3">
+        <div class="col-md-4">
+          <select class="form-select" #groupSel (change)="updateField('group', groupSel.value)">
+            <option value="">Select Group</option>
+            <option *ngFor="let g of groupList()" [value]="g">{{ g }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= ACADEMIC ================= -->
     <div class="section mb-4">
       <div class="section-label">Academic</div>
 
@@ -19,14 +33,22 @@
         </div>
 
         <div class="col-md-4">
-          <select class="form-select" #subjectSel (change)="updateField('subjectId', subjectSel.value)">
+          <select
+            class="form-select"
+            #subjectSel
+            (change)="updateField('subjectId', subjectSel.value)"
+          >
             <option value="">Subject</option>
             <option *ngFor="let s of subjectList()" [value]="s">{{ s }}</option>
           </select>
         </div>
 
         <div class="col-md-4">
-          <select class="form-select" #chapterSel (change)="updateField('chapterCode', chapterSel.value)">
+          <select
+            class="form-select"
+            #chapterSel
+            (change)="updateField('chapterCode', chapterSel.value)"
+          >
             <option value="">Chapter</option>
             <option *ngFor="let ch of chapterList()" [value]="ch.code">
               {{ ch.code }} — {{ ch.name }}
@@ -36,7 +58,7 @@
       </div>
     </div>
 
-    <!-- SESSION -->
+    <!-- ================= SESSION ================= -->
     <div class="section mb-4">
       <div class="section-label">Session</div>
 
@@ -61,21 +83,30 @@
         </div>
 
         <div class="col-md-6">
-          <input type="date" class="form-control" #dateInput (change)="updateField('date', dateInput.value)" />
+          <input
+            type="date"
+            class="form-control"
+            #dateInput
+            (change)="updateField('date', dateInput.value)"
+          />
         </div>
 
         <div class="col-md-6">
-          <input type="time" class="form-control" #timeInput (change)="updateField('time', timeInput.value)" />
+          <input
+            type="time"
+            class="form-control"
+            #timeInput
+            (change)="updateField('time', timeInput.value)"
+          />
         </div>
       </div>
     </div>
 
-    <!-- ACTION -->
-    <div class="d-flex justify-content-end">
+    <!-- ================= ACTION ================= -->
+    <div class="pt-2">
       <button class="btn btn-primary px-4" [disabled]="submitting()" (click)="scheduleClass()">
         Create Session
       </button>
     </div>
-
   </div>
 </div>

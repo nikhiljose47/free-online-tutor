@@ -1,35 +1,40 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
-import { Chapter, ClassSyllabus, Subject } from '../../models/syllabus/class-syllabus';
 import { SyllabusStore } from '../../shared/state/syllabus.store';
+import { map, shareReplay } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Chapter, ClassSyllabus, Subject } from '../../models/syllabus/class-syllabus.model';
+
+
+
+///How to use this?
+// private lookup = inject(SyllabusLookupService);
+
+// readonly classes = this.lookup.classNames;
+
+// readonly subjects = computed(() =>
+//   this.selectedClass()
+//     ? this.lookup.getSubjects(this.selectedClass()!)
+//     : []
+// );
+
 
 @Injectable({ providedIn: 'root' })
 export class SyllabusLookupService {
   private syllabusStore = inject(SyllabusStore);
 
-  /* ================= RAW LIST ================= */
+  /* ================= SOURCE RX STREAM ================= */
 
-  private readonly _list = signal<ClassSyllabus[]>([]);
+  private readonly list$ = this.syllabusStore
+    .getAllClasses$()
+    .pipe(shareReplay({ bufferSize: 1, refCount: true }));
+
+  /* ================= SIGNAL STATE ================= */
+
+  private readonly _list = toSignal(this.list$, { initialValue: [] as ClassSyllabus[] });
+
   readonly list = computed(() => this._list());
 
-  /* ================= READY PROMISE (optional imperative wait) ================= */
-
-  private _resolveReady!: () => void;
-  private readonly _ready = new Promise<void>((res) => (this._resolveReady = res));
-
-  async waitUntilReady() {
-    await this._ready;
-  }
-
-  /* ================= INIT (called once from bootstrap/resolver) ================= */
-
-  init() {
-    this.syllabusStore.getAllClasses$().subscribe((data) => {
-      this._list.set(data ?? []);
-      this._resolveReady();
-    });
-  }
-
-  /* ================= DERIVED SIGNALS ================= */
+  /* ================= DERIVED ================= */
 
   readonly classNames = computed(() => this.list().map((c) => c.className));
 
@@ -37,34 +42,42 @@ export class SyllabusLookupService {
 
   private readonly codeMap = computed(() => new Map(this.list().map((s) => [s.code_prefix, s])));
 
-  private readonly chapterMap = computed(() => {
-    const map = new Map<string, { className: string; subjectName: string; chapter: Chapter }>();
+  /* ===== Heavy chapter map stays in RXJS (perf safe) ===== */
 
-    for (const cls of this.list()) {
-      for (const subject of cls.subjects) {
-        for (const chapter of this.normalizeChapters(subject.chapters)) {
-          map.set(chapter.code, {
-            className: cls.className,
-            subjectName: subject.name,
-            chapter,
-          });
+  private readonly chapterMap$ = this.list$.pipe(
+    map((list) => {
+      const mapData = new Map<
+        string,
+        { className: string; subjectName: string; chapter: Chapter }
+      >();
+
+      for (const cls of list) {
+        for (const subject of cls.subjects) {
+          const chapters = this.normalizeChapters(subject.chapters);
+
+          for (const chapter of chapters) {
+            mapData.set(chapter.code, {
+              className: cls.className,
+              subjectName: subject.name,
+              chapter,
+            });
+          }
         }
       }
-    }
 
-    return map;
-  });
+      return mapData;
+    }),
+    shareReplay({ bufferSize: 1, refCount: true }),
+  );
 
- private normalizeChapters(input: any): Chapter[] {
-  if (!input) return [];
+  private readonly chapterMap = toSignal(this.chapterMap$, { initialValue: new Map() });
 
-  return Array.isArray(input)
-    ? input
-    : Object.values(input);
-}
+  private normalizeChapters(input: any): Chapter[] {
+    if (!input) return [];
+    return Array.isArray(input) ? input : Object.values(input);
+  }
 
-
-  /* ================= PUBLIC SYNC LOOKUPS ================= */
+  /* ================= PUBLIC LOOKUPS ================= */
 
   getClassNames(): string[] {
     return this.classNames();
@@ -87,8 +100,11 @@ export class SyllabusLookupService {
   }
 
   getSubjects(className: string): string[] {
-    const cls = this.classMap().get(className);
-    return cls ? cls.subjects.map((s) => s.name) : [];
+    return (
+      this.classMap()
+        .get(className)
+        ?.subjects.map((s) => s.name) ?? []
+    );
   }
 
   getSubject(className: string, subjectName: string): Subject | null {

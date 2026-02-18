@@ -4,14 +4,10 @@ import { map, switchMap, shareReplay, filter, take, tap, catchError } from 'rxjs
 
 import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
 import { UiStateUtil } from './ui-state.utils';
-import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
+import { ClassSyllabus } from '../../models/syllabus/class-syllabus.model';
 import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
-import { IdFileMap, IdMapUtil } from '../utils/id-map.utils';
+import { ResourceIndex, IdMapUtil } from '../utils/id-map.utils';
 
-//// readme
-
-// 1.Ensure initialize service before use
-// 2.This is sub store for syllabus repo, made with intention of load reduction in syll repo
 
 @Injectable({ providedIn: 'root' })
 export class SyllabusStore {
@@ -21,18 +17,18 @@ export class SyllabusStore {
   /** --------------------------------------------------
    * ID MAP STREAM (cached & shared)
    * -------------------------------------------------- */
-  private idMap$?: Observable<IdFileMap>;
+  private idMap$?: Observable<ResourceIndex>;
 
-  getIdMap$(): Observable<IdFileMap> {
+  getIdMap$(): Observable<ResourceIndex> {
     if (!this.idMap$) {
-      const uiCached = this.uiState.get<IdFileMap>('idFileMap');
+      const uiCached = this.uiState.get<ResourceIndex>('resourceIndex');
 
       this.idMap$ = uiCached
         ? of(uiCached)
         : this.repo.loadIndex().pipe(
             take(1),
-            map((index) => (index ? IdMapUtil.buildIdFileMap(index) : {})),
-            tap((map) => this.uiState.set('idFileMap', map)),
+            map((index) => (index ? IdMapUtil.buildResourceIndex(index) : {})),
+            tap((map) => this.uiState.set('resourceIndex', map)),
             shareReplay(1),
           );
     }
@@ -69,29 +65,4 @@ export class SyllabusStore {
     );
   }
 
-  getUnifiedDataFromIndex$(): Observable<
-    (
-      | SyllabusIndex['classes'][number]
-      | SyllabusIndex['jamSessions'][number]
-      | SyllabusIndex['activities'][number]
-    )[]
-  > {
-    return this.repo.loadIndex().pipe(
-      map((index) => {
-        const classes = index?.classes?.filter((c) => c.enabled && c.ready) ?? [];
-        const jams = index?.jamSessions?.filter((j) => j.enabled && j.ready) ?? [];
-        const activities = index?.activities?.filter((a) => a.enabled && a.ready) ?? [];
-        return [...classes, ...jams, ...activities];
-      }),
-
-      /* global priority sort */
-      map((items) => items.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0))),
-
-      /* avoid caching empty forever */
-      filter((items) => items.length > 0),
-
-      /* cache latest valid result */
-      shareReplay({ bufferSize: 1, refCount: true }),
-    );
-  }
 }

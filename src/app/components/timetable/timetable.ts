@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
+import { ClassSyllabus } from '../../models/syllabus/class-syllabus.model';
 import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
 import { ContentPlaceholder } from '../content-placeholder/content-placeholder';
 import { DotLoader } from '../dot-loader/dot-loader';

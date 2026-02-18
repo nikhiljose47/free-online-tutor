@@ -20,6 +20,7 @@ import { Meeting } from '../../models/meeting.model';
 import { combineLatest, map, timer } from 'rxjs';
 import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
 import { MeetingsService } from '../../services/meetings/meetings.service';
+import { CatalogLookupService } from '../../domain/syllabus-index/catalog-lookup.service';
 
 @Component({
   selector: 'class-stream-sidebar',
@@ -38,6 +39,7 @@ export class ClassStreamSidebar implements OnInit, OnDestroy {
   private router = inject(Router);
   private uiUtil = inject(UiStateUtil);
   private syllabusStore = inject(SyllabusStore);
+  private catalogLookupApi = inject(CatalogLookupService);
 
   /* ================= UI SIGNALS (FINAL ONLY) ================= */
   readonly live = signal<any[]>([]);
@@ -50,7 +52,7 @@ export class ClassStreamSidebar implements OnInit, OnDestroy {
 
   private readonly merged$ = combineLatest([
     this.meetApi.getLiveMeetings(),
-    this.syllabusStore.getUnifiedDataFromIndex$(),
+    this.catalogLookupApi.getAllReady$(),
     timer(0, 30_000), // clock refresh
   ]).pipe(
     map(([meetRes, feed, _]) => {

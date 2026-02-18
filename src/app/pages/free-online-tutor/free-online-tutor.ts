@@ -6,11 +6,12 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ToastService } from '../../shared/toast.service';
 import { HomeIntroStrip } from '../../components/home-intro-strip/home-intro-strip';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
-import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
+import { CatalogGroup, SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
 import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
 import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
-import { IdFileMap } from '../../shared/utils/id-map.utils';
+import { ResourceIndex } from '../../shared/utils/id-map.utils';
 import { SvgCardConfig } from '../../shared/utils/svg-loader.utils';
+import { CatalogLookupService } from '../../domain/syllabus-index/catalog-lookup.service';
 
 /* ===============================
    COMPONENT
@@ -31,6 +32,7 @@ export class FreeOnlineTutor implements OnInit {
   private sanitizer = inject(DomSanitizer);
   private uiState = inject(UiStateUtil);
   private syllRepo = inject(SyllabusRepository);
+  private catalogLookupApi = inject(CatalogLookupService);
 
   /* ===============================
      UI STATE
@@ -60,7 +62,7 @@ export class FreeOnlineTutor implements OnInit {
         return;
       }
 
-      this.processIndexData(data);
+      this.setDataByGroups();
       // Set loaders to false
       this.classLoading.set(false);
       this.jamLoading.set(false);
@@ -72,73 +74,46 @@ export class FreeOnlineTutor implements OnInit {
   }
 
   private loadAllClasses() {
-    const map = this.uiState.get<IdFileMap>('idFileMap');
+    const map = this.uiState.get<ResourceIndex>('ResourceIndex');
     if (map) {
       let mapToArr = Object.values(map);
       this.syllRepo.loadMultipleClasses(mapToArr);
     }
   }
 
-  private processIndexData(data: any) {
-    this.processClasses(data.classes);
-    this.processJams(data.jamSessions);
-    this.processActivities(data.activities);
-  }
+  private setDataByGroups() {
+    let schoolClass = this.catalogLookupApi.getByGroup('school-class').map((c) => ({
+      id: c.id,
+      name: c.title ?? '',
+      students: c.meta?.students ?? 0,
+      teachers: c.meta?.teachers ?? 0,
+      medium: Array.isArray(c.meta?.medium) ? c.meta.medium : [],
+      image: c.meta?.image ?? '',
+      meta: c.meta,
+    }));
+    this.classCategories.set(schoolClass);
 
-  private processClasses(classes: SyllabusIndex['classes']) {
-    const now = Date.now();
+    let examJam = this.catalogLookupApi.getByGroup('exam-jam').map((c) => ({
+      id: c.id,
+      name: c.title ?? '',
+      students: c.meta?.students ?? 0,
+      teachers: c.meta?.teachers ?? 0,
+      medium: Array.isArray(c.meta?.medium) ? c.meta.medium : [],
+      image: c.meta?.image ?? '',
+      meta: c.meta,
+    }));
+    this.jamSessions.set(examJam);
 
-    const result = (classes ?? [])
-      .filter(
-        (c) =>
-          c?.enabled === true &&
-          c?.ready === true &&
-          !!c.availableFrom &&
-          new Date(c.availableFrom).getTime() <= now,
-      )
-      .sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0))
-      .map((c) => ({
-        id: c.id,
-        name: c.label ?? '',
-        students: c.meta?.students ?? 0,
-        teachers: c.meta?.teachers ?? 0,
-        medium: Array.isArray(c.meta?.medium) ? c.meta.medium : [],
-        image: c.meta?.image ?? '',
-        meta: c.meta,
-      }));
-    this.classCategories.set(result);
-  }
-
-  private processJams(jams: SyllabusIndex['jamSessions']) {
-    const result = jams
-      .filter((j) => j.enabled)
-      .sort((a, b) => a.priority - b.priority)
-      .map((j) => ({
-        id: j.id,
-        title: j.title,
-        teacher: j.meta.teacher,
-        lang: j.meta.language,
-        image: j.meta.image,
-        meta: j.meta,
-      }));
-
-    this.jamSessions.set(result);
-  }
-
-  private processActivities(acts: SyllabusIndex['activities']) {
-    const result = acts
-      .filter((a) => a.enabled)
-      .sort((a, b) => a.priority - b.priority)
-      .map((a) => ({
-        id: a.id,
-        title: a.title,
-        teacher: a.meta.teacher,
-        time: 'Soon',
-        image: a.meta.image,
-        meta: a.meta,
-      }));
-
-    this.actSessions.set(result);
+    let coding = this.catalogLookupApi.getByGroup('coding').map((c) => ({
+      id: c.id,
+      name: c.title ?? '',
+      students: c.meta?.students ?? 0,
+      teachers: c.meta?.teachers ?? 0,
+      medium: Array.isArray(c.meta?.medium) ? c.meta.medium : [],
+      image: c.meta?.image ?? '',
+      meta: c.meta,
+    }));
+    this.actSessions.set(coding);
   }
 
   /* ===============================
@@ -160,7 +135,7 @@ export class FreeOnlineTutor implements OnInit {
     return cls?.className ? `${cls.className} cover` : 'Class cover';
   }
 
-/* ===============================
+  /* ===============================
      NAVIGATION
   =============================== */
   openCategory(cls: any) {

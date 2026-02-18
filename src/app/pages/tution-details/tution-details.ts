@@ -6,21 +6,20 @@ import { Timetable } from '../../components/timetable/timetable';
 
 import { Meeting } from '../../models/meeting.model';
 import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
-import { ClassSyllabus } from '../../models/syllabus/class-syllabus';
+import { ClassSyllabus } from '../../models/syllabus/class-syllabus.model';
 import { DotLoader } from '../../components/dot-loader/dot-loader';
 import { SyllabusStore } from '../../shared/state/syllabus.store';
 import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
 import { MeetingsService } from '../../services/meetings/meetings.service';
 import { QuoteUtil } from '../../shared/utils/quote.utils';
 import { Quote } from '../../models/quote.model';
-import { ClassOverviewBatchesComponent } from '../../shared/components/class-overview-batches/class-overview-batches';
 import { ClassSubjectService } from '../../services/class/class-subject/class-subject.service';
 import { ClassAssignmentsService } from '../../services/class/class-assignments/class-assignments.service';
 
 @Component({
   selector: 'tution-details',
   standalone: true,
-  imports: [CommonModule, Timetable, ContentPlaceholder, DotLoader, ClassOverviewBatchesComponent],
+  imports: [CommonModule, Timetable, ContentPlaceholder, DotLoader],
   templateUrl: './tution-details.html',
   styleUrl: './tution-details.scss',
 })
