@@ -11,11 +11,9 @@ import { SyllabusRepository } from '../../domain/repositories/syllabus.repositor
 import { ActivatedRoute } from '@angular/router';
 import { Meeting } from '../../models/meeting.model';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus.model';
-
-interface Faq {
-  q: string;
-  a: string;
-}
+import { Faqutil } from '../../shared/utils/faq.utils';
+import { BatchService } from '../../services/batch/batch.service';
+import { BatchDataStore } from '../../domain/data/batch.data';
 
 interface ClassStat {
   value: string;
@@ -41,14 +39,15 @@ export class ClassDetailsPage implements OnInit {
   private meetApi = inject(MeetingsService);
   private syllRepo = inject(SyllabusRepository);
   private route = inject(ActivatedRoute);
+  batchDataApi = inject(BatchDataStore);
 
   readonly id = this.route.snapshot.paramMap.get('id') ?? 'CL08';
-
+  readonly faqs = Faqutil.getFaqData();
+  readonly isLoading = signal(true);
+  readonly hasValidData = signal(false);
   private readonly meetings = signal<Meeting[]>([]);
 
   syllabus = signal<ClassSyllabus | null>(null);
-  readonly isLoading = signal(true);
-  readonly hasValidData = signal(false);
   classId = 'CL09';
   classTitle = 'Class 6 – Blue Batch';
   puzzleId = 'puzzle_001';
@@ -61,25 +60,6 @@ export class ClassDetailsPage implements OnInit {
 
   readonly openIndex = signal<number | null>(0);
 
-  readonly faqs = signal<Faq[]>([
-    {
-      q: 'How are classes conducted?',
-      a: 'Classes are delivered through structured live sessions, recorded lessons, and guided practice modules for consistent learning.',
-    },
-    {
-      q: 'Can I access content offline?',
-      a: 'Yes, key learning resources are cached for smooth access even on low or unstable internet connections.',
-    },
-    {
-      q: 'How do I track my progress?',
-      a: 'You can monitor performance using weekly analytics, teacher feedback, and assessment scores inside your dashboard.',
-    },
-    {
-      q: 'Are doubt-solving sessions available?',
-      a: 'Dedicated doubt-clearing sessions and teacher chat support are available to ensure concept clarity.',
-    },
-  ]);
-
   readonly stats = signal<ClassStat[]>([
     { value: '12,500+', label: 'Students learning in this class' },
     { value: '28', label: 'States actively connected' },
@@ -87,9 +67,17 @@ export class ClassDetailsPage implements OnInit {
     { value: '96%', label: 'Concept clarity satisfaction' },
   ]);
 
-  
   ngOnInit(): void {
-    this.loadData()
+    this.loadData();
+    this.loadBatchStore();
+  }
+
+  loadBatchStore() {
+    this.batchDataApi.init('CL06');
+  }
+
+  onClickBatch(b: any) {
+    this.batchDataApi.selectBatch(b);
   }
 
   loadData() {

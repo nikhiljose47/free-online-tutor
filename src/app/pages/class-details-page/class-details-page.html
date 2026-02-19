@@ -43,6 +43,43 @@
     </div>
   </section>
 
+  <section class="batch-zone" *ngIf="batchDataApi.batches().length">
+    <h2 class="section-title my-4">Batches :</h2>
+    <!-- ACTIVE -->
+    <div class="batch-row" *ngIf="batchDataApi.activeBatches().length">
+      <h3 class="batch-row-title">Active</h3>
+
+      <div class="batch-scroll">
+        @for (b of batchDataApi.activeBatches(); track b.id) {
+          <button
+            class="batch-card long"
+            [class.selected]="batchDataApi.selectedBatch()?.id === b.id"
+            (click)="onClickBatch(b)"
+          >
+            <div class="batch-name">{{ b.name }}</div>
+            <div class="batch-time">Started at {{ b.startTime | date: 'hh:mm a' }}</div>
+            <div class="batch-info">{{ b.info }}</div>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- UPCOMING -->
+    <div class="batch-row" *ngIf="batchDataApi.upcomingBatches().length">
+      <h3 class="batch-row-title">Upcoming</h3>
+
+      <div class="batch-scroll">
+        @for (b of batchDataApi.upcomingBatches(); track b.id) {
+          <div class="batch-card long upcoming-grey">
+            <div class="batch-name">{{ b.name }}</div>
+            <div class="batch-time">Coming at {{ b.startTime | date: 'hh:mm a' }}</div>
+            <div class="batch-info">{{ b.info }}</div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
   <section>
     <h2 class="section-title my-3">Overview :</h2>
     <class-overview></class-overview>
@@ -50,7 +87,7 @@
 
   <!-- 📊 MAIN DETAIL -->
   <section class="detail-section">
-        <h2 class="section-title my-4">Timetable :</h2>
+    <h2 class="section-title my-4">Timetable :</h2>
 
     <timetable [classFileId]="classFileId" *ngIf="activeTab() === 'Timetable'"></timetable>
     <timetable [classFileId]="classFileId" *ngIf="activeTab() === 'Tests'"></timetable>
@@ -102,7 +139,7 @@
     <h2 class="section-title mb-4">Frequently Asked Questions</h2>
 
     <div class="faq-list">
-      <div class="faq-item" *ngFor="let f of faqs(); let i = index">
+      <div class="faq-item" *ngFor="let f of faqs; let i = index">
         <button
           class="faq-q"
           type="button"

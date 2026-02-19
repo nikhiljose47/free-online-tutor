@@ -41,5 +41,9 @@ export const CACHE_TTL = {
   TEACHER_BY_ID: 2 * 60 * 60 * 1000, // 2 hour
 } as const;
 
+export const DEF_BATCH = 'blue';
+
+
+
 //Assets
 export const PLACEHOLDER__COVER_IMG = 'assets/placeholder-cover.webp';
