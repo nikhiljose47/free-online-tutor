@@ -2,16 +2,21 @@ import {
   Component,
   ChangeDetectionStrategy,
   input,
-  output,
   signal,
   computed,
   inject,
   OnInit,
-  Injectable
+  Injectable,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { startWith } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Meeting } from '../../models/meeting.model';
+import { Timestamp } from '@angular/fire/firestore';
+import { FirestoreDocService } from '../../core/services/fire/firestore-doc.service';
+import { GLOBAL_MEETINGS, PART1 } from '../../core/constants/app.constants';
+import { Auth2Service } from '../../core/services/fire/auth2.service';
+import { UserProfileService } from '../../core/services/fire/user-profile.service';
 
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { CatalogLookupService } from '../../domain/syllabus-index/catalog-lookup.service';
@@ -24,24 +29,22 @@ type Chapter = { code: string; name: string };
   imports: [CommonModule],
   templateUrl: './schedule-live-class-form.html',
   styleUrl: './schedule-live-class-form.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScheduleLiveClassForm implements OnInit {
-
   /* ================= INPUT / OUTPUT ================= */
 
   readonly presetClassId = input<string | null>(null);
-  readonly scheduled = output<any>();
+  @Output() onSubmit = new EventEmitter<void>();
 
   /* ================= SERVICES ================= */
-
-  private readonly classApi = inject(ClassDataService);
-  private readonly subjectApi = inject(SubjectDataService);
-  private readonly chapterApi = inject(ChapterDataService);
-  private readonly batchApi = inject(BatchDataService);
-  private readonly sessionApi = inject(SessionDataService);
+  private fire = inject(FirestoreDocService);
   private readonly syllabusLookup = inject(SyllabusLookupService);
   private readonly catalogLookup = inject(CatalogLookupService);
+  private authApi = inject(Auth2Service);
+  private user = inject(UserProfileService);
+
+  readonly profile = this.user.profile;
 
   /* ================= FORM STATE ================= */
 
@@ -53,7 +56,8 @@ export class ScheduleLiveClassForm implements OnInit {
     batchId: '',
     meetLink: '',
     date: '',
-    time: ''
+    time: '',
+    duration: 30,
   });
 
   readonly submitting = signal(false);
@@ -61,18 +65,28 @@ export class ScheduleLiveClassForm implements OnInit {
   /* ================= GROUPS ================= */
 
   readonly groupList = this.catalogLookup.groups;
+  private teacherId: string | undefined;
 
-  /* ================= DATA STREAMS ================= */
+  readonly batchList = this.catalogLookup.getAllGroupLabels();
 
-  private readonly class$ = this.classApi.list().pipe(startWith([]));
-  private readonly subject$ = this.subjectApi.list().pipe(startWith([]));
-  private readonly chapter$ = this.chapterApi.list().pipe(startWith([]));
-  private readonly batch$ = this.batchApi.list().pipe(startWith([]));
+  readonly classList = this.syllabusLookup.classNames;
 
-  readonly classList = toSignal(this.class$, { initialValue: [] as string[] });
-  readonly subjectList = toSignal(this.subject$, { initialValue: [] as string[] });
-  readonly chapterList = toSignal(this.chapter$, { initialValue: [] as Chapter[] });
-  readonly batchList = toSignal(this.batch$, { initialValue: [] as string[] });
+  readonly selectedClassId = computed(() => this.form().classId);
+  readonly selectedSubjectId = computed(() => this.form().subjectId);
+  readonly subjectList = computed(() => {
+    const classId = this.selectedClassId();
+    return classId ? this.syllabusLookup.getSubjects(classId) : [];
+  });
+
+  readonly chapterList = computed(() => {
+    const classId = this.selectedClassId();
+    const subjectId = this.selectedSubjectId();
+    this.getCurrentChapter('batch-blue', subjectId);
+
+    if (!classId || !subjectId) return [];
+
+    return this.syllabusLookup.getChapters(classId, subjectId);
+  });
 
   /* ================= VALIDATION ================= */
 
@@ -93,125 +107,63 @@ export class ScheduleLiveClassForm implements OnInit {
   /* ================= INIT ================= */
 
   ngOnInit(): void {
-    console.log('Available classes:', this.syllabusLookup.getClassNames());
+    this.teacherId = this.authApi.uid;
+    if (!this.teacherId) return;
   }
 
   /* ================= HELPERS ================= */
 
   isValidUrl(url: string): boolean {
-    try { return !!new URL(url); } catch { return false; }
+    try {
+      return !!new URL(url);
+    } catch {
+      return false;
+    }
+  }
+
+  getCurrentChapter(batchId: string, subCode: string) {
+    // this.indexService.getCurrentChapterCode$(batchId, subCode).subscribe((e) => {
+    //   console.log('value got', e);
+    // });
   }
 
   updateField<K extends keyof ReturnType<typeof this.form>>(key: K, value: string) {
-    this.form.update(f => ({ ...f, [key]: value }));
+    this.form.update((f) => ({ ...f, [key]: value }));
   }
 
   /* ================= SUBMIT ================= */
 
   async scheduleClass() {
+    const f = this.form();
     if (!this.isValid() || this.submitting()) return;
+
+    if (!f.date && f.classId && !this.teacherId) return;
 
     this.submitting.set(true);
 
-    const f = this.form();
+    const start = new Date(f.date);
+    const end = new Date(start.getTime() + parseInt(f.date) * 60000);
 
-    const payload = {
-      ...f,
-      scheduledAt: new Date(`${f.date}T${f.time}`)
+    const payload: Meeting = {
+      id: '',
+      classId: this.syllabusLookup.getClass(f.classId!)?.classId ?? '',
+      subjectId: f.subjectId,
+      chapterCode: f.chapterCode,
+      batchId: f.batchId,
+      meetLink: f.meetLink,
+      status: PART1,
+      teacherId: this.teacherId!,
+      teacherName: this.profile()?.name ?? '',
+      duration: f.duration,
+      attendance: [],
+      date: Timestamp.fromDate(start),
+      createdAt: Timestamp.now(),
+      endAt: Timestamp.fromDate(end),
     };
 
-    try {
-      const res = await this.sessionApi.create(payload);
-      this.scheduled.emit(res);
-
-      this.form.set({
-        group: '',
-        classId: this.presetClassId(),
-        subjectId: '',
-        chapterCode: '',
-        batchId: '',
-        meetLink: '',
-        date: '',
-        time: ''
-      });
-    } finally {
+    this.fire.add(GLOBAL_MEETINGS, payload).subscribe(() => {
+      this.onSubmit.emit();
       this.submitting.set(false);
-    }
+    });
   }
 }
-
-
-import { delay, of } from 'rxjs';
-
-/* ================= TYPES ================= */
-
-
-/* ================= CLASS ================= */
-
-@Injectable({ providedIn: 'root' })
-export class ClassDataService {
-  list() {
-    return of([
-      'Class 7',
-      'Class 8',
-      'Class 9',
-      'Class 10'
-    ]).pipe(delay(300));
-  }
-}
-
-/* ================= SUBJECT ================= */
-
-@Injectable({ providedIn: 'root' })
-export class SubjectDataService {
-  list() {
-    return of([
-      'Mathematics',
-      'Science',
-      'English'
-    ]).pipe(delay(300));
-  }
-}
-
-/* ================= CHAPTER ================= */
-
-@Injectable({ providedIn: 'root' })
-export class ChapterDataService {
-  list() {
-    const data: Chapter[] = [
-      { code: 'CH1', name: 'Introduction' },
-      { code: 'CH2', name: 'Basics' },
-      { code: 'CH3', name: 'Advanced Concepts' }
-    ];
-    return of(data).pipe(delay(300));
-  }
-}
-
-/* ================= BATCH ================= */
-
-@Injectable({ providedIn: 'root' })
-export class BatchDataService {
-  list() {
-    return of([
-      'Batch A',
-      'Batch B',
-      'Batch C'
-    ]).pipe(delay(300));
-  }
-}
-
-/* ================= SESSION ================= */
-
-@Injectable({ providedIn: 'root' })
-export class SessionDataService {
-  async create(data: any): Promise<any> {
-    await new Promise(r => setTimeout(r, 500));
-
-    return {
-      id: crypto.randomUUID(),
-      ...data,
-      createdAt: new Date().toISOString()
-    };
-  }
-}
-

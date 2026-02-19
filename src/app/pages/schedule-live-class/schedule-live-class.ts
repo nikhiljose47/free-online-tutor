@@ -32,10 +32,10 @@ export class ScheduleLiveClass implements OnInit {
   /* ------------------ services ------------------ */
   private meetApi = inject(MeetingsService);
   private syllabus = inject(SyllabusLookupService);
-  private user = inject(UserProfileService);
   private fire = inject(FirestoreDocService);
   private authApi = inject(Auth2Service);
   private uiStateUtil = inject(UiStateUtil);
+  private user = inject(UserProfileService);
 
   readonly profile = this.user.profile;
 
@@ -46,36 +46,8 @@ export class ScheduleLiveClass implements OnInit {
   readonly submitting = signal(false);
   private teacherId: string | undefined;
 
-  /* ------------------ form (single object) ------------------ */
-  readonly form = signal({
-    classId: '',
-    subjectId: '',
-    chapterCode: '',
-    batchId: '',
-    meetLink: '',
-    date: '',
-    duration: 30,
-  });
-
   /* ------------------ lookups (signal-safe) ------------------ */
   readonly classList = this.syllabus.classNames;
-
-  readonly selectedClassId = computed(() => this.form().classId);
-  readonly selectedSubjectId = computed(() => this.form().subjectId);
-  readonly subjectList = computed(() => {
-    const classId = this.selectedClassId();
-    return classId ? this.syllabus.getSubjects(classId) : [];
-  });
-
-  readonly chapterList = computed(() => {
-    const classId = this.selectedClassId();
-    const subjectId = this.selectedSubjectId();
-    this.getCurrentChapter('batch-blue', subjectId);
-
-    if (!classId || !subjectId) return [];
-
-    return this.syllabus.getChapters(classId, subjectId);
-  });
 
   batchList = signal<Array<string>>([]);
 
@@ -105,10 +77,9 @@ export class ScheduleLiveClass implements OnInit {
     }
   }
 
-  getCurrentChapter(batchId: string, subCode: string) {
-    // this.indexService.getCurrentChapterCode$(batchId, subCode).subscribe((e) => {
-    //   console.log('value got', e);
-    // });
+  onScheduleSuccess() {
+    console.log('came on last');
+    this.mode.set('view');
   }
 
   /* ------------------ template helpers ------------------ */
@@ -125,47 +96,6 @@ export class ScheduleLiveClass implements OnInit {
   startCreate() {
     this.selectedMeeting.set(null);
     this.mode.set('create');
-  }
-
-  /* ------------------ business actions ------------------ */
-  scheduleClass() {
-    const f = this.form();
-
-    if (!this.teacherId || !f.date) return;
-
-    this.submitting.set(true);
-
-    const start = new Date(f.date);
-    const end = new Date(start.getTime() + f.duration * 60000);
-
-    const payload: Meeting = {
-      id: '',
-      classId: this.syllabus.getClass(f.classId)?.classId ?? '',
-      subjectId: f.subjectId,
-      chapterCode: f.chapterCode,
-      batchId: f.batchId,
-      meetLink: f.meetLink,
-      status: PART1,
-      teacherId: this.teacherId,
-      teacherName: this.profile()?.name ?? '',
-      duration: f.duration,
-      attendance: [],
-      date: Timestamp.fromDate(start),
-      createdAt: Timestamp.now(),
-      endAt: Timestamp.fromDate(end),
-    };
-
-    this.fire.add(GLOBAL_MEETINGS, payload).subscribe(() => {
-      this.submitting.set(false);
-      this.mode.set('view');
-    });
-  }
-
-  updateField(
-    key: 'classId' | 'subjectId' | 'chapterCode' | 'batchId' | 'meetLink' | 'date' | 'time',
-    value: string,
-  ) {
-    this.form.update((f) => ({ ...f, [key]: value }));
   }
 
   endClass() {
