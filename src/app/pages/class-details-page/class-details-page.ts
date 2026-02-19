@@ -43,9 +43,10 @@ export class ClassDetailsPage implements OnInit {
   private route = inject(ActivatedRoute);
 
   readonly id = this.route.snapshot.paramMap.get('id') ?? 'CL08';
-  private readonly meetings = signal<Meeting[]>([]);
-  syllabus = signal<ClassSyllabus | null>(null);
 
+  private readonly meetings = signal<Meeting[]>([]);
+
+  syllabus = signal<ClassSyllabus | null>(null);
   readonly isLoading = signal(true);
   readonly hasValidData = signal(false);
   classId = 'CL09';
@@ -86,6 +87,7 @@ export class ClassDetailsPage implements OnInit {
     { value: '96%', label: 'Concept clarity satisfaction' },
   ]);
 
+  
   ngOnInit(): void {
     this.loadData()
   }

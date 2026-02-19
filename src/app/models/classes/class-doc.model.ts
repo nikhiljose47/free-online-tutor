@@ -7,6 +7,10 @@ export interface ClassMeta {
 }
 
 export interface ClassDoc {
+  batch: string;
+  batchId: string;
+  classId: string;
+  title: string;
   academicYear: string;
   board: string[];
   completionPercent: number;
@@ -18,5 +22,6 @@ export interface ClassDoc {
   nextClassAt: Timestamp;
   status: ClassStatus;
   studentCount: number;
-  title: string;
+  teacherIds: string[];
+  syllabusVersion: string;
 }

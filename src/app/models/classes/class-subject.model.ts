@@ -1,27 +1,17 @@
 import { Timestamp } from '@angular/fire/firestore';
-
-export type ClassSubjectStatus = 'active' | 'paused' | 'completed' | 'archived';
+import { ClassSubjectStatus } from '../batch/batch.model';
 
 export interface ClassSubject {
   id: string;
   label: string;
-  batch: Batch;
-  testSeriesEnabled: boolean;
-  lastUpdatedAt: Timestamp;
-  resourcesCount: number;
-  syllabusVersion: string;
-  meta: Record<string, unknown>;
-}
-
-export interface Batch {
-  id: string;
-  label: string;
   curIndex: string | null;
-  teacherIds: readonly string[];
   totalChapters: number;
   completedChapters: readonly string[];
   status: ClassSubjectStatus;
   startedAt: Timestamp | null;
   completedAt: Timestamp | null;
+  testSeriesEnabled: boolean;
+  lastUpdatedAt: Timestamp;
+  resourcesCount: number;
   meta: Record<string, unknown>;
 }
