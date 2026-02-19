@@ -136,32 +136,30 @@ export class ScheduleLiveClassForm implements OnInit {
   async scheduleClass() {
     const f = this.form();
     if (!this.isValid() || this.submitting()) return;
-
-    if (!f.date && f.classId && !this.teacherId) return;
+    if (!f.date || !f.classId || !this.teacherId) return;
 
     this.submitting.set(true);
 
     const start = new Date(f.date);
-    const end = new Date(start.getTime() + parseInt(f.date) * 60000);
+    const end = new Date(start.getTime() + (f.duration ?? 0) * 60000);
 
     const payload: Meeting = {
       id: '',
-      classId: this.syllabusLookup.getClass(f.classId!)?.classId ?? '',
+      classId: this.syllabusLookup.getClass(f.classId)?.classId ?? '',
       subjectId: f.subjectId,
       chapterCode: f.chapterCode,
       batchId: f.batchId,
       meetLink: f.meetLink,
       status: PART1,
-      teacherId: this.teacherId!,
+      teacherId: this.teacherId,
       teacherName: this.profile()?.name ?? '',
       duration: f.duration,
       attendance: [],
       date: Timestamp.fromDate(start),
-      createdAt: Timestamp.now(),
-      imageSrc: this.catalogLookup.getById(f.classId!)?.file ?? '',
       endAt: Timestamp.fromDate(end),
+      createdAt: Timestamp.now(),
+      imageSrc: this.catalogLookup.getById(f.classId)?.file ?? '',
     };
-
     this.fire.add(GLOBAL_MEETINGS, payload).subscribe(() => {
       this.onSubmit.emit();
       this.submitting.set(false);
