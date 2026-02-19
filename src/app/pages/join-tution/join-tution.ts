@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Meeting } from '../../models/meeting.model';
@@ -7,11 +7,12 @@ import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.s
 import { Timestamp } from '@angular/fire/firestore';
 import { AttendanceApiService } from '../../services/attendance/attendance-api.service';
 import { UserProfileService } from '../../core/services/fire/user-profile.service';
-import { forkJoin } from 'rxjs';
+import { catchError, EMPTY, filter, forkJoin, map, Observable, switchMap, tap } from 'rxjs';
 import { ContentPlaceholder } from '../../components/content-placeholder/content-placeholder';
 import { DotLoader } from '../../components/dot-loader/dot-loader';
 import { ToastService } from '../../shared/toast.service';
 import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'join-tution',
@@ -21,7 +22,7 @@ import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
   styleUrls: ['./join-tution.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JoinTution implements OnInit {
+export class JoinTution {
   private route = inject(ActivatedRoute);
   private user = inject(UserProfileService);
   private uiUtil = inject(UiStateUtil);
@@ -29,6 +30,10 @@ export class JoinTution implements OnInit {
   private attendanceApi = inject(AttendanceApiService);
   private toastApi = inject(ToastService);
 
+  private meetingId$ = this.route.paramMap.pipe(
+    map((p) => p.get('meetingId')),
+    filter((id): id is string => !!id),
+  );
   /* ---------------- derived (simple values) ---------------- */
 
   readonly profile = this.user.profile();
@@ -49,44 +54,47 @@ export class JoinTution implements OnInit {
   users: Array<string> = [];
   isUpcoming: boolean = false;
 
-  ngOnInit(): void {
-    const meetingId = this.route.snapshot.paramMap.get('meetingId');
+  constructor() {
+    this.meetingId$.pipe(switchMap((id) => this.init$(id))).subscribe();
+  }
 
-    if (!meetingId) {
-      this.errMsg.set('Invalid route');
-      this.isLoading.set(false);
-      return;
-    }
+  init$(meetingId: string): Observable<any> {
+    this.isLoading.set(true);
+    this.hasErr.set(false);
+
     const meetData = this.uiUtil.get<Meeting>(meetingId);
 
     if (!meetData) {
-      this.isLoading.set(false);
       this.errMsg.set('No data found');
-      return;
+      this.isLoading.set(false);
+      this.hasErr.set(true);
+      return EMPTY;
     }
-    this.meeting = meetData;
 
     if (!this.profile) {
-      this.isLoading.set(false);
       this.errMsg.set('No user found!');
-      return;
+      this.isLoading.set(false);
+      this.hasErr.set(true);
+      return EMPTY;
     }
-    this.loadAttendanceAndUsers(meetData).subscribe({
-      next: (res) => {
+
+    this.meeting = meetData;
+
+    return this.loadAttendanceAndUsers(meetData).pipe(
+      tap((res) => {
         this.hasmarkedInterest.set(res.attended.attended);
         this.users = res.users.users;
         this.setData();
-
         this.isLoading.set(false);
         this.hasErr.set(false);
-      },
-      error: (err) => {
-        //Attendance/User load failed' +
+      }),
+      catchError(() => {
         this.errMsg.set('Server error while fetching data..');
         this.isLoading.set(false);
         this.hasErr.set(true);
-      },
-    });
+        return EMPTY;
+      }),
+    );
   }
 
   setData() {

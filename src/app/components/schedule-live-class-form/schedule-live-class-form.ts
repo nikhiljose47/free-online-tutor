@@ -104,8 +104,6 @@ export class ScheduleLiveClassForm implements OnInit {
     );
   });
 
-  /* ================= INIT ================= */
-
   ngOnInit(): void {
     this.teacherId = this.authApi.uid;
     if (!this.teacherId) return;
