@@ -1,20 +1,26 @@
 <dot-loader *ngIf="isLoading(); else hasError"></dot-loader>
 
 <ng-template #hasError>
-  <content-placeholder *ngIf="hasErr(); else hasData" [message]="errMsg()"> </content-placeholder>
+  <content-placeholder *ngIf="hasErr(); else hasData" [message]="errMsg()"></content-placeholder>
 </ng-template>
 
 <ng-template #hasData>
   <section class="class-layout">
-    <!-- LEFT : PURE BOOK COVER (NO UI ELEMENTS) -->
+    <!-- LEFT : Cover (UNCHANGED) -->
     <aside class="class-cover">
-      <img [src]="banner" alt="class banner" class="cover-img" />
+      <img
+        class="cover-img"
+        [src]="getBannerSrc(banner)"
+        [alt]="getBannerAlt(banner)"
+        loading="lazy"
+        (error)="onImgError($event)"
+      />
     </aside>
 
-    <!-- RIGHT : ALL CONTENT + ACTIONS -->
+    <!-- RIGHT : Refined Editorial Layout -->
     <main class="class-details">
-      <!-- TOP ACTION ROW -->
-      <div class="details-header">
+      <!-- TOP ACTION STRIP -->
+      <header class="details-header">
         <button class="share-btn" (click)="shareClass()"><i class="bi bi-share"></i> Share</button>
 
         <button
@@ -24,20 +30,26 @@
         >
           {{ hasmarkedInterest() ? 'Interested' : !isUpcoming ? 'Join Class' : 'I will attend' }}
         </button>
-      </div>
+      </header>
 
-      <!-- TITLE BLOCK -->
-      <div class="title-block">
+      <!-- TITLE + META -->
+      <section class="title-block">
         <h1 class="title">{{ title }}</h1>
         <p class="teacher">By {{ teacher }}</p>
         <span class="duration">{{ duration }}</span>
-      </div>
+      </section>
 
-      <!-- DETAILS -->
+      <!-- DIVIDER -->
+      <hr class="soft-divider" />
+
+      <!-- DESCRIPTION -->
       <section class="details-block">
         <h3 class="section-title">About this class</h3>
         <p class="desc">{{ description }}</p>
+      </section>
 
+      <!-- STATS PANEL -->
+      <section class="stats-section">
         <div class="stats-box">
           <div class="stat">
             <span class="value">{{ students }}+</span>
@@ -58,7 +70,7 @@
     </main>
   </section>
 
-  <!-- MOBILE CTA -->
+  <!-- MOBILE CTA (UNCHANGED LOGIC) -->
   <div class="mobile-join d-md-none">
     <button class="cta-btn w-100" (click)="onClickInterestBtn()" [disabled]="hasmarkedInterest()">
       {{ !isUpcoming ? 'Join Class' : 'I will attend' }}

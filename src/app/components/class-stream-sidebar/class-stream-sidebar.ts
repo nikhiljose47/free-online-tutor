@@ -50,6 +50,14 @@ export class ClassStreamSidebar implements OnInit, OnDestroy {
 
   private clockId!: any;
 
+  private readonly syncEffect = effect(() => {
+  const data = this.mergedSignal();
+  this.live.set(data.live);
+  this.upcoming.set(data.upcoming);
+  this.loading.set(false);
+});
+
+
   private readonly merged$ = combineLatest([
     this.meetApi.getLiveMeetings(),
     this.catalogLookupApi.getAllReady$(),
@@ -102,7 +110,7 @@ export class ClassStreamSidebar implements OnInit, OnDestroy {
      🔹 SIGNAL BRIDGE (ONLY UI STATE)
      ============================================================ */
 
-  private readonly mergedSignal = toSignal(this.merged$, {
+  readonly mergedSignal = toSignal(this.merged$, {
     initialValue: { live: [], upcoming: [] },
   });
 

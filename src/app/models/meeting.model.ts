@@ -12,6 +12,7 @@ export interface Meeting {
   teacherId: string;
   teacherName: string;
   duration: number;
+  imageSrc: string;
   attendance: string[];
   createdAt: Timestamp;
   endAt: Timestamp;

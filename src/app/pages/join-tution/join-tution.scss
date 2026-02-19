@@ -1,68 +1,175 @@
+/* ===============================
+   GRID LAYOUT (unchanged logic)
+================================ */
 .class-layout {
   display: grid;
   grid-template-columns: 40% 60%;
-  height: calc(100vh - 120px); /* 🔑 FIX */
-  overflow: hidden; /* 🔑 FIX */
-  // background: #fdfdfd;
-}
-
-/* ===============================
-   LEFT : Cover Page
-================================ */
-.class-cover {
-  position: relative;
-  height: 420px;
-  min-height: 420px;
-  max-height: 420px;
-
-  width: 100%;
-  display: flex; /* 🔑 KEY CHANGE */
-  align-items: flex-end; /* vertical bias */
-  justify-content: center; /* horizontal center */
-
-  padding-bottom: 12px; /* subtle bottom bias */
+  min-height: calc(100vh - 120px);
+  height: calc(100vh - 120px);
   overflow: hidden;
-  background: #f8f8f8; /* clean book-page feel */
 }
 
-/* Book-cover image */
-.cover-img {
-  max-height: 100%;
-  max-width: 92%; /* 🔑 prevents edge squeeze */
-  width: auto;
-  height: auto;
+.class-cover {
+  height: 100%;
+  display: flex;
+  align-items: center;      /* vertical center */
+  justify-content: center;  /* horizontal center */
+  overflow: hidden;
+}
 
+.cover-img {
+  max-height: 90%;
+  max-width: 90%;
   object-fit: contain;
   display: block;
 }
 
+
 /* ===============================
-   RIGHT : Details Page
+   RIGHT : Premium Editorial Panel
 ================================ */
 .class-details {
-  height: 100%; /* 🔑 FIX */
-  overflow-y: auto; /* 🔑 FIX */
-  padding: 48px 56px;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+
+  padding: clamp(32px, 4vw, 64px) clamp(28px, 5vw, 72px);
+
+  background: #ffffff;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 🔑 keeps content centered when small */
 }
 
-/* Top actions */
+/* Scroll only when truly overflowing */
+.class-details:has(.stats-section) {
+  justify-content: flex-start;
+}
+
+/* ===============================
+   Header
+================================ */
 .details-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: clamp(24px, 3vh, 40px);
 }
 
 /* ===============================
-   Buttons (Black / White)
+   Typography — Apple-like scale
+================================ */
+.title-block {
+  max-width: 720px;
+  margin-bottom: clamp(18px, 2.5vh, 28px);
+}
+
+.title {
+  font-size: clamp(2rem, 2.6vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.35px;
+  margin-bottom: 6px;
+}
+
+.teacher {
+  font-size: 0.95rem;
+  opacity: 0.7;
+  margin-bottom: 2px;
+}
+
+.duration {
+  font-size: 0.85rem;
+  opacity: 0.55;
+}
+
+/* Elegant divider */
+.soft-divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, #ececec, #f6f6f6, transparent);
+  margin: clamp(20px, 3vh, 36px) 0;
+}
+
+/* ===============================
+   Description
+================================ */
+.details-block {
+  max-width: 760px;
+  margin-bottom: clamp(28px, 4vh, 48px);
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.desc {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #444;
+}
+
+/* ===============================
+   Stats — Glass-soft Apple card
+================================ */
+.stats-section {
+  margin-top: auto;
+}
+
+.stats-box {
+  padding: clamp(20px, 2.5vw, 28px) clamp(22px, 3vw, 32px);
+  border-radius: 22px;
+
+  background: rgba(250, 250, 250, 0.9);
+  backdrop-filter: blur(6px);
+
+  border: 1px solid #eeeeee;
+
+  display: flex;
+  gap: clamp(24px, 3vw, 44px);
+  flex-wrap: wrap;
+
+  transition: 0.25s ease;
+}
+
+.stats-box:hover {
+  background: rgba(245, 245, 245, 0.95);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat .value {
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.stat .label {
+  font-size: 0.82rem;
+  color: #666;
+}
+
+/* ===============================
+   Buttons — subtle luxury feel
 ================================ */
 .cta-btn {
   padding: 12px 30px;
-  border-radius: 22px;
+  border-radius: 24px;
   border: 1px solid #000;
+
   background: #000;
   color: #fff;
+
   font-weight: 600;
-  transition: 0.2s ease;
+  letter-spacing: 0.25px;
+
+  transition: all 0.2s ease;
 }
 
 .cta-btn:hover:not(:disabled) {
@@ -71,7 +178,7 @@
 }
 
 .cta-btn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -79,12 +186,15 @@
   border: 1px solid #000;
   background: transparent;
   color: #000;
+
   padding: 8px 18px;
-  border-radius: 20px;
+  border-radius: 22px;
+
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  cursor: pointer;
+
+  font-weight: 500;
   transition: 0.2s ease;
 }
 
@@ -94,103 +204,22 @@
 }
 
 /* ===============================
-   Title Block
-================================ */
-.title-block {
-  max-width: 680px;
-}
-
-.title {
-  font-size: 2.4rem;
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 6px;
-}
-
-.teacher {
-  font-size: 0.95rem;
-  opacity: 0.75;
-}
-
-.duration {
-  font-size: 0.85rem;
-  opacity: 0.65;
-}
-
-/* ===============================
-   Content
-================================ */
-.section-title {
-  font-size: 1.3rem;
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-
-.desc {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #444;
-  max-width: 720px;
-}
-
-/* ===============================
-   Stats
-================================ */
-.stats-box {
-  margin-top: 28px;
-  padding: 24px;
-  border-radius: 16px;
-  background: #fff;
-  display: flex;
-  gap: 36px;
-  flex-wrap: wrap;
-}
-
-.stat .value {
-  font-size: 1.4rem;
-  font-weight: 700;
-}
-
-.stat .label {
-  font-size: 0.85rem;
-  color: #666;
-}
-
-/* ===============================
-   Mobile Join Button
-================================ */
-.mobile-join {
-  position: sticky;
-  bottom: 0;
-  background: #fafafa;
-  padding: 14px;
-  border-top: 1px solid #e5e5e5;
-  z-index: 50;
-}
-
-/* ===============================
    Responsive
 ================================ */
 @media (max-width: 992px) {
   .class-layout {
     grid-template-columns: 45% 55%;
   }
-
-  .class-details {
-    padding: 36px;
-  }
 }
 
 @media (max-width: 768px) {
   .class-layout {
     grid-template-columns: 1fr;
-  }
-
-  .class-cover {
-    height: 320px;
+    height: auto;
   }
 
   .class-details {
+    justify-content: flex-start;
     padding: 24px;
   }
 
@@ -205,10 +234,9 @@
   }
 }
 
-/* Hide scrollbar but keep scroll behavior */
+/* Hide scrollbar but keep behavior */
 .class-details::-webkit-scrollbar {
   width: 0;
-  height: 0;
 }
 .class-details {
   scrollbar-width: none;

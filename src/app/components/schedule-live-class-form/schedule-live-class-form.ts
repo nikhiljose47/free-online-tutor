@@ -158,6 +158,7 @@ export class ScheduleLiveClassForm implements OnInit {
       attendance: [],
       date: Timestamp.fromDate(start),
       createdAt: Timestamp.now(),
+      imageSrc: this.catalogLookup.getById(f.classId!)?.file ?? '',
       endAt: Timestamp.fromDate(end),
     };
 

@@ -11,6 +11,7 @@ import { forkJoin } from 'rxjs';
 import { ContentPlaceholder } from '../../components/content-placeholder/content-placeholder';
 import { DotLoader } from '../../components/dot-loader/dot-loader';
 import { ToastService } from '../../shared/toast.service';
+import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
 
 @Component({
   selector: 'join-tution',
@@ -89,11 +90,13 @@ export class JoinTution implements OnInit {
   }
 
   setData() {
+    console.log('data in meet', this.meeting);
     let meeting = this.meeting;
     /* hydrate UI fields once */
     this.teacher = meeting.teacherName;
     this.joinLink = meeting.meetLink;
     this.students = this.users.length + 2;
+    this.banner = meeting.imageSrc;
 
     if (meeting.date > Timestamp.fromDate(new Date())) {
       this.isUpcoming = true;
@@ -141,5 +144,17 @@ export class JoinTution implements OnInit {
       await navigator.clipboard.writeText(this.joinLink);
       alert('Link copied to clipboard!');
     }
+  }
+
+  getBannerSrc(src?: string | null): string {
+    return src || PLACEHOLDER__COVER_IMG;
+  }
+
+  onImgError(event: Event) {
+    (event.target as HTMLImageElement).src = PLACEHOLDER__COVER_IMG;
+  }
+
+  getBannerAlt(item: any): string {
+    return item?.label ? `${item.label} banner` : 'Class banner';
   }
 }
