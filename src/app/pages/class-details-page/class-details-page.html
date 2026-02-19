@@ -43,16 +43,18 @@
     </div>
   </section>
 
-    <section>
-      <h2 class="section-title my-3">Overview :</h2>
+  <section>
+    <h2 class="section-title my-3">Overview :</h2>
     <class-overview></class-overview>
   </section>
 
   <!-- 📊 MAIN DETAIL -->
   <section class="detail-section">
-    <timetable classFileId="CL09" *ngIf="activeTab() === 'Timetable'"></timetable>
-    <timetable classFileId="CL09" *ngIf="activeTab() === 'Tests'"></timetable>
-    <timetable classFileId="CL09" *ngIf="activeTab() === 'Announcements'"></timetable>
+        <h2 class="section-title my-4">Timetable :</h2>
+
+    <timetable [classFileId]="classFileId" *ngIf="activeTab() === 'Timetable'"></timetable>
+    <timetable [classFileId]="classFileId" *ngIf="activeTab() === 'Tests'"></timetable>
+    <timetable [classFileId]="classFileId" *ngIf="activeTab() === 'Announcements'"></timetable>
 
     <!--
     <app-class-overview *ngIf="activeTab === 'Overview'"></app-class-overview>
@@ -61,8 +63,6 @@
     <app-class-announcements *ngIf="activeTab === 'Announcements'"></app-class-announcements>
     -->
   </section>
-
-
 
   <!-- ⚡ EXTRA SECTION -->
   <section class="extra-section">

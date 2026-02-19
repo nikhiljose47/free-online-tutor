@@ -114,6 +114,7 @@ export class TutionDetails implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
+    console.log('classid', this.id)
     this.quote.set(QuoteUtil.getRandom());
     this.classAssignmentsService.getAll('CL06').subscribe({
       next: (value) => console.log('Received for subservive:', value),
