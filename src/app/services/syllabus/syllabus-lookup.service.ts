@@ -4,8 +4,6 @@ import { map, shareReplay } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Chapter, ClassSyllabus, Subject } from '../../models/syllabus/class-syllabus.model';
 
-
-
 ///How to use this?
 // private lookup = inject(SyllabusLookupService);
 
@@ -16,7 +14,6 @@ import { Chapter, ClassSyllabus, Subject } from '../../models/syllabus/class-syl
 //     ? this.lookup.getSubjects(this.selectedClass()!)
 //     : []
 // );
-
 
 @Injectable({ providedIn: 'root' })
 export class SyllabusLookupService {
@@ -131,5 +128,26 @@ export class SyllabusLookupService {
 
   getChapterByCode(code: string) {
     return this.chapterMap().get(code) ?? null;
+  }
+
+  //Divisions
+  getDivision(className: string, subjectName: string, chapterCode: string, divisionCode: string) {
+    return (
+      this.getDivisions(className, subjectName, chapterCode).find((d) => d.code === divisionCode) ??
+      null
+    );
+  }
+
+  getDivisions(className: string, subjectName: string, chapterCode: string) {
+    return this.getChapter(className, subjectName, chapterCode)?.divisions ?? [];
+  }
+
+  hasDivision(
+    className: string,
+    subjectName: string,
+    chapterCode: string,
+    divisionCode: string,
+  ): boolean {
+    return !!this.getDivision(className, subjectName, chapterCode, divisionCode);
   }
 }

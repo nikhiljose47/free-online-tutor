@@ -56,6 +56,23 @@
           </select>
         </div>
       </div>
+
+      <div class="col-md-4">
+        {{ curDiv() }}
+      </div>
+
+      <div class="col-md-4 pt-3">
+        <select
+          class="form-select"
+          #subjectSel
+          (change)="updateField('subjectId', subjectSel.value)"
+        >
+          <option value="">Division</option>
+          <option *ngFor="let ch of divisions()" [value]="ch.code">
+            {{ ch.code }} — {{ ch.name }}
+          </option>
+        </select>
+      </div>
     </div>
 
     <!-- ================= SESSION ================= -->

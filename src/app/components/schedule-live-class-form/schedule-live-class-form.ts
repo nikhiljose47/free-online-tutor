@@ -20,6 +20,8 @@ import { UserProfileService } from '../../core/services/fire/user-profile.servic
 
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { CatalogLookupService } from '../../domain/syllabus-index/catalog-lookup.service';
+import { ClassSubjectStore } from '../../store/class-store/class-subject.store';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 type Chapter = { code: string; name: string };
 
@@ -43,8 +45,10 @@ export class ScheduleLiveClassForm implements OnInit {
   private readonly catalogLookup = inject(CatalogLookupService);
   private authApi = inject(Auth2Service);
   private user = inject(UserProfileService);
+  subStoreApi = inject(ClassSubjectStore);
 
   readonly profile = this.user.profile;
+  private teacherId: string | undefined;
 
   /* ================= FORM STATE ================= */
 
@@ -65,7 +69,6 @@ export class ScheduleLiveClassForm implements OnInit {
   /* ================= GROUPS ================= */
 
   readonly groupList = this.catalogLookup.groups;
-  private teacherId: string | undefined;
 
   readonly batchList = this.catalogLookup.getAllGroupLabels();
 
@@ -88,6 +91,24 @@ export class ScheduleLiveClassForm implements OnInit {
     return this.syllabusLookup.getChapters(classId, subjectId);
   });
 
+  readonly divisions = computed(() =>
+    this.syllabusLookup.getDivisions(
+      this.selectedClassId() ?? '',
+      this.selectedSubjectId() ?? '',
+      this.form().chapterCode,
+    ),
+  );
+
+  readonly curDiv = computed(() =>
+    this.subStoreApi.getCurrentIndex(this.form().classId ?? 'CL06', 'CL06-MATH').subscribe((e) => {
+      console.log(e);
+    }),
+  );
+
+  readonly curIndex = toSignal(this.subStoreApi.getCurrentIndex('CL06', 'CL06-MATH'), {
+    initialValue: null,
+  });
+
   /* ================= VALIDATION ================= */
 
   readonly isValid = computed(() => {
@@ -107,6 +128,11 @@ export class ScheduleLiveClassForm implements OnInit {
   ngOnInit(): void {
     this.teacherId = this.authApi.uid;
     if (!this.teacherId) return;
+
+    console.log(this.curIndex());
+    this.subStoreApi.setCurrentIndex('CL06', 'CL06-MATH', 'chapter-5').subscribe();
+        console.log(this.curIndex());
+
   }
 
   /* ================= HELPERS ================= */

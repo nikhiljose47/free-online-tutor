@@ -42,6 +42,7 @@ export class ClassDetailsPage implements OnInit {
   batchDataApi = inject(BatchDataStore);
 
   readonly id = this.route.snapshot.paramMap.get('id') ?? 'CL08';
+  
   readonly faqs = Faqutil.getFaqData();
   readonly isLoading = signal(true);
   readonly hasValidData = signal(false);

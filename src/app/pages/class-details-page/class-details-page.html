@@ -6,23 +6,6 @@
     </h1>
   </header>
 
-  <!-- 🔥 STICKY GAME TAB BAR ONLY -->
-  <nav class="class-tabs sticky-game-tabs">
-    <div class="tab-shell d-flex justify-content-end">
-      <ul class="nav nav-pills gap-2 flex-nowrap overflow-auto no-scrollbar tab-inner">
-        <li class="nav-item" *ngFor="let t of tabs">
-          <button
-            class="nav-link game-tab"
-            [class.active]="t === activeTab()"
-            (click)="selectTab(t)"
-          >
-            <span class="tab-label">{{ t }}</span>
-          </button>
-        </li>
-      </ul>
-    </div>
-  </nav>
-
   <!-- 🎮 HORIZONTAL GAME STRIP -->
   <section class="horizontal-strip">
     <div class="d-flex gap-3 overflow-auto no-scrollbar">
@@ -82,7 +65,23 @@
 
   <section>
     <h2 class="section-title my-3">Overview :</h2>
-    <class-overview></class-overview>
+    <class-overview [classId]="id"></class-overview>
+  </section>
+
+  <section>
+    <div class="tab-shell d-flex justify-content-end">
+      <ul class="nav nav-pills gap-2 flex-nowrap overflow-auto no-scrollbar tab-inner">
+        <li class="nav-item" *ngFor="let t of tabs">
+          <button
+            class="nav-link game-tab"
+            [class.active]="t === activeTab()"
+            (click)="selectTab(t)"
+          >
+            <span class="tab-label">{{ t }}</span>
+          </button>
+        </li>
+      </ul>
+    </div>
   </section>
 
   <!-- 📊 MAIN DETAIL -->

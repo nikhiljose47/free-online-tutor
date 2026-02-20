@@ -12,7 +12,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { DummyPuzzleService } from '../../services/puzzle/dummy/dummy-puzzle.service';
 
-
 /* =========================================
    COMPONENT
 ========================================= */
@@ -59,7 +58,7 @@ export class McqPuzzleCardComponent {
   readonly completed = this._completed.asReadonly();
 
   readonly isCorrect = computed(
-    () => this._selectedIndex() !== null && this._selectedIndex() === this._correctIndex()
+    () => this._selectedIndex() !== null && this._selectedIndex() === this._correctIndex(),
   );
 
   readonly correctAnswerText = computed(() => {
