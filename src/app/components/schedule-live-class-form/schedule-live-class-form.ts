@@ -1,29 +1,26 @@
 import {
   Component,
   ChangeDetectionStrategy,
-  input,
   signal,
   computed,
   inject,
   OnInit,
-  Injectable,
   Output,
   EventEmitter,
+  Input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Meeting } from '../../models/meeting.model';
 import { Timestamp } from '@angular/fire/firestore';
+
+import { Meeting } from '../../models/meeting.model';
 import { FirestoreDocService } from '../../core/services/fire/firestore-doc.service';
 import { GLOBAL_MEETINGS, PART1 } from '../../core/constants/app.constants';
-import { Auth2Service } from '../../core/services/fire/auth2.service';
 import { UserProfileService } from '../../core/services/fire/user-profile.service';
 
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { CatalogLookupService } from '../../domain/syllabus-index/catalog-lookup.service';
 import { ClassSubjectStore } from '../../store/class-store/class-subject.store';
-import { toSignal } from '@angular/core/rxjs-interop';
-
-type Chapter = { code: string; name: string };
+import { map, Observable, of, shareReplay } from 'rxjs';
 
 @Component({
   selector: 'schedule-live-class-form',
@@ -34,29 +31,25 @@ type Chapter = { code: string; name: string };
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScheduleLiveClassForm implements OnInit {
-  /* ================= INPUT / OUTPUT ================= */
-
-  readonly presetClassId = input<string | null>(null);
+  @Input({ required: true }) teacherId!: string | null;
   @Output() onSubmit = new EventEmitter<void>();
 
-  /* ================= SERVICES ================= */
   private fire = inject(FirestoreDocService);
-  private readonly syllabusLookup = inject(SyllabusLookupService);
-  private readonly catalogLookup = inject(CatalogLookupService);
-  private authApi = inject(Auth2Service);
+  private syllabusLookup = inject(SyllabusLookupService);
+  private catalogLookup = inject(CatalogLookupService);
   private user = inject(UserProfileService);
-  subStoreApi = inject(ClassSubjectStore);
+  private classStoreApi = inject(ClassSubjectStore);
 
   readonly profile = this.user.profile;
-  private teacherId: string | undefined;
 
-  /* ================= FORM STATE ================= */
+  /* ================= FORM ================= */
 
   readonly form = signal({
-    group: '' as string,
-    classId: this.presetClassId(),
+    group: '',
+    classId: '',
     subjectId: '',
     chapterCode: '',
+    divisionId: '',
     batchId: '',
     meetLink: '',
     date: '',
@@ -66,48 +59,40 @@ export class ScheduleLiveClassForm implements OnInit {
 
   readonly submitting = signal(false);
 
-  /* ================= GROUPS ================= */
+  /* ================= LOOKUPS ================= */
 
   readonly groupList = this.catalogLookup.groups;
-
   readonly batchList = this.catalogLookup.getAllGroupLabels();
+  readonly classList = this.syllabusLookup.classIds;
 
-  readonly classList = this.syllabusLookup.classNames;
+  readonly selectedClass = computed(() => this.form().classId);
+  readonly selectedSubject = computed(() => this.form().subjectId);
 
-  readonly selectedClassId = computed(() => this.form().classId);
-  readonly selectedSubjectId = computed(() => this.form().subjectId);
-  readonly subjectList = computed(() => {
-    const classId = this.selectedClassId();
-    return classId ? this.syllabusLookup.getSubjects(classId) : [];
-  });
-
-  readonly chapterList = computed(() => {
-    const classId = this.selectedClassId();
-    const subjectId = this.selectedSubjectId();
-    this.getCurrentChapter('batch-blue', subjectId);
-
-    if (!classId || !subjectId) return [];
-
-    return this.syllabusLookup.getChapters(classId, subjectId);
-  });
-
-  readonly divisions = computed(() =>
-    this.syllabusLookup.getDivisions(
-      this.selectedClassId() ?? '',
-      this.selectedSubjectId() ?? '',
-      this.form().chapterCode,
-    ),
+  readonly subjectList = computed(() =>
+    this.selectedClass() ? this.syllabusLookup.getSubjects(this.selectedClass()) : [],
   );
 
-  readonly curDiv = computed(() =>
-    this.subStoreApi.getCurrentIndex(this.form().classId ?? 'CL06', 'CL06-MATH').subscribe((e) => {
-      console.log(e);
-    }),
+  readonly chapterList = computed(() =>
+    this.selectedClass() && this.selectedSubject()
+      ? this.syllabusLookup.getChapters(this.selectedClass(), this.selectedSubject())
+      : [],
   );
 
-  readonly curIndex = toSignal(this.subStoreApi.getCurrentIndex('CL06', 'CL06-MATH'), {
-    initialValue: null,
+  readonly divisions = computed(() => {
+    const f = this.form();
+    this.classStoreApi.getCurrentAndNextIndex('CL06', 'CL06-MATH');
+
+    // this.classStoreApi.getCurrentAndNextIndex(f.classId, f.subjectId, f.chapterCode, f.divisionId);
+
+    return this.selectedClass() && this.selectedSubject() && this.form().chapterCode
+      ? this.syllabusLookup.getDivisions(
+          this.selectedClass(),
+          this.selectedSubject(),
+          this.form().chapterCode,
+        )
+      : [];
   });
+  currentAndNext$: Observable<string[]> = of([]);
 
   /* ================= VALIDATION ================= */
 
@@ -118,21 +103,27 @@ export class ScheduleLiveClassForm implements OnInit {
       f.classId &&
       f.subjectId &&
       f.chapterCode &&
+      f.divisionId &&
       f.batchId &&
-      this.isValidUrl(f.meetLink) &&
       f.date &&
-      f.time
+      f.time &&
+      this.isValidUrl(f.meetLink)
     );
   });
 
+  // currentAndNext$ = this.classStoreApi.getCurrentAndNextIndex(
+  //   f.classId,
+  //   subjectId,
+  //   chapterId,
+  //   divisionId,
+  // );
+
   ngOnInit(): void {
-    this.teacherId = this.authApi.uid;
     if (!this.teacherId) return;
 
-    console.log(this.curIndex());
-    this.subStoreApi.setCurrentIndex('CL06', 'CL06-MATH', 'chapter-5').subscribe();
-        console.log(this.curIndex());
-
+    this.currentAndNext$ = this.classStoreApi
+      .getCurrentAndNextIndex('CL06', 'CL06-MATH')
+      .pipe(shareReplay({ bufferSize: 1, refCount: true }));
   }
 
   /* ================= HELPERS ================= */
@@ -145,14 +136,14 @@ export class ScheduleLiveClassForm implements OnInit {
     }
   }
 
-  getCurrentChapter(batchId: string, subCode: string) {
-    // this.indexService.getCurrentChapterCode$(batchId, subCode).subscribe((e) => {
-    //   console.log('value got', e);
-    // });
-  }
-
-  updateField<K extends keyof ReturnType<typeof this.form>>(key: K, value: string) {
-    this.form.update((f) => ({ ...f, [key]: value }));
+  updateField<K extends keyof ReturnType<typeof this.form>>(
+    key: K,
+    value: ReturnType<typeof this.form>[K],
+  ) {
+    this.form.update((f) => ({
+      ...f,
+      [key]: value,
+    }));
   }
 
   /* ================= SUBMIT ================= */
@@ -188,5 +179,7 @@ export class ScheduleLiveClassForm implements OnInit {
       this.onSubmit.emit();
       this.submitting.set(false);
     });
+
+    this.classStoreApi.setCurrentIndex(f.classId, f.subjectId, 'chapter-5').subscribe();
   }
 }

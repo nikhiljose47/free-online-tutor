@@ -1,0 +1,118 @@
+.hero-banner {
+  position: relative;
+  width: 100%;
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('/assets/banners/wooden-bg-banner.webp') center/cover no-repeat;
+  overflow: hidden;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(17, 24, 39, 0.663), rgba(115, 130, 181, 0.395));
+  backdrop-filter: blur(2px);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #fff;
+  padding: 2rem 1rem;
+}
+
+.hero-text {
+  margin-bottom: 2.5rem;
+
+  h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 1rem;
+    opacity: 0.85;
+    letter-spacing: 0.5px;
+  }
+}
+
+.course-circle-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+}
+
+.course-circle {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+  transition: all 0.3s ease;
+
+  .circle-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #fff;
+    letter-spacing: 0.4px;
+  }
+
+  &:hover {
+    transform: translateY(-6px) scale(1.05);
+    background: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+  }
+}
+
+/* Optional Accent Variants */
+.neet:hover {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+}
+
+.coding:hover {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+}
+
+.olympiad:hover {
+  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+}
+
+.english:hover {
+  background: linear-gradient(135deg, #f97316, #fb923c);
+}
+
+.jee:hover {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-banner {
+    min-height: 360px;
+  }
+
+  .hero-text h1 {
+    font-size: 1.8rem;
+  }
+
+  .course-circle {
+    width: 90px;
+    height: 90px;
+  }
+}

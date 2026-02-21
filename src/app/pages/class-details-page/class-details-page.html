@@ -1,4 +1,4 @@
-<section class="class-details-page d-flex flex-column gap-3">
+<section class="class-details-page d-flex flex-column gap-3 mx-0 my-3 mx-md-5">
   <!-- HEADER (NOT STICKY) -->
   <header class="class-header p-3 shadow-sm">
     <h1 class="m-0 fw-semibold text-truncate">
@@ -106,8 +106,12 @@
   </section>
 
   <section>
+    <explore-courses-banner></explore-courses-banner>
+  </section>
+
+  <section>
     <h2 class="section-title mb-4">Teachers :</h2>
-    <teacher-list [classId]="classId"></teacher-list>
+    <user-card-list [classId]="classId"></user-card-list>
   </section>
 
   <section class="class-stats-banner">

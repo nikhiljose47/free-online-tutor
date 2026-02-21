@@ -4,17 +4,6 @@ import { map, shareReplay } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Chapter, ClassSyllabus, Subject } from '../../models/syllabus/class-syllabus.model';
 
-///How to use this?
-// private lookup = inject(SyllabusLookupService);
-
-// readonly classes = this.lookup.classNames;
-
-// readonly subjects = computed(() =>
-//   this.selectedClass()
-//     ? this.lookup.getSubjects(this.selectedClass()!)
-//     : []
-// );
-
 @Injectable({ providedIn: 'root' })
 export class SyllabusLookupService {
   private syllabusStore = inject(SyllabusStore);
@@ -27,26 +16,27 @@ export class SyllabusLookupService {
 
   /* ================= SIGNAL STATE ================= */
 
-  private readonly _list = toSignal(this.list$, { initialValue: [] as ClassSyllabus[] });
+  private readonly _list = toSignal(this.list$, {
+    initialValue: [] as ClassSyllabus[],
+  });
 
   readonly list = computed(() => this._list());
 
   /* ================= DERIVED ================= */
 
+  readonly classIds = computed(() => this.list().map((c) => c.classId));
+
   readonly classNames = computed(() => this.list().map((c) => c.className));
 
-  private readonly classMap = computed(() => new Map(this.list().map((s) => [s.className, s])));
+  private readonly classMap = computed(() => new Map(this.list().map((s) => [s.classId, s])));
 
   private readonly codeMap = computed(() => new Map(this.list().map((s) => [s.code_prefix, s])));
 
-  /* ===== Heavy chapter map stays in RXJS (perf safe) ===== */
+  /* ===== Heavy chapter map (ID based) ===== */
 
   private readonly chapterMap$ = this.list$.pipe(
     map((list) => {
-      const mapData = new Map<
-        string,
-        { className: string; subjectName: string; chapter: Chapter }
-      >();
+      const mapData = new Map<string, { classId: string; subjectCode: string; chapter: Chapter }>();
 
       for (const cls of list) {
         for (const subject of cls.subjects) {
@@ -54,8 +44,8 @@ export class SyllabusLookupService {
 
           for (const chapter of chapters) {
             mapData.set(chapter.code, {
-              className: cls.className,
-              subjectName: subject.name,
+              classId: cls.classId,
+              subjectCode: subject.code,
               chapter,
             });
           }
@@ -67,7 +57,9 @@ export class SyllabusLookupService {
     shareReplay({ bufferSize: 1, refCount: true }),
   );
 
-  private readonly chapterMap = toSignal(this.chapterMap$, { initialValue: new Map() });
+  private readonly chapterMap = toSignal(this.chapterMap$, {
+    initialValue: new Map(),
+  });
 
   private normalizeChapters(input: any): Chapter[] {
     if (!input) return [];
@@ -76,53 +68,61 @@ export class SyllabusLookupService {
 
   /* ================= PUBLIC LOOKUPS ================= */
 
+  getClassIds(): string[] {
+    return this.classIds();
+  }
+
   getClassNames(): string[] {
     return this.classNames();
   }
 
-  getClass(className: string): ClassSyllabus | undefined {
-    return this.classMap().get(className);
+  getClass(classId: string): ClassSyllabus | undefined {
+    return this.classMap().get(classId);
   }
 
-  getClassCode(className: string): string | null {
-    return this.classMap().get(className)?.code_prefix ?? null;
+  getClassCode(classId: string): string | null {
+    return this.classMap().get(classId)?.code_prefix ?? null;
   }
 
   getClassNameFromCode(prefix: string): string | null {
     return this.codeMap().get(prefix)?.className ?? null;
   }
 
-  hasClass(className: string): boolean {
-    return this.classMap().has(className);
+  hasClass(classId: string): boolean {
+    return this.classMap().has(classId);
   }
 
-  getSubjects(className: string): string[] {
+  /* ================= SUBJECTS ================= */
+
+  getSubjects(classId: string): string[] {
     return (
       this.classMap()
-        .get(className)
+        .get(classId)
         ?.subjects.map((s) => s.name) ?? []
     );
   }
 
-  getSubject(className: string, subjectName: string): Subject | null {
+  getSubject(classId: string, subjectName: string): Subject | null {
     return (
       this.classMap()
-        .get(className)
+        .get(classId)
         ?.subjects.find((s) => s.name === subjectName) ?? null
     );
   }
 
-  hasSubject(className: string, subjectName: string): boolean {
-    return !!this.getSubject(className, subjectName);
+  hasSubject(classId: string, subjectName: string): boolean {
+    return !!this.getSubject(classId, subjectName);
   }
 
-  getChapters(className: string, subjectName: string): Chapter[] {
-    return this.getSubject(className, subjectName)?.chapters ?? [];
+  /* ================= CHAPTERS ================= */
+
+  getChapters(classId: string, subjectName: string): Chapter[] {
+    return this.getSubject(classId, subjectName)?.chapters ?? [];
   }
 
-  getChapter(className: string, subjectName: string, chapterCode: string): Chapter | null {
+  getChapter(classId: string, subjectName: string, chapterCode: string): Chapter | null {
     return (
-      this.getSubject(className, subjectName)?.chapters.find((c) => c.code === chapterCode) ?? null
+      this.getSubject(classId, subjectName)?.chapters.find((c) => c.code === chapterCode) ?? null
     );
   }
 
@@ -130,24 +130,29 @@ export class SyllabusLookupService {
     return this.chapterMap().get(code) ?? null;
   }
 
-  //Divisions
-  getDivision(className: string, subjectName: string, chapterCode: string, divisionCode: string) {
+  hasChapter(classId: string, subjectName: string, chapterCode: string): boolean {
+    return !!this.getChapter(classId, subjectName, chapterCode);
+  }
+
+  /* ================= DIVISIONS ================= */
+
+  getDivisions(classId: string, subjectName: string, chapterCode: string) {
+    return this.getChapter(classId, subjectName, chapterCode)?.divisions ?? [];
+  }
+
+  getDivision(classId: string, subjectName: string, chapterCode: string, divisionCode: string) {
     return (
-      this.getDivisions(className, subjectName, chapterCode).find((d) => d.code === divisionCode) ??
+      this.getDivisions(classId, subjectName, chapterCode).find((d) => d.code === divisionCode) ??
       null
     );
   }
 
-  getDivisions(className: string, subjectName: string, chapterCode: string) {
-    return this.getChapter(className, subjectName, chapterCode)?.divisions ?? [];
-  }
-
   hasDivision(
-    className: string,
+    classId: string,
     subjectName: string,
     chapterCode: string,
     divisionCode: string,
   ): boolean {
-    return !!this.getDivision(className, subjectName, chapterCode, divisionCode);
+    return !!this.getDivision(classId, subjectName, chapterCode, divisionCode);
   }
 }

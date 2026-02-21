@@ -43,7 +43,8 @@ export const CACHE_TTL = {
 
 export const DEF_BATCH = 'blue';
 
-
+//IndexDb
+export const INDEXED_DB_NAME = 'in.sunbay.academy.offline-data-db-v1.72026.app';
 
 //Assets
 export const PLACEHOLDER__COVER_IMG = 'assets/placeholder-cover.webp';

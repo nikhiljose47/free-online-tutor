@@ -1,10 +1,10 @@
 <section class="teacher-list-wrap">
-  <div class="teacher-item" *ngFor="let t of teacherSignal(); let i = index">
+  <div class="teacher-item" *ngFor="let t of users(); let i = index">
     <div class="num">{{ i + 1 }}</div>
 
     <img
       class="photo"
-      [src]="getBannerSrc(t?.photo)"
+      [src]="getBannerSrc(t?.photoUrl)"
       [alt]="getBannerAlt(t.name)"
       loading="lazy"
       (error)="onImgError($event)"

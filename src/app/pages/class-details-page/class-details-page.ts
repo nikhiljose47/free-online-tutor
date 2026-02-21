@@ -2,7 +2,6 @@ import { Component, ChangeDetectionStrategy, signal, inject, OnInit } from '@ang
 import { McqPuzzleCardComponent } from '../../components/mcq-puzzle-card/mcq-puzzle-card';
 import { Timetable } from '../../components/timetable/timetable';
 import { CommonModule } from '@angular/common';
-import { TeacherListComponent } from '../../components/teacher-list/teacher-list';
 import { ClassOverviewComponent } from '../../shared/components/class-overview.component/class-overview.component';
 import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
 import { SyllabusStore } from '../../domain/syllabus.store';
@@ -12,8 +11,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Meeting } from '../../models/meeting.model';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus.model';
 import { Faqutil } from '../../shared/utils/faq.utils';
-import { BatchService } from '../../services/batch/batch.service';
 import { BatchDataStore } from '../../domain/data/batch.data';
+import { UserCardlist } from '../../shared/components/user-card-list/user-card-list';
+import { ExploreCoursesBannerComponent } from '../../components/banners/explore-courses-banner/explore-courses-banner';
 
 interface ClassStat {
   value: string;
@@ -29,7 +29,8 @@ interface ClassStat {
     McqPuzzleCardComponent,
     Timetable,
     CommonModule,
-    TeacherListComponent,
+    UserCardlist,
+    ExploreCoursesBannerComponent,
     ClassOverviewComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

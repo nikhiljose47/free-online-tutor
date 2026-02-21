@@ -14,8 +14,10 @@ export interface UserModel {
   expYrs: number | null;
   subjects: Array<String> | null;
   bio: string | null;
+  weekPerformance: string;
   rating: number;
   specialization: Array<string> | null;
+  lastSession: string | null;
   meta: Record<string, undefined>;
 
   joinedAt: number | null;

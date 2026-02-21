@@ -24,6 +24,8 @@ import { DummyPuzzleService } from '../../services/puzzle/dummy/dummy-puzzle.ser
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class McqPuzzleCardComponent {
+    @Output() completedChange = new EventEmitter<string>();
+
   private puzzleApi = inject(DummyPuzzleService);
 
   /* ========= INPUT ========= */
@@ -33,10 +35,6 @@ export class McqPuzzleCardComponent {
   set puzzleId(value: string | null) {
     this._puzzleId.set(value);
   }
-
-  /* ========= OUTPUT ========= */
-  @Output() completedChange = new EventEmitter<string>();
-
   /* ========= STATE ========= */
   private readonly _level = signal(1);
   private readonly _question = signal('');
@@ -97,14 +95,14 @@ export class McqPuzzleCardComponent {
 
     this._selectedIndex.set(index);
     this._showResult.set(true);
-  }
+  } 
 
   finishPuzzle() {
     const id = this._puzzleId();
     if (!id) return;
 
     /* mark completed permanently */
-    localStorage.setItem(`puzzle_done_${id}`, '1');
+  //localStorage.setItem(`puzzle_done_${id}`, '1');
     this._completed.set(true);
 
     /* emit to parent */

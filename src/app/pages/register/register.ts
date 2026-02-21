@@ -50,8 +50,10 @@ export class Register {
         subjects: ['Math', 'Physics'],
         bio: 'Passionate educator with strong fundamentals.',
         rating: 4.5,
+        weekPerformance: 'good',
         specialization: ['Algebra', 'Trigonometry'],
         meta: {},
+        lastSession: null,
         updatedAt: null,
       };
 

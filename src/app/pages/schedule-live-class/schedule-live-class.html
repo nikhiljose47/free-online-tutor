@@ -61,6 +61,6 @@
 
   <!-- CREATE MODE -->
   <div *ngIf="mode() === 'create'">
-    <schedule-live-class-form (onSubmit)="onScheduleSuccess()"></schedule-live-class-form>
+    <schedule-live-class-form [teacherId] = "teacherId??''" (onSubmit)="onScheduleSuccess()"></schedule-live-class-form>
   </div>
 </div>

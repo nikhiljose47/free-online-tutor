@@ -1,7 +1,12 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { INDEXED_DB_NAME } from '../../../constants/app.constants';
 
-export type DBStore = 'syllabus_by_class' | 'syllabus_index' | 'session_timelines';
+export type DBStore =
+  | 'syllabus_by_class'
+  | 'syllabus_index'
+  | 'session_timelines'
+  | 'puzzle_sessions';
 
 export interface DBConfig {
   dbName: string;
@@ -11,7 +16,7 @@ export interface DBConfig {
 @Injectable({ providedIn: 'root' })
 export class IndexedDbService {
   private readonly config: DBConfig = {
-    dbName: 'tuition_app_db',
+    dbName: INDEXED_DB_NAME,
     version: 1,
   };
 
@@ -53,6 +58,9 @@ export class IndexedDbService {
 
         if (!db.objectStoreNames.contains('session_timelines')) {
           db.createObjectStore('session_timelines', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('puzzle_sessions')) {
+          db.createObjectStore('puzzle_sessions', { keyPath: 'id' });
         }
       };
 
