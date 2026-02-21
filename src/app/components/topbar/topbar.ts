@@ -45,7 +45,7 @@ export class Topbar {
      STATE
   =============================== */
   readonly profile = computed(() => this.profileApi.profile());
-  readonly menuOpen = signal(false);
+  menuOpen = signal(false);
 
   constructor() {
     /** Auto-close menus on route change */
