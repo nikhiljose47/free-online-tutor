@@ -10,10 +10,10 @@ import { SyllabusRepository } from '../../domain/repositories/syllabus.repositor
 import { ActivatedRoute } from '@angular/router';
 import { Meeting } from '../../models/meeting.model';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus.model';
-import { Faqutil } from '../../shared/utils/faq.utils';
 import { BatchDataStore } from '../../domain/data/batch.data';
 import { UserCardlist } from '../../shared/components/user-card-list/user-card-list';
 import { ExploreCoursesBannerComponent } from '../../components/banners/explore-courses-banner/explore-courses-banner';
+import { FaqList } from '../../shared/components/faq-list/faq-list';
 
 interface ClassStat {
   value: string;
@@ -30,6 +30,7 @@ interface ClassStat {
     Timetable,
     CommonModule,
     UserCardlist,
+    FaqList,
     ExploreCoursesBannerComponent,
     ClassOverviewComponent,
   ],
@@ -43,8 +44,7 @@ export class ClassDetailsPage implements OnInit {
   batchDataApi = inject(BatchDataStore);
 
   readonly id = this.route.snapshot.paramMap.get('id') ?? 'CL08';
-  
-  readonly faqs = Faqutil.getFaqData();
+
   readonly isLoading = signal(true);
   readonly hasValidData = signal(false);
   private readonly meetings = signal<Meeting[]>([]);
@@ -60,7 +60,6 @@ export class ClassDetailsPage implements OnInit {
 
   subjects = signal(Array.from({ length: 8 }).map((_, i) => ({ id: i + 1 })));
 
-  readonly openIndex = signal<number | null>(0);
 
   readonly stats = signal<ClassStat[]>([
     { value: '12,500+', label: 'Students learning in this class' },
@@ -131,9 +130,6 @@ export class ClassDetailsPage implements OnInit {
     this.meetings.set(data);
   }
 
-  toggle(i: number) {
-    this.openIndex.update((v) => (v === i ? null : i));
-  }
 
   selectTab(tab: (typeof this.tabs)[number]) {
     this.activeTab.set(tab);

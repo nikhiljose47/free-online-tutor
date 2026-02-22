@@ -22,7 +22,7 @@ const faqs: Faq[] = [
   },
 ];
 
-export class Faqutil {
+export class FaqUtil {
   static getFaqData(): Faq[] {
     return faqs;
   }

@@ -1,0 +1,21 @@
+<div class="faq-wrap">
+  <h2 class="section-title mb-4">Frequently Asked Questions</h2>
+
+  <div class="faq-list">
+    <div class="faq-item" *ngFor="let f of faqs; let i = index">
+      <button
+        class="faq-q"
+        type="button"
+        (click)="toggle(i)"
+        [attr.aria-expanded]="openIndex() === i"
+      >
+        <span>{{ f.q }}</span>
+        <span class="icon" [class.open]="openIndex() === i">+</span>
+      </button>
+
+      <div class="faq-a" *ngIf="openIndex() === i">
+        {{ f.a }}
+      </div>
+    </div>
+  </div>
+</div>
