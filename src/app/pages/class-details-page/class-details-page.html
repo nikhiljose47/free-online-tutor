@@ -1,11 +1,48 @@
 <section class="class-details-page d-flex flex-column gap-3 mx-0 my-3 mx-md-5">
   <!-- HEADER (NOT STICKY) -->
-  <header class="class-header p-3 shadow-sm">
+  <header class="class-header p-3">
     <h1 class="m-0 fw-semibold text-truncate">
       {{ classTitle }}
     </h1>
   </header>
 
+  <nav class="right-sticky-nav">
+    <ul class="nav-list">
+      <li
+        class="nav-item"
+        [class.active]="activeMainTab() === 'overview'"
+        (click)="select('overview')"
+      >
+        Overview
+      </li>
+
+      <li class="nav-item" [class.active]="activeMainTab() === 'games'" (click)="select('games')">
+        Games
+      </li>
+
+      <li class="nav-item" [class.active]="activeMainTab() === 'stats'" (click)="select('stats')">
+        Schedule
+      </li>
+    </ul>
+  </nav>
+
+  <section class="tab-content">
+    @switch (activeMainTab()) {
+      @case ('overview') {
+        <class-overview [classId]="id"></class-overview>
+      }
+      @case ('games') {
+        <mcq-puzzle-card
+          [puzzleId]="puzzleId"
+          (completedChange)="onPuzzleCompleted($event)"
+          class="flex-shrink-0"
+        ></mcq-puzzle-card>
+      }
+      @case ('stats') {
+        <timetable [classFileId]="classFileId"></timetable>
+      }
+    }
+  </section>
   <!-- 🎮 HORIZONTAL GAME STRIP -->
   <section class="horizontal-strip">
     <div class="d-flex gap-3 overflow-auto no-scrollbar">
@@ -18,86 +55,13 @@
       -->
 
       <!-- CURRENT PUZZLE CARD -->
-      <mcq-puzzle-card
-        [puzzleId]="puzzleId"
-        (completedChange)="onPuzzleCompleted($event)"
-        class="flex-shrink-0"
-      ></mcq-puzzle-card>
     </div>
   </section>
 
-  <section class="batch-zone" *ngIf="batchDataApi.batches().length">
-    <h2 class="section-title my-4">Batches :</h2>
-    <!-- ACTIVE -->
-    <div class="batch-row" *ngIf="batchDataApi.activeBatches().length">
-      <h3 class="batch-row-title">Active</h3>
-
-      <div class="batch-scroll">
-        @for (b of batchDataApi.activeBatches(); track b.id) {
-          <button
-            class="batch-card long"
-            [class.selected]="batchDataApi.selectedBatch()?.id === b.id"
-            (click)="onClickBatch(b)"
-          >
-            <div class="batch-name">{{ b.name }}</div>
-            <div class="batch-time">Started at {{ b.startTime | date: 'hh:mm a' }}</div>
-            <div class="batch-info">{{ b.info }}</div>
-          </button>
-        }
-      </div>
-    </div>
-
-    <!-- UPCOMING -->
-    <div class="batch-row" *ngIf="batchDataApi.upcomingBatches().length">
-      <h3 class="batch-row-title">Upcoming</h3>
-
-      <div class="batch-scroll">
-        @for (b of batchDataApi.upcomingBatches(); track b.id) {
-          <div class="batch-card long upcoming-grey">
-            <div class="batch-name">{{ b.name }}</div>
-            <div class="batch-time">Coming at {{ b.startTime | date: 'hh:mm a' }}</div>
-            <div class="batch-info">{{ b.info }}</div>
-          </div>
-        }
-      </div>
-    </div>
-  </section>
+  <section></section>
 
   <section>
-    <h2 class="section-title my-3">Overview :</h2>
-    <class-overview [classId]="id"></class-overview>
-  </section>
-
-  <section>
-    <div class="tab-shell d-flex justify-content-end">
-      <ul class="nav nav-pills gap-2 flex-nowrap overflow-auto no-scrollbar tab-inner">
-        <li class="nav-item" *ngFor="let t of tabs">
-          <button
-            class="nav-link game-tab"
-            [class.active]="t === activeTab()"
-            (click)="selectTab(t)"
-          >
-            <span class="tab-label">{{ t }}</span>
-          </button>
-        </li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- 📊 MAIN DETAIL -->
-  <section class="detail-section">
-    <h2 class="section-title my-4">Timetable :</h2>
-
-    <timetable [classFileId]="classFileId" *ngIf="activeTab() === 'Timetable'"></timetable>
-    <timetable [classFileId]="classFileId" *ngIf="activeTab() === 'Tests'"></timetable>
-    <timetable [classFileId]="classFileId" *ngIf="activeTab() === 'Announcements'"></timetable>
-
-    <!--
-    <app-class-overview *ngIf="activeTab === 'Overview'"></app-class-overview>
-    <app-class-assignments *ngIf="activeTab === 'Assignments'"></app-class-assignments>
-    <app-class-tests *ngIf="activeTab === 'Tests'"></app-class-tests>
-    <app-class-announcements *ngIf="activeTab === 'Announcements'"></app-class-announcements>
-    -->
+    <class-schedule-list [classId]="classId"></class-schedule-list>
   </section>
 
   <!-- ⚡ EXTRA SECTION -->
@@ -105,16 +69,16 @@
     <!-- <app-class-activity></app-class-activity> -->
   </section>
 
-  <section>
+  <section class="my-5">
     <explore-courses-banner></explore-courses-banner>
   </section>
 
   <section>
-    <h2 class="section-title mb-4">Teachers :</h2>
+    <h2 class="d-flex justify-content-center mb-4 my-5">The Teachers</h2>
     <user-card-list [classId]="classId"></user-card-list>
   </section>
 
-  <section class="class-stats-banner">
+  <section class="class-stats-banner my-5">
     <div class="banner-fade banner-fade-left"></div>
     <div class="banner-fade banner-fade-right"></div>
 
@@ -139,6 +103,6 @@
   </section>
 
   <section class="container py-4">
-   <faq-list></faq-list>
+    <faq-list></faq-list>
   </section>
 </section>

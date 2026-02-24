@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ClassOverviewBatches } from './class-overview-batches';
+import { ClassScheduleList } from './class-schedule-list';
 
-describe('ClassOverviewBatches', () => {
-  let component: ClassOverviewBatches;
-  let fixture: ComponentFixture<ClassOverviewBatches>;
+describe('ClassScheduleList', () => {
+  let component: ClassScheduleList;
+  let fixture: ComponentFixture<ClassScheduleList>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ClassOverviewBatches]
+      imports: [ClassScheduleList]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ClassOverviewBatches);
+    fixture = TestBed.createComponent(ClassScheduleList);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

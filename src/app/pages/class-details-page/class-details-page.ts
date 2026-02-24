@@ -1,4 +1,11 @@
-import { Component, ChangeDetectionStrategy, signal, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  signal,
+  inject,
+  OnInit,
+  computed,
+} from '@angular/core';
 import { McqPuzzleCardComponent } from '../../components/mcq-puzzle-card/mcq-puzzle-card';
 import { Timetable } from '../../components/timetable/timetable';
 import { CommonModule } from '@angular/common';
@@ -14,6 +21,9 @@ import { BatchDataStore } from '../../domain/data/batch.data';
 import { UserCardlist } from '../../shared/components/user-card-list/user-card-list';
 import { ExploreCoursesBannerComponent } from '../../components/banners/explore-courses-banner/explore-courses-banner';
 import { FaqList } from '../../shared/components/faq-list/faq-list';
+import { ClassScheduleListComponent } from '../../shared/components/class-schedule-list/class-schedule-list';
+
+type TabType = 'overview' | 'games' | 'stats';
 
 interface ClassStat {
   value: string;
@@ -31,6 +41,7 @@ interface ClassStat {
     CommonModule,
     UserCardlist,
     FaqList,
+    ClassScheduleListComponent,
     ExploreCoursesBannerComponent,
     ClassOverviewComponent,
   ],
@@ -41,7 +52,7 @@ export class ClassDetailsPage implements OnInit {
   private meetApi = inject(MeetingsService);
   private syllRepo = inject(SyllabusRepository);
   private route = inject(ActivatedRoute);
-  batchDataApi = inject(BatchDataStore);
+ 
 
   readonly id = this.route.snapshot.paramMap.get('id') ?? 'CL08';
 
@@ -51,15 +62,12 @@ export class ClassDetailsPage implements OnInit {
 
   syllabus = signal<ClassSyllabus | null>(null);
   classId = 'CL09';
-  classTitle = 'Class 6 – Blue Batch';
+  classTitle = 'Class 6';
   puzzleId = 'puzzle_001';
   classFileId: string = '';
   tabs = ['Timetable', 'Tests', 'Announcements'] as const;
 
-  activeTab = signal<(typeof this.tabs)[number]>('Announcements');
-
   subjects = signal(Array.from({ length: 8 }).map((_, i) => ({ id: i + 1 })));
-
 
   readonly stats = signal<ClassStat[]>([
     { value: '12,500+', label: 'Students learning in this class' },
@@ -68,18 +76,21 @@ export class ClassDetailsPage implements OnInit {
     { value: '96%', label: 'Concept clarity satisfaction' },
   ]);
 
+  //Tab
+  private readonly _activeTab = signal<TabType>('overview');
+
+  readonly activeMainTab = computed(() => this._activeTab());
+
+  select(tab: TabType): void {
+    if (this._activeTab() !== tab) {
+      this._activeTab.set(tab);
+    }
+  }
+
   ngOnInit(): void {
     this.loadData();
-    this.loadBatchStore();
   }
 
-  loadBatchStore() {
-    this.batchDataApi.init('CL06');
-  }
-
-  onClickBatch(b: any) {
-    this.batchDataApi.selectBatch(b);
-  }
 
   loadData() {
     this.syllabusStore
@@ -128,11 +139,6 @@ export class ClassDetailsPage implements OnInit {
 
   setMeetings(data: Meeting[]): void {
     this.meetings.set(data);
-  }
-
-
-  selectTab(tab: (typeof this.tabs)[number]) {
-    this.activeTab.set(tab);
   }
 
   onPuzzleCompleted(id: string) {

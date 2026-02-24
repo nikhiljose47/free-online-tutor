@@ -70,11 +70,11 @@ export class BatchDataStore {
   private map(b: BatchItem, status: UiStatus): UiBatch {
     return {
       id: b.id,
-      name: b.batch,
+      name: b.label,
       startTime: (b.startAt as Timestamp).toDate(),
       info: 'Live class session',
       status,
-      isDefault: b.batch === 'Blue',
+      isDefault: b.label === 'Blue',
     };
   }
 }

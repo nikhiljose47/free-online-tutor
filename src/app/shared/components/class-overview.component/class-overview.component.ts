@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ClassDocService } from '../../../services/class/class-doc/class-doc';
-import { ClassDoc } from '../../../models/classes/class-doc.model';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { of, switchMap } from 'rxjs';
+import { BatchDataStore } from '../../../domain/data/batch.data';
 
 interface SubjectOverview {
   name: string;
@@ -9,8 +10,10 @@ interface SubjectOverview {
   chapters: string[];
 }
 
-interface ClassOverview {
-  className: string;
+interface BatchOverview {
+  name: string;
+  time: string;
+  status: 'upcoming' | 'live' | 'completed';
   totalStudents: number;
   totalBatches: number;
   upcomingClass: string;
@@ -29,56 +32,72 @@ interface ClassOverview {
 export class ClassOverviewComponent {
   @Input({ required: true }) classId!: string;
 
-  private classDocApi = inject(ClassDocService);
+  batchDataApi = inject(BatchDataStore);
 
-  // readonly data = signal<ClassOverview>({
-  //   className: '6',
-  //   totalStudents: 320,
-  //   totalBatches: 5,
-  //   upcomingClass: '2 hrs',
-  //   enrollmentOpen: true,
-  //   subjects: [
-  //     {
-  //       name: 'Mathematics',
-  //       currentIndex: 2,
-  //       chapters: ['Numbers', 'Fractions', 'Decimals', 'Ratio', 'Algebra'],
-  //     },
-  //     {
-  //       name: 'Science',
-  //       currentIndex: 1,
-  //       chapters: ['Food', 'Components', 'Fibre', 'Sorting', 'Separation'],
-  //     },
-  //   ],
-  // });
-  readonly data = signal<ClassOverview | null>(null);
+  readonly batches = signal<BatchOverview[]>([
+    {
+      name: 'Batch A',
+      time: '4:30 PM',
+      status: 'live',
+      totalStudents: 320,
+      totalBatches: 3,
+      upcomingClass: '2 hrs',
+      enrollmentOpen: true,
+      subjects: [
+        {
+          name: 'Mathematics',
+          currentIndex: 2,
+          chapters: ['Numbers', 'Fractions', 'Decimals', 'Ratio', 'Algebra'],
+        },
+        {
+          name: 'Science',
+          currentIndex: 1,
+          chapters: ['Food', 'Components', 'Fibre', 'Sorting', 'Separation'],
+        },
+      ],
+    },
+    {
+      name: 'Batch B',
+      time: '6:00 PM',
+      status: 'upcoming',
+      totalStudents: 210,
+      totalBatches: 3,
+      upcomingClass: '5 hrs',
+      enrollmentOpen: true,
+      subjects: [
+        {
+          name: 'Mathematics',
+          currentIndex: 1,
+          chapters: ['Numbers', 'Fractions', 'Decimals', 'Ratio', 'Algebra'],
+        },
+        {
+          name: 'Science',
+          currentIndex: 0,
+          chapters: ['Food', 'Components', 'Fibre', 'Sorting', 'Separation'],
+        },
+      ],
+    },
+  ]);
 
-  readonly classDocData = signal<ClassDoc | null>(null); 
+  readonly selectedBatchIndex = signal(0);
+
+  readonly selectedBatch = signal(this.batches()[0]);
 
   constructor() {
-    this.load('CL06');
+    this.loadBatchStore();
   }
 
-  private load(classId: string) {
-    this.classDocApi.getOnce(classId).subscribe((doc) => {
-      if (!doc) return;
-      this.classDocData.set(doc);
-      this.data.set(this.mapToOverview(doc));
-    });
+  loadBatchStore() {
+    this.batchDataApi.init('CL06');
+    console.log(this.batchDataApi.upcomingBatches())
   }
 
-  private mapToOverview(doc: ClassDoc): ClassOverview {
-    const now = Date.now();
-    const next = doc.nextClassAt?.toMillis?.() ?? now;
-    const diffMs = next - now;
-    const upcoming = diffMs > 0 ? `${Math.floor(diffMs / 3600000)} hrs` : 'Ongoing';
+  onClickBatch(b: any) {
+    this.batchDataApi.selectBatch(b);
+  }
 
-    return {
-      className: doc.title,
-      totalStudents: doc.studentCount,
-      totalBatches: 1,
-      upcomingClass: upcoming,
-      enrollmentOpen: doc.enrollmentOpen,
-      subjects: [],
-    };
+  selectBatch(i: number) {
+    this.selectedBatchIndex.set(i);
+    this.selectedBatch.set(this.batches()[i]);
   }
 }

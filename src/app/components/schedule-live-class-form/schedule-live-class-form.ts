@@ -155,7 +155,13 @@ export class ScheduleLiveClassForm implements OnInit {
 
     this.submitting.set(true);
 
-    const start = new Date(f.date);
+    const [hours, minutes] = f.time.split(':').map(Number);
+
+    const date = new Date(f.date);
+    date.setHours(hours, minutes, 0, 0);
+
+
+    const start = new Date(date);
     const end = new Date(start.getTime() + (f.duration ?? 0) * 60000);
 
     const payload: Meeting = {

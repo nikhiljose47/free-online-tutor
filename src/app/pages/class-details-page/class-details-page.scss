@@ -1,82 +1,18 @@
 .class-details-page {
   min-height: 100%;
   padding: 0.75rem;
+  background: #ffffff;
   //background: linear-gradient(180deg, #eef3ff 0%, #f7f9ff 60%, #ffffff 100%);
 
   /* =====================================================
      🎮 TITLE — GAME STYLE ONLY
   ===================================================== */
   .class-header {
-    background: linear-gradient(135deg, #e4d2c04b);
-    color: #0b0f1a;
-
-    clip-path: polygon(0 0, 96% 0, 100% 100%, 0% 100%);
-    box-shadow: 0 6px 18px rgba(255, 122, 0, 0.25);
+   // background: linear-gradient(135deg, #f4f4f44e);
+    // clip-path: polygon(0 0, 96% 0, 100% 100%, 0% 100%);
+    // box-shadow: 0 6px 18px rgba(255, 122, 0, 0.25);
   }
 
-  /* ---------- RECTANGULAR BACK PANEL (NEW) ---------- */
-  .tab-shell {
-    background: linear-gradient(135deg, #1f2937, #19224f);
-    padding: 2.8px; /* outer rectangular padding */
-    border-radius: 6px; /* rectangle, not pill */
-    float: right;
-    max-width: 100%;
-  }
-
-  /* ---------- TRAPEZOID TAB CONTAINER ---------- */
-  .tab-inner {
-    display: inline-flex;
-    gap: 0.35rem;
-
-    background: linear-gradient(135deg, #111827, #020617);
-    padding: 3px 4px;
-
-    clip-path: polygon(4% 0, 100% 0, 96% 100%, 0% 100%);
-
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .tab-inner::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* ---------- TAB ITEMS ---------- */
-  .nav-item {
-    flex: 0 0 auto;
-  }
-
-  .game-tab {
-    border: none;
-    background: transparent;
-    color: #9ca3af;
-
-    font-weight: 700;
-    font-size: 0.82rem; /* 20% smaller */
-    padding: 0.32rem 0.7rem;
-    letter-spacing: 0.04em;
-
-    transition: all 0.18s ease;
-
-    /* trapezoid tab */
-    clip-path: polygon(8% 0, 100% 0, 92% 100%, 0% 100%);
-
-    &:hover {
-      color: #fff;
-      background: linear-gradient(135deg, rgba(255, 122, 0, 0.25), rgba(255, 184, 0, 0.18));
-    }
-
-    &.active {
-      background: linear-gradient(135deg, #ff7a00, #ffb800);
-      color: #0b0f1a;
-
-      box-shadow:
-        0 0 12px rgba(255, 140, 0, 0.6),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.25);
-
-      transform: translateY(-1px);
-    }
-  }
 
   /* =====================================================
      📦 REST OF PAGE — ORIGINAL LIGHT THEME
@@ -315,4 +251,81 @@
 .batch-info {
   font-size: 0.68rem;
   opacity: 0.8;
+}
+
+
+//navbar
+:host {
+  display: block;
+}
+
+.right-sticky-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.nav-list {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.8rem;
+  margin: 0;
+  padding: 1rem 2rem 0.3rem;
+  list-style: none;
+}
+
+.nav-item {
+  position: relative;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #6b6f76;
+  cursor: pointer;
+  padding-bottom: 0.3rem;
+
+  &.active {
+    color: #111827;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    width: 0;
+    height: 3px;
+    background: #3b82f6;
+    transition: width 0.2s ease;
+  }
+
+  &.active::after {
+    width: 100%;
+  }
+}
+
+.tab-content {
+  //padding: 2rem;
+  background: #f8f9fb;
+  min-height: calc(100vh - 60px);
+}
+
+@media (max-width: 768px) {
+  .right-sticky-nav {
+    position: fixed;
+    bottom: 0;
+    top: auto;
+    width: 100%;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    border-bottom: 0;
+  }
+
+  .nav-list {
+    justify-content: space-around;
+    gap: 0;
+    padding: 0.8rem 0.5rem;
+  }
+
+  .tab-content {
+    padding-bottom: 80px;
+  }
 }
