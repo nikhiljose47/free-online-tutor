@@ -2,11 +2,6 @@ $brand-light-green: #ffffffe1;
 
 .class-overview {
   width: 100%;
-  font-family:
-    'Inter',
-    system-ui,
-    -apple-system,
-    sans-serif;
   background-color: $brand-light-green;
   border-radius: 12px;
   padding: 30px;
@@ -20,7 +15,7 @@ $brand-light-green: #ffffffe1;
 .overview-title {
   margin: 0;
   font-size: 1.9rem;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: -0.4px;
   color: #0f172a;
 }

@@ -1,97 +1,99 @@
-<section class="schedule-wrapper">
-  <div class="schedule-card">
-    <!-- HEADER -->
-    <div class="schedule-header">
-      <h2 class="section-title">Live & Upcoming Classes</h2>
+<section class="class-overview">
+  <header class="overview-header container">
+    <h2 class="overview-title">Live & Upcoming Classes</h2>
+  </header>
+</section>
 
-      <div class="tabs">
-        <button
-          class="tab-btn"
-          [class.active]="selectedTab() === 'today'"
-          (click)="selectedTab.set('today')"
-        >
-          Today
-        </button>
+<section class="schedule-card">
+  <!-- HEADER -->
+  <div class="schedule-header">
+    <div class="tabs">
+      <button
+        class="tab-btn"
+        [class.active]="selectedTab() === 'today'"
+        (click)="selectedTab.set('today')"
+      >
+        Today
+      </button>
 
-        <button
-          class="tab-btn"
-          [class.active]="selectedTab() === 'upcoming'"
-          (click)="selectedTab.set('upcoming')"
-        >
-          Upcoming
-        </button>
-      </div>
+      <button
+        class="tab-btn"
+        [class.active]="selectedTab() === 'upcoming'"
+        (click)="selectedTab.set('upcoming')"
+      >
+        Upcoming
+      </button>
     </div>
+  </div>
 
-    <!-- LIST -->
-    <div class="cards-container">
-      <ng-container *ngFor="let item of visibleList()">
-        <div class="ticket-card">
-          <!-- LEFT IMAGE (40-50%) -->
-          <div class="ticket-media">
-            <img [src]="item.image" alt="class image" loading="lazy" />
+  <!-- LIST -->
+  <div class="cards-container">
+    <ng-container *ngFor="let item of visibleList()">
+      <div class="ticket-card">
+        <!-- LEFT IMAGE (40-50%) -->
+        <div class="ticket-media">
+          <img [src]="item.image" alt="class image" loading="lazy" />
 
-            <div class="media-overlay">
-              <span class="status-chip" [class.live]="item.isLive" [class.upcoming]="!item.isLive">
-                {{ item.isLive ? 'LIVE' : 'UPCOMING' }}
-              </span>
+          <div class="media-overlay">
+            <span class="status-chip" [class.live]="item.isLive" [class.upcoming]="!item.isLive">
+              {{ item.isLive ? 'LIVE' : 'UPCOMING' }}
+            </span>
 
-              <div class="overlay-text">
-                <h3 class="overlay-title">{{ item.title }}</h3>
-                <p class="overlay-sub">By {{ item.teacher }}</p>
-              </div>
+            <div class="overlay-text">
+              <h3 class="overlay-title">{{ item.title }}</h3>
+              <p class="overlay-sub">By {{ item.teacher }}</p>
             </div>
-          </div>
-
-          <!-- RIGHT CONTENT -->
-          <div class="ticket-content">
-            <!-- TIME FOCUS -->
-            <div class="time-focus">
-              <span class="time-label">
-                {{ item.isLive ? 'Started at' : 'Starts at' }}
-              </span>
-              <span class="time-value">
-                {{ item.date | date: 'hh:mm a' }}
-              </span>
-            </div>
-
-            <!-- INFO GRID -->
-            <div class="info-grid">
-              <div>
-                <span class="info-label">Teacher</span>
-                <span class="info-value">{{ item.teacher }}</span>
-              </div>
-
-              <div>
-                <span class="info-label">Students</span>
-                <span class="info-value">{{ item.joined }}</span>
-              </div>
-
-              <div>
-                <span class="info-label">Mode</span>
-                <span class="info-value">
-                  {{ item.isLive ? 'Live Session' : 'Scheduled' }}
-                </span>
-              </div>
-            </div>
-
-            <!-- ACTIONS -->
-            <div class="ticket-actions">
-              <span class="joined">{{ item.joined }} joined</span>
-
-              <button class="action-btn">
-                {{ item.isLive ? 'Join Now' : 'Interested' }}
-              </button>
-            </div>
-          </div>
-
-          <div class="ticket-barcode">
-            <div class="ticket-code">{{ item.id }}-{{ item.date | date: 'MMdd' }}</div>
           </div>
         </div>
-      </ng-container>
 
-      <div *ngIf="visibleList().length === 0" class="empty">No classes available.</div>
-    </div>
+        <!-- RIGHT CONTENT -->
+        <div class="ticket-content">
+          <!-- TIME FOCUS -->
+          <div class="time-focus">
+            <span class="time-label">
+              {{ item.isLive ? 'Started at' : 'Starts at' }}
+            </span>
+            <span class="time-value">
+              {{ item.date | date: 'hh:mm a' }}
+            </span>
+          </div>
+
+          <!-- INFO GRID -->
+          <div class="info-grid">
+            <div>
+              <span class="info-label">Teacher</span>
+              <span class="info-value">{{ item.teacher }}</span>
+            </div>
+
+            <div>
+              <span class="info-label">Students</span>
+              <span class="info-value">{{ item.joined }}</span>
+            </div>
+
+            <div>
+              <span class="info-label">Mode</span>
+              <span class="info-value">
+                {{ item.isLive ? 'Live Session' : 'Scheduled' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- ACTIONS -->
+          <div class="ticket-actions">
+            <span class="joined">{{ item.joined }} joined</span>
+
+            <button class="action-btn">
+              {{ item.isLive ? 'Join Now' : 'Interested' }}
+            </button>
+          </div>
+        </div>
+
+        <div class="ticket-barcode">
+          <div class="ticket-code">{{ item.id }}-{{ item.date | date: 'MMdd' }}</div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div *ngIf="visibleList().length === 0" class="empty">No classes available.</div>
   </div>
 </section>
