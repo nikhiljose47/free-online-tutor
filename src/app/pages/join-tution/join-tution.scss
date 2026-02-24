@@ -5,15 +5,15 @@
   display: grid;
   grid-template-columns: 40% 60%;
   min-height: calc(100vh - 120px);
-  height: calc(100vh - 120px);
+  height: calc(100vh - 80px);
   overflow: hidden;
 }
 
 .class-cover {
   height: 100%;
   display: flex;
-  align-items: center;      /* vertical center */
-  justify-content: center;  /* horizontal center */
+  align-items: center; /* vertical center */
+  justify-content: center; /* horizontal center */
   overflow: hidden;
 }
 
@@ -23,7 +23,6 @@
   object-fit: contain;
   display: block;
 }
-
 
 /* ===============================
    RIGHT : Premium Editorial Panel
@@ -47,16 +46,12 @@
   justify-content: flex-start;
 }
 
-/* ===============================
-   Header
-================================ */
 .details-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: clamp(24px, 3vh, 40px);
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
 }
-
 /* ===============================
    Typography — Apple-like scale
 ================================ */
@@ -84,14 +79,6 @@
   opacity: 0.55;
 }
 
-/* Elegant divider */
-.soft-divider {
-  border: none;
-  height: 1px;
-  background: linear-gradient(to right, #ececec, #f6f6f6, transparent);
-  margin: clamp(20px, 3vh, 36px) 0;
-}
-
 /* ===============================
    Description
 ================================ */
@@ -115,9 +102,6 @@
 /* ===============================
    Stats — Glass-soft Apple card
 ================================ */
-.stats-section {
-  margin-top: auto;
-}
 
 .stats-box {
   padding: clamp(20px, 2.5vw, 28px) clamp(22px, 3vw, 32px);
@@ -155,12 +139,30 @@
   color: #666;
 }
 
+.details-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.left-col {
+  flex: 1;
+  min-width: 0; // prevents overflow issues
+}
+
+.right-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
 /* ===============================
    Buttons — subtle luxury feel
 ================================ */
 .cta-btn {
-  padding: 12px 30px;
-  border-radius: 24px;
+  padding: 7px 19px;
+  border-radius: 16px;
   border: 1px solid #000;
 
   background: #000;
@@ -172,11 +174,6 @@
   transition: all 0.2s ease;
 }
 
-.cta-btn:hover:not(:disabled) {
-  background: #fff;
-  color: #000;
-}
-
 .cta-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -185,10 +182,10 @@
 .share-btn {
   border: 1px solid #000;
   background: transparent;
-  color: #000;
+  color: #000000;
 
-  padding: 8px 18px;
-  border-radius: 22px;
+  padding: 7px 16px;
+  border-radius: 14px;
 
   display: inline-flex;
   align-items: center;
@@ -199,8 +196,8 @@
 }
 
 .share-btn:hover {
-  background: #000;
-  color: #fff;
+  background: #afe795;
+  color: #202020;
 }
 
 /* ===============================

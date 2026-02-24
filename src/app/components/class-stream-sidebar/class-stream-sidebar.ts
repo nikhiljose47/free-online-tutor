@@ -14,13 +14,13 @@ import { Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
-import { SyllabusStore } from '../../shared/state/syllabus.store';
 import { Meeting } from '../../models/meeting.model';
 
 import { combineLatest, map, timer } from 'rxjs';
 import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
 import { MeetingsService } from '../../services/meetings/meetings.service';
 import { CatalogLookupService } from '../../domain/syllabus-index/catalog-lookup.service';
+import { MeetingStatusStore } from '../../shared/state/meeting-status.store';
 
 @Component({
   selector: 'class-stream-sidebar',
@@ -38,7 +38,6 @@ export class ClassStreamSidebar implements OnInit, OnDestroy {
   private meetApi = inject(MeetingsService);
   private router = inject(Router);
   private uiUtil = inject(UiStateUtil);
-  private syllabusStore = inject(SyllabusStore);
   private catalogLookupApi = inject(CatalogLookupService);
 
   /* ================= UI SIGNALS (FINAL ONLY) ================= */
@@ -47,6 +46,7 @@ export class ClassStreamSidebar implements OnInit, OnDestroy {
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
   readonly collapsed = signal(false);
+  private statusStore = inject(MeetingStatusStore);
 
   private clockId!: any;
 
@@ -61,7 +61,7 @@ export class ClassStreamSidebar implements OnInit, OnDestroy {
   private readonly merged$ = combineLatest([
     this.meetApi.getLiveMeetings(),
     this.catalogLookupApi.getAllReady$(),
-    timer(0, 30_000), // clock refresh
+    timer(0, 30_000), // clock refresh at 30 sec
   ]).pipe(
     map(([meetRes, feed, _]) => {
       if (!meetRes.ok) {
@@ -100,6 +100,21 @@ export class ClassStreamSidebar implements OnInit, OnDestroy {
         .sort((a, b) => a.date.toDate().getTime() - b.date.toDate().getTime())
         .map(attachMeta);
 
+      meetings.forEach((m) => {
+        const start = m.date?.toDate?.();
+        const end = m.endAt?.toDate?.();
+        if (!start || !end) return;
+
+        const now = new Date();
+
+        if (start <= now && end >= now) {
+          this.statusStore.setState(m.id, 'live');
+        } else if (start > now) {
+          this.statusStore.setState(m.id, 'upcoming');
+        } else {
+          this.statusStore.setState(m.id, 'ended');
+        }
+      });
       const finalResult = { live, upcoming };
 
       return finalResult;
@@ -113,7 +128,6 @@ export class ClassStreamSidebar implements OnInit, OnDestroy {
   readonly mergedSignal = toSignal(this.merged$, {
     initialValue: { live: [], upcoming: [] },
   });
-
 
   /* ================= LIFECYCLE ================= */
 

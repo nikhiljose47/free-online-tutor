@@ -13,6 +13,7 @@ import { DotLoader } from '../../components/dot-loader/dot-loader';
 import { ToastService } from '../../shared/toast.service';
 import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { MeetingStatusStore } from '../../shared/state/meeting-status.store';
 
 @Component({
   selector: 'join-tution',
@@ -29,11 +30,27 @@ export class JoinTution {
   private syllabus = inject(SyllabusLookupService);
   private attendanceApi = inject(AttendanceApiService);
   private toastApi = inject(ToastService);
+  private statusStore = inject(MeetingStatusStore);
 
   private meetingId$ = this.route.paramMap.pipe(
     map((p) => p.get('meetingId')),
     filter((id): id is string => !!id),
   );
+
+  readonly meetingId = toSignal(
+  this.meetingId$,
+  { initialValue: null }
+);
+
+isUpcoming = signal(false);
+
+private syncStatus = effect(() => {
+  const id = this.meetingId();
+  if (!id) return;
+
+  const state = this.statusStore.getState(id)();
+  this.isUpcoming.set(state === 'upcoming');
+});
   /* ---------------- derived (simple values) ---------------- */
 
   readonly profile = this.user.profile();
@@ -41,7 +58,6 @@ export class JoinTution {
   hasErr = signal<boolean>(true);
   errMsg = signal<string>('We are facing some issue..');
   hasmarkedInterest = signal<boolean>(false);
-
   meeting!: Meeting;
   banner: string = '/assets/book-covers/hi-text.webp';
   students: number = 1;
@@ -52,7 +68,6 @@ export class JoinTution {
   duration = '30m - 40 min';
   description = 'desc';
   users: Array<string> = [];
-  isUpcoming: boolean = false;
 
   constructor() {
     this.meetingId$.pipe(switchMap((id) => this.init$(id))).subscribe();
@@ -97,6 +112,7 @@ export class JoinTution {
     );
   }
 
+
   setData() {
     console.log('data in meet', this.meeting);
     let meeting = this.meeting;
@@ -107,7 +123,7 @@ export class JoinTution {
     this.banner = meeting.imageSrc;
 
     if (meeting.date > Timestamp.fromDate(new Date())) {
-      this.isUpcoming = true;
+    //  this.isUpcoming = true;
     }
 
     const chapter = this.syllabus.getChapterByCode(meeting.chapterCode);
@@ -122,7 +138,7 @@ export class JoinTution {
   }
 
   onClickInterestBtn(): void {
-    if (this.isUpcoming && !this.hasmarkedInterest()) {
+    if (this.isUpcoming() && !this.hasmarkedInterest()) {
       this.attendanceApi
         .markAttendanceOnce(this.profile!.uid, this.meeting.classId ?? '')
         .subscribe({

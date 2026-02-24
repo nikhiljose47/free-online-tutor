@@ -20,51 +20,61 @@
     <!-- RIGHT : Refined Editorial Layout -->
     <main class="class-details">
       <!-- TOP ACTION STRIP -->
-      <header class="details-header">
-        <button class="share-btn" (click)="shareClass()"><i class="bi bi-share"></i> Share</button>
-
-        <button
-          class="cta-btn d-none d-md-inline-flex"
-          (click)="onClickInterestBtn()"
-          [disabled]="hasmarkedInterest()"
-        >
-          {{ hasmarkedInterest() ? 'Interested' : !isUpcoming ? 'Join Class' : 'I will attend' }}
-        </button>
-      </header>
 
       <!-- TITLE + META -->
       <section class="title-block">
         <h1 class="title">{{ title }}</h1>
-        <p class="teacher">By {{ teacher }}</p>
-        <span class="duration">{{ duration }}</span>
       </section>
 
-      <!-- DIVIDER -->
-      <hr class="soft-divider" />
+      <section class="details-row">
+        <!-- LEFT COLUMN (unchanged block inside) -->
+        <div class="left-col">
+          <section class="title-block">
+            <p class="teacher">By {{ teacher }}</p>
+            <span class="duration">{{ duration }}</span>
+          </section>
+        </div>
 
+        <!-- RIGHT COLUMN -->
+        <div class="right-col">
+          <header class="details-header">
+            <button class="share-btn" (click)="shareClass()">
+              <i class="bi bi-share"></i> Share
+            </button>
+
+            <button
+              class="cta-btn d-none d-md-inline-flex"
+              (click)="onClickInterestBtn()"
+              [disabled]="hasmarkedInterest()"
+            >
+              {{
+                hasmarkedInterest() ? 'Interested' : !isUpcoming() ? 'Join Class' : 'I will attend'
+              }}
+            </button>
+          </header>
+        </div>
+      </section>
       <!-- DESCRIPTION -->
-      <section class="details-block">
+      <section class="details-block mt-5">
         <h3 class="section-title">About this class</h3>
         <p class="desc">{{ description }}</p>
       </section>
 
       <!-- STATS PANEL -->
-      <section class="stats-section">
-        <div class="stats-box">
-          <div class="stat">
-            <span class="value">{{ students }}+</span>
-            <span class="label">Students interested</span>
-          </div>
+      <section class="stats-box">
+        <div class="stat">
+          <span class="value">{{ students }}+</span>
+          <span class="label">Students interested</span>
+        </div>
 
-          <div class="stat">
-            <span class="value">{{ rating }}</span>
-            <span class="label">Rating</span>
-          </div>
+        <div class="stat">
+          <span class="value">{{ rating }}</span>
+          <span class="label">Rating</span>
+        </div>
 
-          <div class="stat">
-            <span class="value">NCERT + ICSE</span>
-            <span class="label">Curriculum</span>
-          </div>
+        <div class="stat">
+          <span class="value">NCERT + ICSE</span>
+          <span class="label">Curriculum</span>
         </div>
       </section>
     </main>
@@ -73,7 +83,7 @@
   <!-- MOBILE CTA (UNCHANGED LOGIC) -->
   <div class="mobile-join d-md-none">
     <button class="cta-btn w-100" (click)="onClickInterestBtn()" [disabled]="hasmarkedInterest()">
-      {{ !isUpcoming ? 'Join Class' : 'I will attend' }}
+      {{ !isUpcoming() ? 'Join Class' : 'I will attend' }}
     </button>
   </div>
 </ng-template>
