@@ -8,11 +8,13 @@
      🎮 TITLE — GAME STYLE ONLY
   ===================================================== */
   .class-header {
-   // background: linear-gradient(135deg, #f4f4f44e);
+    background: var(--color-primary);
+    margin: -1rem -0.8rem;
+
+    // background: linear-gradient(135deg, #f4f4f44e);
     // clip-path: polygon(0 0, 96% 0, 100% 100%, 0% 100%);
     // box-shadow: 0 6px 18px rgba(255, 122, 0, 0.25);
   }
-
 
   /* =====================================================
      📦 REST OF PAGE — ORIGINAL LIGHT THEME
@@ -50,8 +52,6 @@
       inset 0 0 0 1px rgba(90, 120, 255, 0.05);
   }
 }
-
-
 
 //Banner
 .class-stats-banner {
@@ -253,7 +253,6 @@
   opacity: 0.8;
 }
 
-
 //navbar
 :host {
   display: block;
@@ -261,9 +260,11 @@
 
 .right-sticky-nav {
   position: sticky;
+  margin: 0 -0.8rem;
   top: 0;
-  z-index: 1000;
-  background: #ffffff;
+  z-index: 10;
+  background: var(--color-primary);
+
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
@@ -272,7 +273,7 @@
   justify-content: flex-end;
   gap: 1.8rem;
   margin: 0;
-  padding: 1rem 2rem 0.3rem;
+  padding: 0.8rem 2rem 0.2rem;
   list-style: none;
 }
 

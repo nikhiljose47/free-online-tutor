@@ -9,3 +9,10 @@ html::-webkit-scrollbar,
 body::-webkit-scrollbar {
   display: none;              /* Chrome, Safari */
 }
+
+:root {
+  --color-primary: #A0C878;
+  --color-primary-light: #DDEB9D;
+  --color-bg-soft: #f7f7fb;
+  --color-text-main: #1f2937;
+}

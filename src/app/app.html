@@ -1,17 +1,20 @@
 <div class="app-root">
   <topbar></topbar>
+
   <div class="layout" [class.sidebar-collapsed]="isSidebarCollapsed()">
-    <class-stream-sidebar class="sidebar" (collapsedChange)="onSidebarToggle($event)" />
+    <class-stream-sidebar
+      class="sidebar"
+      (collapsedChange)="onSidebarToggle($event)">
+    </class-stream-sidebar>
 
     <div class="right">
-      <announcement-bar />
+      <announcement-bar></announcement-bar>
 
       <main class="content">
         <toast></toast>
         <router-outlet></router-outlet>
+        <app-footer></app-footer> <!-- 🔥 moved inside scroll area -->
       </main>
-
-      <app-footer />
     </div>
   </div>
 </div>

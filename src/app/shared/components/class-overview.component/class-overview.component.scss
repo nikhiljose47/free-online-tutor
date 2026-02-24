@@ -1,10 +1,13 @@
-$brand-light-green: #f2f4ef97;
-
+$brand-light-green: #ffffffe1;
 
 .class-overview {
   width: 100%;
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
-  background-color:$brand-light-green;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background-color: $brand-light-green;
   border-radius: 12px;
   padding: 30px;
 }
