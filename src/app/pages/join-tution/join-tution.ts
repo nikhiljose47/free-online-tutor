@@ -37,20 +37,17 @@ export class JoinTution {
     filter((id): id is string => !!id),
   );
 
-  readonly meetingId = toSignal(
-  this.meetingId$,
-  { initialValue: null }
-);
+  readonly meetingId = toSignal(this.meetingId$, { initialValue: null });
 
-isUpcoming = signal(false);
+  isUpcoming = signal(false);
 
-private syncStatus = effect(() => {
-  const id = this.meetingId();
-  if (!id) return;
+  private syncStatus = effect(() => {
+    const id = this.meetingId();
+    if (!id) return;
 
-  const state = this.statusStore.getState(id)();
-  this.isUpcoming.set(state === 'upcoming');
-});
+    const state = this.statusStore.getState(id)();
+    this.isUpcoming.set(state === 'upcoming');
+  });
   /* ---------------- derived (simple values) ---------------- */
 
   readonly profile = this.user.profile();
@@ -112,7 +109,6 @@ private syncStatus = effect(() => {
     );
   }
 
-
   setData() {
     console.log('data in meet', this.meeting);
     let meeting = this.meeting;
@@ -123,11 +119,12 @@ private syncStatus = effect(() => {
     this.banner = meeting.imageSrc;
 
     if (meeting.date > Timestamp.fromDate(new Date())) {
-    //  this.isUpcoming = true;
+      //  this.isUpcoming = true;
     }
 
-    const chapter = this.syllabus.getChapterByCode(meeting.chapterCode);
-    this.title = chapter?.chapter.name ?? '';
+    const chapter = this.syllabus.getChapterByCode(meeting.chapterCode).subscribe((e) => {
+      this.title = e?.chapter.name ?? '';
+    });
   }
 
   loadAttendanceAndUsers(meeting: Meeting) {

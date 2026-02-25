@@ -2,7 +2,7 @@ import { Timestamp } from '@angular/fire/firestore';
 import { ClassStatus } from '../classes/class-doc.model';
 import { CatalogGroup } from '../syllabus/syllabus-index.model';
 
-export type ClassSubjectStatus = 'active' | 'paused' | 'completed' | 'archived';
+export type ClassSubjectStatus = 'active' | 'paused' | 'completed' | 'archived' | 'idle';
 
 export interface Batch {
   id: string;

@@ -20,7 +20,8 @@ import { UserProfileService } from '../../core/services/fire/user-profile.servic
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { CatalogLookupService } from '../../domain/syllabus-index/catalog-lookup.service';
 import { ClassSubjectStore } from '../../store/class-store/class-subject.store';
-import { map, Observable, of, shareReplay } from 'rxjs';
+import { combineLatest, map, Observable, of, shareReplay, switchMap } from 'rxjs';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'schedule-live-class-form',
@@ -63,34 +64,58 @@ export class ScheduleLiveClassForm implements OnInit {
 
   readonly groupList = this.catalogLookup.groups;
   readonly batchList = this.catalogLookup.getAllGroupLabels();
-  readonly classList = this.syllabusLookup.classIds;
+  readonly classList = toSignal(this.syllabusLookup.getClassIds(), { initialValue: [] });
 
   readonly selectedClass = computed(() => this.form().classId);
   readonly selectedSubject = computed(() => this.form().subjectId);
 
-  readonly subjectList = computed(() =>
-    this.selectedClass() ? this.syllabusLookup.getSubjects(this.selectedClass()) : [],
+  readonly subjectList$ = toObservable(computed(() => this.selectedClass())).pipe(
+    switchMap((classId) => {
+      if (!classId) {
+        return of([]);
+      }
+
+      return this.syllabusLookup.getSubjects(classId);
+    }),
   );
 
-  readonly chapterList = computed(() =>
-    this.selectedClass() && this.selectedSubject()
-      ? this.syllabusLookup.getChapters(this.selectedClass(), this.selectedSubject())
-      : [],
+  readonly subjectList = toSignal(this.subjectList$, {
+    initialValue: [],
+  });
+
+  readonly chapterList$ = toObservable(
+    computed(() => ({
+      classId: this.selectedClass(),
+      subjectId: this.selectedSubject(),
+    })),
+  ).pipe(
+    switchMap(({ classId, subjectId }) => {
+      if (!classId || !subjectId) {
+        return of([]);
+      }
+
+      return this.syllabusLookup.getChapters(classId, subjectId);
+    }),
   );
 
-  readonly divisions = computed(() => {
-    const f = this.form();
-    this.classStoreApi.getCurrentAndNextIndex('CL06', 'CL06-MATH');
+  readonly chapterList = toSignal(this.chapterList$, {
+    initialValue: [],
+  });
+  readonly divisions$ = combineLatest([
+    toObservable(this.selectedClass),
+    toObservable(this.selectedSubject),
+    toObservable(this.form),
+  ]).pipe(
+    switchMap(([classId, subjectId, form]) => {
+      if (!classId || !subjectId || !form.chapterCode) {
+        return of([]);
+      }
 
-    // this.classStoreApi.getCurrentAndNextIndex(f.classId, f.subjectId, f.chapterCode, f.divisionId);
-
-    return this.selectedClass() && this.selectedSubject() && this.form().chapterCode
-      ? this.syllabusLookup.getDivisions(
-          this.selectedClass(),
-          this.selectedSubject(),
-          this.form().chapterCode,
-        )
-      : [];
+      return this.syllabusLookup.getDivisions(classId, subjectId, form.chapterCode);
+    }),
+  );
+  readonly divisions = toSignal(this.divisions$, {
+    initialValue: [],
   });
   currentAndNext$: Observable<string[]> = of([]);
 
@@ -160,13 +185,12 @@ export class ScheduleLiveClassForm implements OnInit {
     const date = new Date(f.date);
     date.setHours(hours, minutes, 0, 0);
 
-
     const start = new Date(date);
     const end = new Date(start.getTime() + (f.duration ?? 0) * 60000);
 
     const payload: Meeting = {
       id: '',
-      classId: this.syllabusLookup.getClass(f.classId)?.classId ?? '',
+      classId: f.classId,
       subjectId: f.subjectId,
       chapterCode: f.chapterCode,
       batchId: f.batchId,

@@ -39,6 +39,9 @@ export type SyllabusErrorCode =
 export const CACHE_TTL = {
   TEACHERS_LIST: 5 * 24 * 60 * 60 * 1000, // 5 days
   TEACHER_BY_ID: 2 * 60 * 60 * 1000, // 2 hour
+  BATCH_DOC: 5 * 60 * 1000, // 5 min
+  ANNOUNCEMENTS: 1 * 60 * 60 * 1000,
+  ASSIGNMENTS: 5 * 60 * 1000, // 5 min
 } as const;
 
 export const DEF_BATCH = 'blue';

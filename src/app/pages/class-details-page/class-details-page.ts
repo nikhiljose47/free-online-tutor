@@ -17,7 +17,6 @@ import { SyllabusRepository } from '../../domain/repositories/syllabus.repositor
 import { ActivatedRoute } from '@angular/router';
 import { Meeting } from '../../models/meeting.model';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus.model';
-import { BatchDataStore } from '../../domain/data/batch.data';
 import { UserCardlist } from '../../shared/components/user-card-list/user-card-list';
 import { ExploreCoursesBannerComponent } from '../../components/banners/explore-courses-banner/explore-courses-banner';
 import { FaqList } from '../../shared/components/faq-list/faq-list';

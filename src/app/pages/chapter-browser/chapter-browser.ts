@@ -10,6 +10,7 @@ import {
 
 import { ClassSyllabus, Chapter, Subject } from '../../models/syllabus/class-syllabus.model';
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
+import { EMPTY, switchMap, take } from 'rxjs';
 
 @Component({
   selector: 'chapter-browser',
@@ -24,7 +25,7 @@ export class ChapterBrowser implements OnInit {
   private syllabusLookup = inject(SyllabusLookupService);
 
   /* ------------------ core state ------------------ */
-  readonly classes = signal<string[]>(["Class"]);
+  readonly classes = signal<string[]>(['Class']);
   readonly syllabus = signal<ClassSyllabus | null>(null);
 
   readonly selectedClass = signal<string | null>(null);
@@ -59,22 +60,30 @@ export class ChapterBrowser implements OnInit {
 
   /* ------------------ lifecycle ------------------ */
   async ngOnInit(): Promise<void> {
-
     /* use already-loaded class instead of re-fetching */
-    const classNames = this.syllabusLookup.getClassNames();
-    this.classes.set(classNames);
+    this.syllabusLookup
+      .getClassNames()
+      .pipe(
+        take(1),
 
-    if (!classNames.length) return;
+        switchMap((names) => {
+          this.classes.set(names);
 
-    const firstClass = this.syllabusLookup.getClass(classNames[0]);
-    if (!firstClass) return;
+          if (!names.length) return EMPTY;
 
-    this.syllabus.set(firstClass);
-    this.selectedClass.set(firstClass.classId);
+          return this.syllabusLookup.getClass(names[0]).pipe(take(1));
+        }),
+      )
+      .subscribe((f) => {
+        if (!f) return;
 
-    if (firstClass.subjects.length) {
-      this.selectedSubjectCode.set(firstClass.subjects[0].code);
-    }
+        this.syllabus.set(f);
+        this.selectedClass.set(f.classId);
+
+        if (f.subjects.length) {
+          this.selectedSubjectCode.set(f.subjects[0].code);
+        }
+      });
   }
 
   /* ------------------ interactions ------------------ */

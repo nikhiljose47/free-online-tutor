@@ -31,7 +31,7 @@ import { ScheduleLiveClassForm } from '../../components/schedule-live-class-form
 export class ScheduleLiveClass implements OnInit {
   /* ------------------ services ------------------ */
   private meetApi = inject(MeetingsService);
-  private syllabus = inject(SyllabusLookupService);
+  private syllLooUpApi = inject(SyllabusLookupService);
   private fire = inject(FirestoreDocService);
   private authApi = inject(Auth2Service);
   private uiStateUtil = inject(UiStateUtil);
@@ -47,12 +47,12 @@ export class ScheduleLiveClass implements OnInit {
   teacherId: string | null;
 
   /* ------------------ lookups (signal-safe) ------------------ */
-  readonly classList = this.syllabus.classNames;
+  classList: string[] = [];
 
   batchList = signal<Array<string>>([]);
 
   constructor() {
-    this.teacherId = this.authApi.uid?? null;
+    this.teacherId = this.authApi.uid ?? null;
   }
 
   /* ------------------ lifecycle ------------------ */
@@ -68,6 +68,9 @@ export class ScheduleLiveClass implements OnInit {
         /* cache in UI state */
         list.forEach((m) => this.uiStateUtil.set(m.id, m));
       }
+    });
+    this.syllLooUpApi.getClassNames().subscribe((e) => {
+      this.classList = e;
     });
   }
 

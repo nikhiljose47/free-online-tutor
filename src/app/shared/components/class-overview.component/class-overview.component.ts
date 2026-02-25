@@ -1,24 +1,16 @@
-import { ChangeDetectionStrategy, Component, inject, Input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { of, switchMap } from 'rxjs';
-import { BatchDataStore } from '../../../domain/data/batch.data';
+import { BatchQueryService } from '../../../services/class/batch-query/batch-query.service';
+import { BatchDoc } from '../../../models/batch/batch-doc.model';
+import { SyllabusLookupService } from '../../../services/syllabus/syllabus-lookup.service';
 
-interface SubjectOverview {
-  name: string;
-  currentIndex: number;
-  chapters: string[];
-}
-
-interface BatchOverview {
-  name: string;
-  time: string;
-  status: 'upcoming' | 'live' | 'completed';
-  totalStudents: number;
-  totalBatches: number;
-  upcomingClass: string;
-  enrollmentOpen: boolean;
-  subjects: SubjectOverview[];
+interface DashBoard {
+  total: number;
+  upcoming: BatchDoc[];
+  live: BatchDoc[];
+  enrollmentOpen: BatchDoc[];
+  upcomingCount: number;
+  liveCount: number;
 }
 
 @Component({
@@ -32,9 +24,10 @@ interface BatchOverview {
 export class ClassOverviewComponent {
   @Input({ required: true }) classId!: string;
 
-  batchDataApi = inject(BatchDataStore);
+  batchQueryApi = inject(BatchQueryService);
+  syllLookUpApi = inject(SyllabusLookupService);
 
-  readonly batches = signal<BatchOverview[]>([
+  readonly batches = signal<any[]>([
     {
       name: 'Batch A',
       time: '4:30 PM',
@@ -79,25 +72,35 @@ export class ClassOverviewComponent {
     },
   ]);
 
-  readonly selectedBatchIndex = signal(0);
+  readonly dashboard = signal<DashBoard | null>(null);
 
-  readonly selectedBatch = signal(this.batches()[0]);
+  selectedBatchId = signal<string | null>(null);
+
+  selectedType = signal<'live' | 'upcoming' | 'enrollmentOpen'>('live');
+  selectedBatch = computed(() => {
+    const db = this.dashboard();
+    if (!db || !this.selectedBatchId()) return null;
+
+    return [...db.live, ...db.upcoming].find((b) => b.id === this.selectedBatchId()) ?? null;
+  });
 
   constructor() {
     this.loadBatchStore();
+    var x = this.syllLookUpApi.getChapters('CL06', 'CL06-MATH').subscribe((e) => {
+      console.log(e);
+    });
+    var y = this.syllLookUpApi.getSubjects('CL06');
+
+    console.log(y);
+  }
+
+  onSelectBatch(b: BatchDoc) {
+    this.selectedBatchId.set(b.id);
   }
 
   loadBatchStore() {
-    this.batchDataApi.init('CL06');
-    console.log(this.batchDataApi.upcomingBatches())
-  }
-
-  onClickBatch(b: any) {
-    this.batchDataApi.selectBatch(b);
-  }
-
-  selectBatch(i: number) {
-    this.selectedBatchIndex.set(i);
-    this.selectedBatch.set(this.batches()[i]);
+    this.batchQueryApi.getDashboard('CL06').subscribe((e) => {
+      this.dashboard.set(e);
+    });
   }
 }

@@ -2,66 +2,39 @@
   <header class="overview-header container">
     <h2 class="overview-title">Overview</h2>
   </header>
-  <!-- 
-    <section class="batch-zone" *ngIf="batchDataApi.batches().length">
-    <h2 class="section-title my-4">Batches :</h2>
-    ACTIVE
-    <div class="batch-row" *ngIf="batchDataApi.activeBatches().length">
-      <h3 class="batch-row-title">Active</h3>
-
-      <div class="batch-scroll">
-        @for (b of batchDataApi.activeBatches(); track b.id) {
-          <button
-            class="batch-card long"
-            [class.selected]="batchDataApi.selectedBatch()?.id === b.id"
-            (click)="onClickBatch(b)"
-          >
-            <div class="batch-name">{{ b.name }}</div>
-            <div class="batch-time">Started at {{ b.startTime | date: 'hh:mm a' }}</div>
-            <div class="batch-info">{{ b.info }}</div>
-          </button>
-        }
-      </div>
-    </div>
-
-    UPCOMING
-    <div class="batch-row" *ngIf="batchDataApi.upcomingBatches().length">
-      <h3 class="batch-row-title">Upcoming</h3>
-
-      <div class="batch-scroll">
-        @for (b of batchDataApi.upcomingBatches(); track b.id) {
-          <div class="batch-card long upcoming-grey">
-            <div class="batch-name">{{ b.name }}</div>
-            <div class="batch-time">Coming at {{ b.startTime | date: 'hh:mm a' }}</div>
-            <div class="batch-info">{{ b.info }}</div>
-          </div>
-        }
-      </div>
-    </div>
-  </section>
--->
 
   <!-- BATCH SELECTOR -->
-  <section class="batch-strip container">
+  <section class="batch-strip container" *ngIf="dashboard() as db">
     <div class="batch-list">
+      <!-- LIVE -->
       <button
         type="button"
         class="batch-card"
-        *ngFor="let b of batches(); let i = index"
-        [class.active]="i === selectedBatchIndex()"
-        (click)="selectBatch(i)"
+        *ngFor="let b of db.live"
+        [class.active]="selectedBatchId() === b.id"
+        (click)="onSelectBatch(b)"
       >
-        <div class="batch-name">{{ b.name }}</div>
+        <div class="batch-name">{{ b.label }}</div>
 
         <div class="batch-meta">
-          <span>{{ b.time }}</span>
-          <span
-            class="status"
-            [class.upcoming]="b.status === 'upcoming'"
-            [class.live]="b.status === 'live'"
-          >
-            {{ b.status }}
-          </span>
+          <span>{{ b.startAt.toDate() | date: 'hh:mm a' }}</span>
+          <span class="status live">live</span>
+        </div>
+      </button>
+
+      <!-- UPCOMING -->
+      <button
+        type="button"
+        class="batch-card"
+        *ngFor="let b of db.upcoming"
+        [class.active]="selectedBatchId() === b.id"
+        (click)="onSelectBatch(b)"
+      >
+        <div class="batch-name">{{ b.label }}</div>
+
+        <div class="batch-meta">
+          <span>{{ b.startAt.toDate() | date: 'hh:mm a' }}</span>
+          <span class="status upcoming">upcoming</span>
         </div>
       </button>
     </div>
@@ -70,52 +43,40 @@
   <!-- DETAILS -->
   <section class="overview-body container" *ngIf="selectedBatch() as data">
     <div class="overview-top">
-      <div class="enroll" [class.open]="data.enrollmentOpen">
-        {{ data.enrollmentOpen ? 'Enrollment Open' : 'Enrollment Closed' }}
+      <div class="enroll" [class.open]="data.isEnrollmentOpen">
+        {{ data.isEnrollmentOpen ? 'Enrollment Open' : 'Enrollment Closed' }}
       </div>
 
       <div class="stats">
         <div class="stat">
-          <h3>{{ data.totalStudents }}</h3>
+          <h3>{{ data.enrolledCount }}</h3>
           <p>Students</p>
         </div>
 
         <div class="stat">
-          <h3>{{ data.totalBatches }}</h3>
+          <h3>{{ dashboard()?.total }}</h3>
           <p>Batches</p>
         </div>
 
         <div class="stat">
-          <h3>{{ data.upcomingClass }}</h3>
-          <p>Next Class</p>
+          <h3>{{ dashboard()?.upcomingCount }}</h3>
+          <p>Upcoming</p>
         </div>
       </div>
     </div>
 
     <!-- SUBJECT PROGRESS -->
     <section class="subjects">
-      <div class="subject" *ngFor="let s of data.subjects">
+      <div class="subject" *ngFor="let s of data.subjectIndex">
         <div class="subject-head">
-          <h4>{{ s.name }}</h4>
-          <span class="progress-text"> {{ s.currentIndex + 1 }} / {{ s.chapters.length }} </span>
-        </div>
-
-        <!-- Creative linear roadmap -->
-        <div class="progress-bar">
-          <div
-            class="progress-fill"
-            [style.width.%]="((s.currentIndex + 1) * 100) / s.chapters.length"
-          ></div>
-        </div>
-
-        <div class="chapter-row">
-          <span
-            class="chapter"
-            *ngFor="let c of s.chapters; let i = index"
-            [class.current]="i === s.currentIndex"
-          >
-            {{ c }}
+          <h4>{{ s.subjectId }}</h4>
+          <span class="progress-text">
+            {{ s.curIndex }}
           </span>
+        </div>
+
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="50"></div>
         </div>
       </div>
     </section>

@@ -8,7 +8,6 @@ import { ClassSyllabus } from '../../models/syllabus/class-syllabus.model';
 import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
 import { ResourceIndex, IdMapUtil } from '../utils/id-map.utils';
 
-
 @Injectable({ providedIn: 'root' })
 export class SyllabusStore {
   private repo = inject(SyllabusRepository);
@@ -39,30 +38,20 @@ export class SyllabusStore {
   getAllClasses$(): Observable<ClassSyllabus[]> {
     return this.getIdMap$().pipe(
       map((map) => Object.values(map ?? {})),
-
-      /* load all classes in parallel */
       switchMap((ids) =>
         ids.length
           ? forkJoin(
               ids.map((id) =>
                 this.repo.loadClass(id).pipe(
                   take(1),
-                  catchError(() => of(null)), // prevent forkJoin crash
+                  catchError(() => of(null)),
                 ),
               ),
             )
           : of([]),
       ),
-
-      /* remove failed/null loads */
       map((classes) => classes.filter((c): c is ClassSyllabus => !!c)),
-
-      /* avoid caching empty forever */
-      filter((classes) => classes.length > 0),
-
-      /* cache latest valid result */
-      shareReplay({ bufferSize: 1, refCount: true }),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
   }
-
 }

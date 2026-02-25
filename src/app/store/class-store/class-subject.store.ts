@@ -10,7 +10,9 @@ import { ClassUtil } from '../../shared/utils/class.util';
 export class ClassSubjectStore {
   private subjectService = inject(ClassSubjectService);
   private syllabusLookupApi = inject(SyllabusLookupService);
+ 
 
+  //Todo
   getCurrentAndNextIndex(classId: string, subjectId: string): Observable<string[]> {
     return this.getCurrentIndex(classId, subjectId).pipe(
       map((cur) => {
@@ -18,17 +20,19 @@ export class ClassSubjectStore {
 
         if (isDiv) {
           let nextDivId = ClassUtil.getNextCode(cur);
-          const hasDiv = this.syllabusLookupApi.hasDivision(classId, subjectId, cur, nextDivId);
+         // const hasDiv = this.syllabusLookupApi.hasChapter(classId, subjectId, cur, nextDivId);
           let tmp = ClassUtil.convertToClassId(cur);
           var nextChapterId = ClassUtil.getNextCode(tmp);
           const hasChapter = this.syllabusLookupApi.hasChapter(classId, subjectId, nextChapterId);
-          return hasDiv ? [cur, nextDivId] : hasChapter ? [cur, nextChapterId] : [cur, ''];
+         // return true ? [cur, nextDivId] : hasChapter() ? [cur, nextChapterId] : [cur, ''];
+         return [cur, nextDivId] ;
         } else {
           let tmp = ClassUtil.convertToDivisionId(cur);
           const hasDivision = this.syllabusLookupApi.hasChapter(classId, subjectId, tmp);
           let nextChapter = ClassUtil.getNextCode(cur);
           const hasChapter = this.syllabusLookupApi.hasChapter(classId, subjectId, nextChapter);
-          return hasDivision ? [cur, tmp] : hasChapter ? [cur, nextChapter] : [cur, ''];
+          return [cur, tmp] ;
+          //return hasDivision() ? [cur, tmp] : hasChapter() ? [cur, nextChapter] : [cur, ''];
         }
       }),
     );
