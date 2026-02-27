@@ -48,12 +48,25 @@ export class SyllabusLookupService {
 
   /* ================= SUBJECTS ================= */
 
-  getSubjects(classId: string): Observable<string[]> {
+  getSubjectNames(classId: string): Observable<string[]> {
     return this.list$.pipe(
       map((list) => list.find((c) => c.classId === classId)?.subjects.map((s) => s.name) ?? []),
     );
   }
 
+getSubjects(classId: string): Observable<{ code: string; name: string; meta: Record<string, unknown>}[]> {
+  return this.list$.pipe(
+    map(list => {
+      const found = list.find(c => c.classId === classId);
+      if (!found?.subjects?.length) return [];
+      return found.subjects.map(s => ({
+        code: s.code,
+        name: s.name,
+        meta: s.meta,
+      }));
+    })
+  );
+}
   getSubject(classId: string, subjectName: string): Observable<Subject | null> {
     return this.list$.pipe(
       map(
