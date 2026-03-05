@@ -39,7 +39,7 @@ export class BatchQueryService {
   getLive(classId: string): Observable<BatchDoc[]> {
     return this.getAll(classId).pipe(
       map(arr => {
-        const now = Date.now();
+      const now = Date.now();
         return arr.filter(b =>
           b.startAt.toMillis() <= now &&
           b.endAt.toMillis() >= now

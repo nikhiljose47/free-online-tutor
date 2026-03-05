@@ -21,6 +21,8 @@ import { UserCardlist } from '../../shared/components/user-card-list/user-card-l
 import { ExploreCoursesBannerComponent } from '../../components/banners/explore-courses-banner/explore-courses-banner';
 import { FaqList } from '../../shared/components/faq-list/faq-list';
 import { ClassScheduleListComponent } from '../../shared/components/class-schedule-list/class-schedule-list';
+import { Quote } from '../../models/quote.model';
+import { QuoteUtil } from '../../shared/utils/quote.utils';
 
 type TabType = 'overview' | 'games' | 'stats';
 
@@ -51,22 +53,18 @@ export class ClassDetailsPage implements OnInit {
   private meetApi = inject(MeetingsService);
   private syllRepo = inject(SyllabusRepository);
   private route = inject(ActivatedRoute);
- 
 
-  readonly id = this.route.snapshot.paramMap.get('id') ?? 'CL08';
+  readonly classId = this.route.snapshot.paramMap.get('id') ?? 'CL08';
 
   readonly isLoading = signal(true);
   readonly hasValidData = signal(false);
   private readonly meetings = signal<Meeting[]>([]);
 
   syllabus = signal<ClassSyllabus | null>(null);
-  classId = 'CL09';
   classTitle = 'Class 6';
   puzzleId = 'puzzle_001';
   classFileId: string = '';
-  tabs = ['Timetable', 'Tests', 'Announcements'] as const;
-
-  subjects = signal(Array.from({ length: 8 }).map((_, i) => ({ id: i + 1 })));
+  
 
   readonly stats = signal<ClassStat[]>([
     { value: '12,500+', label: 'Students learning in this class' },
@@ -80,6 +78,8 @@ export class ClassDetailsPage implements OnInit {
 
   readonly activeMainTab = computed(() => this._activeTab());
 
+  readonly quote = signal<Quote>(QuoteUtil.getRandom());
+
   select(tab: TabType): void {
     if (this._activeTab() !== tab) {
       this._activeTab.set(tab);
@@ -90,7 +90,6 @@ export class ClassDetailsPage implements OnInit {
     this.loadData();
   }
 
-
   loadData() {
     this.syllabusStore
       .getIdMap$()
@@ -98,11 +97,11 @@ export class ClassDetailsPage implements OnInit {
         switchMap((map) => {
           if (!map) return of(null);
 
-          this.classFileId = map[this.id];
+          this.classFileId = map[this.classId];
 
           return forkJoin({
             syllabus: this.syllRepo.loadClass(this.classFileId).pipe(catchError(() => of(null))),
-            meetings: this.meetApi.getMeetingsForClass(this.id).pipe(catchError(() => of(null))),
+            meetings: this.meetApi.getMeetingsForClass(this.classId).pipe(catchError(() => of(null))),
           });
         }),
         tap((res) => {

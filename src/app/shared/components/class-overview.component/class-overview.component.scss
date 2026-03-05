@@ -207,3 +207,58 @@ $brand-light-green: #ffffffe1;
     min-width: 180px;
   }
 }
+
+/* Subject Meta Layout */
+.subject-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Enterprise Chips */
+.chip {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Not Started */
+.chip-not-started {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+/* Current Chapter */
+.chip-current {
+  background: #111827;
+  color: #ffffff;
+}
+
+/* Slight spacing refinement */
+.subject-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Improve progress spacing */
+.progress-bar {
+  margin-top: 10px;
+}
+
+/* Mobile refinement */
+@media (max-width: 768px) {
+  .subject-meta {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    font-size: 0.65rem;
+  }
+}

@@ -39,7 +39,7 @@ export class Register {
         name: this.name(),
         email: res.user.email ?? '',
         joinedAt: Date.now(),
-        role: 'user',
+        role: 'student',
         age: 26,
         photoUrl: null,
         phone: '9876543210',

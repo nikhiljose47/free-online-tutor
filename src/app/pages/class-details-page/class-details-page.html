@@ -29,7 +29,7 @@
   <section class="tab-content">
     @switch (activeMainTab()) {
       @case ('overview') {
-        <class-overview [classId]="id"></class-overview>
+        <class-overview [classId]="classId"></class-overview>
       }
       @case ('games') {
         <mcq-puzzle-card
@@ -103,4 +103,10 @@
   <section class="container py-4">
     <faq-list></faq-list>
   </section>
+
+  <footer *ngIf="quote().text !== ''" class="quote-section">
+    <p class="quote-text">
+      “{{ quote().text }}”,<span> {{ quote().author ?? '' }}</span>
+    </p>
+  </footer>
 </section>

@@ -46,15 +46,25 @@
         >
 
         <a class="topbar-link" routerLink="/teachers">Teachers</a>
-        <a class="topbar-link" routerLink="/test">Hop-in/test</a>
+        <a class="topbar-link" routerLink="/tuition-centers">Offline Centers</a>
         <a class="topbar-link" routerLink="/report-card">Report Card</a>
 
         <div class="profile-container">
-          <i class="bi bi-person-circle profile-icon" (click)="toggleMenu(); $event.stopPropagation()"></i>
+          <i
+            class="bi bi-person-circle profile-icon"
+            (click)="toggleMenu(); $event.stopPropagation()"
+          ></i>
 
           <div class="profile-menu" *ngIf="menuOpen()">
-            <a routerLink="/profile" class="menu-item" (click)="closeMenu(); $event.stopPropagation()">My Profile</a>
-            <a routerLink="/about" class="menu-item" (click)="closeMenu(); $event.stopPropagation()">About</a>
+            <a
+              routerLink="/profile"
+              class="menu-item"
+              (click)="closeMenu(); $event.stopPropagation()"
+              >My Profile</a
+            >
+            <a routerLink="/about" class="menu-item" (click)="closeMenu(); $event.stopPropagation()"
+              >About</a
+            >
             <button
               class="menu-item logout-btn"
               (click)="logout(); closeMenu(); $event.stopPropagation()"
@@ -64,7 +74,11 @@
           </div>
         </div>
 
-        <div *ngIf="menuOpen()" class="menu-overlay" (click)="closeMenu(); $event.stopPropagation()"></div>
+        <div
+          *ngIf="menuOpen()"
+          class="menu-overlay"
+          (click)="closeMenu(); $event.stopPropagation()"
+        ></div>
       </ng-container>
     </div>
   </div>

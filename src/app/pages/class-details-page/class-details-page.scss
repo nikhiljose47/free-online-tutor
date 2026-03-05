@@ -330,3 +330,22 @@
     padding-bottom: 80px;
   }
 }
+
+
+/* ===============================
+   QUOTE
+================================ */
+.quote-section {
+  margin-top: 3.8rem;
+  padding: 28px 26px;
+  background: linear-gradient(135deg, #fff7ed, #ffffff);
+  border-radius: 20px;
+  border-left: 6px solid var(--accent);
+}
+
+.quote-text {
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-style: italic;
+  color: #92400e;
+}

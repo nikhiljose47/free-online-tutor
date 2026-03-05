@@ -1,8 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, Input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BatchQueryService } from '../../../services/class/batch-query/batch-query.service';
 import { BatchDoc } from '../../../models/batch/batch-doc.model';
 import { SyllabusLookupService } from '../../../services/syllabus/syllabus-lookup.service';
+import { Chapter } from '../../../models/syllabus/class-syllabus.model';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { combineLatest, map, of, shareReplay, switchMap } from 'rxjs';
 
 interface DashBoard {
   total: number;
@@ -77,6 +80,7 @@ export class ClassOverviewComponent {
   selectedBatchId = signal<string | null>(null);
 
   selectedType = signal<'live' | 'upcoming' | 'enrollmentOpen'>('live');
+
   selectedBatch = computed(() => {
     const db = this.dashboard();
     if (!db || !this.selectedBatchId()) return null;
@@ -84,12 +88,93 @@ export class ClassOverviewComponent {
     return [...db.live, ...db.upcoming].find((b) => b.id === this.selectedBatchId()) ?? null;
   });
 
+  private subjectsWithChapters$ = this.syllLookUpApi.getSubjects(this.classId).pipe(
+    switchMap((subjects) =>
+      subjects?.length
+        ? combineLatest(
+            subjects.map((s) =>
+              this.syllLookUpApi.getChapters(this.classId, s.code).pipe(
+                map((chapters) => ({
+                  code: s.code,
+                  name: s.name,
+                  chapters,
+                })),
+              ),
+            ),
+          )
+        : of([]),
+    ),
+    shareReplay({ bufferSize: 1, refCount: true }),
+  );
+
+  private syllabusSignal = toSignal(this.subjectsWithChapters$, {
+    initialValue: [],
+  });
+
+  readonly mergedSubjectProgress = computed(() => {
+    const batch = this.selectedBatch();
+    const syllabus = this.syllabusSignal();
+
+    if (!batch || !syllabus.length) return [];
+
+    return batch.subjectIndex.map((sub) => {
+      const subject = syllabus.find((s) => s.code === sub.subjectId);
+
+      if (!subject || !subject.chapters.length) {
+        return {
+          subjectName: sub.subjectId,
+          total: 0,
+          currentIndex: 0,
+          percent: 0,
+          status: 'not-started',
+          currentChapterName: null,
+        };
+      }
+
+      const total = subject.chapters.length;
+
+      if (!sub.curIndex) {
+        return {
+          subjectName: subject.name,
+          total,
+          currentIndex: 0,
+          percent: 0,
+          status: 'not-started',
+          currentChapterName: null,
+        };
+      }
+
+      const index = subject.chapters.findIndex((c: Chapter) => c.code === sub.curIndex);
+
+      if (index < 0) {
+        return {
+          subjectName: subject.name,
+          total,
+          currentIndex: 0,
+          percent: 0,
+          status: 'not-started',
+          currentChapterName: null,
+        };
+      }
+
+      const percent = ((index + 1) * 100) / total;
+
+      return {
+        subjectName: subject.name,
+        total,
+        currentIndex: index,
+        percent,
+        status: 'in-progress',
+        currentChapterName: subject.chapters[index].name,
+      };
+    });
+  });
   constructor() {
     this.loadBatchStore();
-    var x = this.syllLookUpApi.getChapters('CL06', 'CL06-MATH').subscribe((e) => {
-      console.log(e);
-    });
-    var y = this.syllLookUpApi.getSubjects('CL06');
+  effect(() => {
+    console.log('Merged Progress:', this.mergedSubjectProgress());
+  });
+    var y = this.syllLookUpApi.getSubjects(this.classId);
 
     console.log(y);
   }
@@ -99,8 +184,11 @@ export class ClassOverviewComponent {
   }
 
   loadBatchStore() {
-    this.batchQueryApi.getDashboard('CL06').subscribe((e) => {
-      this.dashboard.set(e);
+    this.batchQueryApi.getDashboard(this.classId).subscribe((db) => {
+      this.dashboard.set(db);
+      const first = db.live?.[0] ?? db.upcoming?.[0] ?? db.enrollmentOpen?.[0] ?? null;
+
+      if (first) this.selectedBatchId.set(first.id);
     });
   }
 }

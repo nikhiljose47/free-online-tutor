@@ -24,4 +24,4 @@ export interface UserModel {
   updatedAt: Timestamp | null;
 }
 
-export type UserRole = 'admin' | 'user' | 'guest' | 'teacher';
+export type UserRole = 'admin' | 'student' | 'guest' | 'teacher';

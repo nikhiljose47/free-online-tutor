@@ -3,6 +3,15 @@ import { SyllabusStore } from '../../shared/state/syllabus.store';
 import { map, shareReplay, Observable } from 'rxjs';
 import { Chapter, ClassSyllabus, Subject } from '../../models/syllabus/class-syllabus.model';
 
+
+export interface SubjectWithChapters {
+  code: string;
+  name: string;
+  meta: Record<string, unknown>;
+  chapters: Chapter[];
+}
+
+
 @Injectable({ providedIn: 'root' })
 export class SyllabusLookupService {
   private syllabusStore = inject(SyllabusStore);
@@ -54,19 +63,21 @@ export class SyllabusLookupService {
     );
   }
 
-getSubjects(classId: string): Observable<{ code: string; name: string; meta: Record<string, unknown>}[]> {
-  return this.list$.pipe(
-    map(list => {
-      const found = list.find(c => c.classId === classId);
-      if (!found?.subjects?.length) return [];
-      return found.subjects.map(s => ({
-        code: s.code,
-        name: s.name,
-        meta: s.meta,
-      }));
-    })
-  );
-}
+  getSubjects(
+    classId: string,
+  ): Observable<{ code: string; name: string; meta: Record<string, unknown> }[]> {
+    return this.list$.pipe(
+      map((list) => {
+        const found = list.find((c) => c.classId === classId);
+        if (!found?.subjects?.length) return [];
+        return found.subjects.map((s) => ({
+          code: s.code,
+          name: s.name,
+          meta: s.meta,
+        }));
+      }),
+    );
+  }
   getSubject(classId: string, subjectName: string): Observable<Subject | null> {
     return this.list$.pipe(
       map(
@@ -182,4 +193,32 @@ getSubjects(classId: string): Observable<{ code: string; name: string; meta: Rec
   ): Observable<boolean> {
     return this.getDivision(classId, subjectName, chapterCode, divisionCode).pipe(map((d) => !!d));
   }
+
+
+  getSubjectsWithChapters(
+  classId: string
+): Observable<{
+  subjects: SubjectWithChapters[];
+}> {
+  return this.list$.pipe(
+    map(list => {
+
+      const cls = list.find(c => c.classId === classId);
+      if (!cls?.subjects?.length) {
+        return { subjects: [] };
+      }
+
+      const subjects = cls.subjects.map(s => ({
+        code: s.code,
+        name: s.name,
+        meta: s.meta,
+        chapters: this.normalizeChapters(s.chapters)
+      }));
+
+      return { subjects };
+    })
+  );
+}
+
+
 }
