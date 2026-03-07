@@ -1,4 +1,10 @@
-import { Injectable, signal } from '@angular/core';
+import {
+  EnvironmentInjector,
+  inject,
+  Injectable,
+  runInInjectionContext,
+  signal,
+} from '@angular/core';
 import {
   Auth,
   signInWithEmailAndPassword,
@@ -18,10 +24,15 @@ export interface AuthResult {
 export class Auth2Service {
   user = signal<User | null>(null);
 
-  constructor(private auth: Auth) {
-    onAuthStateChanged(auth, (u) => this.user.set(u));
-  }
+  private envInjector = inject(EnvironmentInjector);
 
+  constructor(private auth: Auth) {
+    onAuthStateChanged(auth, (u) => {
+      runInInjectionContext(this.envInjector, () => {
+        this.user.set(u);
+      });
+    });
+  }
   login(email: string, password: string): Promise<AuthResult> {
     return signInWithEmailAndPassword(this.auth, email, password)
       .then((res) => ({ success: true, user: res.user, message: '' }))

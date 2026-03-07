@@ -2,12 +2,15 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  AfterViewInit,
   inject,
   signal,
   ChangeDetectionStrategy,
   EventEmitter,
   Output,
   effect,
+  EnvironmentInjector,
+  runInInjectionContext,
 } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
@@ -16,7 +19,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { Meeting } from '../../models/meeting.model';
 
-import { combineLatest, map, timer } from 'rxjs';
+import { combineLatest, map, merge, shareReplay, switchMap, timer } from 'rxjs';
 import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
 import { MeetingsService } from '../../services/meetings/meetings.service';
 import { CatalogLookupService } from '../../domain/syllabus-index/catalog-lookup.service';
@@ -30,7 +33,7 @@ import { MeetingStatusStore } from '../../shared/state/meeting-status.store';
   styleUrl: './class-stream-sidebar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ClassStreamSidebar implements OnInit, OnDestroy {
+export class ClassStreamSidebar implements OnInit, OnDestroy, AfterViewInit {
   /* ================= OUTPUT ================= */
   @Output() collapsedChange = new EventEmitter<boolean>();
 
@@ -39,101 +42,104 @@ export class ClassStreamSidebar implements OnInit, OnDestroy {
   private router = inject(Router);
   private uiUtil = inject(UiStateUtil);
   private catalogLookupApi = inject(CatalogLookupService);
+  private statusStore = inject(MeetingStatusStore);
+  private envInjector = inject(EnvironmentInjector);
 
-  /* ================= UI SIGNALS (FINAL ONLY) ================= */
+  /* ================= UI SIGNALS ================= */
   readonly live = signal<any[]>([]);
   readonly upcoming = signal<any[]>([]);
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
   readonly collapsed = signal(false);
-  private statusStore = inject(MeetingStatusStore);
 
   private clockId!: any;
+  private mergedSignal!: any;
 
-  private readonly syncEffect = effect(() => {
-  const data = this.mergedSignal();
-  this.live.set(data.live);
-  this.upcoming.set(data.upcoming);
-  this.loading.set(false);
-});
+  /* ================= STREAMS ================= */
+  private readonly merged$ = this.catalogLookupApi.getAllReady$().pipe(
+    switchMap((feed) =>
+      merge(this.meetApi.getLiveMeetingsInitial(), this.meetApi.getLiveMeetings()).pipe(
+        shareReplay(1),
+        map((meetRes) => {
+          if (!meetRes.ok) {
+            throw new Error(meetRes.message ?? 'Meetings load failed');
+          }
 
+          const meetings: Meeting[] = Array.isArray(meetRes.data)
+            ? (meetRes.data as Meeting[])
+            : [];
 
-  private readonly merged$ = combineLatest([
-    this.meetApi.getLiveMeetings(),
-    this.catalogLookupApi.getAllReady$(),
-    timer(0, 30_000), // clock refresh at 30 sec
-  ]).pipe(
-    map(([meetRes, feed, _]) => {
-      if (!meetRes.ok) {
-        throw new Error(meetRes.message ?? 'Meetings load failed');
-      }
+          const mapById = new Map<string, any>();
+          feed.forEach((f: any) => mapById.set(f.id, f));
 
-      const meetings: Meeting[] = Array.isArray(meetRes.data) ? (meetRes.data as Meeting[]) : [];
+          const now = new Date();
 
-      const mapById = new Map<string, any>();
-      feed.forEach((f: any) => mapById.set(f.id, f));
+          const attachMeta = (m: Meeting) => {
+            const meta = mapById.get(String(m.classId));
+            return {
+              ...m,
+              image: meta?.meta?.image ?? '',
+              title: meta?.label ?? meta?.title ?? '',
+            };
+          };
 
-      const now = new Date();
+          const live = meetings
+            .filter((m) => {
+              const start = m.date?.toDate?.();
+              const end = m.endAt?.toDate?.();
+              return start && end && start <= now && end >= now;
+            })
+            .map(attachMeta);
 
-      const attachMeta = (m: Meeting) => {
-        const meta = mapById.get(String(m.classId));
-        return {
-          ...m,
-          image: meta?.meta?.image ?? '',
-          title: meta?.label ?? meta?.title ?? '',
-        };
-      };
+          const upcoming = meetings
+            .filter((m) => {
+              const start = m.date?.toDate?.();
+              return start && start > now;
+            })
+            .sort((a, b) => a.date.toDate().getTime() - b.date.toDate().getTime())
+            .map(attachMeta);
 
-      const live = meetings
-        .filter((m) => {
-          const start = m.date?.toDate?.();
-          const end = m.endAt?.toDate?.();
-          return start && end && start <= now && end >= now;
-        })
-        .map(attachMeta);
+          meetings.forEach((m) => {
+            const start = m.date?.toDate?.();
+            const end = m.endAt?.toDate?.();
+            if (!start || !end) return;
 
-      const upcoming = meetings
-        .filter((m) => {
-          const start = m.date?.toDate?.();
-          return start && start > now;
-        })
-        .sort((a, b) => a.date.toDate().getTime() - b.date.toDate().getTime())
-        .map(attachMeta);
+            if (start <= now && end >= now) this.statusStore.setState(m.id, 'live');
+            else if (start > now) this.statusStore.setState(m.id, 'upcoming');
+            else this.statusStore.setState(m.id, 'ended');
+          });
 
-      meetings.forEach((m) => {
-        const start = m.date?.toDate?.();
-        const end = m.endAt?.toDate?.();
-        if (!start || !end) return;
-
-        const now = new Date();
-
-        if (start <= now && end >= now) {
-          this.statusStore.setState(m.id, 'live');
-        } else if (start > now) {
-          this.statusStore.setState(m.id, 'upcoming');
-        } else {
-          this.statusStore.setState(m.id, 'ended');
-        }
-      });
-      const finalResult = { live, upcoming };
-
-      return finalResult;
-    }),
+          return { live, upcoming };
+        }),
+      ),
+    ),
   );
-
-  /* ============================================================
-     🔹 SIGNAL BRIDGE (ONLY UI STATE)
-     ============================================================ */
-
-  readonly mergedSignal = toSignal(this.merged$, {
-    initialValue: { live: [], upcoming: [] },
-  });
-
   /* ================= LIFECYCLE ================= */
 
   ngOnInit(): void {
-    this.clockId = setInterval(() => {}, 30_000); // keep lifecycle parity
+    this.clockId = setInterval(() => {}, 30_000);
   }
+
+  ngAfterViewInit(): void {
+    runInInjectionContext(this.envInjector, () => {
+      this.mergedSignal = toSignal(this.merged$, {
+        initialValue: { live: [], upcoming: [] },
+      });
+
+      effect(() => {
+        const data = this.mergedSignal();
+        this.live.set(data.live);
+        this.upcoming.set(data.upcoming);
+        this.loading.set(false);
+      });
+    });
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.clockId);
+  }
+
+  /* ================= UI HELPERS ================= */
 
   getBannerSrc(src?: string | null): string {
     return src || PLACEHOLDER__COVER_IMG;
@@ -145,10 +151,6 @@ export class ClassStreamSidebar implements OnInit, OnDestroy {
 
   getBannerAlt(cls: any): string {
     return cls?.className ? `${cls.className} cover` : 'Class cover';
-  }
-
-  ngOnDestroy(): void {
-    clearInterval(this.clockId);
   }
 
   /* ================= UI ACTIONS ================= */

@@ -11,6 +11,7 @@ import { ToastService } from '../../shared/toast.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './login.html',
+  styleUrl: './login.scss'
 })
 export class LoginComponent {
   name = signal('');

@@ -10,6 +10,7 @@ import { MeetingsService } from '../../services/meetings/meetings.service';
   imports: [CommonModule, DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './report-card.html',
+  styleUrl: './report-card.scss'
 })
 export class ReportCard implements OnInit {
   private meetApi = inject(MeetingsService);

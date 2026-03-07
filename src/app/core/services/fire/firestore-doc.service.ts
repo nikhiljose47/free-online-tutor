@@ -72,16 +72,16 @@ export class FirestoreDocService {
             ok: true,
             id: ref.id,
             data: null,
-          } as FireResponse<T>)
+          }) as FireResponse<T>,
       ),
-      catchError((err) => of(this.fail<T>(err.message ?? 'Firestore add() error')))
+      catchError((err) => of(this.fail<T>(err.message ?? 'Firestore add() error'))),
     );
   }
 
   set<T>(path: string, id: string, data: T): Observable<FireResponse<T>> {
     return from(setDoc(this.docRef<T>(path, id), data)).pipe(
       map(() => this.success<T>(null)),
-      catchError((err) => of(this.fail<T>(err.message)))
+      catchError((err) => of(this.fail<T>(err.message))),
     );
   }
 
@@ -92,7 +92,7 @@ export class FirestoreDocService {
   update<T>(path: string, id: string, data: Partial<T>): Observable<FireResponse<T>> {
     return from(updateDoc(this.docRef<T>(path, id), data as any)).pipe(
       map(() => this.success<T>(null)),
-      catchError((err) => of(this.fail<T>(err.message)))
+      catchError((err) => of(this.fail<T>(err.message))),
     );
   }
 
@@ -100,15 +100,15 @@ export class FirestoreDocService {
     path: string,
     id: string,
     field: keyof T,
-    value: any
+    value: any,
   ): Observable<FireResponse<T>> {
     return from(
       updateDoc(this.docRef<T>(path, id), {
         [field]: arrayUnion(value),
-      } as any)
+      } as any),
     ).pipe(
       map(() => this.success<T>(null)),
-      catchError((err) => of(this.fail<T>(err.message)))
+      catchError((err) => of(this.fail<T>(err.message))),
     );
   }
 
@@ -116,15 +116,15 @@ export class FirestoreDocService {
     path: string,
     id: string,
     field: keyof T,
-    value: any
+    value: any,
   ): Observable<FireResponse<T>> {
     return from(
       updateDoc(this.docRef<T>(path, id), {
         [field]: arrayRemove(value),
-      } as any)
+      } as any),
     ).pipe(
       map(() => this.success<T>(null)),
-      catchError((err) => of(this.fail<T>(err.message)))
+      catchError((err) => of(this.fail<T>(err.message))),
     );
   }
 
@@ -135,7 +135,7 @@ export class FirestoreDocService {
   delete<T>(path: string, id: string): Observable<FireResponse<T>> {
     return from(deleteDoc(this.docRef(path, id))).pipe(
       map(() => this.success<T>(null)),
-      catchError((err) => of(this.fail<T>(err.message)))
+      catchError((err) => of(this.fail<T>(err.message))),
     );
   }
 
@@ -153,7 +153,7 @@ export class FirestoreDocService {
 
         return this.success<T>(out);
       }),
-      catchError((err) => of(this.fail<T>(err.message)))
+      catchError((err) => of(this.fail<T>(err.message))),
     );
   }
 
@@ -164,7 +164,7 @@ export class FirestoreDocService {
   listen<T>(path: string, id: string): Observable<FireResponse<T>> {
     return docData(this.docRef<T>(path, id), { idField: 'id' }).pipe(
       map((d) => this.success<T>(d as T)),
-      catchError((err) => of(this.fail<T>(err.message)))
+      catchError((err) => of(this.fail<T>(err.message))),
     );
   }
 
@@ -181,7 +181,7 @@ export class FirestoreDocService {
 
         return this.success<T>(out);
       }),
-      catchError((err) => of(this.fail<T>(err.message)))
+      catchError((err) => of(this.fail<T>(err.message))),
     );
   }
 
@@ -192,7 +192,7 @@ export class FirestoreDocService {
   listenAll<T>(path: string): Observable<FireResponse<T>> {
     return collectionData(this.col<T>(path), { idField: 'id' }).pipe(
       map((arr) => this.success<T>(arr as T[])),
-      catchError((err) => of(this.fail<T>(err.message)))
+      catchError((err) => of(this.fail<T>(err.message))),
     );
   }
 
@@ -205,7 +205,7 @@ export class FirestoreDocService {
     field: string,
     op: any,
     value: any,
-    limitTo = 50
+    limitTo = 50,
   ): Observable<FireResponse<T>> {
     const q = query(this.col<T>(path), where(field, op, value), limit(limitTo));
 
@@ -214,7 +214,7 @@ export class FirestoreDocService {
         const out = arr as T[];
         return this.success<T>(out);
       }),
-      catchError((err) => of(this.fail<T>(err.message ?? 'Firestore realtime where() error')))
+      catchError((err) => of(this.fail<T>(err.message ?? 'Firestore realtime where() error'))),
     );
   }
 
@@ -223,7 +223,7 @@ export class FirestoreDocService {
     field: string,
     op: any,
     value: any,
-    limitTo = 50
+    limitTo = 50,
   ): Observable<FireResponse<T>> {
     const q = query(this.col<T>(path), where(field, op, value), limit(limitTo));
 
@@ -235,7 +235,7 @@ export class FirestoreDocService {
 
         return this.success<T>(out);
       }),
-      catchError((err) => of(this.fail<T>(err.message)))
+      catchError((err) => of(this.fail<T>(err.message))),
     );
   }
 
@@ -251,14 +251,14 @@ export class FirestoreDocService {
         const out = snap.docs.map((d) => ({ id: d.id, ...(d.data() as T) }));
         return { ok: true, data: out } as FireResponse<T>;
       }),
-      catchError((err) => of({ ok: false, data: [], message: err.message } as FireResponse<T>))
+      catchError((err) => of({ ok: false, data: [], message: err.message } as FireResponse<T>)),
     );
   }
 
   realtimeMultiWhere<T>(
     path: string,
     conditions: { field: string; op: any; value: any }[],
-    limitTo = 15
+    limitTo = 15,
   ): Observable<FireResponse<T>> {
     let q: any = this.col<T>(path);
 
@@ -270,7 +270,7 @@ export class FirestoreDocService {
 
     return collectionData(q, { idField: 'id' } as any).pipe(
       map((arr) => this.success<T>(arr as T[])),
-      catchError((err) => of(this.fail<T>(err.message ?? 'Realtime Firestore multiWhere error')))
+      catchError((err) => of(this.fail<T>(err.message ?? 'Realtime Firestore multiWhere error'))),
     );
   }
 
@@ -280,7 +280,30 @@ export class FirestoreDocService {
 
     return collectionData(q, { idField: 'id' } as any).pipe(
       map((arr) => this.success<T[]>(arr as T[])),
-      catchError((err) => of(this.fail<T[]>(err?.message ?? 'Firestore realtime query failed')))
+      catchError((err) => of(this.fail<T[]>(err?.message ?? 'Firestore realtime query failed'))),
+    );
+  }
+
+  notEnded<T>(path: string, limitTo = 15): Observable<FireResponse<T[]>> {
+    const now = Timestamp.fromDate(new Date());
+
+    const q = query(this.col<T>(path), where('endAt', '>=', now), orderBy('endAt'), limit(limitTo));
+    
+    return of({
+  ok: true,
+  data: []
+} as FireResponse<T[]>);
+
+    return from(getDocs(q)).pipe(
+      map((snap) =>
+        this.success<T[]>(
+          snap.docs.map((d) => ({
+            id: d.id,
+            ...(d.data() as T),
+          })),
+        ),
+      ),
+      catchError((err) => of(this.fail<T[]>(err?.message ?? 'Firestore initial query failed'))),
     );
   }
 }

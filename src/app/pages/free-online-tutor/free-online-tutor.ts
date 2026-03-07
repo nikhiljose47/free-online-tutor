@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
@@ -23,7 +23,7 @@ import { CatalogLookupService } from '../../domain/syllabus-index/catalog-lookup
   templateUrl: './free-online-tutor.html',
   styleUrl: './free-online-tutor.scss',
 })
-export class FreeOnlineTutor implements OnInit {
+export class FreeOnlineTutor implements OnInit, AfterViewInit {
   /* ===============================
      INJECTIONS
   =============================== */
@@ -53,24 +53,25 @@ export class FreeOnlineTutor implements OnInit {
      INIT
   =============================== */
   ngOnInit() {
-    this.syllRepo.loadIndex().subscribe((data) => {
-      if (!data) {
-        // this.handleNoDataState();
-        this.toast.show('Homepage data unavailable');
-        this.classLoading.set(false);
-        this.jamLoading.set(false);
-        return;
-      }
+    // this.syllRepo.loadIndex().subscribe((data) => {
+    //   if (!data) {
+    //     // this.handleNoDataState();
+    //     this.toast.show('Homepage data unavailable');
+    //     this.classLoading.set(false);
+    //     this.jamLoading.set(false);
+    //     return;
+    //   }
 
-      this.setDataByGroups();
-      // Set loaders to false
-      this.classLoading.set(false);
-      this.jamLoading.set(false);
+    //   this.setDataByGroups();
+    //   // Set loaders to false
+    //   this.classLoading.set(false);
+    //   this.jamLoading.set(false);
+    // });
+  }
 
-      // After all home methods happened - start parallel of next data
-
-      this.loadAllClasses();
-    });
+  ngAfterViewInit() {
+    // After all home methods happened - start parallel of next data
+    this.loadAllClasses();
   }
 
   private loadAllClasses() {

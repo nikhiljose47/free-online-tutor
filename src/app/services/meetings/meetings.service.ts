@@ -18,6 +18,10 @@ export class MeetingsService {
   /// For live/realtime caching
   private live$?: Observable<FireResponse<Meeting[]>>;
 
+  getLiveMeetingsInitial(): Observable<FireResponse<Meeting[]>> {
+  return this.fs.notEnded<Meeting>(GLOBAL_MEETINGS);
+}
+
   getLiveMeetings(): Observable<FireResponse<Meeting[]>> {
     if (!this.live$) {
       this.live$ = this.fs.realtimeNotEnded<Meeting>(GLOBAL_MEETINGS).pipe(
