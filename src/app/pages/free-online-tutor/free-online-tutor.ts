@@ -6,7 +6,6 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ToastService } from '../../shared/toast.service';
 import { HomeIntroStrip } from '../../components/home-intro-strip/home-intro-strip';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
-import { CatalogGroup, SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
 import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
 import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
 import { ResourceIndex } from '../../shared/utils/id-map.utils';
@@ -71,7 +70,7 @@ export class FreeOnlineTutor implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     // After all home methods happened - start parallel of next data
-    this.loadAllClasses();
+   // this.loadAllClasses();
   }
 
   private loadAllClasses() {

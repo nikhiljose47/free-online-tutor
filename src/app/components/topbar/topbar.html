@@ -1,27 +1,39 @@
-<nav class="topbar">
-  <div class="topbar-inner">
+<header class="topbar">
+  <nav class="topbar-inner" aria-label="Main navigation">
     <!-- BRAND -->
-    <a class="brand-area" routerLink="/">
-      <img src="favicon.ico" class="app-logo" alt="Free Online Tution logo" />
+    <a class="brand-area" routerLink="/" aria-label="Free Tutor Home">
+      <img
+        src="favicon.ico"
+        class="app-logo"
+        alt="FreeTutor logo"
+        width="32"
+        height="32"
+        decoding="async"
+      />
       <span class="brand-text">FreeTutor</span>
     </a>
 
     <!-- SEARCH -->
-    <div class="search-area d-none d-md-flex" (click)="$event.stopPropagation()">
+    <div class="search-area d-none d-md-flex">
+      <label for="searchInput" class="visually-hidden">Search classes</label>
+
       <input
         #myInput
-        type="text"
+        id="searchInput"
+        type="search"
         class="search-input"
         placeholder="Search classes, topics, exams..."
+        autocomplete="off"
         (focus)="ss.open.set(true)"
         (input)="onSearchInput($any($event.target).value)"
       />
-      <button class="search-btn" (click)="ss.open.set(true)">
+
+      <button class="search-btn" type="button" aria-label="Search" (click)="ss.open.set(true)">
         <i class="bi bi-search"></i>
       </button>
 
-      <ul *ngIf="ss.open() && ss.results().length" class="search-results">
-        <li *ngFor="let item of ss.results()" (mousedown)="ss.navigate(item.route)">
+      <ul *ngIf="ss.open() && ss.results().length" class="search-results" role="listbox">
+        <li *ngFor="let item of ss.results()" role="option" (mousedown)="ss.navigate(item.route)">
           {{ item.label }}
         </li>
       </ul>
@@ -29,57 +41,77 @@
 
     <!-- ACTIONS -->
     <div class="actions">
+      <!-- NOT LOGGED -->
       <ng-container *ngIf="!profile()">
-        <button class="login-btn" routerLink="/login">Log In</button>
-        <button class="signup-btn" routerLink="/register">Sign Up</button>
+        <a class="login-btn" routerLink="/login">Log In</a>
+        <a class="signup-btn" routerLink="/register">Sign Up</a>
       </ng-container>
 
+      <!-- LOGGED -->
       <ng-container *ngIf="profile()">
-        <a *ngIf="profile()?.role === 'teacher'" class="topbar-link" routerLink="/teacher-workspace"
-          >Dashboard</a
+        <a
+          *ngIf="profile()?.role === 'teacher'"
+          routerLink="/teacher-workspace"
+          routerLinkActive="active"
+          class="topbar-link"
         >
-        <a *ngIf="profile()?.role === 'teacher'" class="topbar-link" routerLink="/chapter-browser"
-          >Browse</a
-        >
-        <a *ngIf="profile()?.role === 'teacher'" class="topbar-link" routerLink="/schedule"
-          >Schedule</a
-        >
+          Dashboard
+        </a>
 
-        <a class="topbar-link" routerLink="/teachers">Teachers</a>
-        <a class="topbar-link" routerLink="/tuition-centers">Offline Centers</a>
-        <a class="topbar-link" routerLink="/report-card">Report Card</a>
+        <a
+          *ngIf="profile()?.role === 'teacher'"
+          routerLink="/chapter-browser"
+          routerLinkActive="active"
+          class="topbar-link"
+        >
+          Browse
+        </a>
 
+        <a
+          *ngIf="profile()?.role === 'teacher'"
+          routerLink="/schedule"
+          routerLinkActive="active"
+          class="topbar-link"
+        >
+          Schedule
+        </a>
+
+        <a routerLink="/teachers" routerLinkActive="active" class="topbar-link"> Teachers </a>
+
+        <a routerLink="/tuition-centers" routerLinkActive="active" class="topbar-link">
+          Offline Centers
+        </a>
+
+        <a routerLink="/report-card" routerLinkActive="active" class="topbar-link"> Report Card </a>
+
+        <!-- PROFILE MENU -->
         <div class="profile-container">
-          <i
-            class="bi bi-person-circle profile-icon"
-            (click)="toggleMenu(); $event.stopPropagation()"
-          ></i>
+          <button
+            class="profile-btn"
+            aria-label="User menu"
+            aria-expanded="{{ menuOpen() }}"
+            (click)="toggleMenu()"
+          >
+            <i class="bi bi-person-circle profile-icon"></i>
+          </button>
 
-          <div class="profile-menu" *ngIf="menuOpen()">
-            <a
-              routerLink="/profile"
-              class="menu-item"
-              (click)="closeMenu(); $event.stopPropagation()"
-              >My Profile</a
-            >
-            <a routerLink="/about" class="menu-item" (click)="closeMenu(); $event.stopPropagation()"
-              >About</a
-            >
-            <button
-              class="menu-item logout-btn"
-              (click)="logout(); closeMenu(); $event.stopPropagation()"
-            >
+          <div class="profile-menu" *ngIf="menuOpen()" role="menu">
+            <a routerLink="/profile" class="menu-item" role="menuitem" (click)="closeMenu()">
+              My Profile
+            </a>
+
+            <a routerLink="/about" class="menu-item" role="menuitem" (click)="closeMenu()">
+              About
+            </a>
+
+            <button class="menu-item logout-btn" role="menuitem" (click)="logout(); closeMenu()">
               Logout
             </button>
           </div>
-        </div>
 
-        <div
-          *ngIf="menuOpen()"
-          class="menu-overlay"
-          (click)="closeMenu(); $event.stopPropagation()"
-        ></div>
+          <div *ngIf="menuOpen()" class="menu-overlay" (click)="closeMenu()"></div>
+        </div>
       </ng-container>
     </div>
-  </div>
-</nav>
+  </nav>
+</header>

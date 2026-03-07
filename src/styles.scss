@@ -10,35 +10,30 @@ body::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
 }
 
-:root {
-  --color-primary: #a0c878;
-  --color-primary-light: #ddeb9d;
-  --color-bg-soft: #f7f7fb;
-  --color-text-main: #1f2937;
+:root{
+  --color-primary:#a0c878;
+  --color-primary-light:#ddeb9d;
+  --color-bg-soft:#f7f7fb;
+  --color-text-main:#1f2937;
 }
 
-@font-face {
-  font-family: 'Inter';
-  src: url('/assets/fonts/inter-var.woff2') format('woff2');
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
+/* Roboto variable font */
+@font-face{
+  font-family:'Roboto';
+  src:url('/assets/fonts/roboto-flex.woff2') format('woff2');
+  font-weight:100 900;
+  font-style:normal;
+  font-display:swap;
 }
 
-@font-face {
-  font-family: 'Inter';
-  src: url('/assets/fonts/inter-var-italic.woff2') format('woff2');
-  font-weight: 100 900;
-  font-style: italic;
-  font-display: swap;
-}
-
-body {
+/* Global font */
+body{
   font-family:
-    'Inter',
+    'Roboto',
     system-ui,
     -apple-system,
     Segoe UI,
-    Roboto,
+    Helvetica,
+    Arial,
     sans-serif;
 }

@@ -1,13 +1,40 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>FreeOnlineTutor</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-</head>
-<body>
-  <app-root></app-root>
-</body>
+  <head>
+    <meta charset="utf-8" />
+
+    <title>Free Online Tutor</title>
+
+    <base href="/" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta
+      name="description"
+      content="Free online tutoring platform with live classes, expert teachers and structured learning for students."
+    />
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+    <!-- Preload main font -->
+    <link
+      rel="preload"
+      href="assets/fonts/inter-var.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <!-- Preconnect for Firebase (reduces handshake time) -->
+    <link rel="preconnect" href="https://firestore.googleapis.com" />
+    <link rel="preconnect" href="https://identitytoolkit.googleapis.com" />
+    <link rel="preconnect" href="https://securetoken.googleapis.com" />
+
+    <!-- Theme color -->
+    <meta name="theme-color" content="#a0c878" />
+  </head>
+
+  <body>
+    <app-root></app-root>
+  </body>
 </html>
