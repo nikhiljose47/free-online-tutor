@@ -67,6 +67,7 @@ export class Topbar {
      PROFILE MENU
   =============================== */
   toggleMenu() {
+    console.log('call came')
     this.menuOpen.update((v) => !v);
     this.ss.open.set(false);
   }

@@ -90,7 +90,7 @@
             class="profile-btn"
             aria-label="User menu"
             aria-expanded="{{ menuOpen() }}"
-            (click)="toggleMenu()"
+            (click)="logout(); toggleMenu()"
           >
             <i class="bi bi-person-circle profile-icon"></i>
           </button>
