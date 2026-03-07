@@ -49,6 +49,21 @@ export class MeetingsService {
     );
   }
 
+    getLiveMeetingsByClassId(classId: string): Observable<FireResponse<Meeting[]>> {
+    return this.getLiveMeetings().pipe(
+      map((res): FireResponse<Meeting[]> => {
+        if (!res.ok || !res.data) {
+          return res as FireResponse<Meeting[]>;
+        }
+        const data = res.data as Meeting[];
+        return {
+          ok: true,
+          data: data.filter((m) => m.classId == classId),
+        };
+      }),
+    );
+  }
+
   private cacheMeetings(classId: string, meetings: Meeting[]) {
     this.classCache.set({
       ...this.classCache(),

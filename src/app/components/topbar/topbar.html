@@ -7,23 +7,22 @@
         class="app-logo"
         alt="FreeTutor logo"
         width="32"
-        height="32"
+        height="33"
         decoding="async"
       />
       <span class="brand-text">FreeTutor</span>
     </a>
 
     <!-- SEARCH -->
-    <div class="search-area d-none d-md-flex">
+    <div class="search-area d-none d-md-flex" (click)="$event.stopPropagation()">
       <label for="searchInput" class="visually-hidden">Search classes</label>
 
       <input
         #myInput
         id="searchInput"
-        type="search"
+        type="text"
         class="search-input"
         placeholder="Search classes, topics, exams..."
-        autocomplete="off"
         (focus)="ss.open.set(true)"
         (input)="onSearchInput($any($event.target).value)"
       />
@@ -43,8 +42,8 @@
     <div class="actions">
       <!-- NOT LOGGED -->
       <ng-container *ngIf="!profile()">
-        <a class="login-btn" routerLink="/login">Log In</a>
-        <a class="signup-btn" routerLink="/register">Sign Up</a>
+        <button class="login-btn" routerLink="/login">Log In</button>
+        <button class="signup-btn" routerLink="/register">Sign Up</button>
       </ng-container>
 
       <!-- LOGGED -->
@@ -76,24 +75,34 @@
           Schedule
         </a>
 
-        <a routerLink="/teachers" routerLinkActive="active" class="topbar-link"> Teachers </a>
+        <a class="topbar-link" routerLink="/teachers" routerLinkActive="active" class="topbar-link">
+          Teachers
+        </a>
 
-        <a routerLink="/tuition-centers" routerLinkActive="active" class="topbar-link">
+        <a
+          class="topbar-link"
+          routerLink="/tuition-centers"
+          routerLinkActive="active"
+          class="topbar-link"
+        >
           Offline Centers
         </a>
 
-        <a routerLink="/report-card" routerLinkActive="active" class="topbar-link"> Report Card </a>
+        <a
+          class="topbar-link"
+          routerLink="/report-card"
+          routerLinkActive="active"
+          class="topbar-link"
+        >
+          Report Card
+        </a>
 
         <!-- PROFILE MENU -->
         <div class="profile-container">
-          <button
-            class="profile-btn"
-            aria-label="User menu"
-            aria-expanded="{{ menuOpen() }}"
-            (click)="logout(); toggleMenu()"
-          >
-            <i class="bi bi-person-circle profile-icon"></i>
-          </button>
+          <i
+            class="bi bi-person-circle profile-icon"
+            (click)="toggleMenu(); $event.stopPropagation()"
+          ></i>
 
           <div class="profile-menu" *ngIf="menuOpen()" role="menu">
             <a routerLink="/profile" class="menu-item" role="menuitem" (click)="closeMenu()">
@@ -109,7 +118,11 @@
             </button>
           </div>
 
-          <div *ngIf="menuOpen()" class="menu-overlay" (click)="closeMenu()"></div>
+          <div
+            *ngIf="menuOpen()"
+            class="menu-overlay"
+            (click)="closeMenu(); $event.stopPropagation()"
+          ></div>
         </div>
       </ng-container>
     </div>
