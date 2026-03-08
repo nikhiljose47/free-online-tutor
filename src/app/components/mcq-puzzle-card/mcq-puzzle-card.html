@@ -1,100 +1,74 @@
-<div class="mcq-game-card">
+<div class="puzzle-container">
 
-  <!-- ================= HEADER ================= -->
-  <header class="mcq-header">
-
-    <div class="mcq-title-wrap">
-      <h3 class="mcq-title">Today’s Challenge</h3>
-      <span class="mcq-level">Level {{ level() }}</span>
+  <!-- NO PUZZLE VIEW -->
+  <div class="no-puzzle-view" *ngIf="noPuzzleToday()">
+    <div class="no-puzzle-card">
+      <h3>No Puzzle Today</h3>
+      <p>Check back later for the next challenge.</p>
     </div>
-
-    <div class="mcq-status" *ngIf="completed()">
-      ✔ Completed
-    </div>
-
-  </header>
-
-
-  <!-- ================= LOCKED AFTER COMPLETION ================= -->
-  <div class="mcq-completed-view" *ngIf="completed()">
-
-    <p class="completed-text">
-      You’ve already solved this puzzle.  
-      Come back tomorrow for a new challenge!
-    </p>
-
-    <div class="completed-answer">
-      Correct Answer: <strong>{{ correctAnswerText() }}</strong>
-    </div>
-
   </div>
 
+  <!-- PUZZLE VIEW -->
+  <div *ngIf="!noPuzzleToday()">
+    <div class="mcq-game-card">
+      <!-- ================= HEADER ================= -->
+      <header class="mcq-header">
+        <div class="mcq-title-wrap">
+          <h3 class="mcq-title">Today’s Challenge</h3>
+          <span class="mcq-level">Level {{ level() }}</span>
+        </div>
 
-  <!-- ================= ACTIVE GAME VIEW ================= -->
-  <div class="mcq-body" *ngIf="!completed()">
+        <div class="mcq-status" *ngIf="completed()">✔ Completed</div>
+      </header>
 
-    <!-- QUESTION -->
-    <div class="mcq-question">
-      {{ question() }}
-    </div>
+      <!-- ================= LOCKED AFTER COMPLETION ================= -->
+      <div class="mcq-completed-view" *ngIf="completed()">
+        <p class="completed-text">
+          You’ve already solved this puzzle. Come back tomorrow for a new challenge!
+        </p>
 
-
-    <!-- OPTIONS -->
-    <div class="mcq-options">
-
-      <button
-        class="mcq-option"
-        *ngFor="let opt of options(); let i = index"
-        [class.correct]="showResult() && i === correctIndex()"
-        [class.wrong]="showResult() && i === selectedIndex() && i !== correctIndex()"
-        [disabled]="showResult()"
-        (click)="selectOption(i)"
-      >
-        <span class="option-label">
-          {{ opt }}
-        </span>
-      </button>
-
-    </div>
-
-
-    <!-- INLINE RESULT FEEDBACK -->
-    <div class="mcq-feedback" *ngIf="showResult()">
-
-      <!-- CORRECT -->
-      <div class="feedback-correct" *ngIf="isCorrect()">
-        🎉 Correct! Well played.
+        <div class="completed-answer">
+          Correct Answer: <strong>{{ correctAnswerText() }}</strong>
+        </div>
       </div>
 
-      <!-- WRONG -->
-      <div class="feedback-wrong" *ngIf="!isCorrect()">
-        ❌ Not quite. Think again next time!
+      <!-- ================= ACTIVE GAME VIEW ================= -->
+      <div class="mcq-body" *ngIf="!completed()">
+        <div class="mcq-question">
+          {{ question() }}
+        </div>
+
+        <div class="mcq-options">
+          <button
+            class="mcq-option"
+            *ngFor="let opt of options(); let i = index"
+            [class.correct]="showResult() && i === correctIndex()"
+            [class.wrong]="showResult() && i === selectedIndex() && i !== correctIndex()"
+            [disabled]="showResult()"
+            (click)="selectOption(i)"
+          >
+            <span class="option-label">
+              {{ opt }}
+            </span>
+          </button>
+        </div>
+
+        <div class="mcq-feedback" *ngIf="showResult()">
+          <div class="feedback-correct" *ngIf="isCorrect()">🎉 Correct! Well played.</div>
+          <div class="feedback-wrong" *ngIf="!isCorrect()">❌ Not quite. Think again next time!</div>
+        </div>
+
+        <div class="mcq-footer" *ngIf="showResult()">
+          <button class="next-btn" *ngIf="isCorrect()" (click)="finishPuzzle()">
+            Claim Completion
+          </button>
+
+          <button class="retry-btn" *ngIf="!isCorrect()" (click)="finishPuzzle()">
+            Continue
+          </button>
+        </div>
       </div>
-
     </div>
-
-
-    <!-- ACTION FOOTER -->
-    <div class="mcq-footer" *ngIf="showResult()">
-
-      <button
-        class="next-btn"
-        *ngIf="isCorrect()"
-        (click)="finishPuzzle()"
-      >
-        Claim Completion
-      </button>
-
-      <button
-        class="retry-btn"
-        *ngIf="!isCorrect()"
-        (click)="finishPuzzle()"
-      >
-        Continue
-      </button>
-
-    </div>
-
   </div>
 
 </div>

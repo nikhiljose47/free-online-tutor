@@ -11,7 +11,7 @@ export interface ToastMsg {
 export class ToastService {
   toasts = signal<ToastMsg[]>([]);
 
-  show(text: string, type: ToastMsg['type'] = 'info', timeout = 3000) {
+  show(text: string, type: ToastMsg['type'] = 'info', timeout = 2500) {
     const id = crypto.randomUUID();
     this.toasts.update(v => [...v, { id, text, type, timeout }]);
     setTimeout(() => this.remove(id), timeout);

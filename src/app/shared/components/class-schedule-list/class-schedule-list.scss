@@ -1,3 +1,32 @@
+$box-border: #7abf7c65;
+
+.ticket-box {
+  position: relative;
+  padding: 20px 0;
+  margin: 24px 0;
+  border-radius: 8px;
+  border-top: 20px solid $box-border;
+  border-bottom: 20px solid $box-border;
+}
+
+.ticket-box::before,
+.ticket-box::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: $box-border;
+}
+
+.ticket-box::before {
+  left: 0;
+}
+
+.ticket-box::after {
+  right: 0;
+}
+
 /* ===============================
    WRAPPER
 ================================ */
@@ -5,12 +34,12 @@
 .class-overview {
   width: 100%;
   border-radius: 12px;
-  padding: 30px;
+  padding: 0 30px;
 }
 
 /* HEADER */
 .overview-header {
-  padding: 12px 0 36px;
+  padding: 5rem 0 0 0;
 }
 
 .overview-title {

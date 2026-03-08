@@ -311,7 +311,7 @@ $head-color: #daeddc;
 .tab-content {
   //padding: 2rem;
   background: #f8f9fb;
-  min-height: calc(100vh - 60px);
+  //min-height: calc(100vh - 60px);
 }
 
 @media (max-width: 768px) {
@@ -339,15 +339,16 @@ $head-color: #daeddc;
    QUOTE
 ================================ */
 .quote-section {
-  margin-top: 3.8rem;
-  padding: 28px 26px;
+  display: flex;
+  justify-content: center;
+  padding: 32px 26px;
   background: linear-gradient(135deg, #fff7ed, #ffffff);
   border-radius: 20px;
   border-left: 6px solid var(--accent);
 }
 
 .quote-text {
-  font-size: 1.05rem;
+  font-size: 1.25rem;
   font-weight: 700;
   font-style: italic;
   color: #92400e;

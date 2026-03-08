@@ -1,6 +1,44 @@
 :host {
   display: block;
 }
+.puzzle-container {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.no-puzzle-view {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.no-puzzle-card {
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  padding: 28px 32px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #e6e8eb;
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+  }
+}
 
 /* ===============================
    CARD BASE
@@ -159,7 +197,9 @@
   font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .next-btn {

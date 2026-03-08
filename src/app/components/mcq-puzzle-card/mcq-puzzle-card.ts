@@ -36,6 +36,7 @@ export class McqPuzzleCardComponent {
     this._puzzleId.set(value);
   }
   /* ========= STATE ========= */
+  noPuzzleToday = signal<boolean>(true);
   private readonly _level = signal(1);
   private readonly _question = signal('');
   private readonly _options = signal<string[]>([]);

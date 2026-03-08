@@ -17,7 +17,7 @@
       </li>
 
       <li class="nav-item" [class.active]="activeMainTab() === 'games'" (click)="select('games')">
-        Games
+        Puzzles
       </li>
 
       <li class="nav-item" [class.active]="activeMainTab() === 'stats'" (click)="select('stats')">
@@ -44,19 +44,11 @@
     }
   </section>
   <!-- 🎮 HORIZONTAL GAME STRIP -->
-  <section class="horizontal-strip">
+  <!-- <section class="horizontal-strip">
     <div class="d-flex gap-3 overflow-auto no-scrollbar">
-      <!-- ORIGINAL SUBJECT CARD LOOP (KEPT) -->
-      <!--
-      <app-subject-card
-        *ngFor="let item of subjects"
-        class="flex-shrink-0">
-      </app-subject-card>
-      -->
 
-      <!-- CURRENT PUZZLE CARD -->
     </div>
-  </section>
+  </section> -->
 
   <section>
     <class-schedule-list [classId]="classId"></class-schedule-list>
@@ -104,9 +96,12 @@
     <faq-list></faq-list>
   </section>
 
-  <footer *ngIf="quote().text !== ''" class="quote-section">
-    <p class="quote-text">
-      “{{ quote().text }}”,<span> {{ quote().author ?? '' }}</span>
-    </p>
+  <footer *ngIf="quote().text !== ''">
+    <h2 class="d-flex justify-content-center my-5">Thought for the day..</h2>
+    <div class="quote-section">
+      <p class="quote-text">
+        “{{ quote().text }}”,<span> {{ quote().author ?? '' }}</span>
+      </p>
+    </div>
   </footer>
 </section>

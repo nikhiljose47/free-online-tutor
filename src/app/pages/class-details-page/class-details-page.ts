@@ -78,7 +78,7 @@ export class ClassDetailsPage implements OnInit {
 
   readonly activeMainTab = computed(() => this._activeTab());
 
-  readonly quote = signal<Quote>(QuoteUtil.getRandom());
+  readonly quote = signal<Quote>(QuoteUtil.getQuoteOfDay());
 
   select(tab: TabType): void {
     if (this._activeTab() !== tab) {
