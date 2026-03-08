@@ -75,27 +75,69 @@
           Schedule
         </a>
 
-        <a class="topbar-link" routerLink="/teachers" routerLinkActive="active" class="topbar-link">
-          Teachers
-        </a>
+        <a class="topbar-link" routerLink="/teachers" routerLinkActive="active"> Teachers </a>
 
-        <a
-          class="topbar-link"
-          routerLink="/tuition-centers"
-          routerLinkActive="active"
-          class="topbar-link"
-        >
-          Offline Centers
-        </a>
+        <div class="learn-dropdown" (click)="$event.stopPropagation()">
+          <span class="topbar-link" [class.active]="otherOpen()" (click)="toggleOther()">
+            Other
+            <i
+              class="bi ms-1"
+              [ngClass]="otherOpen() ? 'bi-chevron-up' : 'bi-chevron-down'"
+              style="font-size: 10px"
+            ></i>
+          </span>
 
-        <a
-          class="topbar-link"
-          routerLink="/report-card"
-          routerLinkActive="active"
-          class="topbar-link"
-        >
-          Report Card
-        </a>
+          <div class="learn-menu" *ngIf="otherOpen()">
+            <a
+              routerLink="/tuition-centers"
+              routerLinkActive="active"
+              class="menu-item"
+              (click)="closeOther()"
+            >
+              Offline Centers
+            </a>
+
+            <a
+              routerLink="/career"
+              routerLinkActive="active"
+              class="menu-item"
+              (click)="closeOther()"
+            >
+              Careers
+            </a>
+          </div>
+        </div>
+
+        <div class="learn-dropdown" (click)="$event.stopPropagation()">
+          <span class="topbar-link" [class.active]="learnOpen()" (click)="toggleLearn()">
+            Learn
+            <i
+              class="bi ms-1"
+              [ngClass]="learnOpen() ? 'bi-chevron-up' : 'bi-chevron-down'"
+              style="font-size: 10px"
+            ></i>
+          </span>
+
+          <div class="learn-menu" *ngIf="learnOpen()">
+            <a
+              routerLink="/report-card"
+              routerLinkActive="active"
+              class="menu-item"
+              (click)="closeLearn()"
+            >
+              Report Card
+            </a>
+
+            <a
+              routerLink="/student-creations"
+              routerLinkActive="active"
+              class="menu-item"
+              (click)="closeLearn()"
+            >
+              Student Creations
+            </a>
+          </div>
+        </div>
 
         <!-- PROFILE MENU -->
         <div class="profile-container">

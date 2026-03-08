@@ -42,6 +42,7 @@ export const CACHE_TTL = {
   BATCH_DOC: 5 * 60 * 1000, // 5 min
   ANNOUNCEMENTS: 1 * 60 * 60 * 1000,
   ASSIGNMENTS: 5 * 60 * 1000, // 5 min
+  PUZZLE_SESS: 24 * 60 * 60 * 1000,  //24 hr
 } as const;
 
 export const DEF_BATCH = 'blue';

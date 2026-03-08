@@ -46,12 +46,16 @@ export class Topbar {
   =============================== */
   readonly profile = computed(() => this.profileApi.profile());
   menuOpen = signal(false);
+  learnOpen = signal(false);
+  otherOpen = signal(false);
 
   constructor() {
     /** Auto-close menus on route change */
     effect(() => {
       this.router.events.subscribe(() => {
         this.menuOpen.set(false);
+        this.learnOpen.set(false);
+        this.otherOpen.set(false);
         this.ss.open.set(false);
         if (this.myInput()) {
           this.renderer.setProperty(this.myInput()?.nativeElement, 'value', '');
@@ -67,13 +71,41 @@ export class Topbar {
      PROFILE MENU
   =============================== */
   toggleMenu() {
-    console.log('call came')
     this.menuOpen.update((v) => !v);
+    this.closeOther();
+    this.closeLearn();
     this.ss.open.set(false);
   }
 
   closeMenu() {
     this.menuOpen.set(false);
+  }
+
+  /* ===============================
+     OTHER
+  =============================== */
+  toggleOther() {
+    this.otherOpen.update((v) => !v);
+    this.closeMenu()
+    this.closeLearn();
+  }
+
+  closeOther() {
+    this.otherOpen.set(false);
+  }
+
+  /* ===============================
+     LEARN
+  =============================== */
+  toggleLearn() {
+    this.learnOpen.update((v) => !v);
+    this.closeMenu();
+    this.closeAll;
+    this.closeOther();
+  }
+
+  closeLearn() {
+    this.learnOpen.set(false);
   }
 
   /* ===============================
@@ -98,6 +130,8 @@ export class Topbar {
   @HostListener('document:click')
   closeAll() {
     this.menuOpen.set(false);
+    this.learnOpen.set(false);
+    this.otherOpen.set(false);
     this.ss.open.set(false);
   }
 

@@ -1,14 +1,17 @@
+$head-color: #daeddc;
+
 .class-details-page {
   min-height: 100%;
-  padding: 0.75rem;
+  padding: 0 0.75rem;
   background: #ffffff;
+
   //background: linear-gradient(180deg, #eef3ff 0%, #f7f9ff 60%, #ffffff 100%);
 
   /* =====================================================
      🎮 TITLE — GAME STYLE ONLY
   ===================================================== */
   .class-header {
-    background: var(--color-primary);
+    background: $head-color;
     margin: -1rem -0.8rem;
 
     // background: linear-gradient(135deg, #f4f4f44e);
@@ -263,7 +266,8 @@
   margin: 0 -0.8rem;
   top: 0;
   z-index: 10;
-  background: var(--color-primary);
+  background: $head-color;
+  border-radius: 0 0 10px 10px;
 
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
@@ -273,7 +277,7 @@
   justify-content: flex-end;
   gap: 1.8rem;
   margin: 0;
-  padding: 0.8rem 2rem 0.2rem;
+  padding: 0.4rem 2rem 0.2rem;
   list-style: none;
 }
 
@@ -330,7 +334,6 @@
     padding-bottom: 80px;
   }
 }
-
 
 /* ===============================
    QUOTE

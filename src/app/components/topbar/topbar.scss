@@ -115,7 +115,8 @@
   text-decoration: none;
 }
 
-.topbar-link:hover {
+.topbar-link:hover,
+.topbar-link.active {
   background: #3a3a3d;
 }
 
@@ -160,4 +161,36 @@
   position: fixed;
   inset: 0;
   z-index: 100;
+}
+
+.learn-dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.learn-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0; /* prevents right overflow */
+  left: auto;
+
+  background: #1f1f23;
+  border-radius: 6px;
+  padding: 6px 0;
+  min-width: 180px;
+
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+  z-index: 50;
+}
+
+.learn-menu .menu-item {
+  display: block;
+  padding: 8px 12px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.learn-menu .menu-item:hover {
+  background: #31313c;
 }

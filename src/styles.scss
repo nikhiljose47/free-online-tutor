@@ -10,30 +10,21 @@ body::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
 }
 
-:root{
-  --color-primary:#a0c878;
-  --color-primary-light:#ddeb9d;
-  --color-bg-soft:#f7f7fb;
-  --color-text-main:#1f2937;
+:root {
+  --color-primary: #a0c878;
+  --color-primary-light: #ddeb9d;
+  --color-bg-soft: #f7f7fb;
+  --color-text-main: #1f2937;
 }
 
-/* Roboto variable font */
-@font-face{
-  font-family:'Roboto';
-  src:url('/assets/fonts/roboto-flex.woff2') format('woff2');
-  font-weight:100 900;
-  font-style:normal;
-  font-display:swap;
+@font-face {
+  font-family: 'Inter';
+  src: url('/assets/fonts/inter-var.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
 }
 
-/* Global font */
-body{
-  font-family:
-    'Roboto',
-    system-ui,
-    -apple-system,
-    Segoe UI,
-    Helvetica,
-    Arial,
-    sans-serif;
+body {
+  font-family: 'Inter', system-ui, sans-serif;
 }
