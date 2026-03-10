@@ -78,6 +78,7 @@ export class SyllabusLookupService {
       }),
     );
   }
+  
   getSubject(classId: string, subjectName: string): Observable<Subject | null> {
     return this.list$.pipe(
       map(

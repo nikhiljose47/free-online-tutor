@@ -39,11 +39,12 @@
             (change)="updateField('subjectId', subjectSel.value)"
           >
             <option value="">Subject</option>
-            <option *ngFor="let s of subjectList()" [value]="s">{{ s }}</option>
+            <option *ngFor="let s of subjectList()" [value]="s.code">{{ s.name }}</option>
           </select>
         </div>
       </div>
 
+      
       <div class="row g-3 pt-4">
         <div *ngIf="currentAndNext$ | async as data">
           <span class="badge text-bg-info mx-2">Current: {{ data[0] }}</span>

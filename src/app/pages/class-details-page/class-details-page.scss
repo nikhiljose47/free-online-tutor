@@ -1,65 +1,77 @@
 $head-color: #daeddc;
 
+:host {
+  display: block;
+}
+
+/* =====================================================
+   PAGE LAYOUT
+===================================================== */
+
 .class-details-page {
   min-height: 100%;
   padding: 0 0.75rem;
+  margin: 0 10%;
   background: #ffffff;
+  overflow: visible;
+}
 
-  //background: linear-gradient(180deg, #eef3ff 0%, #f7f9ff 60%, #ffffff 100%);
+/* =====================================================
+   HEADER
+===================================================== */
 
-  /* =====================================================
-     🎮 TITLE — GAME STYLE ONLY
-  ===================================================== */
-  .class-header {
-    background: $head-color;
-    margin: -1rem -0.8rem;
+.class-header {
+  background: $head-color;
+  margin: -1rem -0.8rem;
+}
 
-    // background: linear-gradient(135deg, #f4f4f44e);
-    // clip-path: polygon(0 0, 96% 0, 100% 100%, 0% 100%);
-    // box-shadow: 0 6px 18px rgba(255, 122, 0, 0.25);
-  }
+/* =====================================================
+   HORIZONTAL STRIP
+===================================================== */
 
-  /* =====================================================
-     📦 REST OF PAGE — ORIGINAL LIGHT THEME
-  ===================================================== */
+.horizontal-strip {
+  background: linear-gradient(135deg, #f2f5ff, #eef1ff);
+  border-radius: 1rem;
+  padding: 0.5rem;
+  box-shadow: inset 0 0 0 1px rgba(90, 120, 255, 0.08);
 
-  .horizontal-strip {
-    .no-scrollbar {
-      scrollbar-width: none;
-      &::-webkit-scrollbar {
-        display: none;
-      }
-    }
+  .no-scrollbar {
+    scrollbar-width: none;
 
-    background: linear-gradient(135deg, #f2f5ff, #eef1ff);
-    border-radius: 1rem;
-    padding: 0.5rem;
-    box-shadow: inset 0 0 0 1px rgba(90, 120, 255, 0.08);
-
-    app-subject-card,
-    mcq-puzzle-card {
-      width: 180px;
-
-      @media (max-width: 576px) {
-        width: 150px;
-      }
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
 
-  .extra-section {
-    background: linear-gradient(180deg, #ffffff, #f9faff);
-    border-radius: 1.1rem;
-    padding: 0.85rem;
-    box-shadow:
-      0 6px 20px rgba(79, 140, 255, 0.08),
-      inset 0 0 0 1px rgba(90, 120, 255, 0.05);
+  app-subject-card,
+  mcq-puzzle-card {
+    width: 180px;
+
+    @media (max-width: 576px) {
+      width: 150px;
+    }
   }
 }
 
-//Banner
+/* =====================================================
+   EXTRA SECTION
+===================================================== */
+
+.extra-section {
+  background: linear-gradient(180deg, #ffffff, #f9faff);
+  border-radius: 1.1rem;
+  padding: 0.85rem;
+  box-shadow:
+    0 6px 20px rgba(79, 140, 255, 0.08),
+    inset 0 0 0 1px rgba(90, 120, 255, 0.05);
+}
+
+/* =====================================================
+   STATS BANNER
+===================================================== */
+
 .class-stats-banner {
   width: 100%;
-
   background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
   position: relative;
   overflow: hidden;
@@ -67,7 +79,6 @@ $head-color: #daeddc;
   font-family: 'Inter', system-ui, sans-serif;
 }
 
-/* edge fade */
 .banner-fade {
   position: absolute;
   top: 0;
@@ -87,14 +98,12 @@ $head-color: #daeddc;
   background: linear-gradient(to left, #ffffff, transparent);
 }
 
-/* inner wrapper */
 .banner-inner {
   width: 100%;
   position: relative;
   z-index: 1;
 }
 
-/* head row */
 .banner-head {
   display: flex;
   justify-content: center;
@@ -123,7 +132,6 @@ $head-color: #daeddc;
   color: #0f172a;
 }
 
-/* stats row */
 .stats-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -147,45 +155,10 @@ $head-color: #daeddc;
   color: #64748b;
 }
 
-/* tablet */
-@media (max-width: 992px) {
-  .stats-row {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 22px;
-  }
+/* =====================================================
+   BATCH SECTION
+===================================================== */
 
-  .banner-title {
-    font-size: 1.6rem;
-  }
-}
-
-/* mobile */
-@media (max-width: 576px) {
-  .class-stats-banner {
-    padding: 44px 0 36px;
-  }
-
-  .head-wrap {
-    flex-direction: column;
-    text-align: center;
-    gap: 10px;
-  }
-
-  .banner-title {
-    font-size: 1.35rem;
-  }
-
-  .stats-row {
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
-
-  .stat h3 {
-    font-size: 1.6rem;
-  }
-}
-
-///Batch
 .batch-zone {
   padding: 1rem 0;
 }
@@ -221,11 +194,11 @@ $head-color: #daeddc;
   padding: 0.7rem 0.8rem;
   background: #fff;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 0.15rem;
-  text-align: left;
 }
 
 .batch-card.long {
@@ -256,20 +229,22 @@ $head-color: #daeddc;
   opacity: 0.8;
 }
 
-//navbar
-:host {
-  display: block;
-}
+/* =====================================================
+   STICKY NAV
+===================================================== */
 
 .right-sticky-nav {
   position: sticky;
-  margin: 0 -0.8rem;
   top: 0;
   z-index: 10;
-  background: $head-color;
-  border-radius: 0 0 10px 10px;
 
+  margin: 0 -0.8rem;
+  background: $head-color;
+
+  border-radius: 0 0 10px 10px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+
+  backdrop-filter: blur(8px);
 }
 
 .nav-list {
@@ -309,35 +284,13 @@ $head-color: #daeddc;
 }
 
 .tab-content {
-  //padding: 2rem;
   background: #f8f9fb;
-  //min-height: calc(100vh - 60px);
 }
 
-@media (max-width: 768px) {
-  .right-sticky-nav {
-    position: fixed;
-    bottom: 0;
-    top: auto;
-    width: 100%;
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
-    border-bottom: 0;
-  }
-
-  .nav-list {
-    justify-content: space-around;
-    gap: 0;
-    padding: 0.8rem 0.5rem;
-  }
-
-  .tab-content {
-    padding-bottom: 80px;
-  }
-}
-
-/* ===============================
+/* =====================================================
    QUOTE
-================================ */
+===================================================== */
+
 .quote-section {
   display: flex;
   justify-content: center;
@@ -352,4 +305,70 @@ $head-color: #daeddc;
   font-weight: 700;
   font-style: italic;
   color: #92400e;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 992px) {
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+  }
+
+  .banner-title {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .right-sticky-nav {
+    position: sticky;
+    bottom: 0;
+    top: auto;
+
+    border-radius: 12px 12px 0 0;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    border-bottom: none;
+  }
+
+  .nav-list {
+    justify-content: space-around;
+    gap: 0;
+    padding: 0.8rem 0.5rem;
+  }
+
+  .tab-content {
+    padding-bottom: 80px;
+  }
+
+}
+
+@media (max-width: 576px) {
+
+  .class-stats-banner {
+    padding: 44px 0 36px;
+  }
+
+  .head-wrap {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .banner-title {
+    font-size: 1.35rem;
+  }
+
+  .stats-row {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .stat h3 {
+    font-size: 1.6rem;
+  }
+
 }

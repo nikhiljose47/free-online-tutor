@@ -14,11 +14,12 @@ import { ToastService } from '../../shared/toast.service';
 import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MeetingStatusStore } from '../../shared/state/meeting-status.store';
+import { CoverPlaceholderComponent } from '../../shared/components/cover-placeholder.component/cover-placeholder.component';
 
 @Component({
   selector: 'join-tution',
   standalone: true,
-  imports: [CommonModule, ContentPlaceholder, DotLoader],
+  imports: [CommonModule, ContentPlaceholder, DotLoader,CoverPlaceholderComponent],
   templateUrl: './join-tution.html',
   styleUrls: ['./join-tution.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,6 +32,8 @@ export class JoinTution {
   private attendanceApi = inject(AttendanceApiService);
   private toastApi = inject(ToastService);
   private statusStore = inject(MeetingStatusStore);
+
+  hasCoverImgErr = signal<boolean>(false);
 
   private meetingId$ = this.route.paramMap.pipe(
     map((p) => p.get('meetingId')),
@@ -172,6 +175,7 @@ export class JoinTution {
   }
 
   onImgError(event: Event) {
+    this.hasCoverImgErr.set(true);
     (event.target as HTMLImageElement).src = PLACEHOLDER__COVER_IMG;
   }
 

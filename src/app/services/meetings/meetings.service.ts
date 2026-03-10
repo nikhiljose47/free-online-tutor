@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { of, map, Observable, shareReplay } from 'rxjs';
 import { endAt, Timestamp } from '@angular/fire/firestore';
 
@@ -9,6 +9,8 @@ import { GLOBAL_MEETINGS } from '../../core/constants/app.constants';
 @Injectable({ providedIn: 'root' })
 export class MeetingsService {
   constructor(private fs: FirestoreDocService) {}
+
+    private fire = inject(FirestoreDocService);
 
   // --------------------------------------------------
   // 🔥 Local domain cache (classId → meetings[])
@@ -177,5 +179,36 @@ export class MeetingsService {
     const current = { ...this.classCache() };
     delete current[classId];
     this.classCache.set(current);
+  }
+
+  scheduleMeeting$(f: any, imageSrc: string, teacher: any){  
+        const [hours, minutes] = f.time.split(':').map(Number);
+    
+        const date = new Date(f.date);
+        date.setHours(hours, minutes, 0, 0);
+    
+        const start = new Date(date);
+        const end = new Date(start.getTime() + (f.duration ?? 0) * 60000);
+    
+        const payload: Meeting = {
+          id: '',
+          classId: f.classId,
+          subjectId: f.subjectId,
+          chapterCode: f.chapterCode,
+          batchId: f.batchId,
+          meetLink: f.meetLink,
+          status: 'PART1',
+          teacherId: teacher.id,
+          teacherName: teacher.name,
+          duration: f.duration,
+          attendance: [],
+          date: Timestamp.fromDate(start),
+          endAt: Timestamp.fromDate(end),
+          createdAt: Timestamp.now(),
+          imageSrc: imageSrc,
+        };
+
+     return this.fire.add(GLOBAL_MEETINGS, payload);
+
   }
 }

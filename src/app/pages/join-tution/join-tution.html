@@ -7,7 +7,7 @@
 <ng-template #hasData>
   <section class="class-layout">
     <!-- LEFT : Cover (UNCHANGED) -->
-    <aside class="class-cover">
+    <aside *ngIf="hasCoverImgErr(); else coverImgErr" class="class-cover">
       <img
         class="cover-img"
         [src]="getBannerSrc(banner)"
@@ -16,6 +16,12 @@
         (error)="onImgError($event)"
       />
     </aside>
+
+    <ng-template #coverImgErr>
+    <div class="p-5 h-100">
+  <cover-placeholder message="Sample Cover"></cover-placeholder>
+</div>
+    </ng-template>
 
     <!-- RIGHT : Refined Editorial Layout -->
     <main class="class-details">

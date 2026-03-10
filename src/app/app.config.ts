@@ -16,12 +16,12 @@ import { httpCacheInterceptor } from './core/interceptors/http-cache.interceptor
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideHttpClient(withInterceptors([baseUrlInterceptor, httpCacheInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([baseUrlInterceptor, httpCacheInterceptor])),
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore(), {localCache: persistentLocalCache()}),
+    provideFirestore(() => getFirestore(), { localCache: persistentLocalCache() }),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
   ],

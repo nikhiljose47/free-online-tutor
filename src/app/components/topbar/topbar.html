@@ -79,7 +79,7 @@
 
         <div class="learn-dropdown" (click)="$event.stopPropagation()">
           <span class="topbar-link" [class.active]="otherOpen()" (click)="toggleOther()">
-            Other
+            Contact us
             <i
               class="bi ms-1"
               [ngClass]="otherOpen() ? 'bi-chevron-up' : 'bi-chevron-down'"
@@ -88,6 +88,15 @@
           </span>
 
           <div class="learn-menu" *ngIf="otherOpen()">
+            <a
+              routerLink="/about"
+              routerLinkActive="active"
+              class="menu-item"
+              (click)="closeOther()"
+            >
+              Connect
+            </a>
+
             <a
               routerLink="/tuition-centers"
               routerLinkActive="active"
@@ -149,10 +158,6 @@
           <div class="profile-menu" *ngIf="menuOpen()" role="menu">
             <a routerLink="/profile" class="menu-item" role="menuitem" (click)="closeMenu()">
               My Profile
-            </a>
-
-            <a routerLink="/about" class="menu-item" role="menuitem" (click)="closeMenu()">
-              About
             </a>
 
             <button class="menu-item logout-btn" role="menuitem" (click)="logout(); closeMenu()">

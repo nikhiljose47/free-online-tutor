@@ -8,6 +8,7 @@ import {
   Output,
   EventEmitter,
   Input,
+  effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Timestamp } from '@angular/fire/firestore';
@@ -22,6 +23,7 @@ import { CatalogLookupService } from '../../domain/syllabus-index/catalog-lookup
 import { ClassSubjectStore } from '../../store/class-store/class-subject.store';
 import { combineLatest, map, Observable, of, shareReplay, switchMap } from 'rxjs';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { MeetingsService } from '../../services/meetings/meetings.service';
 
 @Component({
   selector: 'schedule-live-class-form',
@@ -35,11 +37,11 @@ export class ScheduleLiveClassForm implements OnInit {
   @Input({ required: true }) teacherId!: string | null;
   @Output() onSubmit = new EventEmitter<void>();
 
-  private fire = inject(FirestoreDocService);
   private syllabusLookup = inject(SyllabusLookupService);
   private catalogLookup = inject(CatalogLookupService);
   private user = inject(UserProfileService);
   private classStoreApi = inject(ClassSubjectStore);
+  private meetApi = inject(MeetingsService);
 
   readonly profile = this.user.profile;
 
@@ -69,19 +71,12 @@ export class ScheduleLiveClassForm implements OnInit {
   readonly selectedClass = computed(() => this.form().classId);
   readonly selectedSubject = computed(() => this.form().subjectId);
 
-  readonly subjectList$ = toObservable(computed(() => this.selectedClass())).pipe(
-    switchMap((classId) => {
-      if (!classId) {
-        return of([]);
-      }
-
-      return this.syllabusLookup.getSubjects(classId);
-    }),
+  readonly subjectList = toSignal(
+    toObservable(this.selectedClass).pipe(
+      switchMap((classId) => (classId ? this.syllabusLookup.getSubjects(classId) : of([]))),
+    ),
+    { initialValue: [] },
   );
-
-  readonly subjectList = toSignal(this.subjectList$, {
-    initialValue: [],
-  });
 
   readonly chapterList$ = toObservable(
     computed(() => ({
@@ -114,6 +109,7 @@ export class ScheduleLiveClassForm implements OnInit {
       return this.syllabusLookup.getDivisions(classId, subjectId, form.chapterCode);
     }),
   );
+
   readonly divisions = toSignal(this.divisions$, {
     initialValue: [],
   });
@@ -143,12 +139,15 @@ export class ScheduleLiveClassForm implements OnInit {
   //   divisionId,
   // );
 
+
   ngOnInit(): void {
     if (!this.teacherId) return;
 
     this.currentAndNext$ = this.classStoreApi
       .getCurrentAndNextIndex('CL06', 'CL06-MATH')
       .pipe(shareReplay({ bufferSize: 1, refCount: true }));
+
+
   }
 
   /* ================= HELPERS ================= */
@@ -179,36 +178,42 @@ export class ScheduleLiveClassForm implements OnInit {
     if (!f.date || !f.classId || !this.teacherId) return;
 
     this.submitting.set(true);
-
-    const [hours, minutes] = f.time.split(':').map(Number);
-
-    const date = new Date(f.date);
-    date.setHours(hours, minutes, 0, 0);
-
-    const start = new Date(date);
-    const end = new Date(start.getTime() + (f.duration ?? 0) * 60000);
-
-    const payload: Meeting = {
-      id: '',
-      classId: f.classId,
-      subjectId: f.subjectId,
-      chapterCode: f.chapterCode,
-      batchId: f.batchId,
-      meetLink: f.meetLink,
-      status: PART1,
-      teacherId: this.teacherId,
-      teacherName: this.profile()?.name ?? '',
-      duration: f.duration,
-      attendance: [],
-      date: Timestamp.fromDate(start),
-      endAt: Timestamp.fromDate(end),
-      createdAt: Timestamp.now(),
-      imageSrc: this.catalogLookup.getById(f.classId)?.file ?? '',
-    };
-    this.fire.add(GLOBAL_MEETINGS, payload).subscribe(() => {
+    let imageSrc = this.catalogLookup.getById(f.classId)?.file ?? '';
+    let teacherInfo = { id: this.teacherId, name: this.profile()?.name ?? '' };
+    this.meetApi.scheduleMeeting$(f, imageSrc, teacherInfo).subscribe((e) => {
       this.onSubmit.emit();
       this.submitting.set(false);
     });
+
+    // const [hours, minutes] = f.time.split(':').map(Number);
+
+    // const date = new Date(f.date);
+    // date.setHours(hours, minutes, 0, 0);
+
+    // const start = new Date(date);
+    // const end = new Date(start.getTime() + (f.duration ?? 0) * 60000);
+
+    // const payload: Meeting = {
+    //   id: '',
+    //   classId: f.classId,
+    //   subjectId: f.subjectId,
+    //   chapterCode: f.chapterCode,
+    //   batchId: f.batchId,
+    //   meetLink: f.meetLink,
+    //   status: PART1,
+    //   teacherId: this.teacherId,
+    //   teacherName: this.profile()?.name ?? '',
+    //   duration: f.duration,
+    //   attendance: [],
+    //   date: Timestamp.fromDate(start),
+    //   endAt: Timestamp.fromDate(end),
+    //   createdAt: Timestamp.now(),
+    //   imageSrc: this.catalogLookup.getById(f.classId)?.file ?? '',
+    // };
+    // this.fire.add(GLOBAL_MEETINGS, payload).subscribe(() => {
+    //   this.onSubmit.emit();
+    //   this.submitting.set(false);
+    // });
 
     this.classStoreApi.setCurrentIndex(f.classId, f.subjectId, 'chapter-5').subscribe();
   }
