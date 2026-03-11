@@ -21,8 +21,21 @@ import { ChapterBrowser } from './pages/chapter-browser/chapter-browser';
 import { seoResolver } from './resolvers/seo-resolver';
 import { ClassDetailsPage } from './pages/class-details-page/class-details-page';
 import { TuitionMarketplace } from './pages/tuition-marketplace/tuition-marketplace';
+import { FreeOnlineTuition } from './pages/free-online-tuition/free-online-tuition';
 
 export const routes: Routes = [
+    {
+    path: 'free-online-tuition',
+    component: FreeOnlineTuition,
+    data: {
+      title: 'Free Online Tuition for Classes 6–12 | CBSE & State Boards',
+      description:
+        'Free online tuition for students of classes 6 to 12. Learn maths, science and more from expert teachers.',
+      keywords: 'free online tuition, cbse tuition, online classes india',
+    },
+    resolve: { seo: seoResolver },
+  }
+,
   {
     path: '',
     component: FreeOnlineTutor,

@@ -1,5 +1,4 @@
 import { Timestamp } from '@firebase/firestore';
-import { CatalogGroup } from '../syllabus/syllabus-index.model';
 import { ClassStatus } from '../classes/class-doc.model';
 
 export interface BatchDoc {
@@ -7,7 +6,7 @@ export interface BatchDoc {
   label: string;
   desc: string;
   status: ClassStatus;
-  group: CatalogGroup;
+  group: string;
   classId: string | null;
   subjectIndex: SubIndex[];
   capacity: number;

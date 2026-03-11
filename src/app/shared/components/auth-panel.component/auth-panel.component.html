@@ -1,0 +1,87 @@
+<section class="auth-shell">
+  <div class="auth-card">
+    <!-- MODE SWITCH -->
+    <div class="auth-mode">
+      <button class="mode-btn" [class.active]="mode() === 'login'" (click)="mode.set('login')">
+        Login
+      </button>
+
+      <button class="mode-btn" [class.active]="mode() === 'signup'" (click)="mode.set('signup')">
+        Sign Up
+      </button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <form
+      class="auth-form"
+      *ngIf="mode() === 'login'"
+      (submit)="doLogin(); $event.preventDefault()"
+    >
+      <h3 class="auth-title">Welcome back</h3>
+
+      <div class="form-group">
+        <label>Username</label>
+        <input
+          type="text"
+          placeholder="Enter your name"
+          [value]="name()"
+          (input)="onInput($event)"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input
+          type="password"
+          placeholder="Enter password"
+          [value]="pswd()"
+          (input)="onInputP($event)"
+        />
+      </div>
+
+      <button class="primary-btn">Login</button>
+
+      <div class="divider">
+        <span>or</span>
+      </div>
+
+      <button type="button" class="secondary-btn" (click)="guestLogin()">Continue as Guest</button>
+    </form>
+
+    <!-- SIGNUP FORM -->
+    <form
+      class="auth-form"
+      *ngIf="mode() === 'signup'"
+      (submit)="register(); $event.preventDefault()"
+    >
+      <h3 class="auth-title">Create your account</h3>
+
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" placeholder="Your name" [value]="name()" (input)="onInput($event)" />
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input
+          type="email"
+          placeholder="Enter email"
+          [value]="email()"
+          (input)="onInputEmail($event)"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input
+          type="password"
+          placeholder="Create password"
+          [value]="password()"
+          (input)="onInputPassword($event)"
+        />
+      </div>
+
+      <button class="primary-btn">Create Account</button>
+    </form>
+  </div>
+</section>

@@ -1,0 +1,123 @@
+.auth-shell {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 32px 30px;
+  border: 1px solid #e5e7eb;
+}
+
+/* MODE SWITCH */
+
+.auth-mode {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 8px 0;
+  font-size: 0.85rem;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.mode-btn.active {
+  background: #111827;
+  color: #ffffff;
+  border-color: #111827;
+}
+
+/* TITLE */
+
+.auth-title {
+  margin: 0 0 20px;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* FORM */
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.form-group input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+/* BUTTONS */
+
+.primary-btn {
+  margin-top: 4px;
+  padding: 10px 0;
+  background: #111827;
+  color: #ffffff;
+  border-radius: 999px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.secondary-btn {
+  padding: 10px 0;
+  background: #f3f4f6;
+  border-radius: 999px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111827;
+  cursor: pointer;
+}
+
+/* DIVIDER */
+
+.divider {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin: 6px 0;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+  .auth-card {
+    padding: 24px 22px;
+  }
+
+  .auth-title {
+    font-size: 1.2rem;
+  }
+}

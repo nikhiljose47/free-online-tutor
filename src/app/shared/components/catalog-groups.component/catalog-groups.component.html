@@ -1,0 +1,32 @@
+<section class="catalog">
+  <div class="catalog-surface">
+    <!-- GROUP -->
+    <div class="catalog-group" *ngFor="let g of groupsArray()">
+      <!-- GROUP TITLE -->
+      <div class="group-header">
+        <img
+          class="group-icon"
+          [src]="getBannerSrc(g)"
+          [alt]="getBannerAlt(g)"
+          loading="lazy"
+          (error)="onImgError($event)"
+        />
+
+        <h2 class="group-title">
+          {{ g.key | titlecase }}
+        </h2>
+      </div>
+
+      <!-- ITEMS -->
+      <div class="catalog-items">
+        <button class="catalog-item" *ngFor="let item of g.value" (click)="openItem(item)">
+          <span class="item-name">
+            {{ item.title }}
+          </span>
+
+          <span class="item-arrow"> → </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

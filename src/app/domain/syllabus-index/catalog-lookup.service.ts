@@ -2,8 +2,8 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { map, shareReplay } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
-  CatalogGroup,
   CatalogItem,
+  PrimaryGroup,
   SyllabusIndex,
 } from '../../models/syllabus/syllabus-index.model';
 import { SyllabusRepository } from '../repositories/syllabus.repository';
@@ -19,7 +19,13 @@ export class CatalogLookupService {
     .pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
   private readonly index = toSignal(this.index$, {
-    initialValue: { version: '', generatedAt: '', groups: [], catalog: [] } as SyllabusIndex,
+    initialValue: {
+      version: '',
+      generatedAt: '',
+      primaryGroup: '',
+      groups: [],
+      catalog: [],
+    } as SyllabusIndex,
   });
 
   /* ================= BASE SIGNALS ================= */
@@ -41,11 +47,14 @@ export class CatalogLookupService {
   /* ================= GROUP MAP ================= */
 
   readonly groupMap = computed(() => {
-    const mapData = new Map<CatalogGroup, CatalogItem[]>();
+    const mapData = new Map<string, CatalogItem[]>();
 
     for (const item of this.readyCatalog()) {
-      if (!mapData.has(item.group)) mapData.set(item.group, []);
-      mapData.get(item.group)!.push(item);
+      for (const group of item.groups ?? []) {
+        if (!mapData.has(group)) mapData.set(group, []);
+
+        mapData.get(group)!.push(item);
+      }
     }
 
     return mapData;
@@ -56,14 +65,17 @@ export class CatalogLookupService {
   readonly groupMap$ = this.index$.pipe(
     map((idx) => {
       const now = new Date();
-      const mapData = new Map<CatalogGroup, CatalogItem[]>();
+      const mapData = new Map<string, CatalogItem[]>();
 
       for (const item of idx?.catalog ?? []) {
         const available = !item.availableFrom || new Date(item.availableFrom) <= now;
 
         if (item.enabled && item.ready && available) {
-          if (!mapData.has(item.group)) mapData.set(item.group, []);
-          mapData.get(item.group)!.push(item);
+          for (const group of item.groups ?? []) {
+            if (!mapData.has(group)) mapData.set(group, []);
+
+            mapData.get(group)!.push(item);
+          }
         }
       }
 
@@ -71,14 +83,17 @@ export class CatalogLookupService {
     }),
     shareReplay({ bufferSize: 1, refCount: true }),
   );
-
   /* ================= SIMPLE GETTERS ================= */
 
-  getReadyGroupedMap(): Map<CatalogGroup, CatalogItem[]> {
+  getReadyGroupedMap(): Map<string, CatalogItem[]> {
     return this.groupMap();
   }
 
-  getAllGroupLabels(): CatalogGroup[] {
+  getByPrimaryGroup(primaryGroup: PrimaryGroup): CatalogItem[] {
+    return this.readyCatalog().filter((item) => item.primaryGroup === primaryGroup);
+  }
+  
+  getAllGroupLabels(): string[] {
     return this.groups();
   }
 
@@ -87,20 +102,18 @@ export class CatalogLookupService {
   }
 
   getAllReady$() {
-  return this.groupMap$.pipe(
-    map(mapData => Array.from(mapData.values()).flat())
-  );
-}
+    return this.groupMap$.pipe(map((mapData) => Array.from(mapData.values()).flat()));
+  }
 
-  getByGroup(group: CatalogGroup): CatalogItem[] {
+  getByGroup(group: string): CatalogItem[] {
     return this.groupMap().get(group) ?? [];
   }
 
-  hasGroup(group: CatalogGroup): boolean {
+  hasGroup(group: string): boolean {
     return this.groupMap().has(group);
   }
 
-  getFirstOfGroup(group: CatalogGroup): CatalogItem | null {
+  getFirstOfGroup(group: string): CatalogItem | null {
     return this.getByGroup(group)[0] ?? null;
   }
 
@@ -112,7 +125,7 @@ export class CatalogLookupService {
     return this.readyCatalog().filter((i) => i.type === type);
   }
 
-  getSorted(group: CatalogGroup): CatalogItem[] {
+  getSorted(group: string): CatalogItem[] {
     return [...this.getByGroup(group)].sort((a, b) => a.priority - b.priority);
   }
 

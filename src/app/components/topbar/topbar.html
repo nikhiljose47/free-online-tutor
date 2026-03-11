@@ -88,6 +88,15 @@
           </span>
 
           <div class="learn-menu" *ngIf="otherOpen()">
+                 <a
+              routerLink="/free-online-tuition"
+              routerLinkActive="active"
+              class="menu-item"
+              (click)="closeOther()"
+            >
+              Test
+            </a>
+
             <a
               routerLink="/about"
               routerLinkActive="active"

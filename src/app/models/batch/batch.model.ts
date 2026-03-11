@@ -1,6 +1,8 @@
 import { Timestamp } from '@angular/fire/firestore';
 import { ClassStatus } from '../classes/class-doc.model';
-import { CatalogGroup } from '../syllabus/syllabus-index.model';
+
+
+// the prev implemenation of batch as collection
 
 export type ClassSubjectStatus = 'active' | 'paused' | 'completed' | 'archived' | 'idle';
 
@@ -17,7 +19,7 @@ export interface BatchItem {
   label: string;
   desc: string;
   status: ClassStatus;
-  group: CatalogGroup;
+  group: string;
   classId: string | null;
   capacity: number;
   enrolledCount: number;

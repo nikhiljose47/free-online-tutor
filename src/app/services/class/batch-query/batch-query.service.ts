@@ -3,7 +3,6 @@ import { Observable, map } from 'rxjs';
 import { FireResponse, FirestoreDocService } from '../../../core/services/fire/firestore-doc.service';
 import { BatchDoc } from '../../../models/batch/batch-doc.model';
 import { ClassStatus } from '../../../models/classes/class-doc.model';
-import { CatalogGroup } from '../../../models/syllabus/syllabus-index.model';
 
 
 @Injectable({ providedIn: 'root' })
@@ -68,14 +67,14 @@ export class BatchQueryService {
   }
 
   // ---------- GROUP FILTER ----------
-  getByGroup(
-    classId: string,
-    group: CatalogGroup
-  ): Observable<BatchDoc[]> {
-    return this.getAll(classId).pipe(
-      map(arr => arr.filter(b => b.group === group))
-    );
-  }
+  // getByGroup(
+  //   classId: string,
+  //   group: string
+  // ): Observable<BatchDoc[]> {
+  //   return this.getAll(classId).pipe(
+  //     map(arr => arr.filter(b => b.group === group))
+  //   );
+  // }
 
   // ---------- CAPACITY AVAILABLE ----------
   getAvailableSeats(classId: string): Observable<

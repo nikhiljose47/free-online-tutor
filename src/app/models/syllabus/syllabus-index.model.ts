@@ -1,24 +1,36 @@
 export interface SyllabusIndex {
   version: string;
   generatedAt: string;
-  groups: CatalogGroup[];
+  primaryGroup: string;
+  groups: string[];
   catalog: CatalogItem[];
 }
+export type CatalogType = 'class' | 'exam' | 'activity' | 'course' | 'bundle';
 
-export type CatalogGroup =
-  | 'school-class'
-  | 'exam-jam'
-  | 'wellness'
-  | 'music'
+export type PrimaryGroup =
+  | 'school'
+  | 'exam-prep'
   | 'coding'
-  | 'aptitude';
+  | 'creative'
+  | 'language'
+  | 'wellness'
+  | 'career'
+  | 'skills';
 
+// export type CatalogGroup =
+//   | 'school-class'
+//   | 'kids'
+//   | 'exam-jam'
+//   | 'wellness'
+//   | 'music'
+//   | 'coding'
+//   | 'aptitude';
 
 export interface CatalogItem {
   id: string;
-  /** class | exam | activity | future: course | bundle */
   type: CatalogType;
-  group: CatalogGroup;
+  primaryGroup: PrimaryGroup;
+  groups: string[];
   title: string;
   enabled: boolean;
   ready: boolean;
@@ -29,10 +41,6 @@ export interface CatalogItem {
   isLive?: boolean;
   meta: CatalogMeta;
 }
-
-
-export type CatalogType = 'class' | 'exam' | 'activity' | 'course' | 'bundle';
-
 
 export interface CatalogMeta {
   students?: number;
