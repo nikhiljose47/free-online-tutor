@@ -24,8 +24,8 @@ import { TuitionMarketplace } from './pages/tuition-marketplace/tuition-marketpl
 import { FreeOnlineTuition } from './pages/free-online-tuition/free-online-tuition';
 
 export const routes: Routes = [
-    {
-    path: 'free-online-tuition',
+  {
+    path: '',
     component: FreeOnlineTuition,
     data: {
       title: 'Free Online Tuition for Classes 6–12 | CBSE & State Boards',
@@ -34,10 +34,9 @@ export const routes: Routes = [
       keywords: 'free online tuition, cbse tuition, online classes india',
     },
     resolve: { seo: seoResolver },
-  }
-,
+  },
   {
-    path: '',
+    path: 'free-online-tuition',
     component: FreeOnlineTutor,
     data: {
       title: 'Free Online Tuition for Classes 6–12 | CBSE & State Boards',
@@ -118,7 +117,7 @@ export const routes: Routes = [
   /* ---------- Dynamic SEO pages ---------- */
 
   {
-    path: 'details/:type/:id',
+    path: 'details/:id',
     loadComponent: () =>
       import('./pages/class-details-page/class-details-page').then((m) => m.ClassDetailsPage),
     data: {

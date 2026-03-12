@@ -291,20 +291,47 @@ $head-color: #daeddc;
    QUOTE
 ===================================================== */
 
-.quote-section {
-  display: flex;
-  justify-content: center;
-  padding: 32px 26px;
-  background: linear-gradient(135deg, #fff7ed, #ffffff);
-  border-radius: 20px;
-  border-left: 6px solid var(--accent);
+:host {
+  display: block;
+  margin-top: 28px;
+}
+
+.quote-day {
+  width: 100%;
+  padding: 22px 18px;
+  border-top: 1px solid #eef1f4;
+}
+
+.quote-container {
+  max-width: 780px;
+  padding: 11rem 1%;
+
+  margin: 0 auto;
+  text-align: center;
+  color: #1f2933;
+}
+
+.quote-mark {
+  font-size: 34px;
+  line-height: 1;
+  color: #9ca3af;
+  margin-bottom: 6px;
 }
 
 .quote-text {
-  font-size: 1.25rem;
-  font-weight: 700;
-  font-style: italic;
-  color: #92400e;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 0.2px;
+  margin: 0;
+  color: #111827;
+}
+
+.quote-author {
+  margin-top: 10px;
+  font-size: 15px;
+  color: #6b7280;
+  font-weight: 500;
 }
 
 /* =====================================================
@@ -323,14 +350,13 @@ $head-color: #daeddc;
 }
 
 @media (max-width: 768px) {
-
   .right-sticky-nav {
     position: sticky;
     bottom: 0;
     top: auto;
 
     border-radius: 12px 12px 0 0;
-    border-top: 1px solid rgba(0,0,0,0.06);
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
     border-bottom: none;
   }
 
@@ -343,11 +369,9 @@ $head-color: #daeddc;
   .tab-content {
     padding-bottom: 80px;
   }
-
 }
 
 @media (max-width: 576px) {
-
   .class-stats-banner {
     padding: 44px 0 36px;
   }
@@ -370,5 +394,4 @@ $head-color: #daeddc;
   .stat h3 {
     font-size: 1.6rem;
   }
-
 }

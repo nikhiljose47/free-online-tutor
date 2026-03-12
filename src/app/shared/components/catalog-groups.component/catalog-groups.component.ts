@@ -17,6 +17,7 @@ import { StringUtil } from '../../utils/string.util';
 export class CatalogGroupsComponent {
   private catalog = inject(CatalogLookupService);
   private router = inject(Router);
+;
 
   groups = signal<Map<string, CatalogItem[]>>(new Map());
 
@@ -65,7 +66,7 @@ export class CatalogGroupsComponent {
   }
 
   openItem(item: CatalogItem) {
-    this.router.navigate(['/details', 'class', item.id]);
+    this.router.navigate(['/details', item.id]);
    // this.router.navigate(['/catalog', item.id]);
   }
 
