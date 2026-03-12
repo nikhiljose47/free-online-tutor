@@ -1,4 +1,5 @@
 export class ClassUtil {
+  
   static getNextCode(input: string): string {
     const parts = input.split('-');
     const last = parts[parts.length - 1];

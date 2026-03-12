@@ -61,10 +61,9 @@ export class ClassDetailsPage implements OnInit {
   private readonly meetings = signal<Meeting[]>([]);
 
   syllabus = signal<ClassSyllabus | null>(null);
-  classTitle = 'Class 6';
+  className = signal<string>('Class');
   puzzleId = 'puzzle_001';
   classFileId: string = '';
-  
 
   readonly stats = signal<ClassStat[]>([
     { value: '12,500+', label: 'Students learning in this class' },
@@ -73,7 +72,6 @@ export class ClassDetailsPage implements OnInit {
     { value: '96%', label: 'Concept clarity satisfaction' },
   ]);
 
-  //Tab
   private readonly _activeTab = signal<TabType>('overview');
 
   readonly activeMainTab = computed(() => this._activeTab());
@@ -96,12 +94,15 @@ export class ClassDetailsPage implements OnInit {
       .pipe(
         switchMap((map) => {
           if (!map) return of(null);
-
+          // Getting the file name for correspoonding classId
           this.classFileId = map[this.classId];
 
+          //Fetching classId json and meetings doc
           return forkJoin({
             syllabus: this.syllRepo.loadClass(this.classFileId).pipe(catchError(() => of(null))),
-            meetings: this.meetApi.getMeetingsForClass(this.classId).pipe(catchError(() => of(null))),
+            meetings: this.meetApi
+              .getMeetingsForClass(this.classId)
+              .pipe(catchError(() => of(null))),
           });
         }),
         tap((res) => {
@@ -114,6 +115,8 @@ export class ClassDetailsPage implements OnInit {
 
           if (syllabus) {
             this.syllabus.set(syllabus);
+            console.log('syllabus is et', syllabus);
+            this.className.set(syllabus.className);
           }
 
           if (meetings) {
@@ -122,10 +125,9 @@ export class ClassDetailsPage implements OnInit {
 
           /* BOTH must be valid */
           const valid = !!syllabus && !!meetings;
+
           this.hasValidData.set(valid);
           this.isLoading.set(false);
-
-          if (valid) console.log('came in');
         }),
         catchError(() => {
           this.isLoading.set(false);

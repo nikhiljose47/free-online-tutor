@@ -1,8 +1,3 @@
-
-
-export class Puzzleutil{
-
-    static isNewDay() {
-
-    }
+export class Puzzleutil {
+  static isNewDay() {}
 }

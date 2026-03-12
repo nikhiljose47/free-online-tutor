@@ -5,7 +5,6 @@ import { map, switchMap, shareReplay, filter, take, tap, catchError } from 'rxjs
 import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
 import { UiStateUtil } from './ui-state.utils';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus.model';
-import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
 import { ResourceIndex, IdMapUtil } from '../utils/id-map.utils';
 
 @Injectable({ providedIn: 'root' })

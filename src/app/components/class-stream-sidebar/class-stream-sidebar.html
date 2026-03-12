@@ -18,7 +18,8 @@
         (error)="onImgError($event)"
       />
       <div class="info">
-        <div class="title">{{ item.subjectId }}</div>
+        <div class="title">{{ item.classId }}</div>
+        <div class="sub-title">{{ item.subjectId }}</div>
         <div class="subject">{{ item.date.toDate() | date: 'd MMM, h:mm a' }}</div>
       </div>
       <div class="status-box">
@@ -41,7 +42,8 @@
         (error)="onImgError($event)"
       />
       <div class="info">
-        <div class="title">{{ item.subjectId }}</div>
+        <div class="title">{{ item.classId }}</div>
+        <div class="sub-title">{{ item.subjectId }}</div>
         <div class="subject">{{ item.date.toDate() | date: 'd MMM, h:mm a' }}</div>
       </div>
       <div class="status-box upcoming-clock">

@@ -26,13 +26,16 @@
       </div>
 
       <!-- RIGHT SIDE : LOGIN / SIGNUP PANEL -->
-      <div class="landing-right">
-        <auth-panel></auth-panel>
+      <div *ngIf="!profile(); else loggedIn" class="landing-right">
+        <auth-panel />
         <!-- <login-dummy></login-dummy> -->
       </div>
+      <ng-template #loggedIn>
+        <student-leaderboard-widget />
+      </ng-template>
     </div>
   </section>
-  <catalog-groups></catalog-groups>
+  <catalog-groups />
 
   <section class="feedback-banner">
     <div class="banner-inner">
@@ -43,8 +46,13 @@
           We’re growing and improving every day. Your feedback helps us make the platform clearer,
           faster, and more useful for students everywhere.
         </p>
-
-        <a class="banner-cta" (click)="openFeedback()">Share Feedback</a>
+        <a
+          class="banner-cta"
+          href="https://mail.google.com/mail/?view=cm&fs=1&to=feedback@yourdomain.com&su=Platform%20Feedback"
+          target="_blank"
+        >
+          Share Feedback
+        </a>
       </div>
     </div>
   </section>

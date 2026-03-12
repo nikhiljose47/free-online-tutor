@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { CatalogLookupService } from '../../../domain/syllabus-index/catalog-lookup.service';
 import { CatalogItem } from '../../../models/syllabus/syllabus-index.model';
 import { PLACEHOLDER__COVER_IMG } from '../../../core/constants/app.constants';
+import { StringUtil } from '../../utils/string.util';
 
 @Component({
   selector: 'catalog-groups',
@@ -20,6 +21,8 @@ export class CatalogGroupsComponent {
   groups = signal<Map<string, CatalogItem[]>>(new Map());
 
   openGroups = signal<Set<string>>(new Set());
+
+  slugToText = StringUtil.slugToTitle;
 
   constructor() {
     this.load();

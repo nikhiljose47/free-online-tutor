@@ -14,7 +14,6 @@ import { CommonModule } from '@angular/common';
 import { Timestamp } from '@angular/fire/firestore';
 
 import { Meeting } from '../../models/meeting.model';
-import { FirestoreDocService } from '../../core/services/fire/firestore-doc.service';
 import { GLOBAL_MEETINGS, PART1 } from '../../core/constants/app.constants';
 import { UserProfileService } from '../../core/services/fire/user-profile.service';
 
@@ -24,6 +23,8 @@ import { ClassSubjectStore } from '../../store/class-store/class-subject.store';
 import { combineLatest, map, Observable, of, shareReplay, switchMap } from 'rxjs';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MeetingsService } from '../../services/meetings/meetings.service';
+import { ToastService } from '../../shared/toast.service';
+import { Auth2Service } from '../../core/services/fire/auth2.service';
 
 @Component({
   selector: 'schedule-live-class-form',
@@ -42,8 +43,9 @@ export class ScheduleLiveClassForm implements OnInit {
   private user = inject(UserProfileService);
   private classStoreApi = inject(ClassSubjectStore);
   private meetApi = inject(MeetingsService);
+  private toastApi = inject(ToastService);
 
-  readonly profile = this.user.profile;
+  private authApi = inject(Auth2Service);
 
   /* ================= FORM ================= */
 
@@ -124,7 +126,6 @@ export class ScheduleLiveClassForm implements OnInit {
       f.classId &&
       f.subjectId &&
       f.chapterCode &&
-      f.divisionId &&
       f.batchId &&
       f.date &&
       f.time &&
@@ -139,15 +140,18 @@ export class ScheduleLiveClassForm implements OnInit {
   //   divisionId,
   // );
 
+  constructor() {
+    this.teacherId = this.authApi.uid ?? null;
+  }
 
   ngOnInit(): void {
-    if (!this.teacherId) return;
+    if (!this.teacherId) {
+      this.teacherId = this.user.profile()?.uid ?? null;
+    }
 
     this.currentAndNext$ = this.classStoreApi
       .getCurrentAndNextIndex('CL06', 'CL06-MATH')
       .pipe(shareReplay({ bufferSize: 1, refCount: true }));
-
-
   }
 
   /* ================= HELPERS ================= */
@@ -174,12 +178,27 @@ export class ScheduleLiveClassForm implements OnInit {
 
   async scheduleClass() {
     const f = this.form();
-    if (!this.isValid() || this.submitting()) return;
-    if (!f.date || !f.classId || !this.teacherId) return;
+
+    if (!this.isValid() || this.submitting()) {
+      this.toastApi.show('Invalid form!');
+      return;
+    }
+    if (!f.date) {
+      this.toastApi.show('Invalid date');
+      return;
+    }
+    if (!f.classId) {
+      this.toastApi.show('Invalid class id');
+      return;
+    }
+    if (!this.teacherId) {
+      this.toastApi.show('Invalid teacher id');
+      return;
+    }
 
     this.submitting.set(true);
     let imageSrc = this.catalogLookup.getById(f.classId)?.file ?? '';
-    let teacherInfo = { id: this.teacherId, name: this.profile()?.name ?? '' };
+    let teacherInfo = { id: this.teacherId, name: this.authApi.currentUser?.displayName ?? '' };
     this.meetApi.scheduleMeeting$(f, imageSrc, teacherInfo).subscribe((e) => {
       this.onSubmit.emit();
       this.submitting.set(false);

@@ -1,0 +1,50 @@
+<!-- student-leaderboard-widget.component.html -->
+
+<section class="lb-widget">
+  <!-- HEADER -->
+  <header class="lb-header d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center gap-2">
+      <span class="lb-icon">🏆</span>
+      <h6 class="lb-title mb-0">Student Leaderboard</h6>
+    </div>
+    <span class="lb-season">Weekly</span>
+  </header>
+
+  <!-- LEADERBOARD -->
+  <div class="lb-body">
+    <div class="lb-row d-flex align-items-center" *ngFor="let s of leaderboard()">
+      <!-- RANK -->
+      <div class="lb-rank">
+        {{ s.rank }}
+      </div>
+
+      <!-- AVATAR -->
+      <div class="lb-avatar">
+        <img [src]="s.avatar" alt="student" />
+      </div>
+
+      <!-- INFO -->
+      <div class="lb-info flex-grow-1">
+        <div class="lb-name">
+          {{ s.name }}
+        </div>
+
+        <div class="lb-level">
+          {{ s.level }}
+        </div>
+      </div>
+
+      <!-- SCORE -->
+      <div class="lb-score">
+        {{ s.points }}
+      </div>
+    </div>
+  </div>
+
+  <!-- ANNOUNCEMENT / NOTIFICATION BAR -->
+  <div class="lb-announcement">
+    <marquee class="lb-marquee" direction="left" scrollamount="4">
+      <span class="lb-note" *ngFor="let n of announcements()"> 🔔 {{ n.message }} </span>
+    </marquee>
+  </div>
+</section>

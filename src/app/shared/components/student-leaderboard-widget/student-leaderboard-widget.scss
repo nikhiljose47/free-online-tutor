@@ -1,0 +1,154 @@
+/* student-leaderboard-widget.component.scss */
+
+:host {
+  display: block;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    Arial,
+    sans-serif;
+}
+
+.lb-widget {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 14px;
+  padding: 12px 12px 0 12px;
+  width: 100%;
+}
+
+/* HEADER */
+
+.lb-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.lb-icon {
+  font-size: 18px;
+}
+
+.lb-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: #1f2933;
+  letter-spacing: 0.2px;
+}
+
+.lb-season {
+  font-size: 11px;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+/* BODY */
+.lb-body {
+  padding-top: 8px;
+  min-height: 280px; /* ensures visual space even with few/no students */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* ROW */
+
+.lb-row {
+  padding: 10px 2px;
+  border-bottom: 1px solid #f4f6f8;
+}
+
+.lb-row:last-child {
+  border-bottom: none;
+}
+
+/* RANK */
+
+.lb-rank {
+  width: 26px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+/* AVATAR */
+
+.lb-avatar {
+  width: 34px;
+  height: 34px;
+  margin: 0 10px;
+}
+
+.lb-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* INFO */
+
+.lb-info {
+  min-width: 0;
+}
+
+.lb-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lb-level {
+  font-size: 11.5px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+/* SCORE */
+
+.lb-score {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #2563eb;
+  letter-spacing: 0.3px;
+}
+
+/* ANNOUNCEMENT */
+
+.lb-announcement {
+  margin-top: 10px;
+  border-top: 1px solid #eef1f4;
+  padding: 6px 0;
+  background: #fafafa;
+  border-radius: 0 0 12px 12px;
+}
+
+.lb-marquee {
+  font-size: 12px;
+  color: #374151;
+}
+
+.lb-note {
+  margin-right: 60px;
+  font-weight: 500;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+  .lb-widget {
+    border-radius: 12px;
+  }
+
+  .lb-score {
+    font-size: 12px;
+  }
+}

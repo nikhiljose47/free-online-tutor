@@ -7,6 +7,9 @@ import { AnnouncementBar } from './components/announcement-bar/announcement-bar'
 import { ClassStreamSidebar } from './components/class-stream-sidebar/class-stream-sidebar';
 import { Footer } from './components/footer/footer';
 
+
+//ResourceIndex or IdMap have 
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, Topbar, Footer, Toast, CommonModule, AnnouncementBar, ClassStreamSidebar],
