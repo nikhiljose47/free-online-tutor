@@ -12,7 +12,7 @@ import { BatchQueryService } from '../../../services/class/batch-query/batch-que
 import { BatchDoc } from '../../../models/batch/batch-doc.model';
 import { SyllabusLookupService } from '../../../services/syllabus/syllabus-lookup.service';
 import { Chapter } from '../../../models/syllabus/class-syllabus.model';
-import { combineLatest, map, of, shareReplay, switchMap } from 'rxjs';
+import { combineLatest, map, of, shareReplay, switchMap, tap } from 'rxjs';
 
 interface DashBoard {
   total: number;
@@ -117,7 +117,7 @@ export class ClassOverviewComponent implements OnInit {
     this.selectedBatchId.set(b.id);
   }
 
-  private loadBatchStore(): void{
+  private loadBatchStore(): void {
     this.batchQueryApi.getDashboard(this.classId).subscribe((db) => {
       this.dashboard.set(db);
       const first = db.live?.[0] ?? db.upcoming?.[0] ?? db.enrollmentOpen?.[0] ?? null;
@@ -127,6 +127,30 @@ export class ClassOverviewComponent implements OnInit {
   }
 
   private loadSyllabus(): void {
+    // this.syllLookUpApi
+    //   .getSubjects(this.classId)
+    //   .pipe(
+    //     switchMap((subjects) =>
+    //       subjects?.length
+    //         ? combineLatest(
+    //             subjects.map((s) =>
+    //               this.syllLookUpApi.getChapters(this.classId, s.code).pipe(
+    //                 map((chapters) => ({
+    //                   code: s.code,
+    //                   name: s.name,
+    //                   chapters,
+    //                 })),
+    //               ),
+    //             ),
+    //           )
+    //         : of([]),
+    //     ),
+    //     shareReplay({ bufferSize: 1, refCount: true }),
+    //   )
+    //   .subscribe((data) => {
+    //     this.syllabusSignal.set(data);
+    //   });
+
     this.syllLookUpApi
       .getSubjects(this.classId)
       .pipe(
@@ -145,6 +169,7 @@ export class ClassOverviewComponent implements OnInit {
               )
             : of([]),
         ),
+
         shareReplay({ bufferSize: 1, refCount: true }),
       )
       .subscribe((data) => {

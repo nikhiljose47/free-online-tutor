@@ -52,20 +52,20 @@ export class FreeOnlineTutor implements OnInit, AfterViewInit {
      INIT
   =============================== */
   ngOnInit() {
-    this.syllRepo.loadIndex().subscribe((data) => {
-      if (!data) {
-        // this.handleNoDataState();
-        this.toast.show('Homepage data unavailable');
-        this.classLoading.set(false);
-        this.jamLoading.set(false);
-        return;
-      }
+    // this.syllRepo.loadIndex().subscribe((data) => {
+    //   if (!data) {
+    //     // this.handleNoDataState();
+    //     this.toast.show('Homepage data unavailable');
+    //     this.classLoading.set(false);
+    //     this.jamLoading.set(false);
+    //     return;
+    //   }
 
-      this.setDataByGroups();
-      // Set loaders to false
-      this.classLoading.set(false);
-      this.jamLoading.set(false);
-    });
+    //   this.setDataByGroups();
+    //   // Set loaders to false
+    //   this.classLoading.set(false);
+    //   this.jamLoading.set(false);
+    // });
   }
 
   ngAfterViewInit() {

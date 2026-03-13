@@ -5,16 +5,17 @@ import {
   inject,
   OnInit,
   computed,
+  PLATFORM_ID,
 } from '@angular/core';
 import { McqPuzzleCardComponent } from '../../components/mcq-puzzle-card/mcq-puzzle-card';
 import { Timetable } from '../../components/timetable/timetable';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ClassOverviewComponent } from '../../shared/components/class-overview.component/class-overview.component';
-import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
+import { catchError, filter, forkJoin, of, switchMap, tap } from 'rxjs';
 import { SyllabusStore } from '../../domain/syllabus.store';
 import { MeetingsService } from '../../services/meetings/meetings.service';
 import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Meeting } from '../../models/meeting.model';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus.model';
 import { UserCardlist } from '../../shared/components/user-card-list/user-card-list';
@@ -46,9 +47,10 @@ interface ClassStat {
     ExploreCoursesBannerComponent,
     ClassOverviewComponent,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClassDetailsPage implements OnInit {
+  private platformId = inject(PLATFORM_ID);
+
   private syllabusStore = inject(SyllabusStore);
   private meetApi = inject(MeetingsService);
   private syllRepo = inject(SyllabusRepository);
@@ -84,6 +86,14 @@ export class ClassDetailsPage implements OnInit {
     }
   }
 
+  constructor(private router: Router) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.router.events
+        .pipe(filter((e) => e instanceof NavigationEnd))
+        .subscribe(() => document.querySelector('.content')?.scrollTo(0, 0));
+    }
+  }
+
   ngOnInit(): void {
     this.loadData();
   }
@@ -115,7 +125,6 @@ export class ClassDetailsPage implements OnInit {
 
           if (syllabus) {
             this.syllabus.set(syllabus);
-            console.log('syllabus is et', syllabus);
             this.className.set(syllabus.className);
           }
 

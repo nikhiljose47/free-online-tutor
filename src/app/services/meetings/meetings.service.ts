@@ -45,7 +45,7 @@ export class MeetingsService {
         const data = res.data as Meeting[];
         return {
           ok: true,
-          data: data.filter((m) => m.teacherId == teacherId),
+          data: data.filter((m) => m.teacherId === teacherId),
         };
       }),
     );
@@ -60,7 +60,7 @@ export class MeetingsService {
         const data = res.data as Meeting[];
         return {
           ok: true,
-          data: data.filter((m) => m.classId == classId),
+          data: data.filter((m) => m.classId === classId),
         };
       }),
     );

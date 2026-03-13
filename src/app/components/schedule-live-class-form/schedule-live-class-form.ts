@@ -67,7 +67,7 @@ export class ScheduleLiveClassForm implements OnInit {
   /* ================= LOOKUPS ================= */
 
   readonly groupList = this.catalogLookup.groups;
-  readonly batchList = this.catalogLookup.getAllGroupLabels();
+  readonly batchList = this.catalogLookup.primaryGroups;
   readonly classList = toSignal(this.syllabusLookup.getClassIds(), { initialValue: [] });
 
   readonly selectedClass = computed(() => this.form().classId);

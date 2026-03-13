@@ -83,7 +83,6 @@ export class ScheduleLiveClass implements OnInit {
   }
 
   onScheduleSuccess() {
-    console.log('came on last');
     this.mode.set('view');
   }
 

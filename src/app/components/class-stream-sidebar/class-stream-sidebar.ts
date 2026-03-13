@@ -14,7 +14,7 @@ import {
 } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { Meeting } from '../../models/meeting.model';
@@ -56,10 +56,12 @@ export class ClassStreamSidebar implements OnInit, OnDestroy, AfterViewInit {
   private mergedSignal!: any;
 
   /* ================= STREAMS ================= */
-  private readonly merged$ = this.catalogLookupApi.getAllReady$().pipe(
+
+  private readonly merged$ = toObservable(this.catalogLookupApi.readyCatalog).pipe(
     switchMap((feed) =>
       merge(this.meetApi.getLiveMeetingsInitial(), this.meetApi.getLiveMeetings()).pipe(
         shareReplay(1),
+
         map((meetRes) => {
           if (!meetRes.ok) {
             throw new Error(meetRes.message ?? 'Meetings load failed');
@@ -70,12 +72,14 @@ export class ClassStreamSidebar implements OnInit, OnDestroy, AfterViewInit {
             : [];
 
           const mapById = new Map<string, any>();
+
           feed.forEach((f: any) => mapById.set(f.id, f));
 
           const now = new Date();
 
           const attachMeta = (m: Meeting) => {
             const meta = mapById.get(String(m.classId));
+
             return {
               ...m,
               image: meta?.meta?.image ?? '',
@@ -102,6 +106,7 @@ export class ClassStreamSidebar implements OnInit, OnDestroy, AfterViewInit {
           meetings.forEach((m) => {
             const start = m.date?.toDate?.();
             const end = m.endAt?.toDate?.();
+
             if (!start || !end) return;
 
             if (start <= now && end >= now) this.statusStore.setState(m.id, 'live');

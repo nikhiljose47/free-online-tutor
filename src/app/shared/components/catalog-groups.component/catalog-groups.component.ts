@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  inject,
+  Output,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CatalogLookupService } from '../../../domain/syllabus-index/catalog-lookup.service';
@@ -15,14 +22,12 @@ import { StringUtil } from '../../utils/string.util';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CatalogGroupsComponent {
+  @Output() routeTrigger = new EventEmitter<string>();
+
   private catalog = inject(CatalogLookupService);
-  private router = inject(Router);
-;
 
   groups = signal<Map<string, CatalogItem[]>>(new Map());
-
   openGroups = signal<Set<string>>(new Set());
-
   slugToText = StringUtil.slugToTitle;
 
   constructor() {
@@ -30,7 +35,7 @@ export class CatalogGroupsComponent {
   }
 
   load() {
-    this.catalog.groupMap$.subscribe((res) => {
+    this.catalog.primaryGroupMap$.subscribe((res) => {
       this.groups.set(res);
       const first = res.keys().next().value;
 
@@ -66,8 +71,7 @@ export class CatalogGroupsComponent {
   }
 
   openItem(item: CatalogItem) {
-    this.router.navigate(['/details', item.id]);
-   // this.router.navigate(['/catalog', item.id]);
+    this.routeTrigger.emit(item.id);
   }
 
   getBannerSrc(g?: any | null): string {

@@ -1,7 +1,7 @@
 export interface SyllabusIndex {
   version: string;
   generatedAt: string;
-  primaryGroup: string;
+  primaryGroups: PrimaryGroup[];
   groups: string[];
   catalog: CatalogItem[];
 }

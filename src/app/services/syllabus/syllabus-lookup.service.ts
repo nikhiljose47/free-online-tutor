@@ -48,6 +48,11 @@ export class SyllabusLookupService {
       map((list) => list.find((c) => c.code_prefix === prefix)?.className ?? null),
     );
   }
+  getClassNameFromId(classId: string): Observable<string | null> {
+    return this.list$.pipe(
+      map((list) => list.find((c) => c.classId === classId)?.className ?? null),
+    );
+  }
 
   hasClass(classId: string): Observable<boolean> {
     return this.list$.pipe(map((list) => list.some((c) => c.classId === classId)));
@@ -66,6 +71,7 @@ export class SyllabusLookupService {
   ): Observable<{ code: string; name: string; meta: Record<string, unknown> }[]> {
     return this.list$.pipe(
       map((list) => {
+        console.log(`Fetching subjects for class: ${classId}`, list);
         const found = list.find((c) => c.classId === classId);
         if (!found?.subjects?.length) return [];
         return found.subjects.map((s) => ({
@@ -87,12 +93,12 @@ export class SyllabusLookupService {
     );
   }
 
-  getSubjectById(classId: string, subjectId: string): Observable<Subject | null> {
+  getSubjectNameById(classId: string, subjectId: string): Observable<string | null> {
     return this.list$.pipe(
       map(
         (list) =>
-          list.find((c) => c.classId === classId)?.subjects.find((s) => s.code === subjectId) ??
-          null,
+          list.find((c) => c.classId === classId)?.subjects.find((s) => s.code === subjectId)
+            ?.name ?? null,
       ),
     );
   }

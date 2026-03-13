@@ -10,19 +10,20 @@ $head-color: #daeddc;
 
 .class-details-page {
   min-height: 100%;
-  padding: 0 0.75rem;
-  margin: 0 10%;
+  padding: 0;
+  margin: 0 4%;
   background: #ffffff;
-  overflow: visible;
 }
-
 /* =====================================================
    HEADER
 ===================================================== */
 
 .class-header {
   background: $head-color;
-  margin: -1rem -0.8rem;
+  padding: 0.75rem 1rem;
+}
+.class-header h1 {
+  margin: 0;
 }
 
 /* =====================================================
@@ -238,8 +239,9 @@ $head-color: #daeddc;
   top: 0;
   z-index: 10;
 
-  margin: 0 -0.8rem;
+  margin: 0 0;
   background: $head-color;
+  color: $head-color;
 
   border-radius: 0 0 10px 10px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
@@ -353,7 +355,7 @@ $head-color: #daeddc;
   .right-sticky-nav {
     position: sticky;
     bottom: 0;
-    top: auto;
+    top: 0;
 
     border-radius: 12px 12px 0 0;
     border-top: 1px solid rgba(0, 0, 0, 0.06);

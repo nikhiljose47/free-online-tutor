@@ -35,7 +35,7 @@
       </ng-template>
     </div>
   </section>
-  <catalog-groups />
+  <catalog-groups (routeTrigger) = "navigateById($event)" />
 
   <section class="section">
     <!-- <home-intro-strip></home-intro-strip> -->

@@ -9,6 +9,7 @@ import { SyllabusRepository } from '../../domain/repositories/syllabus.repositor
 import { ToastService } from '../../shared/toast.service';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { ResourceIndex } from '../../shared/utils/id-map.utils';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'free-online-tuition',
@@ -19,12 +20,13 @@ import { ResourceIndex } from '../../shared/utils/id-map.utils';
 export class FreeOnlineTuition {
   private readonly profileApi = inject(UserProfileService);
   private toast = inject(ToastService);
+  private router = inject(Router);
+
   private uiState = inject(UiStateUtil);
   private syllRepo = inject(SyllabusRepository);
   readonly profile = computed(() => this.profileApi.profile());
 
   isoading = signal(true);
-
 
   ngOnInit() {
     this.syllRepo.loadIndex().subscribe((data) => {
@@ -37,29 +39,33 @@ export class FreeOnlineTuition {
       this.isoading.set(false);
     });
   }
-    ngAfterViewInit() {
-      // After all home methods happened - start parallel of next data
-      setTimeout(() => this.loadAllClasses());
-    }
-  
-    private loadAllClasses() {
-      const map = this.uiState.get<ResourceIndex>('ResourceIndex');
-      if (map) {
-        let mapToArr = Object.values(map);
-        this.syllRepo.loadMultipleClasses(mapToArr);
-      }
-    }
+  ngAfterViewInit() {
+    // After all home methods happened - start parallel of next data
+    setTimeout(() => this.loadAllClasses());
+  }
 
-    getBannerSrc(src?: string | null): string {
-      return src || PLACEHOLDER__COVER_IMG;
+  private loadAllClasses() {
+    const map = this.uiState.get<ResourceIndex>('ResourceIndex');
+
+    if (map) {
+      let mapToArr = Object.values(map);
+      this.syllRepo.loadMultipleClasses(mapToArr);
     }
-  
-    onImgError(event: Event) {
-      (event.target as HTMLImageElement).src = PLACEHOLDER__COVER_IMG;
-    }
-  
-    getBannerAlt(cls: any): string {
-      return cls?.className ? `${cls.className} cover` : 'Class cover';
-    }
-  
+  }
+
+  navigateById(id: string) {
+    this.router.navigate(['/details', id]);
+  }
+
+  getBannerSrc(src?: string | null): string {
+    return src || PLACEHOLDER__COVER_IMG;
+  }
+
+  onImgError(event: Event) {
+    (event.target as HTMLImageElement).src = PLACEHOLDER__COVER_IMG;
+  }
+
+  getBannerAlt(cls: any): string {
+    return cls?.className ? `${cls.className} cover` : 'Class cover';
+  }
 }
