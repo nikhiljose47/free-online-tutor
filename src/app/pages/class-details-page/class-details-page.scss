@@ -1,8 +1,5 @@
-$head-color: #daeddc;
+$head-color: #bfeee3ea;
 
-:host {
-  display: block;
-}
 
 /* =====================================================
    PAGE LAYOUT
@@ -243,8 +240,8 @@ $head-color: #daeddc;
   background: $head-color;
   color: $head-color;
 
-  border-radius: 0 0 10px 10px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+ // border-radius: 0 0 10px 10px;
+  //border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 
   backdrop-filter: blur(8px);
 }
@@ -292,11 +289,6 @@ $head-color: #daeddc;
 /* =====================================================
    QUOTE
 ===================================================== */
-
-:host {
-  display: block;
-  margin-top: 28px;
-}
 
 .quote-day {
   width: 100%;

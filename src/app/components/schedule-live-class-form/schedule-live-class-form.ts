@@ -40,12 +40,13 @@ export class ScheduleLiveClassForm implements OnInit {
 
   private syllabusLookup = inject(SyllabusLookupService);
   private catalogLookup = inject(CatalogLookupService);
-  private user = inject(UserProfileService);
   private classStoreApi = inject(ClassSubjectStore);
   private meetApi = inject(MeetingsService);
   private toastApi = inject(ToastService);
+  private user = inject(UserProfileService);
 
-  private authApi = inject(Auth2Service);
+  readonly profile = this.user.profile;
+
 
   /* ================= FORM ================= */
 
@@ -141,7 +142,7 @@ export class ScheduleLiveClassForm implements OnInit {
   // );
 
   constructor() {
-    this.teacherId = this.authApi.uid ?? null;
+    this.teacherId = this.profile()?.uid ?? null;
   }
 
   ngOnInit(): void {
@@ -198,7 +199,7 @@ export class ScheduleLiveClassForm implements OnInit {
 
     this.submitting.set(true);
     let imageSrc = this.catalogLookup.getById(f.classId)?.file ?? '';
-    let teacherInfo = { id: this.teacherId, name: this.authApi.currentUser?.displayName ?? '' };
+    let teacherInfo = { id: this.teacherId, name: this.profile()?.name ?? '' };
     this.meetApi.scheduleMeeting$(f, imageSrc, teacherInfo).subscribe((e) => {
       this.onSubmit.emit();
       this.submitting.set(false);
