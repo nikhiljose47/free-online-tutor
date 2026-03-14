@@ -2,7 +2,7 @@
   <!-- HEADER (NOT STICKY) -->
   <header class="class-header">
     <h1 class="m-0 fw-semibold text-truncate p-3">
-      {{ className() }}
+      Class :  {{ className() }}
     </h1>
   </header>
 
@@ -21,7 +21,7 @@
       </li>
 
       <li class="nav-item" [class.active]="activeMainTab() === 'stats'" (click)="select('stats')">
-        Schedule
+        Curriculum
       </li>
     </ul>
   </nav>
@@ -59,9 +59,9 @@
     <h2 class="d-flex justify-content-center mb-4 my-5">Know Us..</h2>
   </section>
 
-  <section class="my-5">
+  <!-- <section class="my-5">
     <explore-courses-banner></explore-courses-banner>
-  </section>
+  </section> -->
 
   <section>
     <h2 class="d-flex justify-content-center mb-4 my-5">The Teachers</h2>

@@ -9,11 +9,11 @@ import { SyllabusRepository } from '../../domain/repositories/syllabus.repositor
 import { ToastService } from '../../shared/toast.service';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { ResourceIndex } from '../../shared/utils/id-map.utils';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'free-online-tuition',
-  imports: [AuthPanelComponent, CatalogGroupsComponent, CommonModule, StudentLeaderboardWidget],
+  imports: [AuthPanelComponent, CatalogGroupsComponent, CommonModule, StudentLeaderboardWidget, RouterModule],
   templateUrl: './free-online-tuition.html',
   styleUrl: './free-online-tuition.scss',
 })

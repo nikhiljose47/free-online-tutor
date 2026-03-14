@@ -9,7 +9,11 @@ import {
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CatalogLookupService } from '../../../domain/syllabus-index/catalog-lookup.service';
-import { CatalogItem } from '../../../models/syllabus/syllabus-index.model';
+import {
+  CatalogItem,
+  CatalogType,
+  PrimaryGroup,
+} from '../../../models/syllabus/syllabus-index.model';
 import { PLACEHOLDER__COVER_IMG } from '../../../core/constants/app.constants';
 import { StringUtil } from '../../utils/string.util';
 
@@ -26,9 +30,20 @@ export class CatalogGroupsComponent {
 
   private catalog = inject(CatalogLookupService);
 
-  groups = signal<Map<string, CatalogItem[]>>(new Map());
+  groups = signal<Map<PrimaryGroup, CatalogItem[]>>(new Map());
   openGroups = signal<Set<string>>(new Set());
   slugToText = StringUtil.slugToTitle;
+
+  primaryGroupIcons: Record<PrimaryGroup, string> = {
+    school: '🏫',
+    skills: '🔬',
+    'exam-prep': '✍️',
+    coding: '👨‍💻',
+    language: '🗣️',
+    creative: '🎭',
+    career: '💼',
+    wellness: '🧘‍♂️',
+  };
 
   constructor() {
     this.load();
@@ -72,17 +87,5 @@ export class CatalogGroupsComponent {
 
   openItem(item: CatalogItem) {
     this.routeTrigger.emit(item.id);
-  }
-
-  getBannerSrc(g?: any | null): string {
-    return PLACEHOLDER__COVER_IMG;
-    // return g ? `assets/catalog-icons/${g}.svg` : PLACEHOLDER__COVER_IMG;
-  }
-  onImgError(event: Event) {
-    (event.target as HTMLImageElement).src = PLACEHOLDER__COVER_IMG;
-  }
-
-  getBannerAlt(item: any): string {
-    return item?.key;
   }
 }

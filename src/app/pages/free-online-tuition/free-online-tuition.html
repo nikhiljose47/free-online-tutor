@@ -27,6 +27,18 @@
 
       <!-- RIGHT SIDE : LOGIN / SIGNUP PANEL -->
       <div *ngIf="!profile(); else loggedIn" class="landing-right">
+        <div class="guest-chip">
+          <div class="guest-row">
+            <span class="guest-icon">👤</span>
+            <span class="guest-status">Guest mode active✅</span>
+          </div>
+
+          <p class="guest-text">
+            You are browsing anonymously. Sign in to track progress, save activity, and access all
+            learning features.
+          </p>
+        </div>
+        <div style="height: 15px"></div>
         <auth-panel />
         <!-- <login-dummy></login-dummy> -->
       </div>
@@ -35,10 +47,34 @@
       </ng-template>
     </div>
   </section>
-  <catalog-groups (routeTrigger) = "navigateById($event)" />
+  <catalog-groups (routeTrigger)="navigateById($event)" />
 
   <section class="section">
     <!-- <home-intro-strip></home-intro-strip> -->
+  </section>
+
+  <section class="feedback-banner">
+    <div class="banner-inner">
+      <h2 class="banner-title">A learning platform parents can trust</h2>
+
+      <ul class="banner-desc">
+        <li>
+          Classes are guided by
+          <a class="trust-link" routerLink="/teachers" routerLinkActive="active">experienced teachers</a>
+          who focus on clear explanations and supportive learning.
+        </li>
+
+        <li>
+          Each class follows a carefully curated syllabus designed to help students understand
+          concepts step by step.
+        </li>
+
+        <li>
+          Parents can explore every course in detail through the class pages, where topics and
+          learning structure are clearly explained.
+        </li>
+      </ul>
+    </div>
   </section>
 
   <section class="feedback-banner">

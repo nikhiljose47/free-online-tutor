@@ -4,14 +4,9 @@
     <div class="catalog-group" *ngFor="let g of groupsArray()">
       <!-- GROUP TITLE -->
       <div class="group-header">
-        <img
-          class="group-icon"
-          [src]="getBannerSrc(g)"
-          [alt]="getBannerAlt(g)"
-          loading="lazy"
-          (error)="onImgError($event)"
-        />
-
+        <span class="group-icon">
+          {{ primaryGroupIcons[g.key] }}
+        </span>
         <h2 class="group-title">
           {{ slugToText(g.key) }}
         </h2>

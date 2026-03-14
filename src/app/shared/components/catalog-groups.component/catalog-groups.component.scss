@@ -1,7 +1,7 @@
 .catalog {
   width: 100%;
   padding: 64px 32px;
-  background: #f5f7fa;
+  background: #dceae3;
 }
 
 /* MAIN SURFACE (single connected background) */
@@ -10,7 +10,7 @@
   max-width: 1100px;
   margin: 0 auto;
 
-  background: white;
+  background: rgba(250, 245, 245, 0.919);
   border-radius: 18px;
   padding: 48px;
 
@@ -38,12 +38,14 @@
 }
 
 .group-icon {
-  width: 28px;
-  height: 28px;
+  font-size: 2.5rem;
+  // width: 48px;
+  // height: 48px;
 }
 
 .group-title {
   margin: 0;
+  justify-content: end;
   font-size: 1.55rem;
   font-weight: 600;
   color: #111827;

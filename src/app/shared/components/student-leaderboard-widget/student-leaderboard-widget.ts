@@ -1,7 +1,9 @@
 // student-leaderboard-widget.component.ts
 
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AnnouncementsService } from '../../../services/announcements/announcements.service';
+import { Announcement } from '../../../models/announcement.model';
 
 type LeaderboardStudent = {
   rank: number;
@@ -11,19 +13,16 @@ type LeaderboardStudent = {
   points: number;
 };
 
-type Announcement = {
-  message: string;
-};
-
 @Component({
   selector: 'student-leaderboard-widget',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './student-leaderboard-widget.html',
   styleUrls: ['./student-leaderboard-widget.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StudentLeaderboardWidget {
+  private announceApi = inject(AnnouncementsService);
 
   leaderboard = signal<LeaderboardStudent[]>([
     {
@@ -31,31 +30,25 @@ export class StudentLeaderboardWidget {
       name: 'Aarav Sharma',
       avatar: 'https://i.pravatar.cc/80?img=12',
       level: 'Typing Master',
-      points: 9820
+      points: 9820,
     },
     {
       rank: 2,
       name: 'Meera Nair',
       avatar: 'https://i.pravatar.cc/80?img=32',
       level: 'Speed Pro',
-      points: 8740
-    }
+      points: 8740,
+    },
   ]);
 
-  announcements = signal<Announcement[]>([
-    { message: 'New Typing Challenge starts tomorrow 9 AM' },
-    { message: 'Top 10 students will receive achievement badges this week' }
-  ]);
+  announcements = signal<Announcement[]>([]);
 
-  /* 
-  Replace dummy data later:
+  //Replace dummy data later:
 
-  constructor(private leaderboardService: LeaderboardService){}
-
-  ngOnInit(){
-    this.leaderboard.set(this.leaderboardService.students());
-    this.announcements.set(this.leaderboardService.announcements());
+  ngOnInit() {
+    // this.leaderboard.set(this.leaderboardService.students());
+    this.announceApi.getAll().subscribe((data) => {
+      this.announcements.set(data);
+    });
   }
-  */
-
 }

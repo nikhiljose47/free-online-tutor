@@ -40,10 +40,14 @@
 
     <!-- ACTIONS -->
     <div class="actions">
+      <a class="topbar-link" routerLink="/teachers" routerLinkActive="active">Teachers</a>
+
       <!-- NOT LOGGED -->
       <ng-container *ngIf="!profile()">
-        <button class="login-btn" routerLink="/login">Log In</button>
-        <button class="signup-btn" routerLink="/register">Sign Up</button>
+         <a class="topbar-link" routerLink="/login" routerLinkActive="active">Login</a>
+
+        <!-- <button class="login-btn" routerLink="/login">Login</button> -->
+        <!-- <button class="signup-btn" routerLink="/register">Sign Up</button> -->
       </ng-container>
 
       <!-- LOGGED -->
@@ -75,8 +79,6 @@
           Schedule
         </a>
 
-        <a class="topbar-link" routerLink="/teachers" routerLinkActive="active"> Teachers </a>
-
         <div class="learn-dropdown" (click)="$event.stopPropagation()">
           <span class="topbar-link" [class.active]="otherOpen()" (click)="toggleOther()">
             Contact us
@@ -88,7 +90,7 @@
           </span>
 
           <div class="learn-menu" *ngIf="otherOpen()">
-                 <a
+            <a
               routerLink="/free-online-tuition"
               routerLinkActive="active"
               class="menu-item"

@@ -4,6 +4,7 @@ $box-border: #f0efef30;
   position: relative;
   padding: 20px 0;
   margin: 24px 0;
+  min-height: 32rem;
   border-radius: 8px;
   border-top: 20px solid $box-border;
   border-bottom: 20px solid $box-border;
@@ -116,7 +117,7 @@ $box-border: #f0efef30;
 ================================ */
 .ticket-card {
   display: grid;
-  grid-template-columns: 45% 1fr 60px;
+  grid-template-columns: 35% 1fr 60px;
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid #e8eaed;
@@ -272,7 +273,7 @@ $box-border: #f0efef30;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2px;
+  padding: 1px;
   position: relative;
 }
 
@@ -292,7 +293,7 @@ $box-border: #f0efef30;
   padding: 30px 0;
   text-align: center;
   color: #777;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
 }
 
 /* ===============================

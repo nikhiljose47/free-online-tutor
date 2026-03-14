@@ -33,7 +33,12 @@
         <div class="ticket-card">
           <!-- LEFT IMAGE (40-50%) -->
           <div class="ticket-media">
-            <img [src]="item.image" alt="class image" loading="lazy" />
+            <img
+            [src]="getBannerSrc(item?.image)"
+            [alt]="getBannerAlt(item)"
+            loading="lazy"
+            (error)="onImgError($event)"
+          />
 
             <div class="media-overlay">
               <span class="status-chip" [class.live]="item.isLive" [class.upcoming]="!item.isLive">
@@ -95,7 +100,7 @@
         </div>
       </ng-container>
 
-      <div *ngIf="visibleList().length === 0" class="empty">No classes available.</div>
+      <div *ngIf="visibleList().length === 0" class="empty">No classes available<span>{{selectedTab() === 'today'?' today':''}}</span>.</div>
     </div>
   </section>
 </div>

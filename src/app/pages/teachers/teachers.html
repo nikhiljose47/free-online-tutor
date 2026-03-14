@@ -1,13 +1,13 @@
 <div class="main container py-4">
-  <h4 class="fw-bold mb-4 text-center">Meet Our Teachers</h4>
+  <h4 class="fw-semibold text-center mb-4">Meet Our Teachers</h4>
 
-  <div class="row g-4">
-    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let t of teachers()">
-      <div class="teacher-card">
-        <!-- IMAGE (80%) -->
+  <div class="teacher-list">
+    <div class="teacher-card mb-4" *ngFor="let t of teachers()">
+      <div class="teacher-layout">
+        <!-- LEFT IMAGE PANEL (30%) -->
+
         <div class="teacher-image">
           <img
-            class="banner"
             [src]="getBannerSrc(t.photoUrl)"
             [alt]="getBannerAlt(t.name)"
             loading="lazy"
@@ -15,29 +15,60 @@
           />
         </div>
 
-        <!-- DETAILS (20%) -->
-        <div class="teacher-info">
-          <div class="name">
-            {{ t.name }}
+        <!-- RIGHT DETAILS PANEL (70%) -->
+
+        <div class="teacher-content">
+          <!-- HEADER -->
+
+          <div class="teacher-header">
+            <div class="teacher-name">
+              {{ t.name }}
+            </div>
+
+            <div class="teacher-rating">⭐ {{ t.rating }}</div>
           </div>
 
-          <div class="qualification">
+          <!-- BIO -->
+
+          <div class="teacher-bio">
             {{ t.bio }}
           </div>
 
-          <div class="domains">
-            <span *ngFor="let d of t.subjects" class="domain-chip">
-              {{ d }}
+          <!-- SUBJECTS -->
+
+          <div class="teacher-subjects">
+            <span class="subject-chip" *ngFor="let s of t.subjects">
+              {{ s }}
             </span>
           </div>
 
-          <div class="note">
-            {{ t.bio }}
+          <!-- DETAILS GRID -->
+
+          <div class="teacher-meta">
+            <div class="meta-item"><strong>ID:</strong> {{ t.uid }}</div>
+
+            <div class="meta-item" *ngIf="t.age"><strong>Age:</strong> {{ t.age }}</div>
+
+            <div class="meta-item" *ngIf="t.expYrs">
+              <strong>Experience:</strong> {{ t.expYrs }} yrs
+            </div>
+
+            <div class="meta-item" *ngIf="t.email"><strong>Email:</strong> {{ t.email }}</div>
+
+            <div class="meta-item" *ngIf="t.phone"><strong>Phone:</strong> {{ t.phone }}</div>
           </div>
 
-          <div class="contact">
-            {{ t.phone }}
+          <!-- SPECIALIZATION -->
+
+          <div class="teacher-specialization">
+            <span *ngFor="let sp of t.specialization">
+              {{ sp }}
+            </span>
           </div>
+
+          <!-- TRUST NOTE -->
+
+          <div class="teacher-trust">Trusted educator helping students succeed.</div>
         </div>
       </div>
     </div>

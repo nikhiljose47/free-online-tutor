@@ -1,8 +1,10 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, PLATFORM_ID, signal } from '@angular/core';
 import { TeachersService } from '../../services/teachers/teachers.service';
 import { UserModel } from '../../models/fire/user.model';
 import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -14,11 +16,20 @@ import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
 })
 export class TeachersPage {
   private teachersApi = inject(TeachersService);
+  private platformId = inject(PLATFORM_ID);
 
   /* ================= UI STATE ================= */
   readonly teachers = signal<UserModel[]>([]);
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
+
+  constructor(private router: Router) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.router.events
+        .pipe(filter((e) => e instanceof NavigationEnd))
+        .subscribe(() => document.querySelector('.content')?.scrollTo(0, 0));
+    }
+  }
 
   /* ================= INIT ================= */
   ngOnInit(): void {
@@ -37,11 +48,11 @@ export class TeachersPage {
   }
 
   getBannerSrc(src?: string | null): string {
-    return src || PLACEHOLDER__COVER_IMG;
+    return src || './assets/abbu.jpg';
   }
 
   onImgError(event: Event) {
-    (event.target as HTMLImageElement).src = PLACEHOLDER__COVER_IMG;
+    (event.target as HTMLImageElement).src = './assets/abbu.jpg';
   }
 
   getBannerAlt(data: any): string {

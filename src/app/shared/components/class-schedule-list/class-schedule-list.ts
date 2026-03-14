@@ -13,6 +13,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { Meeting } from '../../../models/meeting.model';
 import { FireResponse } from '../../../core/services/fire/firestore-doc.service';
+import { PLACEHOLDER__COVER_IMG } from '../../../core/constants/app.constants';
 
 interface ClassCard {
   id: string;
@@ -117,5 +118,17 @@ export class ClassScheduleListComponent implements OnInit {
         }),
       )
       .subscribe((data) => this.classes.set(data));
+  }
+
+  getBannerSrc(src?: string | null): string {
+    return src || PLACEHOLDER__COVER_IMG;
+  }
+
+  onImgError(event: Event) {
+    (event.target as HTMLImageElement).src = PLACEHOLDER__COVER_IMG;
+  }
+
+  getBannerAlt(item: any): string {
+    return item?.label ? `${item.label} cover` : 'Class cover';
   }
 }
