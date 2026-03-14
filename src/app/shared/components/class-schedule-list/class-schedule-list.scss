@@ -1,22 +1,23 @@
-$box-border: #f0efef30;
+$box-border: rgb(43, 49, 72);
+$font-color-dark: #f1f1f1;
+// $dark-bg: #323A55;
+$dark-bg: #f8f8f8;
 
 .ticket-box {
   position: relative;
   padding: 20px 0;
-  margin: 24px 0;
+  margin: 5rem 0;
   min-height: 32rem;
-  border-radius: 8px;
-  border-top: 20px solid $box-border;
-  border-bottom: 20px solid $box-border;
+ // background-color: $dark-bg;
 }
 
 .ticket-box::before,
 .ticket-box::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 1px;
+//  width: 1px;
   background: $box-border;
 }
 
@@ -35,12 +36,8 @@ $box-border: #f0efef30;
 .class-overview {
   width: 100%;
   border-radius: 12px;
-  padding: 0 30px;
-}
-
-/* HEADER */
-.overview-header {
-  padding: 5rem 0 0 0;
+  padding: 30px 30px;
+  //  background-color: var(--color-primary);
 }
 
 .overview-title {
@@ -48,7 +45,7 @@ $box-border: #f0efef30;
   font-size: 1.9rem;
   font-weight: 500;
   letter-spacing: -0.4px;
-  color: #0f172a;
+  color: #dddede;
 }
 
 /* ===============================
@@ -56,8 +53,7 @@ $box-border: #f0efef30;
 ================================ */
 .schedule-card {
   width: 100%;
-  max-width: 1150px;
-  background: #ffffff;
+  //background: #ffffff;
   border-radius: 8px;
   padding: 24px 28px;
 }
@@ -84,25 +80,19 @@ $box-border: #f0efef30;
 }
 
 .tab-btn {
-  border: 1px solid #dcdcdc;
+  border: none;
   background: #fff;
   padding: 6px 18px;
-  border-radius: 8px;
+  border-radius: 4px;
   font-size: 0.85rem;
   font-weight: 500;
-  transition: 0.2s ease;
+  color: #374151;
 }
 
 .tab-btn.active {
-  background: #111;
-  color: #fff;
-  border-color: #111;
+  outline: 1px solid #d3d3d3;
+  outline-offset: 2px;
 }
-
-.tab-btn:hover:not(.active) {
-  background: #f1f1f1;
-}
-
 /* ===============================
    LIST
 ================================ */
@@ -121,7 +111,7 @@ $box-border: #f0efef30;
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid #e8eaed;
-  background: #fff;
+  background: $font-color-dark;
 }
 
 /* ===============================

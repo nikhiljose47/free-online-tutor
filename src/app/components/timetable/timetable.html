@@ -1,51 +1,105 @@
 <dot-loader *ngIf="isLoading(); else hasError"></dot-loader>
 
 <ng-template #hasError>
-  <content-placeholder *ngIf="hasErr(); else hasData" [message]="errMsg()"> </content-placeholder>
+  <content-placeholder *ngIf="hasErr(); else hasData" [message]="errMsg()"></content-placeholder>
 </ng-template>
 
 <ng-template #hasData>
+  <section class="syllabus-board">
 
-<section class="timetable-horizontal">
-  <div class="subject-card" *ngFor="let sbj of subjects()">
-    <!-- SUBJECT HEADER -->
-    <header class="subject-header">
-      <div class="title">
-        <h4>{{ sbj.code }}</h4>
-        <span class="code">{{ sbj.code }}</span>
+    <header class="board-header">
+      <div class="board-title">
+        <h3>{{ syllabus()?.className }} Syllabus</h3>
+        <small>{{ syllabus()?.syllabus_year }} • {{ syllabus()?.source }}</small>
       </div>
 
-      <!-- CURRENT CHAPTER -->
-      <div class="current-box" *ngIf="getCurrent(sbj.code) as cur">
-        <small>Current chapter</small>
-        <strong>{{ getChapterName(sbj.code, cur) }}</strong>
+      <div class="subject-switch">
+        <button
+          class="subject-btn"
+          *ngFor="let sbj of subjects()"
+          (click)="selectedSubject.set(sbj.code)"
+          [class.active]="selectedSubject() === sbj.code"
+        >
+          {{ sbj.name }}
+        </button>
       </div>
     </header>
 
-    <!-- CHAPTER LIST -->
-    <div class="chapters">
-      <div
-        class="chapter"
-        *ngFor="let ch of sbj.chapters; let idx = index"
-        [class.completed]="isCompleted(sbj.code, idx)"
-        [class.current]="isCurrent(sbj.code, ch.code)"
-        [class.locked]="isLocked(sbj.code, idx)"
-      >
-        <div class="chapter-left">
-          <div class="chapter-name">{{ ch.name }}</div>
+    <ng-container *ngFor="let sbj of subjects()">
+      <ng-container *ngIf="selectedSubject() === sbj.code">
 
-          <span class="tag completed" *ngIf="isCompleted(sbj.code, idx)"> Completed </span>
+        <div class="subject-meta">
+          <div class="meta-item">
+            <span>Subject Code</span>
+            <strong>{{ sbj.code }}</strong>
+          </div>
 
-          <span class="tag current" *ngIf="isCurrent(sbj.code, ch.code)"> In Progress </span>
+          <div class="meta-item">
+            <span>Total Chapters</span>
+            <strong>{{ sbj.chapters.length }}</strong>
+          </div>
 
-          <span class="tag locked" *ngIf="isLocked(sbj.code, idx)"> Not Started </span>
+          <div class="meta-item" *ngIf="getCurrent(sbj.code) as cur">
+            <span>Current Chapter</span>
+            <strong>{{ getChapterName(sbj.code, cur) }}</strong>
+          </div>
         </div>
 
-        <div class="chapter-right">
-          <span class="chip">{{ ch.code }}</span>
+        <div class="chapter-table">
+
+          <div class="table-head">
+            <div>Chapter</div>
+            <div>Divisions</div>
+            <div>Learning Mix</div>
+            <div>Sessions</div>
+            <div>Difficulty</div>
+            <div>Status</div>
+          </div>
+
+          <div
+            class="table-row"
+            *ngFor="let ch of sbj.chapters; let idx = index"
+            [class.completed]="isCompleted(sbj.code, idx)"
+            [class.current]="isCurrent(sbj.code, ch.code)"
+            [class.locked]="isLocked(sbj.code, idx)"
+          >
+
+            <div class="cell chapter-name">
+              <strong>{{ ch.name }}</strong>
+              <small>{{ ch.code }}</small>
+            </div>
+
+            <div class="cell divisions">
+              {{ ch.division_count }}
+            </div>
+
+            <div class="cell learning-mix">
+              <span>T {{ ch.content_structure.theory_ratio }}</span>
+              <span>E {{ ch.content_structure.worked_examples_ratio }}</span>
+              <span>P {{ ch.content_structure.practice_ratio }}</span>
+              <span>A {{ ch.content_structure.application_ratio }}</span>
+            </div>
+
+            <div class="cell sessions">
+              {{ ch.session_instructions.length }}
+            </div>
+
+            <div class="cell difficulty">
+              {{ getMaxDifficulty(ch) }}
+            </div>
+
+            <div class="cell status">
+              <span *ngIf="isCompleted(sbj.code, idx)">Completed</span>
+              <span *ngIf="isCurrent(sbj.code, ch.code)">In Progress</span>
+              <span *ngIf="isLocked(sbj.code, idx)">Upcoming</span>
+            </div>
+
+          </div>
+
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+
+      </ng-container>
+    </ng-container>
+
+  </section>
 </ng-template>

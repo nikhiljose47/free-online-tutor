@@ -71,7 +71,7 @@ export class SyllabusLookupService {
   ): Observable<{ code: string; name: string; meta: Record<string, unknown> }[]> {
     return this.list$.pipe(
       map((list) => {
-        console.log(`Fetching subjects for class: ${classId}`, list);
+        //console.log(`Fetching subjects for class: ${classId}`, list);
         const found = list.find((c) => c.classId === classId);
         if (!found?.subjects?.length) return [];
         return found.subjects.map((s) => ({

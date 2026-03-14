@@ -33,7 +33,7 @@
 
 .group-header {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 14px;
 }
 
@@ -44,8 +44,6 @@
 }
 
 .group-title {
-  margin: 0;
-  justify-content: end;
   font-size: 1.55rem;
   font-weight: 600;
   color: #111827;
