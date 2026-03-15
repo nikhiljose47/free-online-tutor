@@ -10,8 +10,6 @@ import { GLOBAL_MEETINGS } from '../../core/constants/app.constants';
 export class MeetingsService {
   constructor(private fs: FirestoreDocService) {}
 
-    private fire = inject(FirestoreDocService);
-
   // --------------------------------------------------
   // 🔥 Local domain cache (classId → meetings[])
   // --------------------------------------------------
@@ -21,8 +19,8 @@ export class MeetingsService {
   private live$?: Observable<FireResponse<Meeting[]>>;
 
   getLiveMeetingsInitial(): Observable<FireResponse<Meeting[]>> {
-  return this.fs.notEnded<Meeting>(GLOBAL_MEETINGS);
-}
+    return this.fs.notEnded<Meeting>(GLOBAL_MEETINGS);
+  }
 
   getLiveMeetings(): Observable<FireResponse<Meeting[]>> {
     if (!this.live$) {
@@ -51,7 +49,7 @@ export class MeetingsService {
     );
   }
 
-    getLiveMeetingsByClassId(classId: string): Observable<FireResponse<Meeting[]>> {
+  getLiveMeetingsByClassId(classId: string): Observable<FireResponse<Meeting[]>> {
     return this.getLiveMeetings().pipe(
       map((res): FireResponse<Meeting[]> => {
         if (!res.ok || !res.data) {
@@ -181,34 +179,36 @@ export class MeetingsService {
     this.classCache.set(current);
   }
 
-  scheduleMeeting$(f: any, imageSrc: string, teacher: any){  
-        const [hours, minutes] = f.time.split(':').map(Number);
-    
-        const date = new Date(f.date);
-        date.setHours(hours, minutes, 0, 0);
-    
-        const start = new Date(date);
-        const end = new Date(start.getTime() + (f.duration ?? 0) * 60000);
-    
-        const payload: Meeting = {
-          id: '',
-          classId: f.classId,
-          subjectId: f.subjectId,
-          chapterCode: f.chapterCode,
-          batchId: f.batchId,
-          meetLink: f.meetLink,
-          status: 'PART1',
-          teacherId: teacher.id,
-          teacherName: teacher.name,
-          duration: f.duration,
-          attendance: [],
-          date: Timestamp.fromDate(start),
-          endAt: Timestamp.fromDate(end),
-          createdAt: Timestamp.now(),
-          imageSrc: imageSrc,
-        };
+  scheduleMeeting$(f: any) {
+    const [hours, minutes] = f.time.split(':').map(Number);
 
-     return this.fire.add(GLOBAL_MEETINGS, payload);
+    const date = new Date(f.date);
+    date.setHours(hours, minutes, 0, 0);
 
+    const start = new Date(date);
+    const end = new Date(start.getTime() + (f.duration ?? 0) * 60000);
+
+    const payload: Meeting = {
+      id: '',
+      classId: f.classId,
+      className: f.className,
+      subjectId: f.subjectId,
+      subjectName: f.subjectName,
+      chapterCode: f.chapterCode,
+      chapterName: f.chapterName,
+      batchId: f.batchId,
+      meetLink: f.meetLink,
+      status: 'PART1',
+      teacherId: f.teacherId,
+      teacherName: f.teacherName,
+      duration: f.duration,
+      attendance: [],
+      date: Timestamp.fromDate(start),
+      endAt: Timestamp.fromDate(end),
+      createdAt: Timestamp.now(),
+      imageSrc: f.imageSrc,
+    };
+
+    return this.fs.add(GLOBAL_MEETINGS, payload);
   }
 }

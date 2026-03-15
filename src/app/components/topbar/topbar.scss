@@ -95,7 +95,7 @@
 .actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   white-space: nowrap;
 }
 
@@ -176,8 +176,8 @@
   right: 0; /* prevents right overflow */
   left: auto;
 
-  background: #1f1f23;
-  border-radius: 6px;
+  background: #f1f1f1;
+  border-radius: 5px;
   padding: 6px 0;
   min-width: 180px;
 
@@ -188,10 +188,10 @@
 .learn-menu .menu-item {
   display: block;
   padding: 8px 12px;
-  color: #fff;
+  color: #080808;
   text-decoration: none;
 }
 
 .learn-menu .menu-item:hover {
-  background: #31313c;
+  background: #cdcdcd;
 }

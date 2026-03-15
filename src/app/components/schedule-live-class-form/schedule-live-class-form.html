@@ -28,7 +28,10 @@
         <div class="col-md-4">
           <select class="form-select" #classSel (change)="updateField('classId', classSel.value)">
             <option value="">Class</option>
-            <option *ngFor="let c of classList()" [value]="c">{{ c }}</option>
+
+            <option *ngFor="let c of classNameMap() | keyvalue" [value]="c.key">
+              {{ c.value }}
+            </option>
           </select>
         </div>
 

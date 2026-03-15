@@ -44,51 +44,74 @@
 
       <!-- NOT LOGGED -->
       <ng-container *ngIf="!profile()">
-         <a class="topbar-link" routerLink="/login" routerLinkActive="active">Login</a>
+        <a class="topbar-link" routerLink="/login" routerLinkActive="active">Login</a>
 
         <!-- <button class="login-btn" routerLink="/login">Login</button> -->
         <!-- <button class="signup-btn" routerLink="/register">Sign Up</button> -->
       </ng-container>
 
       <!-- LOGGED -->
-      <ng-container *ngIf="profile()">
-        <a
-          *ngIf="profile()?.role === 'teacher'"
-          routerLink="/teacher-workspace"
-          routerLinkActive="active"
-          class="topbar-link"
-        >
-          Dashboard
-        </a>
-
-        <a
-          *ngIf="profile()?.role === 'teacher'"
-          routerLink="/chapter-browser"
-          routerLinkActive="active"
-          class="topbar-link"
-        >
-          Browse
-        </a>
-
-        <a
-          *ngIf="profile()?.role === 'teacher'"
-          routerLink="/schedule"
-          routerLinkActive="active"
-          class="topbar-link"
-        >
-          Schedule
-        </a>
-
+      <ng-container *ngIf="profile()?.role === 'teacher'">
         <div class="learn-dropdown" (click)="$event.stopPropagation()">
-          <span class="topbar-link" [class.active]="otherOpen()" (click)="toggleOther()">
-            Contact us
-            <i
-              class="bi ms-1"
-              [ngClass]="otherOpen() ? 'bi-chevron-up' : 'bi-chevron-down'"
-              style="font-size: 10px"
+          <span class="topbar-link" [class.active]="proffOpen()" (click)="toggleProff()">
+            Professor<i
+              class="bi"
+              [ngClass]="proffOpen() ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"
+              style="font-size: 8px; margin-left: 3px"
             ></i>
           </span>
 
+          <div class="learn-menu" *ngIf="proffOpen()">
+            <a routerLink="/schedule" routerLinkActive="active" class="menu-item"> Schedule </a>
+
+            <a routerLink="/chapter-browser" routerLinkActive="active" class="menu-item">
+              Browse
+            </a>
+
+            <a routerLink="/teacher-workspace" routerLinkActive="active" class="menu-item">
+              Dashboard
+            </a>
+          </div>
+        </div>
+
+        <div class="learn-dropdown" (click)="$event.stopPropagation()">
+          <span class="topbar-link" [class.active]="learnOpen()" (click)="toggleLearn()">
+            Student<i
+              class="bi"
+              [ngClass]="learnOpen() ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"
+              style="font-size: 8px; margin-left: 3px"
+            ></i>
+          </span>
+
+          <div class="learn-menu" *ngIf="learnOpen()">
+            <a
+              routerLink="/report-card"
+              routerLinkActive="active"
+              class="menu-item"
+              (click)="closeLearn()"
+            >
+              Report Card
+            </a>
+
+            <a
+              routerLink="/student-creations"
+              routerLinkActive="active"
+              class="menu-item"
+              (click)="closeLearn()"
+            >
+              Student Creations
+            </a>
+          </div>
+        </div>
+
+        <div class="learn-dropdown" (click)="$event.stopPropagation()">
+          <span class="topbar-link" [class.active]="otherOpen()" (click)="toggleOther()">
+            Join us<i
+              class="bi"
+              [ngClass]="otherOpen() ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"
+              style="font-size: 8px; margin-left: 3px"
+            ></i>
+          </span>
           <div class="learn-menu" *ngIf="otherOpen()">
             <a
               routerLink="/free-online-tuition"
@@ -124,37 +147,6 @@
               (click)="closeOther()"
             >
               Careers
-            </a>
-          </div>
-        </div>
-
-        <div class="learn-dropdown" (click)="$event.stopPropagation()">
-          <span class="topbar-link" [class.active]="learnOpen()" (click)="toggleLearn()">
-            Learn
-            <i
-              class="bi ms-1"
-              [ngClass]="learnOpen() ? 'bi-chevron-up' : 'bi-chevron-down'"
-              style="font-size: 10px"
-            ></i>
-          </span>
-
-          <div class="learn-menu" *ngIf="learnOpen()">
-            <a
-              routerLink="/report-card"
-              routerLinkActive="active"
-              class="menu-item"
-              (click)="closeLearn()"
-            >
-              Report Card
-            </a>
-
-            <a
-              routerLink="/student-creations"
-              routerLinkActive="active"
-              class="menu-item"
-              (click)="closeLearn()"
-            >
-              Student Creations
             </a>
           </div>
         </div>

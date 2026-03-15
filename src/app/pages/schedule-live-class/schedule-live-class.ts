@@ -43,16 +43,12 @@ export class ScheduleLiveClass implements OnInit {
   readonly selectedMeeting = signal<Meeting | null>(null);
   readonly mode = signal<'view' | 'create'>('view');
   readonly submitting = signal(false);
-  teacherId: string | null;
+  teacherId: string | null = this.authApi.uid ?? null;
 
   /* ------------------ lookups (signal-safe) ------------------ */
   classList: string[] = [];
 
   batchList = signal<Array<string>>([]);
-
-  constructor() {
-    this.teacherId = this.authApi.uid ?? null;
-  }
 
   /* ------------------ lifecycle ------------------ */
   ngOnInit(): void {

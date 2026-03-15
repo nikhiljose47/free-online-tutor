@@ -14,9 +14,25 @@ export interface SubjectWithChapters {
 export class SyllabusLookupService {
   private syllabusStore = inject(SyllabusStore);
 
+  /* ================= SOURCE ================= */
+
   private readonly list$: Observable<ClassSyllabus[]> = this.syllabusStore
     .getAllClasses$()
     .pipe(shareReplay({ bufferSize: 1, refCount: true }));
+
+  /* ================= LOOKUP MAPS (OPTIMIZED) ================= */
+
+  private readonly classMap$ = this.list$.pipe(
+    map((list) => new Map(list.map((c) => [c.classId, c]))),
+    shareReplay({ bufferSize: 1, refCount: true }),
+  );
+
+  private readonly classNameMap$ = this.list$.pipe(
+    map((list) => new Map(list.map((c) => [c.classId, c.className]))),
+    shareReplay({ bufferSize: 1, refCount: true }),
+  );
+
+  /* ================= HELPERS ================= */
 
   private normalizeChapters(input: any): Chapter[] {
     if (!input) return [];
@@ -33,14 +49,12 @@ export class SyllabusLookupService {
     return this.list$.pipe(map((list) => list.map((c) => c.className)));
   }
 
-  getClass(classId: string): Observable<ClassSyllabus | undefined> {
-    return this.list$.pipe(map((list) => list.find((c) => c.classId === classId)));
+  getClass(classId: string): Observable<ClassSyllabus | null> {
+    return this.classMap$.pipe(map((mapData) => mapData.get(classId) ?? null));
   }
 
   getClassCode(classId: string): Observable<string | null> {
-    return this.list$.pipe(
-      map((list) => list.find((c) => c.classId === classId)?.code_prefix ?? null),
-    );
+    return this.classMap$.pipe(map((mapData) => mapData.get(classId)?.code_prefix ?? null));
   }
 
   getClassNameFromCode(prefix: string): Observable<string | null> {
@@ -48,33 +62,39 @@ export class SyllabusLookupService {
       map((list) => list.find((c) => c.code_prefix === prefix)?.className ?? null),
     );
   }
+
   getClassNameFromId(classId: string): Observable<string | null> {
-    return this.list$.pipe(
-      map((list) => list.find((c) => c.classId === classId)?.className ?? null),
-    );
+    return this.classNameMap$.pipe(map((mapData) => mapData.get(classId) ?? null));
+  }
+
+  getClassNameMap(): Observable<Map<string, string>> {
+    return this.classNameMap$;
   }
 
   hasClass(classId: string): Observable<boolean> {
-    return this.list$.pipe(map((list) => list.some((c) => c.classId === classId)));
+    return this.classMap$.pipe(map((mapData) => mapData.has(classId)));
   }
 
   /* ================= SUBJECTS ================= */
 
   getSubjectNames(classId: string): Observable<string[]> {
-    return this.list$.pipe(
-      map((list) => list.find((c) => c.classId === classId)?.subjects.map((s) => s.name) ?? []),
+    return this.classMap$.pipe(
+      map((mapData) => {
+        const cls = mapData.get(classId);
+        return cls?.subjects?.map((s) => s.name) ?? [];
+      }),
     );
   }
 
   getSubjects(
     classId: string,
   ): Observable<{ code: string; name: string; meta: Record<string, unknown> }[]> {
-    return this.list$.pipe(
-      map((list) => {
-        //console.log(`Fetching subjects for class: ${classId}`, list);
-        const found = list.find((c) => c.classId === classId);
-        if (!found?.subjects?.length) return [];
-        return found.subjects.map((s) => ({
+    return this.classMap$.pipe(
+      map((mapData) => {
+        const cls = mapData.get(classId);
+        if (!cls?.subjects?.length) return [];
+
+        return cls.subjects.map((s) => ({
           code: s.code,
           name: s.name,
           meta: s.meta,
@@ -84,21 +104,15 @@ export class SyllabusLookupService {
   }
 
   getSubject(classId: string, subjectName: string): Observable<Subject | null> {
-    return this.list$.pipe(
-      map(
-        (list) =>
-          list.find((c) => c.classId === classId)?.subjects.find((s) => s.name === subjectName) ??
-          null,
-      ),
+    return this.classMap$.pipe(
+      map((mapData) => mapData.get(classId)?.subjects.find((s) => s.name === subjectName) ?? null),
     );
   }
 
   getSubjectNameById(classId: string, subjectId: string): Observable<string | null> {
-    return this.list$.pipe(
+    return this.classMap$.pipe(
       map(
-        (list) =>
-          list.find((c) => c.classId === classId)?.subjects.find((s) => s.code === subjectId)
-            ?.name ?? null,
+        (mapData) => mapData.get(classId)?.subjects.find((s) => s.code === subjectId)?.name ?? null,
       ),
     );
   }
@@ -110,9 +124,9 @@ export class SyllabusLookupService {
   /* ================= CHAPTERS ================= */
 
   getChapters(classId: string, subjectId: string): Observable<Chapter[]> {
-    return this.list$.pipe(
-      map((list) => {
-        const cls = list.find((c) => c.classId === classId);
+    return this.classMap$.pipe(
+      map((mapData) => {
+        const cls = mapData.get(classId);
         if (!cls) return [];
 
         const subject = cls.subjects.find((s) => s.code === subjectId);
@@ -128,15 +142,16 @@ export class SyllabusLookupService {
     subjectName: string,
     chapterCode: string,
   ): Observable<Chapter | null> {
-    return this.list$.pipe(
-      map((list) => {
-        const cls = list.find((c) => c.classId === classId);
+    return this.classMap$.pipe(
+      map((mapData) => {
+        const cls = mapData.get(classId);
         if (!cls) return null;
 
         const subject = cls.subjects.find((s) => s.name === subjectName);
         if (!subject) return null;
 
         const chapters = this.normalizeChapters(subject.chapters);
+
         return chapters.find((c) => c.code === chapterCode) ?? null;
       }),
     );
@@ -153,6 +168,7 @@ export class SyllabusLookupService {
           for (const subject of cls.subjects) {
             const chapters = this.normalizeChapters(subject.chapters);
             const chapter = chapters.find((c) => c.code === code);
+
             if (chapter) {
               return {
                 classId: cls.classId,
@@ -162,6 +178,7 @@ export class SyllabusLookupService {
             }
           }
         }
+
         return null;
       }),
     );
@@ -199,12 +216,14 @@ export class SyllabusLookupService {
     return this.getDivision(classId, subjectName, chapterCode, divisionCode).pipe(map((d) => !!d));
   }
 
+  /* ================= SUBJECTS + CHAPTERS ================= */
+
   getSubjectsWithChapters(classId: string): Observable<{
     subjects: SubjectWithChapters[];
   }> {
-    return this.list$.pipe(
-      map((list) => {
-        const cls = list.find((c) => c.classId === classId);
+    return this.classMap$.pipe(
+      map((mapData) => {
+        const cls = mapData.get(classId);
         if (!cls?.subjects?.length) {
           return { subjects: [] };
         }

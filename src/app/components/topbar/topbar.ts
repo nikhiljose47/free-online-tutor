@@ -48,6 +48,7 @@ export class Topbar {
   menuOpen = signal(false);
   learnOpen = signal(false);
   otherOpen = signal(false);
+  proffOpen = signal(false);
 
   constructor() {
     /** Auto-close menus on route change */
@@ -55,6 +56,7 @@ export class Topbar {
       this.router.events.subscribe(() => {
         this.menuOpen.set(false);
         this.learnOpen.set(false);
+        this.proffOpen.set(false);
         this.otherOpen.set(false);
         this.ss.open.set(false);
         if (this.myInput()) {
@@ -67,6 +69,23 @@ export class Topbar {
     });
   }
 
+  
+    /* ===============================
+     PROFF MENU
+  =============================== */
+  toggleProff() {
+    this.proffOpen.update((v) => !v);
+    this.closeOther();
+    this.closeLearn();
+    this.closeMenu();
+    this.ss.open.set(false);
+  }
+
+  closeProff() {
+    this.proffOpen.set(false);
+  }
+
+
   /* ===============================
      PROFILE MENU
   =============================== */
@@ -74,6 +93,7 @@ export class Topbar {
     this.menuOpen.update((v) => !v);
     this.closeOther();
     this.closeLearn();
+    this.closeProff();
     this.ss.open.set(false);
   }
 
@@ -88,6 +108,7 @@ export class Topbar {
     this.otherOpen.update((v) => !v);
     this.closeMenu()
     this.closeLearn();
+    this.closeProff();
   }
 
   closeOther() {
@@ -102,6 +123,7 @@ export class Topbar {
     this.closeMenu();
     this.closeAll;
     this.closeOther();
+    this.closeProff();
   }
 
   closeLearn() {
@@ -132,6 +154,7 @@ export class Topbar {
     this.menuOpen.set(false);
     this.learnOpen.set(false);
     this.otherOpen.set(false);
+    this.proffOpen.set(false);
     this.ss.open.set(false);
   }
 
