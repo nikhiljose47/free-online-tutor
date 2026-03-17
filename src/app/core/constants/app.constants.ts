@@ -1,4 +1,3 @@
-import { PrimaryGroup } from '../../models/syllabus/syllabus-index.model';
 
 export const APP_VERSION = '1.0.0';
 

@@ -1,9 +1,7 @@
-<section class="class-details-page d-flex flex-column">
+<section  class="class-details-page d-flex flex-column">
   <!-- HEADER (NOT STICKY) -->
   <header class="class-header">
-    <h1 class="m-0 fw-semibold text-truncate p-3">
-      Class :  {{ className() }}
-    </h1>
+    <h1 class="m-0 fw-semibold text-truncate p-3">Class : {{ className() }}</h1>
   </header>
 
   <nav class="right-sticky-nav">
@@ -20,13 +18,23 @@
         Puzzles
       </li>
 
-      <li class="nav-item" [class.active]="activeMainTab() === 'stats'" (click)="select('stats')">
+      <li
+        class="nav-item"
+        [class.active]="activeMainTab() === 'curriculum'"
+        (click)="select('curriculum')"
+      >
         Curriculum
+      </li>
+      <li
+        class="nav-item"
+        [class.active]="activeMainTab() === 'AI Tutor'"
+        (click)="select('AI Tutor')"
+      >
+        AI Tutor
       </li>
     </ul>
   </nav>
-
-  <section class="tab-content">
+  <section id="tab-content-view" class="tab-content ">
     @switch (activeMainTab()) {
       @case ('overview') {
         <class-overview [classId]="classId"></class-overview>
@@ -38,8 +46,11 @@
           class="flex-shrink-0"
         ></mcq-puzzle-card>
       }
-      @case ('stats') {
+      @case ('curriculum') {
         <timetable [classFileId]="classFileId"></timetable>
+      }
+      @case ('AI Tutor') {
+        <ai-tutor-chat [context]="aiContext()" domain="coding-kids"></ai-tutor-chat>
       }
     }
   </section>
@@ -95,7 +106,7 @@
   <section class="container">
     <faq-list></faq-list>
   </section>
-  
+
   <footer *ngIf="quote().text !== ''">
     <section class="quote-day">
       <div class="quote-container">

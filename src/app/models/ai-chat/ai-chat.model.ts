@@ -12,4 +12,5 @@ export interface AiGatewayRequest {
   question: string;
   context?: string;
   modelType?: AiModelType;
+  priority?: 'low' | 'medium' | 'high';
 }

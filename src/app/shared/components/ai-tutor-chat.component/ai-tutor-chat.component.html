@@ -1,55 +1,63 @@
-<div class="ai-chat-shell d-flex flex-column h-100">
-  <div
-    class="ai-chat-header border-bottom px-3 py-2 d-flex align-items-center justify-content-between"
-  >
-    <div class="fw-semibold">AI Maths Tutor</div>
-    <div class="small text-muted">Class 9 Assistant</div>
-  </div>
+<div class="ai-chat-shell d-flex flex-column p-3">
 
-  <div class="ai-chat-body flex-fill overflow-auto px-3 py-3">
-    <!-- skeleton -->
-    <div *ngIf="loading()" class="mb-3">
-      <div class="placeholder-glow mb-2">
-        <span class="placeholder col-6"></span>
-      </div>
-      <div class="placeholder-glow mb-2">
-        <span class="placeholder col-7"></span>
-      </div>
-      <div class="placeholder-glow">
-        <span class="placeholder col-5"></span>
-      </div>
+  <!-- fixed container -->
+  <div class="ai-chat-container d-flex flex-column">
+
+    <!-- header -->
+    <div class="ai-chat-header px-3 py-2 d-flex align-items-center justify-content-between">
+      <div class="fw-semibold">AI {{ contextLabel }} Tutor</div>
+      <div class="small text-muted">{{ contextLabel }}</div>
     </div>
 
-    <!-- chat history -->
-    <div *ngFor="let m of messages(); trackBy: trackMsg">
-      <!-- user -->
-      <div *ngIf="m.role === 'user'" class="d-flex justify-content-end mb-3">
-        <div class="ai-bubble-user px-3 py-2 rounded-3">
-          {{ m.content }}
+    <!-- body (SCROLL ONLY HERE) -->
+    <div class="ai-chat-body px-4 py-3" #chatBody>
+
+      <div *ngIf="loading() && messages().length === 0" class="mb-3">
+        <div class="placeholder-glow mb-2"><span class="placeholder col-6"></span></div>
+        <div class="placeholder-glow mb-2"><span class="placeholder col-7"></span></div>
+        <div class="placeholder-glow"><span class="placeholder col-5"></span></div>
+      </div>
+
+      <div *ngFor="let m of messages(); trackBy: trackMsg">
+
+        <div *ngIf="m.role === 'user'" class="d-flex justify-content-end mb-3">
+          <div class="ai-bubble-user px-3 py-2">{{ m.content }}</div>
+        </div>
+
+        <div *ngIf="m.role === 'assistant'" class="d-flex justify-content-start mb-3">
+          <div class="ai-bubble-ai px-3 py-2">{{ m.content }}</div>
+        </div>
+
+      </div>
+
+      <div *ngIf="loading() && messages().length > 0" class="d-flex justify-content-start mb-3">
+        <div class="ai-bubble-ai px-3 py-2">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
         </div>
       </div>
 
-      <!-- ai -->
-      <div *ngIf="m.role === 'assistant'" class="d-flex justify-content-start mb-3">
-        <div class="ai-bubble-ai px-3 py-2 rounded-3">
-          {{ m.content }}
-        </div>
-      </div>
     </div>
+
+    <!-- input -->
+    <div class="ai-chat-input px-3 py-2">
+      <form (ngSubmit)="send()" class="d-flex gap-2">
+
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Ask your doubt..."
+          [(ngModel)]="question"
+          name="question"
+          autocomplete="off"
+        />
+
+        <button type="submit" class="btn btn-dark" [disabled]="!question.trim() || loading()">
+          Ask
+        </button>
+
+      </form>
+    </div>
+
   </div>
 
-  <div class="ai-chat-input border-top px-3 py-2">
-    <form (submit)="send()" class="d-flex gap-2">
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Ask your maths doubt..."
-        [(ngModel)]="question"
-        name="question"
-        autocomplete="off"
-      />
-
-      <button type="submit" class="btn btn-dark" [disabled]="!question || loading()">Ask</button>
-    </form>
-  </div>
 </div>

@@ -17,8 +17,10 @@ export const environment = {
   },
 
   aiModels: {
+    fast: 'meta-llama/llama-3.1-8b-instruct', // cheap
     theory: 'meta-llama/llama-3.1-8b-instruct',
+    solving: 'qwen/qwen2.5-7b-instruct',
+    smart: 'mistralai/mixtral-8x7b-instruct', // expensive
     images: '',
-    solving: 'qwen/qwen-2.5-7b-instruct',
   },
 };

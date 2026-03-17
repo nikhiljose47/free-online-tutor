@@ -1,16 +1,27 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core'
-import { CommonModule } from '@angular/common'
-import { FormsModule } from '@angular/forms'
-import { finalize } from 'rxjs'
-import { AiChatGatewayService } from '../../../core/services/ai/ai-chat-gateway.service'
+import {
+  Component,
+  ChangeDetectionStrategy,
+  inject,
+  signal,
+  Input,
+  ViewChild,
+  ElementRef,
+  effect,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { finalize } from 'rxjs';
+import { AiChatDomainRegistryService } from '../../../core/registry/ai-chat-domain-registry.service';
 
-type Role = 'user' | 'assistant'
+type Role = 'user' | 'assistant';
 
 interface ChatMsg {
-  id: number
-  role: Role
-  content: string
+  id: number;
+  role: Role;
+  content: string;
 }
+
+type DomainType = 'class9-maths' | 'coding-kids';
 
 @Component({
   selector: 'ai-tutor-chat',
@@ -18,46 +29,82 @@ interface ChatMsg {
   imports: [CommonModule, FormsModule],
   templateUrl: './ai-tutor-chat.component.html',
   styleUrls: ['./ai-tutor-chat.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AiTutorChatComponent {
+  private aiChatRegistry = inject(AiChatDomainRegistryService);
 
-  private ai = inject(AiChatGatewayService)
+  @ViewChild('chatBody') chatBody!: ElementRef;
 
-  question = ''
+  question = '';
+  loading = signal(false);
+  messages = signal<ChatMsg[]>([]);
 
-  loading = signal(false)
+  private id = 2;
+  private _context = '';
+  private _domain: DomainType = 'class9-maths';
 
-  messages = signal<ChatMsg[]>([
-    { id: 1, role: 'assistant', content: 'Ask any Class 9 maths question.' }
-  ])
+  get contextLabel() {
+    return this._context;
+  }
 
-  private id = 2
+  @Input({ required: true })
+  set context(value: string) {
+    if (!value || value === this._context) return;
+    this._context = value;
+
+    if (this.messages().length === 0) {
+      this.messages.set([
+        { id: 1, role: 'assistant', content: `Ask any question about ${value}.` },
+      ]);
+    }
+  }
+
+  @Input({ required: true })
+  set domain(value: DomainType) {
+    this._domain = value;
+  }
+
+  constructor() {
+    effect(() => {
+      this.messages();
+      queueMicrotask(() => {
+        if (this.chatBody) {
+          this.chatBody.nativeElement.scrollTop = this.chatBody.nativeElement.scrollHeight;
+        }
+      });
+    });
+  }
 
   send() {
+    const q = this.question.trim();
+    if (!q || this.loading()) return;
 
-    const q = this.question.trim()
-    if (!q) return
+    this.messages.update((m) => [...m, { id: this.id++, role: 'user', content: q }]);
 
-    this.messages.update(m => [...m, { id: this.id++, role: 'user', content: q }])
+    this.question = '';
+    this.loading.set(true);
 
-    this.question = ''
-    this.loading.set(true)
-
-    this.ai.ask({
-      system: 'You are a Class 9 maths tutor',
-      question: q,
-      modelType: 'theory'
-    })
-    .pipe(finalize(() => this.loading.set(false)))
-    .subscribe(res => {
-      this.messages.update(m => [...m, { id: this.id++, role: 'assistant', content: res }])
-    })
-
+    this.aiChatRegistry
+      .ask(this._domain, {
+        question: q,
+        history: this.messages().slice(-6),
+      })
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: (res: string) => {
+          this.messages.update((m) => [...m, { id: this.id++, role: 'assistant', content: res }]);
+        },
+        error: () => {
+          this.messages.update((m) => [
+            ...m,
+            { id: this.id++, role: 'assistant', content: 'Something went wrong. Try again.' },
+          ]);
+        },
+      });
   }
 
   trackMsg(_: number, m: ChatMsg) {
-    return m.id
+    return m.id;
   }
-
 }

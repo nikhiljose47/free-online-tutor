@@ -24,8 +24,9 @@ import { FaqList } from '../../shared/components/faq-list/faq-list';
 import { ClassScheduleListComponent } from '../../shared/components/class-schedule-list/class-schedule-list';
 import { Quote } from '../../models/quote.model';
 import { QuoteUtil } from '../../shared/utils/quote.utils';
+import { AiTutorChatComponent } from '../../shared/components/ai-tutor-chat.component/ai-tutor-chat.component';
 
-type TabType = 'overview' | 'games' | 'stats';
+type TabType = 'overview' | 'games' | 'curriculum' | 'AI Tutor';
 
 interface ClassStat {
   value: string;
@@ -45,6 +46,7 @@ interface ClassStat {
     FaqList,
     ClassScheduleListComponent,
     ExploreCoursesBannerComponent,
+    AiTutorChatComponent,
     ClassOverviewComponent,
   ],
 })
@@ -64,6 +66,8 @@ export class ClassDetailsPage implements OnInit {
 
   syllabus = signal<ClassSyllabus | null>(null);
   className = signal<string>('Class');
+  aiContext = computed(() => `${this.className()}`);
+
   puzzleId = 'puzzle_001';
   classFileId: string = '';
 
@@ -83,6 +87,14 @@ export class ClassDetailsPage implements OnInit {
   select(tab: TabType): void {
     if (this._activeTab() !== tab) {
       this._activeTab.set(tab);
+    }
+    if (tab === 'AI Tutor') {
+     setTimeout(() => {
+      document.getElementById('tab-content-view')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }, 0);
     }
   }
 

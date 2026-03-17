@@ -8,11 +8,16 @@ export interface GateQuestionRequest {
   modelType?: 'theory' | 'solving';
 }
 
+export interface QuestionRequest {
+  question: string;
+  history?: { role: 'user' | 'assistant'; content: string }[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class GateExamAiChatService {
   private ai = inject(AiChatGatewayService);
 
-  ask(req: GateQuestionRequest): Observable<string> {
+  ask(req: QuestionRequest): Observable<string> {
     const systemPrompt = `
 You are an expert GATE exam tutor.
 Explain concepts clearly and step-by-step.
@@ -23,8 +28,10 @@ Avoid unnecessary long theory.
 
     return this.ai.ask({
       system: systemPrompt,
-      question: `[${req.subject}] ${req.question}`,
-      modelType: 'solving',
+      question: req.question,
+      modelType:  'solving',
+      context: 'Beginner coding for kids',
+      ...(req.history ? { history: req.history } : {}),
     });
   }
 }
