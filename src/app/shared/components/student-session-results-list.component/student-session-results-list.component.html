@@ -1,0 +1,64 @@
+<div class="results-wrap container-fluid">
+  <div class="results-header d-flex align-items-center justify-content-between">
+    <div class="stats d-flex align-items-center gap-4">
+      <div class="stat">
+        <div class="label">Students</div>
+        <div class="value">{{ data?.length || 0 }}</div>
+      </div>
+
+      <div class="stat">
+        <div class="label">Avg Marks</div>
+        <div class="value">
+         {{ avgMarks | number:'1.0-1' }}
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="label">Avg Engagement</div>
+        <div class="value">
+          {{ avgEngagement | number: '1.0-1' }}
+        </div>
+      </div>
+    </div>
+
+    <button
+      class="btn btn-light refresh-btn d-flex align-items-center gap-2"
+      (click)="refetch.emit()"
+    >
+      <i class="bi bi-arrow-repeat"></i>
+      Fetch again
+    </button>
+  </div>
+
+  <div class="results-table">
+    <div class="results-head row g-0">
+      <div class="col-2">Student</div>
+      <div class="col-2">Assignment</div>
+      <div class="col-2">Max</div>
+      <div class="col-2">Engagement</div>
+      <div class="col-4">Remarks</div>
+    </div>
+
+    <div class="results-row row g-0" *ngFor="let r of data; trackBy: trackStudent">
+      <div class="col-2 student">
+        {{ r.studentId || '—' }}
+      </div>
+
+      <div class="col-2 score">
+        {{ r.assignmentMarks }}
+      </div>
+
+      <div class="col-2 max">
+        {{ r.maxMarks }}
+      </div>
+
+      <div class="col-2 engagement">
+        {{ r.engagementScore }}
+      </div>
+
+      <div class="col-4 remarks">
+        {{ r.remarks || '—' }}
+      </div>
+    </div>
+  </div>
+</div>

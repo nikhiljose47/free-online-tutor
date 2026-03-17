@@ -1,4 +1,4 @@
-import { PrimaryGroup } from "../../models/syllabus/syllabus-index.model";
+import { PrimaryGroup } from '../../models/syllabus/syllabus-index.model';
 
 export const APP_VERSION = '1.0.0';
 
@@ -44,7 +44,8 @@ export const CACHE_TTL = {
   BATCH_DOC: 5 * 60 * 1000, // 5 min
   ANNOUNCEMENTS: 6 * 60 * 60 * 1000, // 6 hours
   ASSIGNMENTS: 5 * 60 * 1000, // 5 min
-  PUZZLE_SESS: 24 * 60 * 60 * 1000,  //24 hr
+  PUZZLE_SESS: 24 * 60 * 60 * 1000, //24 hr
+  ASSESSMENT: 2 * 60 * 60 * 1000, //2 hr
 } as const;
 
 export const DEF_BATCH = 'blue';
@@ -54,5 +55,3 @@ export const INDEXED_DB_NAME = 'in.sunbay.academy.offline-data-db-v1.72026.app';
 
 //Assets
 export const PLACEHOLDER__COVER_IMG = 'assets/placeholder-cover.webp';
-
-

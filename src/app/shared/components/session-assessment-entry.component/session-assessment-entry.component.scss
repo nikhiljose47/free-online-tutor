@@ -1,0 +1,84 @@
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 1055;
+}
+
+.modal-backdrop {
+  background: rgba(18, 18, 18, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.modal-content {
+  background: #ffffff;
+  border-radius: 14px;
+}
+
+.modal-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid #eef0f2;
+}
+
+.modal-body {
+  padding: 18px;
+}
+
+.modal-footer {
+  padding: 12px 18px;
+  border-top: 1px solid #eef0f2;
+}
+
+textarea {
+  background: #ffffff;
+  border: 1px solid #e4e7ea;
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  resize: none;
+  outline: none;
+  box-shadow: none;
+  letter-spacing: 0.2px;
+}
+
+textarea::placeholder {
+  color: #9aa0a6;
+  font-size: 12px;
+}
+
+textarea:focus {
+  border-color: #cfd4da;
+  box-shadow: none;
+}
+
+.btn-dark {
+  background: #111;
+  border: none;
+}
+
+.btn-dark:hover {
+  background: #000;
+}
+
+/* Validation block */
+
+.bg-light {
+  background: #fafbfc !important;
+}
+
+.text-danger {
+  color: #d93025 !important;
+}
+
+.border {
+  border: 1px solid #e6e8eb !important;
+}
+
+.rounded-3 {
+  border-radius: 12px !important;
+}
+
+.modal-body .small {
+  font-size: 12.5px;
+  line-height: 1.55;
+}

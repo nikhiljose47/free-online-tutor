@@ -22,6 +22,8 @@ import { seoResolver } from './resolvers/seo-resolver';
 import { ClassDetailsPage } from './pages/class-details-page/class-details-page';
 import { TuitionMarketplace } from './pages/tuition-marketplace/tuition-marketplace';
 import { FreeOnlineTuition } from './pages/free-online-tuition/free-online-tuition';
+import { SessionAssessmentEntryComponent } from './shared/components/session-assessment-entry.component/session-assessment-entry.component';
+import { AiTutorChatComponent } from './shared/components/ai-tutor-chat.component/ai-tutor-chat.component';
 
 export const routes: Routes = [
   {
@@ -37,7 +39,7 @@ export const routes: Routes = [
   },
   {
     path: 'free-online-tuition',
-    component: FreeOnlineTutor,
+    component: AiTutorChatComponent,
     data: {
       title: 'Free Online Tuition for Classes 6–12 | CBSE & State Boards',
       description:

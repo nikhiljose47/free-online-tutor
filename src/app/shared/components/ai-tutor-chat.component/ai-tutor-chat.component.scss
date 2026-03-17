@@ -1,0 +1,65 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.ai-chat-shell {
+  height: 100%;
+  background: #0b0c0f;
+  color: #e6e7eb;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+.ai-chat-header {
+  background: #0f1115;
+  border-color: #1b1e24 !important;
+}
+
+.ai-chat-body {
+  background: radial-gradient(circle at top, #12141a 0%, #0b0c0f 60%);
+  scroll-behavior: smooth;
+}
+
+.ai-bubble-user {
+  max-width: 70%;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.ai-bubble-ai {
+  max-width: 72%;
+  background: #151821;
+  border: 1px solid #232734;
+  color: #e5e7eb;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.ai-chat-input {
+  background: #0f1115;
+  border-color: #1b1e24 !important;
+}
+
+.ai-chat-input input {
+  background: #151821;
+  border: 1px solid #232734;
+  color: #e6e7eb;
+}
+
+.ai-chat-input input:focus {
+  background: #151821;
+  color: #e6e7eb;
+  border-color: #2563eb;
+  box-shadow: none;
+}
+
+.ai-chat-input button {
+  min-width: 80px;
+  font-size: 0.9rem;
+}
+
+.placeholder {
+  background-color: #1f2330;
+}

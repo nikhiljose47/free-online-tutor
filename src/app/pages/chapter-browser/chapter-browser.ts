@@ -11,21 +11,20 @@ import {
 import { ClassSyllabus, Chapter, Subject } from '../../models/syllabus/class-syllabus.model';
 import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { EMPTY, switchMap, take } from 'rxjs';
+import { DotLoader } from '../../components/dot-loader/dot-loader';
 
 @Component({
   selector: 'chapter-browser',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, DotLoader],
   templateUrl: './chapter-browser.html',
   styleUrls: ['./chapter-browser.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChapterBrowser implements OnInit {
-  /* ------------------ services ------------------ */
   private syllabusLookup = inject(SyllabusLookupService);
 
-  /* ------------------ core state ------------------ */
-  readonly classes = signal<string[]>(['Class']);
+  readonly classes = signal<string[]>([]);
   readonly syllabus = signal<ClassSyllabus | null>(null);
 
   readonly selectedClass = signal<string | null>(null);
@@ -34,68 +33,80 @@ export class ChapterBrowser implements OnInit {
   readonly isOnline = signal<boolean>(navigator.onLine);
   readonly syncing = signal<boolean>(false);
 
-  /* ------------------ derived data ------------------ */
   readonly subjects = computed<Subject[]>(() => {
     return this.syllabus()?.subjects ?? [];
   });
 
   readonly chapters = computed<Chapter[]>(() => {
-    const syllabus = this.syllabus();
+    const syl = this.syllabus();
     const subjectCode = this.selectedSubjectCode();
 
-    if (!syllabus || !subjectCode) return [];
+    if (!syl || !subjectCode) return [];
 
-    return syllabus.subjects.find((s) => s.code === subjectCode)?.chapters ?? [];
+    const subject = syl.subjects.find((s) => s.code === subjectCode);
+
+    return subject?.chapters ?? [];
   });
 
-  /* ------------------ UI helpers ------------------ */
   readonly expanded = signal<Record<string, boolean>>({});
 
-  toggleExpand(chapterCode: string): void {
+  toggleExpand(chapterCode: string) {
     this.expanded.update((m) => ({
       ...m,
       [chapterCode]: !m[chapterCode],
     }));
   }
 
-  /* ------------------ lifecycle ------------------ */
-  async ngOnInit(): Promise<void> {
-    /* use already-loaded class instead of re-fetching */
+  ngOnInit(): void {
     this.syllabusLookup
-      .getClassNames()
+      .getClassIds()
       .pipe(
         take(1),
+        switchMap((ids) => {
+          this.classes.set(ids);
 
-        switchMap((names) => {
-          this.classes.set(names);
+          if (!ids.length) return EMPTY;
 
-          if (!names.length) return EMPTY;
+          const firstClass = ids[0];
 
-          return this.syllabusLookup.getClass(names[0]).pipe(take(1));
+          this.selectedClass.set(firstClass);
+
+          return this.syllabusLookup.getClass(firstClass).pipe(take(1));
         }),
       )
-      .subscribe((f) => {
-        if (!f) return;
+      .subscribe((cls) => {
+        if (!cls) return;
 
-        this.syllabus.set(f);
-        this.selectedClass.set(f.classId);
+        this.syllabus.set(cls);
 
-        if (f.subjects.length) {
-          this.selectedSubjectCode.set(f.subjects[0].code);
+        if (cls.subjects?.length) {
+          this.selectedSubjectCode.set(cls.subjects[0].code);
         }
       });
   }
 
-  /* ------------------ interactions ------------------ */
-  selectClass(className: string): void {
-    this.selectedSubjectCode.set(className);
+  selectClass(classId: string) {
+    this.selectedClass.set(classId);
+
+    this.syllabusLookup
+      .getClass(classId)
+      .pipe(take(1))
+      .subscribe((cls) => {
+        if (!cls) return;
+
+        this.syllabus.set(cls);
+
+        if (cls.subjects?.length) {
+          this.selectedSubjectCode.set(cls.subjects[0].code);
+        }
+      });
   }
 
-  selectSubject(subjectCode: string): void {
+  selectSubject(subjectCode: string) {
     this.selectedSubjectCode.set(subjectCode);
   }
 
-  notifyAdmin(chapter: Chapter): void {
+  notifyAdmin(chapter: Chapter) {
     if (!this.isOnline()) {
       this.queueOfflineRequest(chapter);
       return;
@@ -109,7 +120,7 @@ export class ChapterBrowser implements OnInit {
     }, 800);
   }
 
-  private queueOfflineRequest(chapter: Chapter): void {
+  private queueOfflineRequest(chapter: Chapter) {
     console.warn('Offline: change request queued for', chapter.code);
   }
 }

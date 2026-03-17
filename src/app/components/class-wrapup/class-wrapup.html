@@ -17,20 +17,9 @@
     </div>
 
     <!-- ================= 2. ATTENDANCE (PRIMARY) ================= -->
-    <div class="wrapup-section attendance">
-      <h4 class="section-title">Mark Attendance</h4>
 
-      <div class="students-wrap">
-        <label class="student-chip" *ngFor="let s of students()">
-          <input type="checkbox" [checked]="s.present" (change)="toggleAttendance(s)" />
-          <span>{{ s.name }}</span>
-        </label>
-      </div>
 
-      <small class="hint"> Tap names to quickly mark who attended </small>
-    </div>
-
-    <!-- ================= 3. NEXT CLASS ================= -->
+    <!-- ================= 3. NEXT CLASS =================
     <div class="wrapup-section next-class">
       <div class="next-left">
         <h4 class="section-title">Continue This Topic</h4>
@@ -43,7 +32,7 @@
       <button class="btn btn-outline-primary" (click)="scheduleNextClass()">
         Schedule Next Class
       </button>
-    </div>
+    </div> -->
 
     <!-- ================= 4. FEEDBACK ================= -->
     <div class="wrapup-section feedback">
@@ -63,7 +52,7 @@
         [disabled]="isSavingAttendance()"
         (click)="endAndSaveClass()"
       >
-        End & Save Class
+        Submit Class
       </button>
     </div>
   </section>

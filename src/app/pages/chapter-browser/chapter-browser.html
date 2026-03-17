@@ -1,126 +1,130 @@
-<section class="chapter-browser container-fluid py-4" *ngIf="syllabus()">
+<dot-loader *ngIf="!syllabus(); else loadComplete"></dot-loader>
 
-  <!-- FILTER BAR -->
-  <div class="filter-bar mb-3">
-    <div class="row g-2 align-items-center">
-
-          <div class="col-md-3">
-        <select
-          class="form-select"
-          [value]="classes()"
-          (change)="selectClass($any($event.target).value)"
-        >
-          <option disabled value="">Select Subject</option>
-          <option *ngFor="let s of classes()" [value]="s">
-            {{ s }}
-          </option>
-        </select>
-      </div>
-
-      <div class="col-md-3">
-        <select
-          class="form-select"
-          [value]="selectedSubjectCode()"
-          (change)="selectSubject($any($event.target).value)"
-        >
-          <option disabled value="">Select Subject</option>
-          <option *ngFor="let s of subjects()" [value]="s.code">
-            {{ s.code }}
-          </option>
-        </select>
-      </div>
-
-      <div class="col-md-9 text-end">
-        <small class="text-muted">
-          {{ isOnline() ? 'Online' : 'Offline' }} · Cached locally
-        </small>
+<ng-template #loadComplete>
+  <section class="chapter-browser container-fluid py-4" *ngIf="syllabus()">
+    <div class="filter-bar mb-3">
+      <div class="row g-2 align-items-center">
+        <section>
+          <h3>Review &amp; Suggest Corrections</h3>
+          <p>
+            Browse the syllabus and notify the admin if you notice any corrections or improvements
+            needed.
+          </p>
+        </section>
       </div>
     </div>
-  </div>
+    <!-- FILTER BAR -->
+    <div class="filter-bar mb-3">
+      <div class="row g-2 align-items-center">
+        <div class="col-md-3">
+          <select
+            class="form-select"
+            [value]="classes()"
+            (change)="selectClass($any($event.target).value)"
+          >
+            <option disabled value="">Select Subject</option>
+            <option *ngFor="let s of classes()" [value]="s">
+              {{ s }}
+            </option>
+          </select>
+        </div>
 
-  <!-- CHAPTER TABLE -->
-  <div class="table-responsive">
-    <table class="table chapter-table align-middle">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Chapter</th>
-          <th>Code</th>
-          <th>Divisions</th>
-          <th></th>
-          <th>Report</th>
-        </tr>
-      </thead>
+        <div class="col-md-3">
+          <select
+            class="form-select"
+            [value]="selectedSubjectCode()"
+            (change)="selectSubject($any($event.target).value)"
+          >
+            <option disabled value="">Select Subject</option>
+            <option *ngFor="let s of subjects()" [value]="s.code">
+              {{ s.code }}
+            </option>
+          </select>
+        </div>
 
-      <tbody>
-        <ng-container *ngFor="let ch of chapters(); let i = index">
+        <div class="col-md-9 text-end">
+          <small class="text-muted">
+            {{ isOnline() ? 'Online' : 'Offline' }} · Cached locally
+          </small>
+        </div>
+      </div>
+    </div>
 
-          <!-- CHAPTER ROW -->
+    <!-- CHAPTER TABLE -->
+    <div class="table-responsive">
+      <table class="table chapter-table align-middle">
+        <thead>
           <tr>
-            <td>{{ i + 1 }}</td>
-
-            <td class="fw-semibold">
-              {{ ch.name }}
-            </td>
-
-            <td class="text-muted">
-              {{ ch.code }}
-            </td>
-
-            <td>
-              {{ ch.division_count }}
-            </td>
-
-            <!-- EXPAND ARROW (APPENDED) -->
-            <td class="text-center">
-              <button
-                class="btn btn-link btn-sm"
-                (click)="toggleExpand(ch.code)"
-              >
-                <span *ngIf="!expanded()[ch.code]">▶</span>
-                <span *ngIf="expanded()[ch.code]">▼</span>
-              </button>
-            </td>
-
-            <td>
-              <button
-                class="btn btn-outline-secondary btn-sm"
-                (click)="notifyAdmin(ch)"
-                [disabled]="syncing()"
-              >
-                Notify
-              </button>
-            </td>
+            <th>#</th>
+            <th>Chapter</th>
+            <th>Code</th>
+            <th>Divisions</th>
+            <th></th>
+            <th>Report</th>
           </tr>
+        </thead>
 
-          <!-- DIVISIONS ROW (APPENDED) -->
-          <tr *ngIf="expanded()[ch.code]">
-            <td></td>
-            <td colspan="5">
-              <ul class="list-group list-group-flush">
-                <li
-                  class="list-group-item py-1"
-                  *ngFor="let d of ch.divisions"
+        <tbody>
+          <ng-container *ngFor="let ch of chapters(); let i = index">
+            <!-- CHAPTER ROW -->
+            <tr>
+              <td>{{ i + 1 }}</td>
+
+              <td class="fw-semibold">
+                {{ ch.name }}
+              </td>
+
+              <td class="text-muted">
+                {{ ch.code }}
+              </td>
+
+              <td>
+                {{ ch.division_count }}
+              </td>
+
+              <!-- EXPAND ARROW (APPENDED) -->
+              <td class="text-center">
+                <button class="btn btn-link btn-sm" (click)="toggleExpand(ch.code)">
+                  <span *ngIf="!expanded()[ch.code]">▶</span>
+                  <span *ngIf="expanded()[ch.code]">▼</span>
+                </button>
+              </td>
+
+              <td>
+                <button
+                  class="btn btn-outline-secondary btn-sm"
+                  (click)="notifyAdmin(ch)"
+                  [disabled]="syncing()"
                 >
-                  <strong>{{ d.name }}</strong>
-                  <small class="text-muted ms-2">
-                    ({{ d.difficulty_level }} · {{ d.time_estimate_min }} min)
-                  </small>
-                </li>
-              </ul>
-            </td>
-          </tr>
+                  Notify
+                </button>
+              </td>
+            </tr>
 
-        </ng-container>
-      </tbody>
-    </table>
-  </div>
+            <!-- DIVISIONS ROW (APPENDED) -->
+            <tr *ngIf="expanded()[ch.code]">
+              <td></td>
+              <td colspan="5">
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item py-1" *ngFor="let d of ch.divisions">
+                    <strong>{{ d.name }}</strong>
+                    <small class="text-muted ms-2">
+                      ({{ d.difficulty_level }} · {{ d.time_estimate_min }} min)
+                    </small>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
 
-  <!-- FOOT NOTE -->
-  <div class="mt-3">
-    <small class="text-muted">
-      Change requests are reviewed by academic admins before publishing.
-    </small>
-  </div>
-
-</section>
+    <!-- FOOT NOTE -->
+    <div class="mt-3">
+      <small class="text-muted">
+        Change requests are reviewed by academic admins before publishing.
+      </small>
+    </div>
+  </section>
+</ng-template>

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnInit, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AttendanceApiService } from '../../services/attendance/attendance-api.service';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
@@ -21,6 +21,7 @@ interface Student {
 })
 export class ClassWrapup implements OnInit {
   @Input({ required: true }) meetId!: string;
+  @Output() submit = new EventEmitter<void>();
 
   private attendanceApi = inject(AttendanceApiService);
   private uiState = inject(UiStateUtil);
@@ -75,38 +76,29 @@ export class ClassWrapup implements OnInit {
       },
     });
   }
-
-  /* ===============================
-     ATTENDANCE
-  ================================ */
-
-  toggleAttendance(student: Student): void {
-    this.students.update((list) =>
-      list.map((s) => (s.id === student.id ? { ...s, present: !s.present } : s))
-    );
-  }
-
+  
   scheduleNextClass(): void {
     console.log('Schedule next class for meeting:', this.meeting.id);
   }
 
   endAndSaveClass(): void {
-    if (this.isSavingAttendance()) return;
+    this.submit.emit();
+    // if (this.isSavingAttendance()) return;
 
-    this.isSavingAttendance.set(true);
+    // this.isSavingAttendance.set(true);
 
-    const payload = {
-      meetingId: this.meeting.id,
-      presentUserIds: this.students()
-        .filter((s) => s.present)
-        .map((s) => s.id),
-      feedback: this.feedback(),
-    };
+    // const payload = {
+    //   meetingId: this.meeting.id,
+    //   presentUserIds: this.students()
+    //     .filter((s) => s.present)
+    //     .map((s) => s.id),
+    //   feedback: this.feedback(),
+    // };
 
-    // replace with real API
-    setTimeout(() => {
-      console.log('[ClassWrapup] Saved', payload);
-      this.isSavingAttendance.set(false);
-    }, 800);
+    // // replace with real API
+    // setTimeout(() => {
+    //   console.log('[ClassWrapup] Saved', payload);
+    //   this.isSavingAttendance.set(false);
+    // }, 800);
   }
 }

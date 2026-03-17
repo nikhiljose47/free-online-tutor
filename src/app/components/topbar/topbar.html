@@ -39,41 +39,9 @@
     </div>
 
     <!-- ACTIONS -->
+
     <div class="actions">
-      <a class="topbar-link" routerLink="/teachers" routerLinkActive="active">Teachers</a>
-
-      <!-- NOT LOGGED -->
-      <ng-container *ngIf="!profile()">
-        <a class="topbar-link" routerLink="/login" routerLinkActive="active">Login</a>
-
-        <!-- <button class="login-btn" routerLink="/login">Login</button> -->
-        <!-- <button class="signup-btn" routerLink="/register">Sign Up</button> -->
-      </ng-container>
-
-      <!-- LOGGED -->
-      <ng-container *ngIf="profile()?.role === 'teacher'">
-        <div class="learn-dropdown" (click)="$event.stopPropagation()">
-          <span class="topbar-link" [class.active]="proffOpen()" (click)="toggleProff()">
-            Professor<i
-              class="bi"
-              [ngClass]="proffOpen() ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"
-              style="font-size: 8px; margin-left: 3px"
-            ></i>
-          </span>
-
-          <div class="learn-menu" *ngIf="proffOpen()">
-            <a routerLink="/schedule" routerLinkActive="active" class="menu-item"> Schedule </a>
-
-            <a routerLink="/chapter-browser" routerLinkActive="active" class="menu-item">
-              Browse
-            </a>
-
-            <a routerLink="/teacher-workspace" routerLinkActive="active" class="menu-item">
-              Dashboard
-            </a>
-          </div>
-        </div>
-
+      <ng-container *ngIf="profile()?.role === 'student'">
         <div class="learn-dropdown" (click)="$event.stopPropagation()">
           <span class="topbar-link" [class.active]="learnOpen()" (click)="toggleLearn()">
             Student<i
@@ -103,78 +71,108 @@
             </a>
           </div>
         </div>
+      </ng-container>
 
+      <!-- NOT LOGGED -->
+      <ng-container *ngIf="!profile()">
+        <a class="topbar-link" routerLink="/login" routerLinkActive="active">Login</a>
+
+        <!-- <button class="login-btn" routerLink="/login">Login</button> -->
+        <!-- <button class="signup-btn" routerLink="/register">Sign Up</button> -->
+      </ng-container>
+
+      <!-- TEACHER LOGGED -->
+      <ng-container *ngIf="profile()?.role === 'teacher'">
         <div class="learn-dropdown" (click)="$event.stopPropagation()">
-          <span class="topbar-link" [class.active]="otherOpen()" (click)="toggleOther()">
-            Join us<i
+          <span class="topbar-link" [class.active]="proffOpen()" (click)="toggleProff()">
+            Professor<i
               class="bi"
-              [ngClass]="otherOpen() ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"
+              [ngClass]="proffOpen() ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"
               style="font-size: 8px; margin-left: 3px"
             ></i>
           </span>
-          <div class="learn-menu" *ngIf="otherOpen()">
-            <a
-              routerLink="/free-online-tuition"
-              routerLinkActive="active"
-              class="menu-item"
-              (click)="closeOther()"
-            >
-              Test
+
+          <div class="learn-menu" *ngIf="proffOpen()">
+            <a routerLink="/schedule" routerLinkActive="active" class="menu-item"> Schedule </a>
+
+            <a routerLink="/chapter-browser" routerLinkActive="active" class="menu-item">
+              Browse
             </a>
 
-            <a
-              routerLink="/about"
-              routerLinkActive="active"
-              class="menu-item"
-              (click)="closeOther()"
-            >
-              Connect
-            </a>
-
-            <a
-              routerLink="/tuition-centers"
-              routerLinkActive="active"
-              class="menu-item"
-              (click)="closeOther()"
-            >
-              Offline Centers
-            </a>
-
-            <a
-              routerLink="/career"
-              routerLinkActive="active"
-              class="menu-item"
-              (click)="closeOther()"
-            >
-              Careers
+            <a routerLink="/teacher-workspace" routerLinkActive="active" class="menu-item">
+              Dashboard
             </a>
           </div>
-        </div>
-
-        <!-- PROFILE MENU -->
-        <div class="profile-container">
-          <i
-            class="bi bi-person-circle profile-icon"
-            (click)="toggleMenu(); $event.stopPropagation()"
-          ></i>
-
-          <div class="profile-menu" *ngIf="menuOpen()" role="menu">
-            <a routerLink="/profile" class="menu-item" role="menuitem" (click)="closeMenu()">
-              My Profile
-            </a>
-
-            <button class="menu-item logout-btn" role="menuitem" (click)="logout(); closeMenu()">
-              Logout
-            </button>
-          </div>
-
-          <div
-            *ngIf="menuOpen()"
-            class="menu-overlay"
-            (click)="closeMenu(); $event.stopPropagation()"
-          ></div>
         </div>
       </ng-container>
+
+      <!-- Join us -->
+      <div class="learn-dropdown" (click)="$event.stopPropagation()">
+        <span class="topbar-link" [class.active]="otherOpen()" (click)="toggleOther()">
+          Join us<i
+            class="bi"
+            [ngClass]="otherOpen() ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"
+            style="font-size: 8px; margin-left: 3px"
+          ></i>
+        </span>
+        <div class="learn-menu" *ngIf="otherOpen()">
+          <a
+            routerLink="/free-online-tuition"
+            routerLinkActive="active"
+            class="menu-item"
+            (click)="closeOther()"
+          >
+            Test
+          </a>
+
+          <a routerLink="/about" routerLinkActive="active" class="menu-item" (click)="closeOther()">
+            Connect
+          </a>
+
+          <a
+            routerLink="/tuition-centers"
+            routerLinkActive="active"
+            class="menu-item"
+            (click)="closeOther()"
+          >
+            Offline Centers
+          </a>
+
+          <a
+            routerLink="/career"
+            routerLinkActive="active"
+            class="menu-item"
+            (click)="closeOther()"
+          >
+            Careers
+          </a>
+        </div>
+      </div>
+      <!-- TEACHERS -->
+      <a class="topbar-link" routerLink="/teachers" routerLinkActive="active">Teachers</a>
+      <!-- PROFILE MENU -->
+      <div class="mx-1">
+        <i
+          class="bi bi-person-circle profile-icon"
+          (click)="toggleMenu(); $event.stopPropagation()"
+        ></i>
+
+        <div class="profile-menu" *ngIf="menuOpen()" role="menu">
+          <a routerLink="/profile" class="menu-item" role="menuitem" (click)="closeMenu()">
+            My Profile
+          </a>
+
+          <button class="menu-item logout-btn" role="menuitem" (click)="logout(); closeMenu()">
+            Logout
+          </button>
+        </div>
+
+        <div
+          *ngIf="menuOpen()"
+          class="menu-overlay"
+          (click)="closeMenu(); $event.stopPropagation()"
+        ></div>
+      </div>
     </div>
   </nav>
 </header>

@@ -56,11 +56,31 @@
 
   <!-- VIEW MODE -->
   <div *ngIf="mode() === 'view' && selectedMeeting()" class="details-card mx-auto">
-    <class-wrapup [meetId]="selectedMeeting()?.id ?? ''"></class-wrapup>
+    <button
+      *ngIf="sessionResults()?.length === 0; else showResults"
+      class="btn btn-warning fw-semibold px-3 py-2"
+      (click)="openAssessmentImport()"
+    >
+      <i class="bi bi-upload me-2"></i>
+      Import Assessments
+    </button>
+    <ng-template #showResults>
+      <student-session-results-list [data]="sessionResults()" (refetch)="openAssessmentImport()" />
+    </ng-template>
+
+    <session-assessment-entry
+      *ngIf="assessmentImportOpen()"
+      (importEvent)="handleImportedData($event)"
+      (closeEvent)="assessmentImportOpen.set(false)"
+    ></session-assessment-entry>
+    <class-wrapup (submit)="submitClass()" [meetId]="selectedMeeting()?.id ?? ''"></class-wrapup>
   </div>
 
   <!-- CREATE MODE -->
   <div *ngIf="mode() === 'create'">
-    <schedule-live-class-form [teacherId] = "teacherId??''" (onSubmit)="onScheduleSuccess()"></schedule-live-class-form>
+    <schedule-live-class-form
+      [teacherId]="teacherId ?? ''"
+      (onSubmit)="onScheduleSuccess()"
+    ></schedule-live-class-form>
   </div>
 </div>

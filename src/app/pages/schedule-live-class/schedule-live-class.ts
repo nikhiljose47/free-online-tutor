@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Timestamp } from '@angular/fire/firestore';
 
@@ -18,11 +12,25 @@ import { ClassWrapup } from '../../components/class-wrapup/class-wrapup';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { MeetingsService } from '../../services/meetings/meetings.service';
 import { ScheduleLiveClassForm } from '../../components/schedule-live-class-form/schedule-live-class-form';
+import {
+  SessionAssessmentEntryComponent,
+  SessionImportRow,
+} from '../../shared/components/session-assessment-entry.component/session-assessment-entry.component';
+import { StudentSessionResult } from '../../models/assessment/student-session-result.model';
+import { ToastService } from '../../shared/toast.service';
+import { StudentSessionResultsListComponent } from '../../shared/components/student-session-results-list.component/student-session-results-list.component';
+import { StudentAssessmentService } from '../../services/assessment/student-assessment.service';
 
 @Component({
   selector: 'schedule-live-class',
   standalone: true,
-  imports: [CommonModule, ClassWrapup, ScheduleLiveClassForm],
+  imports: [
+    CommonModule,
+    StudentSessionResultsListComponent,
+    ClassWrapup,
+    ScheduleLiveClassForm,
+    SessionAssessmentEntryComponent,
+  ],
   templateUrl: './schedule-live-class.html',
   styleUrl: './schedule-live-class.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,10 +38,11 @@ import { ScheduleLiveClassForm } from '../../components/schedule-live-class-form
 export class ScheduleLiveClass implements OnInit {
   /* ------------------ services ------------------ */
   private meetApi = inject(MeetingsService);
-  private syllLooUpApi = inject(SyllabusLookupService);
+  private assessmentApi = inject(StudentAssessmentService);
   private fire = inject(FirestoreDocService);
   private authApi = inject(Auth2Service);
   private uiStateUtil = inject(UiStateUtil);
+  private toastApi = inject(ToastService);
   private user = inject(UserProfileService);
 
   readonly profile = this.user.profile;
@@ -44,11 +53,10 @@ export class ScheduleLiveClass implements OnInit {
   readonly mode = signal<'view' | 'create'>('view');
   readonly submitting = signal(false);
   teacherId: string | null = this.authApi.uid ?? null;
-
-  /* ------------------ lookups (signal-safe) ------------------ */
-  classList: string[] = [];
-
+  sessionResults = signal<StudentSessionResult[]>([]);
   batchList = signal<Array<string>>([]);
+
+  assessmentImportOpen = signal(false);
 
   /* ------------------ lifecycle ------------------ */
   ngOnInit(): void {
@@ -64,9 +72,6 @@ export class ScheduleLiveClass implements OnInit {
         list.forEach((m) => this.uiStateUtil.set(m.id, m));
       }
     });
-    this.syllLooUpApi.getClassNames().subscribe((e) => {
-      this.classList = e;
-    });
   }
 
   isValidUrl(url: string): boolean {
@@ -80,6 +85,38 @@ export class ScheduleLiveClass implements OnInit {
 
   onScheduleSuccess() {
     this.mode.set('view');
+  }
+
+  openAssessmentImport() {
+    this.assessmentImportOpen.set(true);
+  }
+
+  handleImportedData(rows: SessionImportRow[]) {
+    if (!this.selectedMeeting()) {
+      this.toastApi.show('No meeting selected for import');
+      return;
+    }
+
+    const data: StudentSessionResult[] = rows.map((r) => ({
+      studentUid: 'dummy_uid',
+      studentId: r.studentId ?? null,
+      sessionId: this.selectedMeeting()!.id ?? '',
+      subjectId: this.selectedMeeting()!.subjectId,
+      chapterCode: this.selectedMeeting()!.chapterCode,
+      divisionCode: 'division_dummy',
+
+      sessionType: 'class',
+
+      assignmentMarks: Number(r.assignmentMarks ?? 0),
+      maxMarks: Number(r.maxMarks ?? 0),
+
+      engagementScore: Number(r.engagementScore ?? 0),
+      remarks: r.remarks ?? '',
+      createdAt: Timestamp.now(),
+    }));
+
+    this.sessionResults.set(data);
+    //console.log('Converted', data);
   }
 
   /* ------------------ template helpers ------------------ */
@@ -98,7 +135,10 @@ export class ScheduleLiveClass implements OnInit {
     this.mode.set('create');
   }
 
-  endClass() {
+  submitClass() {
+    this.assessmentApi.saveSessions(this.sessionResults()).subscribe(() => {
+      this.toastApi.show('Sessions saved');
+    });
     const m = this.selectedMeeting();
     if (!m) return;
 
