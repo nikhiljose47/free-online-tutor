@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { JoinTutor } from './join-tutor';
+import { OnlineTeacherJobs } from './online-teacher-jobs';
 
-describe('JoinTutor', () => {
-  let component: JoinTutor;
-  let fixture: ComponentFixture<JoinTutor>;
+describe('OnlineTeacherJobs', () => {
+  let component: OnlineTeacherJobs;
+  let fixture: ComponentFixture<OnlineTeacherJobs>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [JoinTutor]
+      imports: [OnlineTeacherJobs]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(JoinTutor);
+    fixture = TestBed.createComponent(OnlineTeacherJobs);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

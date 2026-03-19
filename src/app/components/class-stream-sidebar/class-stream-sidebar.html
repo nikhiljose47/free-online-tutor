@@ -1,15 +1,13 @@
 <aside class="stream-sidebar" [class.collapsed]="collapsed()">
-  <!-- COLLAPSE BUTTON (mobile only) -->
   <button class="collapse-btn" (click)="toggleSidebar()">
     <i class="bi" [ngClass]="collapsed() ? 'bi bi-arrow-bar-right' : 'bi bi-arrow-bar-left'"></i>
   </button>
 
-  <!-- FULL MODE CONTENT -->
   <div class="full-content" *ngIf="!collapsed()">
-    <!-- LIVE STREAMING -->
+    <!-- LIVE -->
     <h6 class="section-title">Live Now</h6>
 
-    <div class="live-item" *ngFor="let item of live()" (click)="open(item)">
+    <div class="live-item compact" *ngFor="let item of live()" (click)="open(item)">
       <img
         class="avatar-live"
         [src]="getBannerSrc(item.image)"
@@ -17,13 +15,14 @@
         loading="lazy"
         (error)="onImgError($event)"
       />
+
       <div class="info">
         <div class="title">{{ item.className }}</div>
         <div class="sub-title">{{ item.subjectName }}</div>
       </div>
-      <div class="status-box">
-        <span class="red-dot"></span>
-        <!-- <span class="viewer-count">{{ 10 }}</span> -->
+
+      <div class="right-chip">
+        <span class="live-dot"></span>
       </div>
     </div>
 
@@ -32,7 +31,7 @@
     <!-- UPCOMING -->
     <h6 class="section-title mt-2">Upcoming</h6>
 
-    <div class="live-item" *ngFor="let item of upcoming()" (click)="open(item)">
+    <div class="live-item compact" *ngFor="let item of upcoming()" (click)="open(item)">
       <img
         class="avatar"
         [src]="getBannerSrc(item.image)"
@@ -40,18 +39,23 @@
         loading="lazy"
         (error)="onImgError($event)"
       />
+
       <div class="info">
         <div class="title">{{ item.className }}</div>
         <div class="sub-title">{{ item.subjectName }}</div>
-        <div class="subject">{{ item.date.toDate() | date: 'EE, d MMM, h:mm aa' }}</div>
-      </div>
-      <div class="status-box upcoming-clock">
-        <i class="bi bi-clock"></i>
+
+        <div class="meta-row">
+          <span class="time">
+            {{ item.date.toDate() | date: 'EE, d MMM, h:mm a' }}
+          </span>
+
+          <span class="chip-free">Free</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- COLLAPSED AVATAR-ONLY MODE -->
+  <!-- COLLAPSED -->
   <div class="collapsed-content" *ngIf="collapsed()">
     <img
       *ngFor="let item of live()"
@@ -63,7 +67,6 @@
       (click)="open(item)"
     />
 
-    <!-- UPCOMING -->
     <img
       *ngFor="let item of upcoming()"
       class="collapsed-avatar"

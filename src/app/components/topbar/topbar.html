@@ -151,7 +151,7 @@
       <!-- TEACHERS -->
       <a class="topbar-link" routerLink="/teachers" routerLinkActive="active">Teachers</a>
       <!-- PROFILE MENU -->
-      <div class="mx-1">
+      <div class="mx-1" *ngIf="profile()">
         <i
           class="bi bi-person-circle profile-icon"
           (click)="toggleMenu(); $event.stopPropagation()"

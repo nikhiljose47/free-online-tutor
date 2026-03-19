@@ -9,6 +9,7 @@ export const BUILD_INFO = {
   updatedOn: '2025-02-01',
 };
 
+export const TEACHER_JOB_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdc532mfApDy0MyTY_eJhI-awJViiBlqPsk_QS2-XUxVcH0A/viewform';
 export const SYLL_DATA_BASE_URL = 'https://authentication-785fd.web.app/data/';
 
 export const SYLL_INDEX_CACHE_KEY = 'syllabus_index_ckey';

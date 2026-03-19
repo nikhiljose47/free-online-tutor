@@ -2,8 +2,7 @@
   <topbar></topbar>
 
   <div class="layout" [class.sidebar-collapsed]="isSidebarCollapsed()">
-    <class-stream-sidebar class="sidebar" (collapsedChange)="onSidebarToggle($event)">
-    </class-stream-sidebar>
+    <class-stream-sidebar class="sidebar" (collapsedChange)="onSidebarToggle($event)" />
 
     <div class="right">
       <!-- <announcement-bar></announcement-bar> -->

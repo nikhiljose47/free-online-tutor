@@ -23,7 +23,7 @@ import { TuitionMarketplace } from './pages/tuition-marketplace/tuition-marketpl
 import { FreeOnlineTuition } from './pages/free-online-tuition/free-online-tuition';
 import { SessionAssessmentEntryComponent } from './shared/components/session-assessment-entry.component/session-assessment-entry.component';
 import { AiTutorChatComponent } from './shared/components/ai-tutor-chat.component/ai-tutor-chat.component';
-import { JoinTutor } from './pages/join-tutor/join-tutor';
+import { OnlineTeacherJobs } from './pages/online-teacher-jobs/online-teacher-jobs';
 
 export const routes: Routes = [
   {
@@ -85,7 +85,7 @@ export const routes: Routes = [
 
   {
     path: 'career',
-    component: JoinTutor,
+    component: OnlineTeacherJobs,
     data: {
       title: 'Careers | Online Teaching Jobs',
       description: 'Join our team of teachers and educators. Explore online teaching careers.',

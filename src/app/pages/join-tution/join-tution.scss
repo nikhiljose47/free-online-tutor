@@ -40,7 +40,7 @@
 
   padding: clamp(32px, 4vw, 64px) clamp(28px, 3vw, 72px);
 
- // background: #ffffff;
+  // background: #ffffff;
 
   display: flex;
   flex-direction: column;
@@ -173,16 +173,18 @@
 
   background: #000;
   color: #fff;
-
+  
   font-weight: 600;
   letter-spacing: 0.25px;
 
   transition: all 0.2s ease;
 }
 
-.cta-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.cta-btn.is-locked {
+  pointer-events: none;
+  color: var(--color-primary);
+  opacity: 1; // prevents faded disabled look
+  cursor: default;
 }
 
 .share-btn {
