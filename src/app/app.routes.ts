@@ -7,7 +7,6 @@ import { LoginComponent } from './pages/login/login';
 import { TeachersPage } from './pages/teachers/teachers';
 import { About } from './pages/about/about';
 import { FreeOnlineTutor } from './pages/free-online-tutor/free-online-tutor';
-import { Career } from './pages/career/career';
 import { BookSlotComponent } from './components/book-slot/book-slot';
 import { Timetable } from './components/timetable/timetable';
 import { ScheduleLiveClass } from './pages/schedule-live-class/schedule-live-class';
@@ -24,6 +23,7 @@ import { TuitionMarketplace } from './pages/tuition-marketplace/tuition-marketpl
 import { FreeOnlineTuition } from './pages/free-online-tuition/free-online-tuition';
 import { SessionAssessmentEntryComponent } from './shared/components/session-assessment-entry.component/session-assessment-entry.component';
 import { AiTutorChatComponent } from './shared/components/ai-tutor-chat.component/ai-tutor-chat.component';
+import { JoinTutor } from './pages/join-tutor/join-tutor';
 
 export const routes: Routes = [
   {
@@ -85,7 +85,7 @@ export const routes: Routes = [
 
   {
     path: 'career',
-    component: Career,
+    component: JoinTutor,
     data: {
       title: 'Careers | Online Teaching Jobs',
       description: 'Join our team of teachers and educators. Explore online teaching careers.',
