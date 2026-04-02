@@ -6,12 +6,16 @@ export interface UserModel {
   email: string;
   age: number | null;
   role: UserRole;
+  avatarId: string;
   photoUrl: string | null;
   phone: string | null;
+  enrolledClassIds: string[];
   abilities: Array<string> | null;
   skills: Array<string> | null;
   expList: Array<string> | null;
   expYrs: number | null;
+  totalPoints: PointsMap;
+  points: PointsMap;
   subjects: Array<String> | null;
   bio: string | null;
   weekPerformance: string;
@@ -25,3 +29,8 @@ export interface UserModel {
 }
 
 export type UserRole = 'admin' | 'student' | 'guest' | 'teacher';
+
+export interface PointsMap {
+  identifier: string;
+  points: number;
+}

@@ -38,7 +38,7 @@ export class SyllabusRepository {
           return of(dbCached.data);
         }
 
-        return this.http.get<SyllabusIndex>('data/syllabus-index.json').pipe(
+        return this.http.get<SyllabusIndex>('index/syllabus-index.json').pipe(
           retry({ count: 2, delay: 1000 }),
           tap((data) => {
             this.uiState.set(SYLL_INDEX_CACHE_KEY, data, this.TTL);

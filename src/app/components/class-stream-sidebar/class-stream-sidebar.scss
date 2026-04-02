@@ -15,9 +15,10 @@
 /* TITLE */
 .section-title {
   color: #e5e5e5;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 600;
   margin-bottom: 8px;
+  margin-left: 4px;
   letter-spacing: 0.4px;
 }
 
@@ -95,6 +96,17 @@
   padding: 0px 4px;
   border-radius: 5px;
   background: #23a046;
+  color: #ffffff;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* PAID CHIP */
+.chip-paid {
+  font-size: 10px;
+  padding: 0px 4px;
+  border-radius: 5px;
+  background: #0aa5dd;
   color: #ffffff;
   font-weight: 600;
   letter-spacing: 0.5px;

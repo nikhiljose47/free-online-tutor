@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { SyllabusStore } from '../../shared/state/syllabus.store';
-import { map, shareReplay, Observable } from 'rxjs';
+import { map, shareReplay, Observable, switchMap, of } from 'rxjs';
 import { Chapter, ClassSyllabus, Subject } from '../../models/syllabus/class-syllabus.model';
+import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
 
 export interface SubjectWithChapters {
   code: string;
@@ -13,7 +14,7 @@ export interface SubjectWithChapters {
 @Injectable({ providedIn: 'root' })
 export class SyllabusLookupService {
   private syllabusStore = inject(SyllabusStore);
-
+  private syllabusRepo = inject(SyllabusRepository);
   /* ================= SOURCE ================= */
 
   private readonly list$: Observable<ClassSyllabus[]> = this.syllabusStore
@@ -40,6 +41,33 @@ export class SyllabusLookupService {
   }
 
   /* ================= CLASS ================= */
+
+  loadClass(classId: string) {
+    return this.syllabusStore.getIdMap$().pipe(
+      switchMap((idMap) => {
+        if (!idMap) return of(null);
+        const classFileName = idMap[classId];
+        if (!classFileName) return of(null);
+
+        return this.syllabusRepo.loadClass(classFileName).pipe(
+          map((data) => {
+            console.log('🚀 repo data:', data);
+            return this.normalize(data);
+          }),
+        );
+      }),
+    );
+  }
+
+  private normalize(data: any): ClassSyllabus {
+    return {
+      ...data,
+      subjects: Object.values(data?.subjects ?? {}).map((s: any) => ({
+        ...s,
+        chapters: Object.values(s?.chapters ?? {}),
+      })),
+    };
+  }
 
   getClassIds(): Observable<string[]> {
     return this.list$.pipe(map((list) => list.map((c) => c.classId)));

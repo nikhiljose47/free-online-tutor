@@ -136,6 +136,8 @@ getAllReady(): CatalogItem[] {
   return this.readyCatalog();
 }
 
+
+//catalogApi.getbyId(id) : CatalogItem | null
 getById(id: string): CatalogItem | null {
   return this.catalog().find(i => i.id === id) ?? null;
 }

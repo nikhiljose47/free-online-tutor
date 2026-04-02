@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { CommonModule } from '@angular/common';
 import { Timestamp } from '@angular/fire/firestore';
 
-import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { UserProfileService } from '../../core/services/fire/user-profile.service';
 import { FirestoreDocService } from '../../core/services/fire/firestore-doc.service';
 import { Meeting } from '../../models/meeting.model';
@@ -20,6 +19,7 @@ import { StudentSessionResult } from '../../models/assessment/student-session-re
 import { ToastService } from '../../shared/toast.service';
 import { StudentSessionResultsListComponent } from '../../shared/components/student-session-results-list.component/student-session-results-list.component';
 import { StudentAssessmentService } from '../../services/assessment/student-assessment.service';
+import { ConfirmService } from '../../services/common/confirm.service';
 
 @Component({
   selector: 'schedule-live-class',
@@ -44,6 +44,7 @@ export class ScheduleLiveClass implements OnInit {
   private uiStateUtil = inject(UiStateUtil);
   private toastApi = inject(ToastService);
   private user = inject(UserProfileService);
+  private confirmApi = inject(ConfirmService);
 
   readonly profile = this.user.profile;
 
@@ -135,7 +136,17 @@ export class ScheduleLiveClass implements OnInit {
     this.mode.set('create');
   }
 
-  submitClass() {
+  async submitClass() {
+    const ok = await this.confirmApi.open({
+      title: 'Are you sure you want to submit?',
+      message:
+        'This will mark the class as completed and cannot be undone unless admin intervention is done.',
+      confirmText: 'Submit',
+      cancelText: 'Cancel',
+    });
+
+    if (!ok) return;
+
     this.assessmentApi.saveSessions(this.sessionResults()).subscribe(() => {
       this.toastApi.show('Sessions saved');
     });

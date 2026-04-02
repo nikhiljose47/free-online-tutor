@@ -203,6 +203,7 @@ export class MeetingsService {
       teacherName: f.teacherName,
       duration: f.duration,
       attendance: [],
+      isFree: true,
       date: Timestamp.fromDate(start),
       endAt: Timestamp.fromDate(end),
       createdAt: Timestamp.now(),

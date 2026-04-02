@@ -4,6 +4,7 @@ import { ToastService } from '../../shared/toast.service';
 import { Router } from '@angular/router';
 import { FirestoreDocService } from '../../core/services/fire/firestore-doc.service';
 import { UserModel } from '../../models/fire/user.model';
+import { DEF_AVATAR_ID } from '../../core/constants/app.constants';
 
 @Component({
   selector: 'register',
@@ -41,8 +42,18 @@ export class Register {
         joinedAt: Date.now(),
         role: 'student',
         age: 26,
+        avatarId: DEF_AVATAR_ID,
         photoUrl: null,
         phone: '9876543210',
+        enrolledClassIds: [],
+        totalPoints: {
+          identifier: 'initial',
+          points: 0,
+        },
+        points: {
+          identifier: 'initial',
+          points: 0,
+        },
         abilities: ['mentoring', 'problem-solving'],
         skills: ['Angular', 'TypeScript', 'Firebase'],
         expList: ['CBSE Coaching', 'Online Tutoring'],

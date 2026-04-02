@@ -11,8 +11,21 @@ import { CommonModule } from '@angular/common';
 import { BatchQueryService } from '../../../services/class/batch-query/batch-query.service';
 import { BatchDoc } from '../../../models/batch/batch-doc.model';
 import { SyllabusLookupService } from '../../../services/syllabus/syllabus-lookup.service';
-import { Chapter } from '../../../models/syllabus/class-syllabus.model';
-import { combineLatest, map, of, shareReplay, switchMap, tap } from 'rxjs';
+import { Chapter, ClassSyllabus } from '../../../models/syllabus/class-syllabus.model';
+import {
+  combineLatest,
+  distinctUntilChanged,
+  filter,
+  map,
+  of,
+  shareReplay,
+  Subject,
+  switchMap,
+  tap,
+} from 'rxjs';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { LearningViewState } from '../../state/learning-view-state';
+import { CourseSidebarComponent } from '../course-sidebar.component/course-sidebar.component';
 
 interface DashBoard {
   total: number;
@@ -26,22 +39,42 @@ interface DashBoard {
 @Component({
   selector: 'class-overview',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CourseSidebarComponent],
   templateUrl: './class-overview.component.html',
   styleUrls: ['./class-overview.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClassOverviewComponent implements OnInit {
-  @Input({ required: true }) classId!: string;
+  private classId$ = new Subject<string>();
+
+  @Input({ required: true })
+  set classId(value: string) {
+    this.classId$.next(value);
+  }
 
   batchQueryApi = inject(BatchQueryService);
   syllLookUpApi = inject(SyllabusLookupService);
+  readonly viewState = inject(LearningViewState);
 
   readonly dashboard = signal<DashBoard | null>(null);
   selectedBatchId = signal<string | null>(null);
   private syllabusSignal = signal<any[]>([]);
   selectedType = signal<'live' | 'upcoming' | 'enrollmentOpen'>('live');
+  private service = inject(SyllabusLookupService);
 
+  readonly syllabus = toSignal<ClassSyllabus | null>(
+    this.classId$.pipe(
+      filter(Boolean),
+      distinctUntilChanged(),
+      switchMap((id) => {
+        console.log('🚀 API CALL:', id);
+        return this.service.loadClass(id);
+      }),
+    ),
+    { initialValue: null },
+  );
+  private syllabus$ = toObservable(this.syllabus);
+  
   selectedBatch = computed(() => {
     const db = this.dashboard();
     if (!db || !this.selectedBatchId()) return null;
@@ -108,9 +141,20 @@ export class ClassOverviewComponent implements OnInit {
     });
   });
 
+  constructor() {
+  this.syllabus$
+    .pipe(
+      filter((data): data is ClassSyllabus => !!data),
+      tap((data) => this.viewState.setSyllabus(data)),
+      takeUntilDestroyed()
+    )
+    .subscribe();
+}
+
   ngOnInit(): void {
     this.loadBatchStore();
     this.loadSyllabus();
+    //this.loadClassView();
   }
 
   onSelectBatch(b: BatchDoc) {
@@ -124,6 +168,16 @@ export class ClassOverviewComponent implements OnInit {
 
       if (first) this.selectedBatchId.set(first.id);
     });
+  }
+
+  private loadClassView(): void {
+    toObservable(this.syllabus)
+      .pipe(
+        filter((data): data is ClassSyllabus => !!data),
+        tap((data) => this.viewState.setSyllabus(data)),
+        takeUntilDestroyed(),
+      )
+      .subscribe();
   }
 
   private loadSyllabus(): void {

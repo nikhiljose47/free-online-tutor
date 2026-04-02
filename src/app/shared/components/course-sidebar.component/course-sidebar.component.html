@@ -1,0 +1,39 @@
+<div class="cp-sidebar p-3">
+  <!-- SUBJECT SWITCH -->
+  <div class="cp-subjects d-flex flex-wrap gap-2 mb-3">
+    <div
+      class="cp-sub-chip"
+      *ngFor="let s of subjects()"
+      [class.active]="selectedSubject() === s.code"
+      (click)="selectSubject.emit(s.code)"
+    >
+      {{ s.name }}
+    </div>
+  </div>
+
+  <!-- CHAPTER LIST -->
+  <div class="cp-chapter-list">
+    <div *ngIf="!chapters().length" class="cp-empty">No chapters available</div>
+
+    <div
+      class="cp-chapter-card"
+      *ngFor="let c of chapters(); trackBy: trackByCode"    
+      [class.active]="selectedChapter()?.code === c.code"
+      (click)="selectChapter.emit(c)"
+    >
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="cp-ch-left">
+          <div class="cp-ch-title">
+            {{ c.name }}
+          </div>
+
+          <div class="cp-ch-meta">{{ c.division_count }} divisions</div>
+        </div>
+
+        <div class="cp-ch-badge">
+          {{ getDifficulty(c) }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

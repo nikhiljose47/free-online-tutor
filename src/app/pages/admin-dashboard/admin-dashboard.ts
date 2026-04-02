@@ -1,8 +1,9 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-admin-dashboard',
-  imports: [],
+  selector: 'admin-dashboard',
+  imports: [CommonModule],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.scss',
 })

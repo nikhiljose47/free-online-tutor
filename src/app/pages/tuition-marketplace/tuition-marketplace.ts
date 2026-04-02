@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   signal
 } from '@angular/core';
@@ -36,32 +35,34 @@ export class TuitionMarketplace {
 private router = inject(Router)
 private route = inject(ActivatedRoute);
 
-  private readonly _ads = signal<TuitionAd[]>([
-    {
-      id: '1',
-      centerName: 'Bright Future Academy',
-      description: 'NEET & JEE focused coaching with structured mentorship.',
-      city: 'Bangalore',
-      mode: 'offline',
-      subjects: ['Physics', 'Chemistry', 'Biology'],
-      rating: 4.7,
-      reviewCount: 124,
-      isPremium: true,
-      slug: 'bright-future-academy'
-    },
-    {
-      id: '2',
-      centerName: 'Maths Master Hub',
-      description: 'Advanced mathematics training.',
-      city: 'Hyderabad',
-      mode: 'online',
-      subjects: ['Mathematics'],
-      rating: 4.5,
-      reviewCount: 89,
-      isPremium: false,
-      slug: 'maths-master-hub'
-    }
-  ]);
+  private readonly _ads = signal<TuitionAd[]>([]);
+  
+  // signal<TuitionAd[]>([
+  //   {
+  //     id: '1',
+  //     centerName: 'Bright Future Academy',
+  //     description: 'NEET & JEE focused coaching with structured mentorship.',
+  //     city: 'Bangalore',
+  //     mode: 'offline',
+  //     subjects: ['Physics', 'Chemistry', 'Biology'],
+  //     rating: 4.7,
+  //     reviewCount: 124,
+  //     isPremium: true,
+  //     slug: 'bright-future-academy'
+  //   },
+  //   {
+  //     id: '2',
+  //     centerName: 'Maths Master Hub',
+  //     description: 'Advanced mathematics training.',
+  //     city: 'Hyderabad',
+  //     mode: 'online',
+  //     subjects: ['Mathematics'],
+  //     rating: 4.5,
+  //     reviewCount: 89,
+  //     isPremium: false,
+  //     slug: 'maths-master-hub'
+  //   }
+  // ]);
 
   readonly cities = computed(() =>
     [...new Set(this._ads().map(a => a.city.toLowerCase()))]

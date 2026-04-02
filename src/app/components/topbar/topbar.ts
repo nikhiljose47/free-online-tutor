@@ -17,6 +17,8 @@ import { Auth2Service } from '../../core/services/fire/auth2.service';
 import { ToastService } from '../../shared/toast.service';
 import { SearchService } from '../../services/search.service';
 import { UserProfileService } from '../../core/services/fire/user-profile.service';
+import { ConfirmService } from '../../services/common/confirm.service';
+import { CommonUtil } from '../../shared/utils/common.util';
 
 @Component({
   selector: 'topbar',
@@ -37,8 +39,9 @@ export class Topbar {
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
   private readonly profileApi = inject(UserProfileService);
-
+  private readonly confirm = inject(ConfirmService);
   /** Public (template access) */
+  CommonUtil = CommonUtil;
   readonly ss = inject(SearchService);
 
   /* ===============================
@@ -69,8 +72,7 @@ export class Topbar {
     });
   }
 
-  
-    /* ===============================
+  /* ===============================
      PROFF MENU
   =============================== */
   toggleProff() {
@@ -84,7 +86,6 @@ export class Topbar {
   closeProff() {
     this.proffOpen.set(false);
   }
-
 
   /* ===============================
      PROFILE MENU
@@ -106,7 +107,7 @@ export class Topbar {
   =============================== */
   toggleOther() {
     this.otherOpen.update((v) => !v);
-    this.closeMenu()
+    this.closeMenu();
     this.closeLearn();
     this.closeProff();
   }
@@ -161,7 +162,16 @@ export class Topbar {
   /* ===============================
      AUTH
   =============================== */
-  logout() {
+  async logout() {
+    const ok = await this.confirm.open({
+      title: 'Are you sure you want to logout?',
+      message: '',
+      confirmText: 'Logout',
+      cancelText: 'Cancel',
+    });
+
+    if (!ok) return;
+
     this.auth.logout();
     this.toast.show('Logged out');
     this.router.navigateByUrl('/');

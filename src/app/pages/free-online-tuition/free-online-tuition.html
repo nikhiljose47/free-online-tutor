@@ -2,27 +2,36 @@
   <section class="landing">
     <div class="landing-inner">
       <!-- LEFT SIDE : BRAND / HERO -->
-      <div class="landing-left">
-        <div class="hero-text">
-          <h1 class="hero-title">
-            Learning that builds
-            <br />
-            real understanding
-          </h1>
+      <div class="landing-left" [class.full]="profile()">
+        <!-- LOGGED IN -->
+        <ng-container *ngIf="profile(); else loggedOut">
+          <div class="full-wrap">
+            <my-learning></my-learning>
+          </div>
+        </ng-container>
 
-          <p class="hero-description">
-            Join thousands of students exploring guided lessons, solving practice problems, and
-            progressing through structured learning paths designed for clarity.
-          </p>
-        </div>
+        <!-- LOGGED OUT -->
+        <ng-template #loggedOut>
+          <div class="hero-text">
+            <h1 class="hero-title">
+              Learning that builds
+              <br />
+              real understanding
+            </h1>
 
-        <div class="hero-image">
-          <img src="assets/svg/student-learning.svg" alt="Students learning" />
-        </div>
+            <p class="hero-description">
+              Join thousands of students exploring guided lessons, solving practice problems, and
+              progressing through structured learning paths designed for clarity.
+            </p>
+          </div>
 
-        <!-- decorative shapes similar to Khan Academy -->
-        <div class="hero-shape hero-shape-1"></div>
-        <div class="hero-shape hero-shape-2"></div>
+          <div class="hero-image">
+            <img src="assets/svg/student-learning.svg" alt="Students learning" />
+          </div>
+
+          <div class="hero-shape hero-shape-1"></div>
+          <div class="hero-shape hero-shape-2"></div>
+        </ng-template>
       </div>
 
       <!-- RIGHT SIDE : LOGIN / SIGNUP PANEL -->
@@ -43,7 +52,7 @@
         <!-- <login-dummy></login-dummy> -->
       </div>
       <ng-template #loggedIn>
-        <student-leaderboard-widget />
+        <!-- <student-leaderboard-widget /> -->
       </ng-template>
     </div>
   </section>
@@ -66,7 +75,7 @@
 
       <h3 class="banner-subtitle">
         <span class="highlight">6+ primary features</span> for effective and consistent student
-        progress
+        progress.
       </h3>
       <ol class="banner-points">
         <li class="point">
@@ -110,6 +119,13 @@
             students.
           </div>
         </li>
+        <li class="point">
+          <div class="point-title">Disciplined learning approach</div>
+          <div class="banner-desc">
+            We maintain a structured and disciplined learning environment with regular practice,
+            accountability, and performance tracking to ensure consistent academic progress.
+          </div>
+        </li>
       </ol>
     </div>
   </section>
@@ -125,7 +141,7 @@
         </p>
         <a
           class="banner-cta"
-          href="https://mail.google.com/mail/?view=cm&fs=1&to=feedback@yourdomain.com&su=Platform%20Feedback"
+          href="https://mail.google.com/mail/?view=cm&fs=1&to=sunbay-technologies@zohomail.in&su=Scholo%20feedback"
           target="_blank"
         >
           Share Feedback

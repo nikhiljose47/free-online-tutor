@@ -1,9 +1,11 @@
 $head-color: #cdf5ec;
-
+$test-color: #f5faf8;
 
 #tab-content-view {
   scroll-margin-top: 2rem;
 }
+
+
 
 /* =====================================================
    PAGE LAYOUT
@@ -13,14 +15,14 @@ $head-color: #cdf5ec;
   min-height: 100%;
   padding: 0;
   margin: 0 4%;
-  background: #ffffff;
+  // background: #ffffff;
 }
 /* =====================================================
    HEADER
 ===================================================== */
 
 .class-header {
-  background: $head-color;
+  background: $test-color;
   padding: 0.7rem 1rem 0 1rem;
 }
 .class-header h1 {
@@ -231,6 +233,37 @@ $head-color: #cdf5ec;
   opacity: 0.8;
 }
 
+
+.class-title {
+  margin: 0;
+  padding: 14px 0px;
+
+  font-weight: 600;
+  font-size: clamp(1.4rem, 2.2vw, 1.8rem); /* responsive scaling */
+  line-height: 1.2;
+
+  color: #0f172a;
+  letter-spacing: -0.3px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cp-sub {
+  font-size: 12px;
+  color: #6b7280;
+  padding: 0px 6px;
+}
+
+.cp-chip {
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #eef2ff;
+  color: #4338ca;
+}
+
 /* =====================================================
    STICKY NAV
 ===================================================== */
@@ -241,13 +274,13 @@ $head-color: #cdf5ec;
   z-index: 10;
 
   margin: 0 0;
-  background: $head-color;
-  color: $head-color;
+ // background: $test-color;
+  // color: $head-color;
 
- // border-radius: 0 0 10px 10px;
+  // border-radius: 0 0 10px 10px;
   //border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-
-  backdrop-filter: blur(8px);
+//  border-bottom: 0.1px solid #e6ebf2;
+  //backdrop-filter: blur(8px);
 }
 
 .nav-list {

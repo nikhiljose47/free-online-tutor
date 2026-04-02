@@ -1,6 +1,6 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ContentPlaceholder } from '../../components/content-placeholder/content-placeholder';
 import { Timetable } from '../../components/timetable/timetable';
 
@@ -41,6 +41,8 @@ export class TutionDetails implements OnInit {
   readonly activeTab = signal<'overview' | 'roadmap' | 'upcoming' | 'exam' | 'teachers' | 'jam'>(
     'overview',
   );
+
+  private platformId = inject(PLATFORM_ID);
 
   /* ================= DATA ================= */
   syllabus = signal<ClassSyllabus | null>(null);
@@ -114,7 +116,7 @@ export class TutionDetails implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
-    console.log('classid', this.id)
+    console.log('classid', this.id);
     this.quote.set(QuoteUtil.getRandom());
     this.classAssignmentsService.getAll('CL06').subscribe({
       next: (value) => console.log('Received for subservive:', value),
@@ -169,7 +171,9 @@ export class TutionDetails implements OnInit {
 
   /* ================= ACTIONS ================= */
   openClass(item: { meeting: Meeting }): void {
-    window.open(item.meeting.meetLink, '_blank');
+    if (isPlatformBrowser(this.platformId)) {
+      window.open(item.meeting.meetLink, '_blank');
+    }
   }
 
   markInterested(item: { meeting: Meeting }): void {

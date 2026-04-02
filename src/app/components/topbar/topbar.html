@@ -1,177 +1,114 @@
 <header class="topbar">
   <nav class="topbar-inner" aria-label="Main navigation">
     <!-- BRAND -->
-    <a class="brand-area" routerLink="/" aria-label="Free Tutor Home">
-      <img
-        src="favicon.ico"
-        class="app-logo"
-        alt="FreeTutor logo"
-        width="32"
-        height="33"
-        decoding="async"
-      />
-      <span class="brand-text">FreeTutor</span>
+    <a class="brand-area" routerLink="/" aria-label="Scholo Learning Home">
+      <img src="favicon.ico" class="app-logo" alt="Scholo Learning" />
+      <span class="brand-text d-none d-sm-inline">Scholo</span>
     </a>
 
-    <!-- SEARCH -->
-    <div class="search-area d-none d-md-flex" (click)="$event.stopPropagation()">
-      <label for="searchInput" class="visually-hidden">Search classes</label>
-
+    <!-- SEARCH (desktop only) -->
+    <div class="search-area d-none d-lg-flex" (click)="$event.stopPropagation()">
       <input
         #myInput
-        id="searchInput"
         type="text"
         class="search-input"
-        placeholder="Search classes, topics, exams..."
+        placeholder="Search..."
         (focus)="ss.open.set(true)"
         (input)="onSearchInput($any($event.target).value)"
       />
 
-      <button class="search-btn" type="button" aria-label="Search" (click)="ss.open.set(true)">
+      <button class="search-btn" type="button" (click)="ss.open.set(true)">
         <i class="bi bi-search"></i>
       </button>
 
-      <ul *ngIf="ss.open() && ss.results().length" class="search-results" role="listbox">
-        <li *ngFor="let item of ss.results()" role="option" (mousedown)="ss.navigate(item.route)">
+      <ul *ngIf="ss.open() && ss.results().length" class="search-results">
+        <li *ngFor="let item of ss.results()" (mousedown)="ss.navigate(item.route)">
           {{ item.label }}
         </li>
       </ul>
     </div>
 
     <!-- ACTIONS -->
-
     <div class="actions">
+      <!-- MOBILE SEARCH ICON -->
+      <button class="topbar-link d-lg-none" (click)="ss.open.set(true)">
+        <i class="bi bi-search"></i>
+      </button>
+
+      <!-- STUDENT -->
       <ng-container *ngIf="profile()?.role === 'student'">
         <div class="learn-dropdown" (click)="$event.stopPropagation()">
           <span class="topbar-link" [class.active]="learnOpen()" (click)="toggleLearn()">
-            Student<i
-              class="bi"
-              [ngClass]="learnOpen() ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"
-              style="font-size: 8px; margin-left: 3px"
-            ></i>
+            Learn <i class="bi bi-caret-down-fill small"></i>
           </span>
 
           <div class="learn-menu" *ngIf="learnOpen()">
-            <a
-              routerLink="/report-card"
-              routerLinkActive="active"
-              class="menu-item"
-              (click)="closeLearn()"
+            <a routerLink="/report-card" class="menu-item" (click)="closeLearn()">Report</a>
+            <a routerLink="/student-creations" class="menu-item" (click)="closeLearn()"
+              >Creations</a
             >
-              Report Card
-            </a>
-
-            <a
-              routerLink="/student-creations"
-              routerLinkActive="active"
-              class="menu-item"
-              (click)="closeLearn()"
-            >
-              Student Creations
-            </a>
           </div>
         </div>
       </ng-container>
 
-      <!-- NOT LOGGED -->
-      <ng-container *ngIf="!profile()">
-        <a class="topbar-link" routerLink="/login" routerLinkActive="active">Login</a>
-
-        <!-- <button class="login-btn" routerLink="/login">Login</button> -->
-        <!-- <button class="signup-btn" routerLink="/register">Sign Up</button> -->
-      </ng-container>
-
-      <!-- TEACHER LOGGED -->
+      <!-- TEACHER -->
       <ng-container *ngIf="profile()?.role === 'teacher'">
         <div class="learn-dropdown" (click)="$event.stopPropagation()">
           <span class="topbar-link" [class.active]="proffOpen()" (click)="toggleProff()">
-            Professor<i
-              class="bi"
-              [ngClass]="proffOpen() ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"
-              style="font-size: 8px; margin-left: 3px"
-            ></i>
+            Studio <i class="bi bi-caret-down-fill small"></i>
           </span>
 
           <div class="learn-menu" *ngIf="proffOpen()">
-            <a routerLink="/schedule" routerLinkActive="active" class="menu-item"> Schedule </a>
-
-            <a routerLink="/chapter-browser" routerLinkActive="active" class="menu-item">
-              Browse
-            </a>
-
-            <a routerLink="/teacher-workspace" routerLinkActive="active" class="menu-item">
-              Dashboard
-            </a>
+            <a routerLink="/schedule" class="menu-item">Schedule</a>
+            <a routerLink="/chapter-browser" class="menu-item">Browse</a>
+            <a routerLink="/teacher-workspace" class="menu-item">Dashboard</a>
           </div>
         </div>
       </ng-container>
 
-      <!-- Join us -->
-      <div class="learn-dropdown" (click)="$event.stopPropagation()">
+      <!-- JOIN -->
+      <div class="learn-dropdown d-none d-md-flex" (click)="$event.stopPropagation()">
         <span class="topbar-link" [class.active]="otherOpen()" (click)="toggleOther()">
-          Join us<i
-            class="bi"
-            [ngClass]="otherOpen() ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"
-            style="font-size: 8px; margin-left: 3px"
-          ></i>
+          Explore <i class="bi bi-caret-down-fill small"></i>
         </span>
+
         <div class="learn-menu" *ngIf="otherOpen()">
-          <a
-            routerLink="/free-online-tuition"
-            routerLinkActive="active"
-            class="menu-item"
-            (click)="closeOther()"
-          >
-            Test
-          </a>
-
-          <a routerLink="/about" routerLinkActive="active" class="menu-item" (click)="closeOther()">
-            Connect
-          </a>
-
-          <a
-            routerLink="/tuition-centers"
-            routerLinkActive="active"
-            class="menu-item"
-            (click)="closeOther()"
-          >
-            Offline Centers
-          </a>
-
-          <a
-            routerLink="/career"
-            routerLinkActive="active"
-            class="menu-item"
-            (click)="closeOther()"
-          >
-            Join as Tutor
-          </a>
+          <a routerLink="/about" class="menu-item" (click)="closeOther()">About</a>
+          <a routerLink="/tuition-centers" class="menu-item" (click)="closeOther()">Centers</a>
+          <a routerLink="/career" class="menu-item" (click)="closeOther()">Teach</a>
         </div>
       </div>
+
       <!-- TEACHERS -->
-      <a class="topbar-link" routerLink="/teachers" routerLinkActive="active">Teachers</a>
-      <!-- PROFILE MENU -->
-      <div class="mx-1" *ngIf="profile()">
-        <i
-          class="bi bi-person-circle profile-icon"
-          (click)="toggleMenu(); $event.stopPropagation()"
-        ></i>
+      <a class="topbar-link d-none d-md-inline" routerLink="/teachers">Mentors</a>
 
-        <div class="profile-menu" *ngIf="menuOpen()" role="menu">
-          <a routerLink="/profile" class="menu-item" role="menuitem" (click)="closeMenu()">
-            My Profile
-          </a>
+      <!-- AUTH -->
+      <ng-container *ngIf="!profile()">
+        <a class="topbar-link" routerLink="/login">Login</a>
+      </ng-container>
 
-          <button class="menu-item logout-btn" role="menuitem" (click)="logout(); closeMenu()">
-            Logout
-          </button>
+      <!-- PROFILE + POINTS -->
+      <div class="profile-wrap" *ngIf="profile()">
+        <!-- POINTS (game style) -->
+        <div class="points-badge">
+          <i class="bi bi-lightning-fill"></i>
+          <span>{{ profile()?.points?.points || 0 }}</span>
         </div>
 
-        <div
-          *ngIf="menuOpen()"
-          class="menu-overlay"
-          (click)="closeMenu(); $event.stopPropagation()"
-        ></div>
+        <!-- AVATAR -->
+        <img
+          [src]="CommonUtil.getAvatarUrl(profile()?.avatarId || null)"
+          class="profile-icon"
+          (click)="toggleMenu(); $event.stopPropagation()"
+        />
+
+        <!-- MENU -->
+        <div class="learn-menu" *ngIf="menuOpen()">
+          <a routerLink="/profile" class="menu-item" (click)="closeMenu()">Profile</a>
+          <button class="menu-item logout-btn" (click)="logout(); closeMenu()">Logout</button>
+        </div>
+
+        <div *ngIf="menuOpen()" class="menu-overlay" (click)="closeMenu()"></div>
       </div>
     </div>
   </nav>

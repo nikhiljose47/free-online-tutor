@@ -3,7 +3,7 @@ import { TEACHER_JOB_FORM_URL } from '../../core/constants/app.constants';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-online-teacher-jobs',
+  selector: 'online-teacher-jobs',
   imports: [CommonModule],
   templateUrl: './online-teacher-jobs.html',
   styleUrl: './online-teacher-jobs.scss',

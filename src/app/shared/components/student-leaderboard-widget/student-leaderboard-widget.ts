@@ -46,6 +46,7 @@ export class StudentLeaderboardWidget {
   //Replace dummy data later:
 
   ngOnInit() {
+    this.leaderboard.set([]);
     // this.leaderboard.set(this.leaderboardService.students());
     this.announceApi.getAll().subscribe((data) => {
       this.announcements.set(data);

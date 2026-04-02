@@ -1,39 +1,85 @@
-<div class="container mt-4">
-  <h1>About</h1>
-  <section></section>
-  <h3 class="fw-bold mb-3">AI Empowered Tutoring</h3>
-  <p class="text-muted mb-4">Smart features for schools, academies, and B2B partners.</p>
+<div class="about-shell container py-5">
 
-  <div class="row">
-    <div class="col-md-4 mb-3" *ngFor="let f of features">
-      <div class="card h-100 shadow-sm">
-        <div class="card-body">
-          <h5 class="fw-bold">{{ f.title }}</h5>
-          <p>{{ f.description }}</p>
+  <!-- HERO -->
+  <section class="about-hero text-center mb-5">
+    <h1 class="hero-title mb-3">Building the Future of Learning</h1>
+    <p class="hero-sub text-muted mx-auto">
+      Sunbay is an AI-powered tutoring ecosystem helping students, educators,
+      and institutions scale learning outcomes efficiently.
+    </p>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <section class="trust-strip d-flex flex-wrap justify-content-center gap-3 mb-5">
+    <div class="trust-item">AI Driven</div>
+    <div class="trust-item">Scalable Platform</div>
+    <div class="trust-item">B2B + B2C Ready</div>
+    <div class="trust-item">India Focused</div>
+  </section>
+
+  <!-- CORE VALUE -->
+  <section class="row align-items-center mb-5">
+    <div class="col-md-6 mb-4 mb-md-0">
+      <h3 class="fw-bold mb-3">AI Empowered Tutoring</h3>
+      <p class="text-muted">
+        Smart automation, adaptive learning, and real-time insights designed
+        for modern classrooms and independent learners.
+      </p>
+      <ul class="value-points mt-3">
+        <li>Personalized student journeys</li>
+        <li>Teacher productivity tools</li>
+        <li>Low-cost scalable infrastructure</li>
+      </ul>
+    </div>
+
+    <div class="col-md-6">
+      <div class="visual-card"></div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="mb-5">
+    <h4 class="fw-bold mb-4 text-center">Platform Capabilities</h4>
+
+    <div class="row">
+      <div class="col-md-4 mb-3" *ngFor="let f of features">
+        <div class="feature-card h-100">
+          <div class="feature-body">
+            <h5 class="fw-bold">{{ f.title }}</h5>
+            <p class="text-muted small">{{ f.description }}</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="mt-4 p-3 bg-light rounded text-center border">
-    <h5 class="fw-bold">Partner With Us</h5>
-    <p class="mb-2">Upgrade your coaching centre or school using our AI tools.</p>
-    <button class="btn btn-primary px-4">Contact Sales</button>
-  </div>
-</div>
-<div class="quote-wrapper my-5">
-  <div class="quote-card mx-auto text-center">
-    <p class="quote-text mb-3">
-      “{{ quote.text }}”
+  <!-- INVESTOR / PARTNER CTA -->
+  <section class="cta-section text-center py-5 mb-5">
+    <h4 class="fw-bold mb-3">Partner With Sunbay</h4>
+    <p class="text-muted mb-4">
+      Empower your institution with AI-led tutoring infrastructure and scalable learning systems.
     </p>
 
-    <small
-      *ngIf="quote.author"
-      class="quote-author d-block"
-    >
-      — {{ quote.author }}
-    </small>
-  </div>
-</div>
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+      <button class="btn btn-dark px-4">Contact Sales</button>
+      <button class="btn btn-outline-dark px-4">Request Demo</button>
+    </div>
+  </section>
 
-<testimonials></testimonials>
+  <!-- QUOTE -->
+  <div class="quote-wrapper my-5">
+    <div class="quote-card mx-auto text-center">
+      <p class="quote-text mb-3">
+        “{{ quote.text }}”
+      </p>
+
+      <small *ngIf="quote.author" class="quote-author d-block">
+        — {{ quote.author }}
+      </small>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <testimonials></testimonials>
+
+</div>

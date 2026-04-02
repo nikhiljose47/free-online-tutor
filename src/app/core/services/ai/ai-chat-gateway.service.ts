@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, retry, shareReplay, catchError, finalize } from 'rxjs/operators';
 import { AiGatewayRequest, AiModelType } from '../../../models/ai-chat/ai-chat.model';
 import { environment } from '../../../environments/environment.prod';
@@ -16,7 +16,6 @@ export class AiChatGatewayService {
   private cache = new Map<string, string>();
 
   readonly loading = signal(false);
-
   private resolveModel(type?: AiModelType, priority?: 'low' | 'medium' | 'high') {
     const models = environment.aiModels;
 
@@ -57,7 +56,6 @@ export class AiChatGatewayService {
         headers: {
           Authorization: `Bearer ${environment.openrouter.apiKey}`,
           'Content-Type': 'application/json',
-          'HTTP-Referer': window.location.origin,
           'X-Title': 'AI Tutor',
         },
       })

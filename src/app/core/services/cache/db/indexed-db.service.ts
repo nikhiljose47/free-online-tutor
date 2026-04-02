@@ -1,158 +1,158 @@
-import { isPlatformBrowser } from '@angular/common';
-import { Inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
-import { INDEXED_DB_NAME } from '../../../constants/app.constants';
+  import { isPlatformBrowser } from '@angular/common';
+  import { Inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+  import { INDEXED_DB_NAME } from '../../../constants/app.constants';
 
-export type DBStore =
-  | 'syllabus_by_class'
-  | 'syllabus_index'
-  | 'session_timelines'
-  | 'puzzle_sessions';
+  export type DBStore =
+    | 'syllabus_by_class'
+    | 'syllabus_index'
+    | 'session_timelines'
+    | 'puzzle_sessions';
 
-export interface DBConfig {
-  dbName: string;
-  version: number;
-}
-
-@Injectable({ providedIn: 'root' })
-export class IndexedDbService {
-  private readonly config: DBConfig = {
-    dbName: INDEXED_DB_NAME,
-    version: 1,
-  };
-
-  private isBrowser: boolean;
-  private db!: IDBDatabase;
-
-  /** 🔥 REAL readiness gate */
-  private ready!: Promise<void>;
-
-  /** optional signal (UI/debug only) */
-  dbReady = signal<boolean>(false);
-
-  constructor(@Inject(PLATFORM_ID) platformId: Object) {
-    this.isBrowser = isPlatformBrowser(platformId);
-
-    if (this.isBrowser) {
-      this.init();
-    } else {
-      // SSR: resolve immediately (no-op DB)
-      this.ready = Promise.resolve();
-    }
+  export interface DBConfig {
+    dbName: string;
+    version: number;
   }
 
-  /* ---------- INIT ---------- */
-  private init(): void {
-    this.ready = new Promise((resolve, reject) => {
-      const req = window.indexedDB.open(this.config.dbName, this.config.version);
+  @Injectable({ providedIn: 'root' })
+  export class IndexedDbService {
+    private readonly config: DBConfig = {
+      dbName: INDEXED_DB_NAME,
+      version: 1,
+    };
 
-      req.onupgradeneeded = () => {
-        const db = req.result;
+    private isBrowser: boolean;
+    private db!: IDBDatabase;
 
-        if (!db.objectStoreNames.contains('syllabus_by_class')) {
-          db.createObjectStore('syllabus_by_class', { keyPath: 'id' });
-        }
+    /** 🔥 REAL readiness gate */
+    private ready!: Promise<void>;
 
-        if (!db.objectStoreNames.contains('syllabus_index')) {
-          db.createObjectStore('syllabus_index', { keyPath: 'id' });
-        }
+    /** optional signal (UI/debug only) */
+    dbReady = signal<boolean>(false);
 
-        if (!db.objectStoreNames.contains('session_timelines')) {
-          db.createObjectStore('session_timelines', { keyPath: 'id' });
-        }
-        if (!db.objectStoreNames.contains('puzzle_sessions')) {
-          db.createObjectStore('puzzle_sessions', { keyPath: 'id' });
-        }
-      };
+    constructor(@Inject(PLATFORM_ID) platformId: Object) {
+      this.isBrowser = isPlatformBrowser(platformId);
 
-      req.onsuccess = () => {
-        this.db = req.result;
-        this.db.onversionchange = () => this.db.close();
-        this.dbReady.set(true);
-        resolve();
-      };
-
-      req.onerror = () => {
-        console.error('IndexedDB init failed', req.error);
-        reject(req.error);
-      };
-    });
-  }
-
-  /* ---------- CORE TX (THE FIX) ---------- */
-  private async tx<T>(
-    store: DBStore,
-    mode: IDBTransactionMode,
-    cb: (s: IDBObjectStore) => IDBRequest<T>,
-  ): Promise<T> {
-    if (!this.isBrowser) {
-      return Promise.resolve(null as T);
-    }
-
-    await this.ready; // ✅ WAIT — NO MORE RACE
-
-    return new Promise((resolve, reject) => {
-      try {
-        const tx = this.db.transaction(store, mode);
-        const req = cb(tx.objectStore(store));
-
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => reject(req.error);
-        tx.onabort = () => reject(tx.error);
-      } catch (e) {
-        reject(e);
+      if (this.isBrowser) {
+        this.init();
+      } else {
+        // SSR: resolve immediately (no-op DB)
+        this.ready = Promise.resolve();
       }
-    });
-  }
+    }
 
-  /* ---------- CRUD ---------- */
+    /* ---------- INIT ---------- */
+    private init(): void {
+      this.ready = new Promise((resolve, reject) => {
+        const req = window.indexedDB.open(this.config.dbName, this.config.version);
 
-  set<T extends { id: string }>(store: DBStore, data: T): Promise<void> {
-    return this.tx(store, 'readwrite', (s) => s.put(data)).then(() => {});
-  }
+        req.onupgradeneeded = () => {
+          const db = req.result;
 
-  bulkSet<T extends { id: string }>(store: DBStore, list: T[]): Promise<void> {
-    if (!this.isBrowser) return Promise.resolve();
+          if (!db.objectStoreNames.contains('syllabus_by_class')) {
+            db.createObjectStore('syllabus_by_class', { keyPath: 'id' });
+          }
 
-    return this.ready.then(() => {
+          if (!db.objectStoreNames.contains('syllabus_index')) {
+            db.createObjectStore('syllabus_index', { keyPath: 'id' });
+          }
+
+          if (!db.objectStoreNames.contains('session_timelines')) {
+            db.createObjectStore('session_timelines', { keyPath: 'id' });
+          }
+          if (!db.objectStoreNames.contains('puzzle_sessions')) {
+            db.createObjectStore('puzzle_sessions', { keyPath: 'id' });
+          }
+        };
+
+        req.onsuccess = () => {
+          this.db = req.result;
+          this.db.onversionchange = () => this.db.close();
+          this.dbReady.set(true);
+          resolve();
+        };
+
+        req.onerror = () => {
+          console.error('IndexedDB init failed', req.error);
+          reject(req.error);
+        };
+      });
+    }
+
+    /* ---------- CORE TX (THE FIX) ---------- */
+    private async tx<T>(
+      store: DBStore,
+      mode: IDBTransactionMode,
+      cb: (s: IDBObjectStore) => IDBRequest<T>,
+    ): Promise<T> {
+      if (!this.isBrowser) {
+        return Promise.resolve(null as T);
+      }
+
+      await this.ready; // ✅ WAIT — NO MORE RACE
+
       return new Promise((resolve, reject) => {
-        const tx = this.db.transaction(store, 'readwrite');
-        const os = tx.objectStore(store);
-
         try {
-          list.forEach((item) => os.put(item));
-          tx.oncomplete = () => resolve();
-          tx.onerror = () => reject(tx.error);
+          const tx = this.db.transaction(store, mode);
+          const req = cb(tx.objectStore(store));
+
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
           tx.onabort = () => reject(tx.error);
         } catch (e) {
           reject(e);
         }
       });
-    });
-  }
+    }
 
-  get<T>(store: DBStore, id: string): Promise<T | null> {
-    return this.tx(store, 'readonly', (s) => s.get(id)).then((r) => r ?? null);
-  }
+    /* ---------- CRUD ---------- */
 
-  getAll<T>(store: DBStore): Promise<T[]> {
-    return this.tx(store, 'readonly', (s) => s.getAll());
-  }
+    set<T extends { id: string }>(store: DBStore, data: T): Promise<void> {
+      return this.tx(store, 'readwrite', (s) => s.put(data)).then(() => {});
+    }
 
-  delete(store: DBStore, id: string): Promise<void> {
-    return this.tx(store, 'readwrite', (s) => s.delete(id)).then(() => {});
-  }
+    bulkSet<T extends { id: string }>(store: DBStore, list: T[]): Promise<void> {
+      if (!this.isBrowser) return Promise.resolve();
 
-  clear(store: DBStore): Promise<void> {
-    return this.tx(store, 'readwrite', (s) => s.clear()).then(() => {});
-  }
+      return this.ready.then(() => {
+        return new Promise((resolve, reject) => {
+          const tx = this.db.transaction(store, 'readwrite');
+          const os = tx.objectStore(store);
 
-  /* ---------- RECOVERY ---------- */
-  async resetDB(): Promise<void> {
-    if (!this.isBrowser) return;
+          try {
+            list.forEach((item) => os.put(item));
+            tx.oncomplete = () => resolve();
+            tx.onerror = () => reject(tx.error);
+            tx.onabort = () => reject(tx.error);
+          } catch (e) {
+            reject(e);
+          }
+        });
+      });
+    }
 
-    await this.ready;
-    this.db.close();
-    indexedDB.deleteDatabase(this.config.dbName);
-    this.init();
+    get<T>(store: DBStore, id: string): Promise<T | null> {
+      return this.tx(store, 'readonly', (s) => s.get(id)).then((r) => r ?? null);
+    }
+
+    getAll<T>(store: DBStore): Promise<T[]> {
+      return this.tx(store, 'readonly', (s) => s.getAll());
+    }
+
+    delete(store: DBStore, id: string): Promise<void> {
+      return this.tx(store, 'readwrite', (s) => s.delete(id)).then(() => {});
+    }
+
+    clear(store: DBStore): Promise<void> {
+      return this.tx(store, 'readwrite', (s) => s.clear()).then(() => {});
+    }
+
+    /* ---------- RECOVERY ---------- */
+    async resetDB(): Promise<void> {
+      if (!this.isBrowser) return;
+
+      await this.ready;
+      this.db.close();
+      indexedDB.deleteDatabase(this.config.dbName);
+      this.init();
+    }
   }
-}

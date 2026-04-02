@@ -1,97 +1,113 @@
-<section class="class-overview">
-  <header class="overview-header container">
-    <h2 class="overview-title">Overview</h2>
-  </header>
-
-  <!-- BATCH SELECTOR -->
-  <section class="batch-strip container" *ngIf="dashboard() as db">
-    <div class="batch-list">
-      <!-- LIVE -->
-      <button
-        type="button"
-        class="batch-card"
-        *ngFor="let b of db.live"
-        [class.active]="selectedBatchId() === b.id"
-        (click)="onSelectBatch(b)"
-      >
-        <div class="batch-name">{{ b.label }}</div>
-
-        <div class="batch-meta">
-          <span>{{ b.startAt.toDate() | date: 'hh:mm a' }}</span>
-          <span class="status live">live</span>
+<section class="class-layout">
+  <!-- MAIN -->
+  <div class="class-main">
+    <section class="class-overview">
+      <!-- HEADER (fixed alignment issue) -->
+      <header class="overview-header">
+        <div class="header-left">
+          <h2 class="overview-title">Progress</h2>
         </div>
-      </button>
+      </header>
 
-      <!-- UPCOMING -->
-      <button
-        type="button"
-        class="batch-card"
-        *ngFor="let b of db.upcoming"
-        [class.active]="selectedBatchId() === b.id"
-        (click)="onSelectBatch(b)"
-      >
-        <div class="batch-name">{{ b.label }}</div>
+      <!-- BATCH STRIP -->
+      <section class="batch-strip" *ngIf="dashboard() as db">
+        <div class="batch-list">
+          <button
+            type="button"
+            class="batch-card"
+            *ngFor="let b of db.live"
+            [class.active]="selectedBatchId() === b.id"
+            (click)="onSelectBatch(b)"
+          >
+            <div class="batch-name">{{ b.label }}</div>
+            <div class="batch-meta">
+              <span>{{ b.startAt.toDate() | date: 'hh:mm a' }}</span>
+              <span class="status live">live</span>
+            </div>
+          </button>
 
-        <div class="batch-meta">
-          <span>{{ b.startAt.toDate() | date: 'hh:mm a' }}</span>
-          <span class="status upcoming">upcoming</span>
+          <button
+            type="button"
+            class="batch-card"
+            *ngFor="let b of db.upcoming"
+            [class.active]="selectedBatchId() === b.id"
+            (click)="onSelectBatch(b)"
+          >
+            <div class="batch-name">{{ b.label }}</div>
+            <div class="batch-meta">
+              <span>{{ b.startAt.toDate() | date: 'hh:mm a' }}</span>
+              <span class="status upcoming">upcoming</span>
+            </div>
+          </button>
         </div>
-      </button>
-    </div>
-  </section>
+      </section>
 
-  <!-- DETAILS -->
-  <section class="overview-body container" *ngIf="selectedBatch() as data">
-    <div class="overview-top">
-      <div class="enroll" [class.open]="data.isEnrollmentOpen">
-        {{ data.isEnrollmentOpen ? 'Enrollment Open' : 'Enrollment Closed' }}
-      </div>
+      <!-- BODY -->
+      <section class="overview-body" *ngIf="selectedBatch() as data">
+        <div class="overview-top">
+          <div class="enroll" [class.open]="data.isEnrollmentOpen">
+            {{ data.isEnrollmentOpen ? 'Enrollment Open' : 'Enrollment Closed' }}
+          </div>
 
-      <div class="stats">
-        <div class="stat">
-          <h3>{{ data.enrolledCount }}</h3>
-          <p>Students</p>
-        </div>
+          <div class="stats">
+            <div class="stat">
+              <h3>{{ data.enrolledCount }}</h3>
+              <p>Students</p>
+            </div>
 
-        <div class="stat">
-          <h3>{{ dashboard()?.total }}</h3>
-          <p>Batches</p>
-        </div>
+            <div class="stat">
+              <h3>{{ dashboard()?.total }}</h3>
+              <p>Batches</p>
+            </div>
 
-        <div class="stat">
-          <h3>{{ dashboard()?.upcomingCount }}</h3>
-          <p>Upcoming</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- SUBJECT PROGRESS -->
-    <section class="subjects">
-      <div class="subject" *ngFor="let s of mergedSubjectProgress()">
-        <div class="subject-head">
-          <h4>Subject : {{ s.subjectName }}</h4>
-
-          <div class="subject-meta">
-            <!-- Not Started -->
-            <span class="chip chip-not-started" *ngIf="s.status === 'not-started'">
-              Not Started
-            </span>
-
-            <!-- In Progress -->
-            <span class="chip chip-current" *ngIf="s.status === 'in-progress'">
-              {{ s.currentChapterName }}
-            </span>
-
-            <span class="progress-text">
-              {{ s.total ? s.currentIndex  : 0 }} / {{ s.total }} chapters completed
-            </span>
+            <div class="stat">
+              <h3>{{ dashboard()?.upcomingCount }}</h3>
+              <p>Upcoming</p>
+            </div>
           </div>
         </div>
 
-        <div class="progress-bar">
-          <div class="progress-fill" [style.width.%]="s.percent"></div>
-        </div>
-      </div>
+        <!-- SUBJECTS -->
+        <section class="subjects">
+          <div class="subject" *ngFor="let s of mergedSubjectProgress()">
+            <div class="subject-head">
+              <h4>{{ s.subjectName }}</h4>
+
+              <div class="subject-meta">
+                <span class="chip chip-not-started" *ngIf="s.status === 'not-started'">
+                  Not Started
+                </span>
+
+                <span class="chip chip-current" *ngIf="s.status === 'in-progress'">
+                  {{ s.currentChapterName }}
+                </span>
+
+                <span class="progress-text">
+                  {{ s.total ? s.currentIndex : 0 }} / {{ s.total }}
+                </span>
+              </div>
+            </div>
+
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="s.percent"></div>
+            </div>
+          </div>
+        </section>
+      </section>
     </section>
-  </section>
+  </div>
+
+  <!-- SIDEBAR (always right pinned) -->
+  <aside class="class-sidebar">
+    <div class="sidebar-inner">
+      <course-sidebar
+        [subjects]="viewState.state.subjects"
+        [chapters]="viewState.state.chapters"
+        [selectedSubject]="viewState.state.selectedSubject"
+        [selectedChapter]="viewState.state.selectedChapter"
+        (selectSubject)="viewState.selectSubject($event)"
+        (selectChapter)="viewState.selectChapter($event)"
+      ></course-sidebar>
+    </div>
+  </aside>
 </section>

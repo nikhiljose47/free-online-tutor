@@ -1,0 +1,49 @@
+<div class="card border-0 shadow-sm p-4">
+  <!-- HEADER -->
+  <div class="mb-3">
+    <h4 class="fw-semibold mb-1">Photo</h4>
+    <div class="text-muted small">Choose a profile avatar</div>
+  </div>
+
+  <!-- PREVIEW CENTER -->
+  <div class="d-flex flex-column align-items-center justify-content-center mb-4">
+    <div class="avatar-preview mb-2">
+      <img
+        *ngIf="selectedAvatar()"
+        [src]="getAvatarUrl(selectedAvatar()!)"
+        class="rounded-circle"
+        width="120"
+        height="120"
+      />
+
+      <div
+        *ngIf="!selectedAvatar()"
+        class="rounded-circle bg-light d-flex align-items-center justify-content-center"
+        style="width: 120px; height: 120px"
+      >
+        <span class="text-muted">No Avatar</span>
+      </div>
+    </div>
+
+    <div class="fw-medium">{{ profile()?.name || 'Student' }}</div>
+  </div>
+
+  <!-- AVATAR SELECTOR (BOTTOM) -->
+  <div class="avatar-grid-bottom">
+    <div
+      *ngFor="let a of avatars"
+      class="avatar-item small"
+      [class.active]="selectedAvatar() === a"
+      (click)="selectAvatar(a)"
+    >
+      <img [src]="getAvatarUrl(a)" />
+    </div>
+  </div>
+
+  <!-- ACTION -->
+  <div class="mt-4 d-flex justify-content-end">
+    <button class="btn btn-dark btn-sm" [disabled]="!selectedAvatar()" (click)="saveProfile()">
+      Save
+    </button>
+  </div>
+</div>

@@ -1,11 +1,46 @@
-    <div class="container mt-4">
-      <h3 class="fw-bold mb-3">Testimonials</h3>
+<div class="testimonials-shell container py-5">
 
-      <div class="card mb-2" *ngFor="let t of testimonials">
-        <div class="card-body">
-          <h6 class="fw-bold">{{ t.name }}</h6>
-          <p class="mb-1">{{ t.message }}</p>
-          <span class="text-warning">⭐ {{ t.rating }}</span>
+  <!-- HEADER -->
+  <div class="text-center mb-5">
+    <h3 class="fw-bold">What People Say</h3>
+    <p class="text-muted small">
+      Trusted by students, parents, and educators
+    </p>
+  </div>
+
+  <!-- GRID -->
+  <div class="row g-5">
+    <div class="col-md-4" *ngFor="let t of testimonials">
+      <div class="testimonial-card h-100">
+
+        <!-- TOP -->
+        <div class="d-flex align-items-center mb-3">
+          <div class="avatar">
+            {{ t.name[0] }}
+          </div>
+
+          <div class="ms-3">
+            <h6 class="mb-0 fw-bold">{{ t.name }}</h6>
+            <small class="text-muted">{{ t.role || 'Learner' }}</small>
+          </div>
         </div>
+
+        <!-- MESSAGE -->
+        <p class="testimonial-text">
+          “{{ t.message }}”
+        </p>
+
+        <!-- FOOT -->
+        <div class="d-flex justify-content-between align-items-center mt-auto pt-3">
+          <div class="stars">
+            <span *ngFor="let s of [].constructor(t.rating)">★</span>
+          </div>
+
+          <small class="text-muted">Verified</small>
+        </div>
+
       </div>
     </div>
+  </div>
+
+</div>

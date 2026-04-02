@@ -1,99 +1,79 @@
-<footer class="app-footer bg-dark text-light pt-5 pb-3 mt-auto border-top border-secondary-subtle">
-  <div class="container">
-    <div class="row g-4">
-      <div class="col-12 col-md-4">
-        <div class="d-flex align-items-center gap-2 mb-3">
+<footer class="app-footer">
+  <div class="footer-container">
+    <!-- TOP -->
+    <div class="footer-grid">
+      <!-- BRAND -->
+      <div class="footer-brand">
+        <div class="brand-row">
           <img
-            src="assets/logo/free-online-tutor-logo.webp"
-            alt="Free online Tutor Logo"
-            loading="lazy"
-            width="42"
-            height="42"
-            class="rounded-3 shadow-sm"
+            src="assets/logo/scholo-learning-logo.webp"
+            alt="Scholo Logo"
+            width="40"
+            height="40"
+            class="logo"
           />
-          <h5 class="fw-semibold mb-0">LearnFlow</h5>
+          <h5>Scholo</h5>
         </div>
-        <p class="small text-secondary mb-3">
-          Smart learning platform with structured syllabus, expert teachers, and smooth
-          offline-ready experience.
+
+        <p>
+          Structured learning platform with expert teachers, clear syllabus, and measurable student
+          progress for parents.
         </p>
-        <div class="d-flex gap-3 fs-5">
-          <a class="text-secondary footer-icon" href="#"><i class="bi bi-facebook"></i></a>
-          <a class="text-secondary footer-icon" href="#"><i class="bi bi-instagram"></i></a>
-          <a class="text-secondary footer-icon" href="#"><i class="bi bi-youtube"></i></a>
-          <a class="text-secondary footer-icon" href="#"><i class="bi bi-linkedin"></i></a>
-          <a class="text-secondary footer-icon" href="#"><i class="bi bi-twitter-x"></i></a>
+
+        <div class="socials">
+          <a href="#"><i class="bi bi-facebook"></i></a>
+          <a href="#"><i class="bi bi-instagram"></i></a>
+          <a href="#"><i class="bi bi-youtube"></i></a>
+          <a href="#"><i class="bi bi-linkedin"></i></a>
         </div>
       </div>
 
-      <div class="col-6 col-md-2">
-        <h6 class="fw-semibold mb-3">Company</h6>
-        <ul class="list-unstyled small d-grid gap-2">
-          <li><a class="footer-link" href="#">About</a></li>
-          <li><a class="footer-link" href="#">Careers</a></li>
-          <li><a class="footer-link" href="#">Press</a></li>
-          <li><a class="footer-link" href="#">Blog</a></li>
-        </ul>
+      <!-- COMPANY -->
+      <div>
+        <h6>Company</h6>
+        <a routerLink="/about">About</a>
+        <a routerLink="/career">Careers</a>
+        <a
+          href="https://medium.com/@sunbay-technologies/online-tuition-for-kids-a-smarter-way-to-learn-in-2026-e36830dcc7ea"
+          target="_blank"
+        >
+          Blog
+        </a>
       </div>
 
-      <div class="col-6 col-md-2">
-        <h6 class="fw-semibold mb-3">Learning</h6>
-        <ul class="list-unstyled small d-grid gap-2">
-          <li><a class="footer-link" href="#">Classes</a></li>
-          <li><a class="footer-link" href="#">Courses</a></li>
-          <li><a class="footer-link" href="#">Syllabus</a></li>
-          <li><a class="footer-link" href="#">Live Sessions</a></li>
-        </ul>
+      <!-- SUPPORT -->
+      <div>
+        <h6>Support</h6>
+        <a href="mailto:sunbay-technologies@zohomail.in">Help Center</a>
+        <a href="mailto:sunbay-technologies@zohomail.in">Contact Us</a>
       </div>
 
-      <div class="col-6 col-md-2">
-        <h6 class="fw-semibold mb-3">Support</h6>
-        <ul class="list-unstyled small d-grid gap-2">
-          <li><a class="footer-link" href="#">Help Center</a></li>
-          <li><a class="footer-link" href="#">Contact</a></li>
-          <li><a class="footer-link" href="#">Privacy</a></li>
-          <li><a class="footer-link" href="#">Terms</a></li>
-        </ul>
-      </div>
+      <!-- APP -->
+      <div class="app-section">
+        <h6>Get the App</h6>
 
-      <div class="col-12 col-md-2">
-        <h6 class="fw-semibold mb-3">Get App</h6>
-        <div class="d-grid gap-2">
-          <div>
-            <img
-              src="assets/logo/playstore-logo.png"
-              alt="Play Store"
-              height="25px"
-              width="25px"
-              class="img-fluid rounded-2"
-            /><span style="padding-left:5px;">Upcoming..</span>
+        <div class="app-badges">
+          <div class="badge disabled">
+            <img src="assets/logo/playstore-logo.png" />
+            <span>Coming Soon</span>
           </div>
-          <div>
-            <img
-              src="assets/logo/apple-store-logo.png"
-              alt="Apple Store"
-              height="25px"
-              width="25px"
-              class="img-fluid rounded-2"
-            /><span style="padding-left:5px;">Upcoming..</span>
+
+          <div class="badge disabled">
+            <img src="assets/logo/apple-store-logo.png" />
+            <span>Coming Soon</span>
           </div>
         </div>
       </div>
-      <small class="text-muted">
-        <a href="https://icons8.com" target="_blank" rel="nofollow"> Store icons by Icons8 </a>
-      </small>
     </div>
 
-    <hr class="border-secondary my-4" />
+    <!-- BOTTOM -->
+    <div class="footer-bottom">
+      <span>© 2026 Scholo. All rights reserved.</span>
 
-    <div
-      class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 small text-secondary"
-    >
-      <span>© 2026 LearnFlow. All rights reserved.</span>
-      <div class="d-flex gap-3">
-        <a class="footer-link" href="#">Accessibility</a>
-        <a class="footer-link" href="#">Security</a>
-        <a class="footer-link" href="#">Sitemap</a>
+      <div class="links">
+        <a href="#">Accessibility</a>
+        <a href="#">Security</a>
+        <a href="#">Sitemap</a>
       </div>
     </div>
   </div>

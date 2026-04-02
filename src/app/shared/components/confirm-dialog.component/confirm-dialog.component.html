@@ -1,0 +1,36 @@
+<div class="confirm-overlay" *ngIf="vm().open">
+
+  <div class="confirm-dialog">
+
+    <!-- HEADER -->
+    <div class="dialog-header">
+      <h4 class="dialog-title">{{ vm().title }}</h4>
+    </div>
+
+    <!-- BODY -->
+    <div class="dialog-body">
+      <p class="dialog-text">
+        {{ vm().message }}
+      </p>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="dialog-actions">
+      <button
+        class="btn btn-light cancel-btn"
+        (click)="onCancel()"
+      >
+        {{ vm().cancelText }}
+      </button>
+
+      <button
+        class="btn btn-dark confirm-btn"
+        (click)="onConfirm()"
+      >
+        {{ vm().confirmText }}
+      </button>
+    </div>
+
+  </div>
+
+</div>

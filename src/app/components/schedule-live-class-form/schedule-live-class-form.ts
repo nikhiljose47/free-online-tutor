@@ -22,7 +22,6 @@ import { ToastService } from '../../shared/toast.service';
 
 
 interface ScheduleForm {
-  group: string;
   classId: string;
   subjectId: string;
   chapterCode: string;
@@ -55,7 +54,6 @@ export class ScheduleLiveClassForm implements OnInit {
 
   readonly profile = this.userProfile.profile;
   readonly form = signal<ScheduleForm>({
-    group: '',
     classId: '',
     subjectId: '',
     chapterCode: '',
@@ -115,7 +113,6 @@ export class ScheduleLiveClassForm implements OnInit {
   readonly isValid = computed(() => {
     const f = this.form();
     return (
-      !!f.group &&
       !!f.classId &&
       !!f.subjectId &&
       !!f.chapterCode &&

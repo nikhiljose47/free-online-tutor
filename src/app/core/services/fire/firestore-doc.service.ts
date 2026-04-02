@@ -18,6 +18,7 @@ import {
   Timestamp,
   arrayUnion,
   arrayRemove,
+  increment,
 } from '@angular/fire/firestore';
 
 import { from, map, catchError, of, Observable } from 'rxjs';
@@ -88,6 +89,17 @@ export class FirestoreDocService {
   // -----------------------------------a---------------
   // ⭐ UPDATE
   // --------------------------------------------------
+
+  incrementNested(path: string, id: string, fieldPath: string, value: number) {
+    return from(
+      updateDoc(this.docRef(path, id), {
+        [fieldPath]: increment(value),
+      }),
+    ).pipe(
+      map(() => this.success(null)),
+      catchError((err) => of(this.fail(err.message))),
+    );
+  }
 
   update<T>(path: string, id: string, data: Partial<T>): Observable<FireResponse<T>> {
     return from(updateDoc(this.docRef<T>(path, id), data as any)).pipe(
@@ -288,11 +300,11 @@ export class FirestoreDocService {
     const now = Timestamp.fromDate(new Date());
 
     const q = query(this.col<T>(path), where('endAt', '>=', now), orderBy('endAt'), limit(limitTo));
-    
+
     return of({
-  ok: true,
-  data: []
-} as FireResponse<T[]>);
+      ok: true,
+      data: [],
+    } as FireResponse<T[]>);
 
     return from(getDocs(q)).pipe(
       map((snap) =>

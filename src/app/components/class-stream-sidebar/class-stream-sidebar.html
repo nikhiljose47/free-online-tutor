@@ -19,10 +19,15 @@
       <div class="info">
         <div class="title">{{ item.className }}</div>
         <div class="sub-title">{{ item.subjectName }}</div>
-      </div>
+        <div class="meta-row">
+          <span class="chip-free" *ngIf="item.isFree; else paidTpl"> Free </span>
 
-      <div class="right-chip">
-        <span class="live-dot"></span>
+          <ng-template #paidTpl>
+            <span class="chip-paid">Paid</span>
+          </ng-template>
+
+          <span class="live-dot chip-free"></span>
+        </div>
       </div>
     </div>
 
@@ -48,8 +53,9 @@
           <span class="time">
             {{ item.date.toDate() | date: 'EE, d MMM, h:mm a' }}
           </span>
-
-          <span class="chip-free">Free</span>
+          <span [ngClass]="item.isFree ? 'chip-free' : 'chip-paid'">
+            {{ item.isFree ? 'Free' : 'Paid' }}
+          </span>
         </div>
       </div>
     </div>

@@ -15,7 +15,7 @@
     <form
       class="auth-form"
       *ngIf="mode() === 'login'"
-      (submit)="doLogin(); $event.preventDefault()"
+      (submit)="onLoginSubmit(); $event.preventDefault()"
     >
       <h3 class="auth-title">Welcome back</h3>
 
@@ -39,20 +39,16 @@
         />
       </div>
 
-      <button class="primary-btn">Login</button>
-<!-- 
-      <div class="divider">
-        <span>or</span>
-      </div>
-
-      <button type="button" class="secondary-btn" (click)="guestLogin()">Continue as Guest</button> -->
+      <button class="primary-btn" [class.loading]="loading()">
+        {{ loading() ? 'Please wait...' : 'Login' }}
+      </button>
     </form>
 
     <!-- SIGNUP FORM -->
     <form
       class="auth-form"
       *ngIf="mode() === 'signup'"
-      (submit)="register(); $event.preventDefault()"
+      (submit)="onRegisterSubmit(); $event.preventDefault()"
     >
       <h3 class="auth-title">Create your account</h3>
 
@@ -81,7 +77,28 @@
         />
       </div>
 
-      <button class="primary-btn">Create Account</button>
+      <!-- ✅ CONFIRM PASSWORD -->
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input
+          type="password"
+          placeholder="Re-enter password"
+          [value]="confirmPassword()"
+          (input)="onInputConfirmPassword($event)"
+        />
+      </div>
+
+      <!-- mismatch hint -->
+      <div
+        class="error-text"
+        *ngIf="password() && confirmPassword() && password() !== confirmPassword()"
+      >
+        Passwords do not match
+      </div>
+
+      <button class="primary-btn" [class.loading]="loading()">
+        {{ loading() ? 'Creating...' : 'Create Account' }}
+      </button>
     </form>
   </div>
 </section>

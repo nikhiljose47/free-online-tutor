@@ -1,44 +1,175 @@
-<div class="container mt-4">
-    <section *ngIf="profile() as p">
-    <h3 class="fw-bold">Welcome, {{ p.name }}</h3>
-  </section>
-  <attendance-analytics ></attendance-analytics>
-  <div class="row">
-    <div class="col-md-6">
-      <div class="card p-3 mb-3">
-        <h6>Upcoming Bookings</h6>
-        <div *ngFor="let b of bookings" class="border-bottom py-2">
-          <div class="d-flex justify-content-between">
-            <div>
-              <div class="fw-bold">{{ b.sessionTitle }}</div>
-              <small class="text-muted">{{ b.startAt | date : 'short' }}</small>
-            </div>
-            <div class="text-end">
-              <button class="btn btn-sm btn-outline-primary" (click)="goToSession(b.sessionId)">
-                View
-              </button>
-            </div>
-          </div>
-        </div>
-        <div *ngIf="!bookings.length" class="text-muted small mt-2">No bookings yet</div>
-      </div>
+<section class="hub">
+  <!-- TOP STRIP -->
+  <header class="hub-top container-fluid">
+    <div class="hub-left">
+      <div class="hub-title">Student Hub</div>
+      <div class="hub-sub">Profile · Performance · Activity</div>
     </div>
 
-    <div class="col-md-6">
-      <div class="card p-3 mb-3">
-        <h6>Quick Actions</h6>
-        <div class="d-grid gap-2">
-          <button class="btn btn-outline-success" (click)="navigate('/book-slot')">
-            Book a Seat
-          </button>
-          <button class="btn btn-outline-info" (click)="navigate('/roadmap')">
-            Browse Roadmaps
-          </button>
-          <button class="btn btn-outline-secondary" (click)="navigate('/syllabus')">
-            Syllabus
-          </button>
-        </div>
-      </div>
+    <div class="hub-actions">
+      <button class="btn btn-outline-dark btn-sm" (click)="toggleEdit()">
+        {{ isEdit() ? 'Cancel' : 'Edit' }}
+      </button>
+      <button *ngIf="isEdit()" class="btn btn-dark btn-sm" (click)="saveProfile()">Save</button>
     </div>
+  </header>
+
+  <!-- BODY -->
+  <div class="hub-body container-fluid">
+    <!-- SIDEBAR -->
+    <aside class="hub-sidebar">
+      <nav class="hub-nav">
+        <button [class.active]="activeTab() === 'overview'" (click)="activeTab.set('overview')">
+          <i class="bi bi-grid"></i>
+          <span>Overview</span>
+        </button>
+
+        <button [class.active]="activeTab() === 'profile'" (click)="activeTab.set('profile')">
+          <i class="bi bi-person"></i>
+          <span>Profile</span>
+        </button>
+
+        <button [class.active]="activeTab() === 'photo'" (click)="activeTab.set('photo')">
+          <i class="bi bi-image"></i>
+          <span>Avatar</span>
+        </button>
+
+        <button [class.active]="activeTab() === 'bookings'" (click)="activeTab.set('bookings')">
+          <i class="bi bi-calendar"></i>
+          <span>Sessions</span>
+        </button>
+
+        <button [class.active]="activeTab() === 'points'" (click)="activeTab.set('points')">
+          <i class="bi bi-star"></i>
+          <span>Points</span>
+        </button>
+
+        <button [class.active]="activeTab() === 'security'" (click)="activeTab.set('security')">
+          <i class="bi bi-shield-lock"></i>
+          <span>Security</span>
+        </button>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="hub-main">
+      <!-- OVERVIEW -->
+      <section *ngIf="activeTab() === 'overview'" class="panel">
+        <div class="grid">
+          <!-- PROFILE CARD -->
+          <div class="card profile-card">
+            <div class="avatar">
+              <img *ngIf="selectedAvatar()" [src]="getAvatarUrl(selectedAvatar() ?? '')" />
+              <div *ngIf="!selectedAvatar()" class="avatar-empty">+</div>
+            </div>
+
+            <div class="meta">
+              <div class="name">{{ profile()?.name || 'Student' }}</div>
+              <div class="email">{{ profile()?.email || 'student@email.com' }}</div>
+            </div>
+          </div>
+
+          <!-- STATS -->
+          <div class="card stats">
+            <div class="stat">
+              <div class="value">{{ totalPoints() || 0 }}</div>
+              <div class="label">Total Points</div>
+            </div>
+
+            <div class="stat">
+              <div class="value">{{ popularity() || 0 }}</div>
+              <div class="label">Popularity</div>
+            </div>
+
+            <div class="stat">
+              <div class="value">{{ bookings.length || 0 }}</div>
+              <div class="label">Sessions</div>
+            </div>
+          </div>
+
+          <!-- QUICK ACTION -->
+          <div class="card quick">
+            <button class="btn btn-dark w-100 mb-2" (click)="activeTab.set('photo')">
+              Change Avatar
+            </button>
+
+            <button class="btn btn-outline-dark w-100" (click)="activeTab.set('security')">
+              Change Password
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROFILE -->
+      <section *ngIf="activeTab() === 'profile'" class="panel">
+        <div class="panel-title">Profile</div>
+
+        <div class="form-wrap">
+          <div class="field">
+            <label>Name</label>
+            <input class="form-control" [value]="profile()?.name" disabled />
+          </div>
+
+          <div class="field">
+            <label>Email</label>
+
+            <div *ngIf="!isEdit()" class="value">
+              {{ profile()?.email }}
+            </div>
+
+            <input
+              *ngIf="isEdit()"
+              [(ngModel)]="editable.email"
+              class="form-control"
+              placeholder="Email"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- AVATAR -->
+      <section *ngIf="activeTab() === 'photo'" class="panel">
+        <div class="panel-title">Avatar</div>
+        <avatar-picker></avatar-picker>
+      </section>
+
+      <!-- SESSIONS -->
+      <section *ngIf="activeTab() === 'bookings'" class="panel">
+        <div class="panel-title">Sessions</div>
+
+        <div class="list">
+          <div *ngFor="let b of bookings()" class="list-item">
+            <div class="left">
+              <div class="title">{{ b.sessionTitle }}</div>
+              <div class="sub">{{ b.startAt | date: 'medium' }}</div>
+            </div>
+
+            <button class="btn btn-outline-dark btn-sm" (click)="goToSession(b.sessionId)">
+              Open
+            </button>
+          </div>
+
+          <div *ngIf="!bookings?.length" class="empty">No sessions yet</div>
+        </div>
+      </section>
+
+      <!-- POINTS -->
+      <section *ngIf="activeTab() === 'points'" class="panel">
+        <div class="panel-title">Points & Activity</div>
+
+        <div class="points-grid">
+          <div *ngFor="let p of pointsList()" class="point-item">
+            <div class="p-title">{{ p.title }}</div>
+            <div class="p-value">+{{ p.value }}</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECURITY -->
+      <section *ngIf="activeTab() === 'security'" class="panel">
+        <div class="panel-title">Security</div>
+        <change-password></change-password>
+      </section>
+    </main>
   </div>
-</div>
+</section>

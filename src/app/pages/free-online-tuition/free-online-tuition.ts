@@ -3,17 +3,18 @@ import { AuthPanelComponent } from '../../shared/components/auth-panel.component
 import { CatalogGroupsComponent } from '../../shared/components/catalog-groups.component/catalog-groups.component';
 import { UserProfileService } from '../../core/services/fire/user-profile.service';
 import { CommonModule } from '@angular/common';
-import { StudentLeaderboardWidget } from '../../shared/components/student-leaderboard-widget/student-leaderboard-widget';
 import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
 import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
 import { ToastService } from '../../shared/toast.service';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { ResourceIndex } from '../../shared/utils/id-map.utils';
 import { Router, RouterModule } from '@angular/router';
+import { MyLearning } from '../../components/my-learning/my-learning';
 
 @Component({
   selector: 'free-online-tuition',
-  imports: [AuthPanelComponent, CatalogGroupsComponent, CommonModule, StudentLeaderboardWidget, RouterModule],
+  standalone: true,
+  imports: [AuthPanelComponent, MyLearning, CatalogGroupsComponent, CommonModule, RouterModule],
   templateUrl: './free-online-tuition.html',
   styleUrl: './free-online-tuition.scss',
 })
@@ -39,6 +40,7 @@ export class FreeOnlineTuition {
       this.isoading.set(false);
     });
   }
+  
   ngAfterViewInit() {
     // After all home methods happened - start parallel of next data
     setTimeout(() => this.loadAllClasses());

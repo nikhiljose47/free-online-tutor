@@ -1,0 +1,61 @@
+/* === SHELL === */
+.testimonials-shell {
+  max-width: 1100px;
+}
+
+/* === CARD === */
+.testimonial-card {
+  padding: 1.5rem;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: all 0.25s ease;
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.06);
+  }
+}
+
+/* === AVATAR === */
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #212529, #495057);
+  color: #b4b4b4;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* === TEXT === */
+.testimonial-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #343a40;
+  margin-bottom: 1rem;
+}
+
+/* === STARS === */
+.stars {
+  color: #f59f00;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+/* === HEADER === */
+h3 {
+  font-size: 1.6rem;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .testimonial-card {
+    padding: 1.2rem;
+  }
+}

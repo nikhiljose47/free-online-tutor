@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, Input, signal } from '@angular/core';
 import { FaqUtil } from '../../utils/faq.utils';
 import { CommonModule } from '@angular/common';
 
@@ -9,7 +9,12 @@ import { CommonModule } from '@angular/common';
   styleUrl: './faq-list.scss',
 })
 export class FaqList {
-  readonly faqs = FaqUtil.getFaqData();
+  @Input()
+  set groupNameInput(value: string) {
+    this.groupName.set(value || 'school');
+  }
+  private groupName = signal('school');
+  readonly faqs = computed(() => FaqUtil.getFaqDataByGroup(this.groupName()));
   readonly openIndex = signal<number | null>(0);
 
   toggle(i: number) {

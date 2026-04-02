@@ -29,7 +29,8 @@
                 "input": "public"
               },
               "src/assets",
-              "src/robots.txt"
+              "src/robots.txt",
+              "src/sitemap.xml"
             ],
             "styles": [
               "src/styles.scss",
@@ -46,23 +47,28 @@
           },
           "configurations": {
             "production": {
+              "aot": true,
               "optimization": {
                 "scripts": true,
                 "styles": {
                   "minify": true,
                   "inlineCritical": true
-                }
+                },
+                "fonts": true
               },
+              "extractLicenses": true,
+              "sourceMap": false,
+              "namedChunks": false,
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "800kB",
-                  "maximumError": "1.4MB"
+                  "maximumWarning": "1.5MB",
+                  "maximumError": "2.5MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "6kB",
+                  "maximumError": "12kB"
                 }
               ],
               "outputHashing": "all"

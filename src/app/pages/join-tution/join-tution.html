@@ -47,19 +47,19 @@
             <button class="share-btn" (click)="shareClass()">
               <i class="bi bi-share"></i> Share
             </button>
-<button
-  class="cta-btn d-none d-md-inline-flex align-items-center gap-2"
-  [class.is-locked]="hasmarkedInterest()"
-  (click)="!hasmarkedInterest() && onClickInterestBtn()"
->
-  <ng-container *ngIf="hasmarkedInterest(); else normalState">
-    You’re In <i class="bi bi-check-circle"></i>
-  </ng-container>
+            <button
+              class="cta-btn d-none d-md-inline-flex align-items-center gap-2"
+              [class.is-locked]="hasmarkedInterest()"
+              (click)="!hasmarkedInterest() && onClickInterestBtn()"
+            >
+              <ng-container *ngIf="hasmarkedInterest(); else normalState">
+                You’re In <i class="bi bi-check-circle"></i>
+              </ng-container>
 
-  <ng-template #normalState>
-    {{ !isUpcoming() ? 'Join Class' : 'I will attend' }}
-  </ng-template>
-</button>
+              <ng-template #normalState>
+                {{ !isUpcoming() ? 'Join Class' : 'I will attend' }}
+              </ng-template>
+            </button>
           </header>
         </div>
       </section>

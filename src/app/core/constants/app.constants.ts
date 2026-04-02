@@ -1,4 +1,3 @@
-
 export const APP_VERSION = '1.0.0';
 
 export const SYLLABUS_VERSION = '1.0.0';
@@ -9,8 +8,9 @@ export const BUILD_INFO = {
   updatedOn: '2025-02-01',
 };
 
-export const TEACHER_JOB_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfdc532mfApDy0MyTY_eJhI-awJViiBlqPsk_QS2-XUxVcH0A/viewform';
-export const SYLL_DATA_BASE_URL = 'https://authentication-785fd.web.app/data/';
+export const TEACHER_JOB_FORM_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSfdc532mfApDy0MyTY_eJhI-awJViiBlqPsk_QS2-XUxVcH0A/viewform';
+export const SYLL_DATA_BASE_URL = 'https://authentication-785fd.web.app/index/';
 
 export const SYLL_INDEX_CACHE_KEY = 'syllabus_index_ckey';
 
@@ -48,10 +48,35 @@ export const CACHE_TTL = {
   ASSESSMENT: 2 * 60 * 60 * 1000, //2 hr
 } as const;
 
+//Age-Class relation
+export const CLASS_AGE_RANGE: Record<string, [number, number]> = {
+  'Class 1': [5, 6],
+  'Class 2': [6, 7],
+  'Class 3': [7, 8],
+  'Class 4': [8, 9],
+  'Class 5': [9, 10],
+  'Class 6': [10, 11],
+  'Class 7': [11, 12],
+  'Class 8': [12, 13],
+  'Class 9': [13, 14],
+  'Class 10': [14, 15],
+};
+
 export const DEF_BATCH = 'blue';
 
 //IndexDb
 export const INDEXED_DB_NAME = 'in.sunbay.academy.offline-data-db-v1.72026.app';
 
 //Assets
-export const PLACEHOLDER__COVER_IMG = 'assets/placeholder-cover.webp';
+export const PLACEHOLDER__COVER_IMG = 'assets/placeholder.svg';
+export const DEF_AVATAR_ID = 'avatar-boy-01';
+export const AVATARS = [
+  'avatar-boy-01',
+  'avatar-boy-02',
+  'avatar-boy-03',
+  'avatar-boy-04',
+  'avatar-girl-01',
+  'avatar-girl-02',
+  'avatar-girl-03',
+  'avatar-girl-04',
+];

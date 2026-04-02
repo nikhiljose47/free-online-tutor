@@ -1,0 +1,253 @@
+.cp-root {
+  background: #f6f8fb;
+  color: #0f172a;
+  min-height: 100vh;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+}
+
+/* HEADER */
+.cp-header {
+  background: #ffffff;
+  border-bottom: 1px solid #e6ebf2;
+}
+
+.cp-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.cp-sub {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.cp-chip {
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+/* LAYOUT */
+.cp-body {
+  min-height: calc(100vh - 60px);
+}
+
+.cp-left {
+  border-right: 1px solid #e6ebf2;
+}
+
+/* HERO */
+.cp-hero {
+  background: #ffffff;
+  border-bottom: 1px solid #e6ebf2;
+}
+
+.cp-hero-card {
+  padding: 24px;
+}
+
+.cp-hero-title {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.cp-hero-meta {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* TAGS */
+.cp-tag {
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #334155;
+}
+
+/* TABS */
+.cp-tabs {
+  background: #ffffff;
+}
+
+.cp-tab-header {
+  border-bottom: 1px solid #e6ebf2;
+}
+
+.cp-tab {
+  font-size: 13px;
+  padding: 12px 6px;
+  color: #6b7280;
+  cursor: pointer;
+  position: relative;
+}
+
+.cp-tab.active {
+  color: #111827;
+  font-weight: 500;
+}
+
+.cp-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: #4f46e5;
+}
+
+/* CONTENT */
+.cp-sec-title {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.cp-list div {
+  font-size: 13px;
+  padding: 3px 0;
+}
+
+.cp-mix div {
+  font-size: 12px;
+  background: #f1f5f9;
+  padding: 8px 10px;
+  border-radius: 6px;
+}
+
+/* DIVISIONS */
+.cp-division-card {
+  background: #ffffff;
+  border: 1px solid #e6ebf2;
+  border-radius: 10px;
+}
+
+.cp-badge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 20px;
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+.cp-mini {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* INSTRUCTION */
+.cp-ins-card {
+  background: #ffffff;
+  border: 1px solid #e6ebf2;
+  border-radius: 8px;
+}
+
+/* RIGHT PANEL */
+.cp-right {
+  background: #f9fafc;
+}
+
+.cp-sidebar {
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+  padding-bottom: 80px;
+}
+
+/* SUBJECT SWITCH */
+.cp-sub-chip {
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #eef2f7;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.cp-sub-chip.active {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+/* CHAPTER LIST (FIXED VISIBILITY) */
+.cp-chapter-list {
+  margin-top: 10px;
+}
+
+.cp-chapter-card {
+  padding: 14px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #e6ebf2;
+  cursor: pointer;
+}
+
+.cp-chapter-card.active {
+  border-color: #c7d2fe;
+  background: #eef2ff;
+}
+
+/* IMPORTANT: make cards clearly visible */
+.cp-chapter-card + .cp-chapter-card {
+  margin-top: 8px;
+}
+
+.cp-ch-title {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.cp-ch-meta {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.cp-ch-badge {
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 20px;
+  background: #f1f5f9;
+}
+
+/* EMPTY STATE */
+.cp-empty {
+  font-size: 13px;
+  color: #6b7280;
+  padding: 20px 0;
+}
+
+/* SCROLLBAR (premium subtle) */
+.cp-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cp-sidebar::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+}
+
+/* MOBILE */
+@media (max-width: 991px) {
+
+  .cp-left {
+    border-right: none;
+  }
+
+  .cp-right {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 45%;
+    background: #ffffff;
+    border-top: 1px solid #e6ebf2;
+  }
+
+  .cp-sidebar {
+    height: 100%;
+  }
+
+}

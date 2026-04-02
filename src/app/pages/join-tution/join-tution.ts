@@ -1,5 +1,13 @@
-import { ChangeDetectionStrategy, Component, inject, signal, OnInit, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+  OnInit,
+  effect,
+  PLATFORM_ID,
+} from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Meeting } from '../../models/meeting.model';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
@@ -19,7 +27,7 @@ import { CoverPlaceholderComponent } from '../../shared/components/cover-placeho
 @Component({
   selector: 'join-tution',
   standalone: true,
-  imports: [CommonModule, ContentPlaceholder, DotLoader,CoverPlaceholderComponent],
+  imports: [CommonModule, ContentPlaceholder, DotLoader, CoverPlaceholderComponent],
   templateUrl: './join-tution.html',
   styleUrls: ['./join-tution.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,6 +40,8 @@ export class JoinTution {
   private attendanceApi = inject(AttendanceApiService);
   private toastApi = inject(ToastService);
   private statusStore = inject(MeetingStatusStore);
+
+  private platformId = inject(PLATFORM_ID);
 
   hasCoverImgErr = signal<boolean>(false);
 
@@ -113,7 +123,6 @@ export class JoinTution {
   }
 
   setData() {
-    console.log('data in meet', this.meeting);
     let meeting = this.meeting;
     /* hydrate UI fields once */
     this.teacher = meeting.teacherName;
@@ -151,7 +160,9 @@ export class JoinTution {
           },
         });
     } else if (this.joinLink) {
-      window.open(this.joinLink, '_blank');
+      if (isPlatformBrowser(this.platformId)) {
+        window.open(this.joinLink, '_blank');
+      }
     }
   }
 
@@ -162,10 +173,12 @@ export class JoinTution {
       url: this.joinLink,
     };
 
+    const joinInfo = `Hey! You can join the online class ${this.title} by ${this.teacher} at ${this.joinLink}`;
+
     if (navigator.share) {
       await navigator.share(shareData);
     } else {
-      await navigator.clipboard.writeText(this.joinLink);
+      await navigator.clipboard.writeText(joinInfo);
       alert('Link copied to clipboard!');
     }
   }

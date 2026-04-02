@@ -15,6 +15,7 @@ export interface Meeting {
   teacherId: string;
   teacherName: string;
   duration: number;
+  isFree?: boolean;
   imageSrc: string;
   attendance: string[];
   createdAt: Timestamp;

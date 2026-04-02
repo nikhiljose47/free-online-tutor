@@ -1,0 +1,122 @@
+/* ROOT */
+:host {
+  display: block;
+  height: 100%;
+}
+
+/* SIDEBAR */
+.cp-sidebar {
+  height: 100%;
+  overflow-y: auto;
+  padding-bottom: 80px;
+}
+
+/* SUBJECT SWITCH */
+.cp-subjects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cp-sub-chip {
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 20px;
+
+  background: #eef2f7;
+  color: #6b7280;
+
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.cp-sub-chip.active {
+  background: #e0e7ff;
+  color: #3730a3;
+  font-weight: 500;
+}
+
+/* CHAPTER LIST */
+.cp-chapter-list {
+  margin-top: 10px;
+}
+
+/* CARD */
+.cp-chapter-card {
+  padding: 14px;
+  border-radius: 10px;
+
+  background: #ffffff;
+  border: 1px solid #e6ebf2;
+
+  cursor: pointer;
+}
+
+/* spacing */
+.cp-chapter-card + .cp-chapter-card {
+  margin-top: 8px;
+}
+
+/* ACTIVE */
+.cp-chapter-card.active {
+  border-color: #c7d2fe;
+  background: #eef2ff;
+}
+
+/* CONTENT */
+.cp-ch-title {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #111827;
+}
+
+.cp-ch-meta {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+/* BADGE */
+.cp-ch-badge {
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 20px;
+  background: #f1f5f9;
+  color: #334155;
+}
+
+/* EMPTY */
+.cp-empty {
+  font-size: 13px;
+  color: #6b7280;
+  padding: 20px 0;
+  text-align: center;
+}
+
+/* SCROLLBAR (subtle premium) */
+.cp-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cp-sidebar::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+}
+
+/* MOBILE → bottom sheet feel */
+@media (max-width: 991px) {
+  :host {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 45%;
+    background: #ffffff;
+    border-top: 1px solid #e6ebf2;
+    z-index: 10;
+  }
+
+  .cp-sidebar {
+    height: 100%;
+    padding: 16px;
+  }
+}

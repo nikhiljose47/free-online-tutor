@@ -1,6 +1,6 @@
 .landing {
   width: 100%;
-  background: #f9fafb;
+  background: var(--color-bg);
   padding: 64px 0;
 }
 
@@ -22,6 +22,16 @@
   flex-direction: column;
   gap: 36px;
   padding-top: 5rem;
+}
+
+/* FULL WIDTH MODE (logged in) */
+.landing-left.full {
+  grid-column: 1 / -1;
+  padding-top: 0;
+}
+
+.full-wrap {
+  width: 100%;
 }
 
 .hero-text {
@@ -159,11 +169,11 @@
 .banner-subtitle {
   font-size: 1.05rem;
   font-weight: 500;
-  color: hsl(204, 62%, 41%);
+  color: #111827;
 }
 
 .highlight {
-  background: hsl(204, 74%, 79%);
+  background: hsla(153, 51%, 84%, 0.91);
   color: #111827;
   padding: 2px 6px;
   border-radius: 4px;
@@ -177,24 +187,24 @@
   margin-bottom: 18px;
 }
 
-.banner-points{
-  padding-left:18px;
+.banner-points {
+  padding-left: 18px;
 }
 
-.point{
-  margin-bottom:16px;
+.point {
+  margin-bottom: 16px;
 }
 
-.point-title{
+.point-title {
   font-size: 1rem;
-  font-weight:600;
-  color:#111827;
-  margin-bottom:4px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 4px;
 }
 
-.trust-link{
-  color:#2563eb;
-  text-decoration:none;
+.trust-link {
+  color: #2563eb;
+  text-decoration: none;
 }
 
 .banner-cta {
@@ -216,8 +226,6 @@
 .banner-cta:hover {
   background: #2c2c2c;
 }
-
-
 
 //Guest mode chip info
 

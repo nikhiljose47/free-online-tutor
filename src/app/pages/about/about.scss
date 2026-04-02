@@ -1,3 +1,125 @@
+/* === SHELL === */
+.about-shell {
+  max-width: 1100px;
+}
+
+/* === HERO === */
+.about-hero {
+  .hero-title {
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .hero-sub {
+    max-width: 640px;
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+}
+
+/* === TRUST STRIP === */
+.trust-strip {
+  .trust-item {
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: #f1f3f5;
+    color: #495057;
+    border: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #212529;
+      color: #fff;
+      border-color: #212529;
+    }
+  }
+}
+
+/* === VALUE SECTION === */
+.value-points {
+  padding-left: 1rem;
+
+  li {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    color: #495057;
+    position: relative;
+
+    &::marker {
+      color: #212529;
+    }
+  }
+}
+
+.visual-card {
+  height: 220px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border: 1px solid #dee2e6;
+}
+
+/* === FEATURES === */
+.feature-card {
+  border-radius: 16px;
+  border: 1px solid #e9ecef;
+  background: #ffffff;
+  padding: 1.2rem;
+  transition: all 0.25s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+    border-color: #dee2e6;
+  }
+
+  .feature-body {
+    h5 {
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+  }
+}
+
+/* === CTA SECTION === */
+.cta-section {
+  border-radius: 20px;
+  background: linear-gradient(135deg, #212529, #343a40);
+  color: #fff;
+
+  p {
+    color: #ced4da;
+  }
+
+  .btn-dark {
+    background: #fff;
+    color: #212529;
+    border: none;
+
+    &:hover {
+      background: #e9ecef;
+    }
+  }
+
+  .btn-outline-dark {
+    border-color: #adb5bd;
+    color: #fff;
+
+    &:hover {
+      background: #fff;
+      color: #212529;
+    }
+  }
+}
+
+/* === QUOTE === */
 .quote-wrapper {
   display: flex;
   justify-content: center;
@@ -7,18 +129,31 @@
   max-width: 720px;
   padding: 2rem 2.5rem;
   border-radius: 20px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
 }
 
 .quote-text {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   line-height: 1.7;
   font-weight: 500;
   color: #2d3436;
 }
 
 .quote-author {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #6c757d;
   letter-spacing: 0.04em;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .about-hero .hero-title {
+    font-size: 1.8rem;
+  }
+
+  .visual-card {
+    height: 160px;
+  }
 }

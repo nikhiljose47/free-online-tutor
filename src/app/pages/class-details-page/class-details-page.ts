@@ -1,6 +1,5 @@
 import {
   Component,
-  ChangeDetectionStrategy,
   signal,
   inject,
   OnInit,
@@ -19,12 +18,12 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Meeting } from '../../models/meeting.model';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus.model';
 import { UserCardlist } from '../../shared/components/user-card-list/user-card-list';
-import { ExploreCoursesBannerComponent } from '../../components/banners/explore-courses-banner/explore-courses-banner';
 import { FaqList } from '../../shared/components/faq-list/faq-list';
 import { ClassScheduleListComponent } from '../../shared/components/class-schedule-list/class-schedule-list';
 import { Quote } from '../../models/quote.model';
 import { QuoteUtil } from '../../shared/utils/quote.utils';
 import { AiTutorChatComponent } from '../../shared/components/ai-tutor-chat.component/ai-tutor-chat.component';
+import { PuzzleService } from '../../services/puzzle/puzzle.service';
 
 type TabType = 'overview' | 'games' | 'curriculum' | 'AI Tutor';
 
@@ -45,7 +44,6 @@ interface ClassStat {
     UserCardlist,
     FaqList,
     ClassScheduleListComponent,
-    ExploreCoursesBannerComponent,
     AiTutorChatComponent,
     ClassOverviewComponent,
   ],
@@ -58,7 +56,9 @@ export class ClassDetailsPage implements OnInit {
   private syllRepo = inject(SyllabusRepository);
   private route = inject(ActivatedRoute);
 
-  readonly classId = this.route.snapshot.paramMap.get('id') ?? 'CL08';
+  private puzzleApi = inject(PuzzleService);
+
+  readonly classId = this.route.snapshot.paramMap.get('id') ?? 'mob-flutter-adv';
 
   readonly isLoading = signal(true);
   readonly hasValidData = signal(false);
@@ -66,7 +66,7 @@ export class ClassDetailsPage implements OnInit {
 
   syllabus = signal<ClassSyllabus | null>(null);
   className = signal<string>('Class');
-  aiContext = computed(() => `${this.className()}`);
+  aiContext = computed(() => `${this.syllabus()?.className}`);
 
   puzzleId = 'puzzle_001';
   classFileId: string = '';
@@ -81,20 +81,19 @@ export class ClassDetailsPage implements OnInit {
   private readonly _activeTab = signal<TabType>('overview');
 
   readonly activeMainTab = computed(() => this._activeTab());
-
   readonly quote = signal<Quote>(QuoteUtil.getQuoteOfDay());
 
   select(tab: TabType): void {
     if (this._activeTab() !== tab) {
       this._activeTab.set(tab);
     }
-    if (tab === 'AI Tutor') {
-     setTimeout(() => {
-      document.getElementById('tab-content-view')?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }, 0);
+    if (tab === 'AI Tutor' && isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
+        document.getElementById('tab-content-view')?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }, 0);
     }
   }
 
@@ -108,6 +107,9 @@ export class ClassDetailsPage implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
+    this.puzzleApi.getPuzzleCollection('CL10', 'math').subscribe((res) => {
+      console.log('Puzzle collection:', res);
+    });
   }
 
   loadData() {

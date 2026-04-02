@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { ToastService } from '../../shared/toast.service';
-import { HomeIntroStrip } from '../../components/home-intro-strip/home-intro-strip';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
 import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
@@ -18,7 +17,7 @@ import { CatalogLookupService } from '../../domain/syllabus-index/catalog-lookup
 @Component({
   selector: 'free-online-tutor',
   standalone: true,
-  imports: [CommonModule, HomeIntroStrip],
+  imports: [CommonModule],
   templateUrl: './free-online-tutor.html',
   styleUrl: './free-online-tutor.scss',
 })

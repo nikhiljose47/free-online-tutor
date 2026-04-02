@@ -7,15 +7,10 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { CatalogLookupService } from '../../../domain/syllabus-index/catalog-lookup.service';
-import {
-  CatalogItem,
-  CatalogType,
-  PrimaryGroup,
-} from '../../../models/syllabus/syllabus-index.model';
-import { PLACEHOLDER__COVER_IMG } from '../../../core/constants/app.constants';
+import { CatalogItem, PrimaryGroup } from '../../../models/syllabus/syllabus-index.model';
 import { StringUtil } from '../../utils/string.util';
+import { PLACEHOLDER__COVER_IMG } from '../../../core/constants/app.constants';
 
 @Component({
   selector: 'catalog-groups',
@@ -87,5 +82,13 @@ export class CatalogGroupsComponent {
 
   openItem(item: CatalogItem) {
     this.routeTrigger.emit(item.id);
+  }
+
+  getBannerSrc(src?: string | null): string {
+    return src || PLACEHOLDER__COVER_IMG;
+  }
+
+  onImgError(event: Event) {
+    (event.target as HTMLImageElement).src = PLACEHOLDER__COVER_IMG;
   }
 }

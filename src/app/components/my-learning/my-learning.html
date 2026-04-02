@@ -1,0 +1,108 @@
+<section class="ldw-root container-fluid">
+  <!-- Header -->
+  <div class="ldw-header d-flex justify-content-between align-items-center mb-3 px-1">
+    <div>
+      <h2 class="ldw-title mb-1">
+        Welcome back,
+        <span class="ldw-username">{{ userName() }}</span>
+      </h2>
+      <p class="ldw-subtitle mb-0">Continue learning</p>
+    </div>
+  </div>
+
+  <!-- Wrapper -->
+  <div class="ldw-rail-wrapper position-relative">
+    <!-- Left Scroll -->
+    <button
+      class="ldw-scroll-btn ldw-left"
+      type="button"
+      (click)="scrollPrev()"
+      *ngIf="!isLoading() && showLeftArrow()"
+    >
+      <i class="bi bi-chevron-left"></i>
+    </button>
+
+    <!-- Right Scroll -->
+    <button
+      class="ldw-scroll-btn ldw-right"
+      type="button"
+      (click)="scrollNext()"
+      *ngIf="!isLoading()  && showRightArrow()"
+    >
+      <i class="bi bi-chevron-right"></i>
+    </button>
+
+    <!-- Rail -->
+    <div #scrollContainer class="ldw-rail">
+      <!-- Skeleton -->
+      <ng-container *ngIf="isLoading(); else contentBlock">
+        <div class="ldw-skeleton-wide" *ngFor="let s of [1, 2, 3]"></div>
+      </ng-container>
+
+      <!-- Content -->
+      <ng-template #contentBlock>
+        <!-- Courses -->
+        <ng-container *ngIf="courses()?.length??0 > 0; else emptyState">
+          <div
+            class="ldw-course-wide"
+            *ngFor="let course of courses(); trackBy: trackById"
+            (click)="onOpenCourse(course.classId)"
+          >
+            <div class="ldw-thumb">
+              <img
+                [src]="getImgSrc(course.image)"
+                [alt]="getImgAlt(course.title)"
+                loading="lazy"
+                (error)="onImgError($event)"
+              />
+              <div class="ldw-play">
+                <i class="bi bi-play-fill"></i>
+              </div>
+            </div>
+
+            <div class="ldw-content">
+              <div>
+                <div class="ldw-small-title">
+                  {{ course.category || 'Learning' }}
+                </div>
+
+                <h6 class="ldw-main-title">
+                  {{ course.title || 'Untitled course' }}
+                </h6>
+              </div>
+
+              <div>
+                <div class="ldw-meta">Continue • {{ course.progress }}%</div>
+
+                <div class="ldw-progress-bar">
+                  <div class="ldw-progress-fill" [style.width.%]="course.progress"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Empty -->
+        <ng-template #emptyState>
+          <div class="ldw-empty-wrap w-100">
+            <div class="ldw-empty-card text-center">
+              <div class="ldw-empty-icon mb-3">
+                <i class="bi bi-journal-richtext"></i>
+              </div>
+
+              <h5 class="mb-2">No active courses</h5>
+
+              <p class="mb-3">Join or enroll to start learning and track your progress</p>
+
+              <div class="d-flex justify-content-center gap-2 flex-wrap">
+                <button class="btn btn-dark px-4" (click)="onBrowse()">Browse</button>
+
+                <button class="btn btn-outline-dark px-4" (click)="onJoin()">Join</button>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ng-template>
+    </div>
+  </div>
+</section>

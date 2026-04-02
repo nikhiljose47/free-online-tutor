@@ -3,16 +3,16 @@ import { RouterOutlet } from '@angular/router';
 import { Topbar } from './components/topbar/topbar';
 import { Toast } from './components/toast/toast';
 import { CommonModule } from '@angular/common';
-import { AnnouncementBar } from './components/announcement-bar/announcement-bar';
 import { ClassStreamSidebar } from './components/class-stream-sidebar/class-stream-sidebar';
 import { Footer } from './components/footer/footer';
+import { ConfirmDialogComponent } from './shared/components/confirm-dialog.component/confirm-dialog.component';
 
 
 //ResourceIndex or IdMap have 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Topbar, Footer, Toast, CommonModule, AnnouncementBar, ClassStreamSidebar],
+  imports: [RouterOutlet, ConfirmDialogComponent, Topbar, Footer, Toast, CommonModule, ClassStreamSidebar],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

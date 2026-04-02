@@ -6,45 +6,44 @@ import { RoadmapComponent } from './pages/roadmap/roadmap';
 import { LoginComponent } from './pages/login/login';
 import { TeachersPage } from './pages/teachers/teachers';
 import { About } from './pages/about/about';
-import { FreeOnlineTutor } from './pages/free-online-tutor/free-online-tutor';
 import { BookSlotComponent } from './components/book-slot/book-slot';
 import { Timetable } from './components/timetable/timetable';
 import { ScheduleLiveClass } from './pages/schedule-live-class/schedule-live-class';
 import { Register } from './pages/register/register';
 import { StudentCreations } from './pages/student-creations/student-creations';
 import { ReportCard } from './components/report-card/report-card';
-import { syllabusResolver } from './resolvers/syllabus-resolver';
 import { PricingPlans } from './pages/pricing-plans/pricing-plans';
 import { TeacherWorkspace } from './pages/teacher-workspace/teacher-workspace';
 import { ChapterBrowser } from './pages/chapter-browser/chapter-browser';
 import { seoResolver } from './resolvers/seo-resolver';
-import { ClassDetailsPage } from './pages/class-details-page/class-details-page';
-import { TuitionMarketplace } from './pages/tuition-marketplace/tuition-marketplace';
 import { FreeOnlineTuition } from './pages/free-online-tuition/free-online-tuition';
-import { SessionAssessmentEntryComponent } from './shared/components/session-assessment-entry.component/session-assessment-entry.component';
 import { AiTutorChatComponent } from './shared/components/ai-tutor-chat.component/ai-tutor-chat.component';
 import { OnlineTeacherJobs } from './pages/online-teacher-jobs/online-teacher-jobs';
+import { CourseViewPage } from './pages/course-view-page/course-view-page';
 
 export const routes: Routes = [
   {
     path: '',
     component: FreeOnlineTuition,
     data: {
-      title: 'Free Online Tuition for Classes 6–12 | CBSE & State Boards',
+      title: 'Free Online Tuition for Class 6–12 | CBSE, ICSE & State Boards | Scholo Learning',
       description:
-        'Free online tuition for students of classes 6 to 12. Learn maths, science and more from expert teachers.',
-      keywords: 'free online tuition, cbse tuition, online classes india',
+        'Scholo Learning offers free online tuition for Class 6 to 12 students across CBSE, ICSE and State Boards. Learn Maths, Science and more with expert teachers.',
+      keywords:
+        'free online tuition india, class 6 to 12 online classes, cbse tuition online, icse coaching online, scholo learning, online tutoring india',
     },
     resolve: { seo: seoResolver },
   },
+
   {
     path: 'free-online-tuition',
     component: AiTutorChatComponent,
     data: {
-      title: 'Free Online Tuition for Classes 6–12 | CBSE & State Boards',
+      title: 'AI Tutor Free Online Classes | Instant Doubt Solving | Scholo Learning',
       description:
-        'Free online tuition for students of classes 6 to 12. Learn maths, science and more from expert teachers.',
-      keywords: 'free online tuition, cbse tuition, online classes india',
+        'Get instant help with Scholo AI Tutor. Free online classes and doubt solving for Maths, Science and more for Class 6–12 students.',
+      keywords:
+        'ai tutor india, free doubt solving, online tutor chatbot, scholo ai tutor, instant homework help',
     },
     resolve: { seo: seoResolver },
   },
@@ -53,10 +52,11 @@ export const routes: Routes = [
     path: 'about',
     component: About,
     data: {
-      title: 'About Us | Online Tuition Platform',
+      title: 'About Scholo Learning | Online Education Platform India',
       description:
-        'Learn about our mission to provide quality online tuition for students across India.',
-      keywords: 'about online tuition, education platform india',
+        'Scholo Learning is an online education platform providing affordable and free tuition for school students across India.',
+      keywords:
+        'about scholo, online learning india, education platform india, digital tuition india',
     },
     resolve: { seo: seoResolver },
   },
@@ -65,9 +65,11 @@ export const routes: Routes = [
     path: 'teachers',
     component: TeachersPage,
     data: {
-      title: 'Expert Online Teachers for CBSE Tuition',
-      description: 'Meet our experienced online teachers helping students excel in academics.',
-      keywords: 'online teachers, cbse tutors, maths science teachers',
+      title: 'Expert Online Tutors for CBSE & ICSE | Scholo Learning',
+      description:
+        'Learn from experienced online tutors for Maths, Science and all subjects. Verified teachers at Scholo Learning.',
+      keywords:
+        'online tutors india, cbse teachers online, icse tutors, maths science teacher online',
     },
     resolve: { seo: seoResolver },
   },
@@ -76,9 +78,11 @@ export const routes: Routes = [
     path: 'plans',
     component: PricingPlans,
     data: {
-      title: 'Online Tuition Plans & Pricing',
-      description: 'Affordable online tuition plans for students of classes 6–12.',
-      keywords: 'online tuition pricing, tuition plans',
+      title: 'Affordable Online Tuition Plans | Scholo Learning Pricing',
+      description:
+        'Explore affordable tuition plans for students. Flexible pricing for online classes across subjects and boards.',
+      keywords:
+        'online tuition fees india, affordable coaching plans, scholo pricing, tuition subscription india',
     },
     resolve: { seo: seoResolver },
   },
@@ -87,9 +91,11 @@ export const routes: Routes = [
     path: 'career',
     component: OnlineTeacherJobs,
     data: {
-      title: 'Careers | Online Teaching Jobs',
-      description: 'Join our team of teachers and educators. Explore online teaching careers.',
-      keywords: 'online teaching jobs, tutor careers india',
+      title: 'Online Teaching Jobs India | Become a Tutor | Scholo Learning',
+      description:
+        'Apply for online teaching jobs at Scholo Learning. Work from home and teach students across India.',
+      keywords:
+        'online teaching jobs india, tutor jobs work from home, teaching careers india, scholo jobs',
     },
     resolve: { seo: seoResolver },
   },
@@ -98,9 +104,11 @@ export const routes: Routes = [
     path: 'student-creations',
     component: StudentCreations,
     data: {
-      title: 'Student Creations & Projects',
-      description: 'Explore projects and creations made by our students.',
-      keywords: 'student projects, online tuition results',
+      title: 'Student Projects & Achievements | Scholo Learning',
+      description:
+        'Explore creative projects and academic achievements by students learning on Scholo.',
+      keywords:
+        'student projects india, learning outcomes, student portfolio online, scholo students',
     },
     resolve: { seo: seoResolver },
   },
@@ -109,28 +117,28 @@ export const routes: Routes = [
     path: 'roadmap',
     component: RoadmapComponent,
     data: {
-      title: 'Student Learning Roadmap | Online Tuition',
-      description: 'A clear academic roadmap for students to achieve learning goals.',
-      keywords: 'learning roadmap, student study plan',
+      title: 'Study Roadmap for Class 6–12 | Scholo Learning',
+      description:
+        'Structured study roadmap to help students achieve academic success with guided learning paths.',
+      keywords: 'study roadmap, class 10 study plan, class 12 roadmap, academic planning india',
     },
     resolve: { seo: seoResolver },
   },
-
-  /* ---------- Dynamic SEO pages ---------- */
 
   {
     path: 'details/:id',
     loadComponent: () =>
       import('./pages/class-details-page/class-details-page').then((m) => m.ClassDetailsPage),
     data: {
-      title: 'Online Tuition Details',
-      description: 'Detailed view of online tuition programs and offerings.',
-      keywords: 'online tuition details',
+      title: 'Course Details | Online Tuition Program | Scholo Learning',
+      description: 'Explore detailed information about courses, syllabus and learning outcomes.',
+      keywords: 'online course details, tuition course info, scholo courses',
     },
     resolve: { seo: seoResolver },
   },
+
   {
-    path: 'tuition-centers', //Todo tuition-centers
+    path: 'tuition-centers',
     children: [
       {
         path: '',
@@ -139,10 +147,11 @@ export const routes: Routes = [
             (m) => m.TuitionMarketplace,
           ),
         data: {
-          title: 'Top Tuition Centers Near You | Find Coaching Institutes',
+          title: 'Tuition Centers Near Me | Coaching Institutes India | Scholo',
           description:
-            'Discover trusted tuition centers, coaching institutes and subject experts near you. Compare ratings and enroll easily.',
-          keywords: 'tuition centers near me, coaching institutes, online tuition, offline tuition',
+            'Find top-rated tuition centers and coaching institutes near you. Compare and enroll بسهولة.',
+          keywords:
+            'tuition centers near me, coaching institutes india, offline tuition, best tuition centers',
         },
         resolve: { seo: seoResolver },
       },
@@ -157,7 +166,7 @@ export const routes: Routes = [
     ],
   },
 
-  /* ---------- NO-INDEX (internal / auth / dashboards) ---------- */
+  /* NO INDEX */
 
   {
     path: 'login',
@@ -226,10 +235,24 @@ export const routes: Routes = [
     data: { noIndex: true },
     resolve: { seo: seoResolver },
   },
+  {
+    path: 'course-view/:classId',
+    component: CourseViewPage,
+    data: { noIndex: true },
+    resolve: { seo: seoResolver },
+  },
 
   {
     path: 'join-tution/:meetingId',
     loadComponent: () => import('./pages/join-tution/join-tution').then((m) => m.JoinTution),
+    data: { noIndex: true },
+    resolve: { seo: seoResolver },
+  },
+
+  {
+    path: 'admin-dashboard',
+    loadComponent: () =>
+      import('./pages/admin-dashboard/admin-dashboard').then((m) => m.AdminDashboard),
     data: { noIndex: true },
     resolve: { seo: seoResolver },
   },

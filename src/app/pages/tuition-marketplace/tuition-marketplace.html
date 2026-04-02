@@ -1,21 +1,25 @@
 <section class="tuition-marketplace container p-5">
-
   <!-- HERO -->
-  <header class="market-hero d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-5">
+  <header
+    class="market-hero d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-5"
+  >
     <div>
       <h1 class="hero-title mb-2">
-        {{ cityParam() 
-            ? ('Top Tuition Centers in ' + (cityParam() | titlecase))
-            : 'Find Trusted Tuition Centers Near You' }}
+        {{
+          cityParam()
+            ? 'Top Tuition Centers in ' + (cityParam() | titlecase)
+            : 'Find Trusted Tuition Centers Near You'
+        }}
       </h1>
       <p class="hero-subtitle mb-0">
-        Discover verified coaching institutes and subject experts. Compare ratings and enroll confidently.
+        Discover verified coaching institutes and subject experts. Compare ratings and enroll
+        confidently.
       </p>
     </div>
 
     <a
       class="btn btn-dark px-4 py-2 mt-3 mt-lg-0"
-      href="https://forms.gle/your-google-form-link"
+      href="https://docs.google.com/forms/d/e/1FAIpQLScE0_kScSSc0gcZ_46zOopq5bhTBWrXpZ6evsyYX-o75R9ENA/viewform?usp=dialog"
       target="_blank"
       rel="noopener"
     >
@@ -25,64 +29,39 @@
 
   <!-- CITY CHIPS -->
   <div class="city-chip-bar mb-4 d-flex flex-wrap gap-2">
-
-    <button
-      type="button"
-      class="chip"
-      [class.active]="!cityParam()"
-      (click)="goToCity('')"
-    >
+    <button type="button" class="chip" [class.active]="!cityParam()" (click)="goToCity('')">
       All
     </button>
 
     @for (c of cities(); track c) {
-      <button
-        type="button"
-        class="chip"
-        [class.active]="cityParam() === c"
-        (click)="goToCity(c)"
-      >
+      <button type="button" class="chip" [class.active]="cityParam() === c" (click)="goToCity(c)">
         {{ c | titlecase }}
       </button>
     }
-
   </div>
 
   <!-- LIST -->
   <div class="row g-4">
-
     @if (!ads().length) {
       <div class="col-12 text-center py-5">
-        <h5 class="mb-2">No Tuition Centers Found</h5>
+        <h5 class="mb-2">No Tuition Centers Found !</h5>
         <p class="text-muted mb-3">
-          Be the first to list your tuition center here.
+          Be the first to list your tuition center here. Click on 'Post Your Tuition Center' to get
+          started!
         </p>
-        <a
-          class="btn btn-outline-dark"
-          href="https://forms.gle/your-google-form-link"
-          target="_blank"
-          rel="noopener"
-        >
-          Post Now
-        </a>
       </div>
     }
 
     @for (ad of ads(); track ad.id) {
-
       <div class="col-12 col-md-6 col-xl-4">
         <article class="ad-card h-100 d-flex flex-column justify-content-between">
-
           <div>
             <div class="d-flex justify-content-between align-items-start mb-2">
               <h2 class="ad-title mb-0">
                 {{ ad.centerName }}
               </h2>
 
-              <span
-                class="badge"
-                [class.premium]="ad.isPremium"
-              >
+              <span class="badge" [class.premium]="ad.isPremium">
                 {{ ad.isPremium ? 'Featured' : 'Listed' }}
               </span>
             </div>
@@ -99,23 +78,14 @@
           </div>
 
           <div class="ad-footer d-flex justify-content-between align-items-center mt-3">
-            <div class="small">
-              ★ {{ ad.rating }} ({{ ad.reviewCount }})
-            </div>
+            <div class="small">★ {{ ad.rating }} ({{ ad.reviewCount }})</div>
 
-            <a
-              class="btn btn-outline-dark btn-sm"
-              [routerLink]="['/tuition', ad.slug]"
-            >
+            <a class="btn btn-outline-dark btn-sm" [routerLink]="['/tuition', ad.slug]">
               View Details
             </a>
           </div>
-
         </article>
       </div>
-
     }
-
   </div>
-
 </section>

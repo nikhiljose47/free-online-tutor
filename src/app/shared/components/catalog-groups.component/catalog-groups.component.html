@@ -1,26 +1,62 @@
 <section class="catalog">
   <div class="catalog-surface">
-    <!-- GROUP -->
-    <div class="catalog-group" *ngFor="let g of groupsArray()">
-      <!-- GROUP TITLE -->
-      <div class="group-header">
-        <span class="group-icon">
-          {{ primaryGroupIcons[g.key] }}
-        </span>
-        <h2 class="group-title">
-          {{ slugToText(g.key) }}
-        </h2>
-      </div>
+    <div class="catalog-block">
+      <div class="catalog-main-grid">
+        <ng-container *ngFor="let g of groupsArray()">
+          <!-- NORMAL GROUPS (non-kids first) -->
+          <ng-container *ngIf="!g.key.toLowerCase().includes('kids')">
+            <div class="catalog-group">
+              <div class="group-header">
+                <span class="group-icon-circle">
+                  {{ primaryGroupIcons[g.key] }}
+                </span>
 
-      <!-- ITEMS -->
-      <div class="catalog-items">
-        <button class="catalog-item" *ngFor="let item of g.value" (click)="openItem(item)">
-          <span class="item-name">
-            {{ item.title }}
-          </span>
+                <h3 class="group-title">
+                  {{ slugToText(g.key) }}
+                </h3>
+              </div>
 
-          <span class="item-arrow"> → </span>
-        </button>
+              <div class="catalog-items">
+                <button class="catalog-item" *ngFor="let item of g.value" (click)="openItem(item)">
+                  <span class="item-name">
+                    {{ item.title }}
+                  </span>
+
+                  <span class="item-arrow"> → </span>
+                </button>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- KIDS GROUP → ALWAYS LAST -->
+          <ng-container *ngIf="g.key.toLowerCase().includes('kids')">
+            <div class="catalog-group kids-block">
+              <div class="group-header">
+                <span class="group-icon-circle kids-icon">
+                  {{ primaryGroupIcons[g.key] }}
+                </span>
+
+                <h3 class="group-title">
+                  {{ slugToText(g.key) }}
+                </h3>
+              </div>
+
+              <div class="catalog-items">
+                <button
+                  class="catalog-item kids-item"
+                  *ngFor="let item of g.value"
+                  (click)="openItem(item)"
+                >
+                  <span class="item-name">
+                    {{ item.title }}
+                  </span>
+
+                  <span class="item-arrow"> → </span>
+                </button>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
       </div>
     </div>
   </div>

@@ -1,0 +1,135 @@
+<section class="cp-root container-fluid px-0">
+  <!-- HEADER -->
+  <div class="cp-header d-flex justify-content-between align-items-center px-4 py-3">
+    <div>
+      <h4 class="cp-title mb-0">{{ syllabus()?.className }}</h4>
+      <small class="cp-sub"> {{ syllabus()?.syllabus_year }} • {{ syllabus()?.source }} </small>
+    </div>
+    <div class="cp-chip">{{ syllabus()?.code_prefix }}</div>
+  </div>
+
+  <div class="cp-body row g-0">
+    <!-- LEFT -->
+    <div class="col-lg-8 col-12 cp-left">
+      <!-- HERO -->
+      <div class="cp-hero p-4">
+        <div class="cp-hero-card">
+          <div *ngIf="selectedChapter(); else emptyState">
+            <h2 class="cp-hero-title">
+              {{ selectedChapter()?.name }}
+            </h2>
+
+            <div class="cp-hero-meta">
+              {{ selectedSubjectName() }} • {{ selectedChapter()?.division_count }} divisions
+            </div>
+
+            <div class="cp-tags mt-3 d-flex flex-wrap gap-2">
+              <span class="cp-tag" *ngFor="let a of selectedChapter()?.agenda">
+                {{ a }}
+              </span>
+            </div>
+          </div>
+
+          <ng-template #emptyState>
+            <div class="cp-empty">Select a chapter to start learning</div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- TABS -->
+      <div class="cp-tabs px-4">
+        <div class="cp-tab-header d-flex gap-4">
+          <div
+            class="cp-tab"
+            [class.active]="activeTab() === 'overview'"
+            (click)="activeTab.set('overview')"
+          >
+            Overview
+          </div>
+
+          <div
+            class="cp-tab"
+            [class.active]="activeTab() === 'divisions'"
+            (click)="activeTab.set('divisions')"
+          >
+            Divisions
+          </div>
+
+          <div
+            class="cp-tab"
+            [class.active]="activeTab() === 'instructions'"
+            (click)="activeTab.set('instructions')"
+          >
+            Instructions
+          </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="cp-tab-body mt-3">
+          <!-- OVERVIEW -->
+          <div *ngIf="activeTab() === 'overview' && selectedChapter()">
+            <div class="cp-section">
+              <h6 class="cp-sec-title">Teacher Aids</h6>
+
+              <div class="cp-list">
+                <div *ngFor="let t of selectedChapter()?.teacher_aids">• {{ t }}</div>
+              </div>
+            </div>
+
+            <div class="cp-section mt-4">
+              <h6 class="cp-sec-title">Learning Mix</h6>
+
+              <div class="cp-mix d-flex gap-3">
+                <div>Theory {{ selectedChapter()?.learning_mode_mix?.theoretical }}%</div>
+                <div>Practical {{ selectedChapter()?.learning_mode_mix?.practical }}%</div>
+                <div>Discussion {{ selectedChapter()?.learning_mode_mix?.discussion }}%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DIVISIONS -->
+          <div *ngIf="activeTab() === 'divisions' && selectedChapter()">
+            <div
+              class="cp-division-card p-3 mb-3"
+              *ngFor="let d of selectedChapter()?.divisions; let i = index"
+            >
+              <div class="d-flex justify-content-between">
+                <strong>{{ i + 1 }}. {{ d.name }}</strong>
+                <span class="cp-badge">{{ d.difficulty_level }}</span>
+              </div>
+
+              <div class="cp-mini mt-2">
+                {{ d.time_estimate_min }} mins • {{ d.meta.exam_weight }}
+              </div>
+
+              <div class="cp-mini mt-2">
+                {{ d.conceptual_understanding[0] }}
+              </div>
+            </div>
+          </div>
+
+          <!-- INSTRUCTIONS -->
+          <div *ngIf="activeTab() === 'instructions' && selectedChapter()">
+            <div
+              class="cp-ins-card p-3 mb-2"
+              *ngFor="let ins of selectedChapter()?.session_instructions"
+            >
+              <strong>{{ ins.type }}</strong>
+              <div>{{ ins.text }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- RIGHT PANEL -->
+    <course-sidebar
+      class="col-lg-4 col-12 cp-right"
+      [subjects]="subjects"
+      [chapters]="chapters"
+      [selectedSubject]="selectedSubject"
+      [selectedChapter]="selectedChapter"
+      (selectSubject)="selectSubject($event)"
+      (selectChapter)="selectChapter($event)"
+    ></course-sidebar>
+  </div>
+</section>
