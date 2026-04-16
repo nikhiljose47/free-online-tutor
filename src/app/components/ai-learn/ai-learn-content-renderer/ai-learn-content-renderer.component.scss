@@ -1,0 +1,118 @@
+:host {
+  display: block;
+  width: 100%;
+  background: transparent !important;
+}
+
+/* ROOT — kill any card + force left flow */
+.content-root {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* FLOW — strict reading column (left anchored) */
+.content-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  max-width: 720px;
+  margin: 0; /* 🔥 no centering */
+  padding: 0;
+}
+
+/* TITLE */
+.title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-align: left;
+}
+
+/* PARA */
+.para {
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: #374151;
+  text-align: left;
+  width: 100%;
+  word-break: break-word;
+}
+
+/* LIST */
+.list {
+  padding-left: 16px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #374151;
+  font-size: 13.5px;
+  width: 100%;
+}
+
+.list li {
+  line-height: 1.6;
+}
+
+/* CODE */
+.code {
+  background: #0f172a;
+  color: #e5e7eb;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  border: 1px solid #1f2937;
+  width: 100%;
+}
+
+/* IMAGE */
+.image-wrap {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.image-wrap img {
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  object-fit: cover;
+}
+
+/* SCROLL */
+:host {
+  scroll-behavior: smooth;
+}
+
+/* MOBILE */
+@media (max-width: 640px) {
+  .content-flow {
+    max-width: 100%;
+    gap: 12px;
+  }
+
+  .title {
+    font-size: 14.5px;
+  }
+
+  .para,
+  .list {
+    font-size: 13px;
+  }
+
+  .code {
+    font-size: 12px;
+    padding: 10px;
+  }
+}

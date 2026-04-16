@@ -16,6 +16,7 @@ export class AiChatGatewayService {
   private cache = new Map<string, string>();
 
   readonly loading = signal(false);
+
   private resolveModel(type?: AiModelType, priority?: 'low' | 'medium' | 'high') {
     const models = environment.aiModels;
 
@@ -69,15 +70,18 @@ export class AiChatGatewayService {
         }),
 
         catchError((err: HttpErrorResponse) => {
-          // 🔥 FULL ERROR LOGGING
-          console.group('❌ AI API ERROR');
-          console.log('Status:', err.status);
-          console.log('Message:', err.message);
-          console.log('Error Body:', err.error);
-          console.log('Headers:', err.headers);
-          console.log('Request Model:', model);
-          console.log('Request Body:', body);
-          console.groupEnd();
+          const retryAfter = err.headers?.get?.('retry-after');
+
+          // 🔥 ESSENTIAL LOG ONLY
+          console.error(
+            'AI_ERROR',
+            {
+              status: err.status,
+              retryAfter,
+              message: err.error?.error?.message || err.message,
+              model
+            }
+          );
 
           return of('Something went wrong. Please try again.');
         }),

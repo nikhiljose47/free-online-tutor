@@ -5,21 +5,43 @@ $test-color: #f5faf8;
   scroll-margin-top: 2rem;
 }
 
-
-
-/* =====================================================
-   PAGE LAYOUT
-===================================================== */
-
 .class-details-page {
   min-height: 100%;
   padding: 0;
   margin: 0 4%;
   // background: #ffffff;
 }
-/* =====================================================
-   HEADER
-===================================================== */
+
+.class-title {
+  margin: 0;
+  padding: 2px 0px;
+
+  font-weight: 650;
+  font-size: clamp(1.1rem, 1.9vw, 1.5rem);
+  line-height: 1.2;
+
+  color: #0f172a;
+  letter-spacing: -0.3px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cp-sub {
+  font-size: clamp(0.5rem, 1vw, 0.75rem);
+  letter-spacing: -0.1px;
+  color: #6b7280;
+}
+
+.cp-chip {
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #eef2ff;
+  color: #4338ca;
+}
+
 
 .class-header {
   background: $test-color;
@@ -234,35 +256,6 @@ $test-color: #f5faf8;
 }
 
 
-.class-title {
-  margin: 0;
-  padding: 14px 0px;
-
-  font-weight: 600;
-  font-size: clamp(1.4rem, 2.2vw, 1.8rem); /* responsive scaling */
-  line-height: 1.2;
-
-  color: #0f172a;
-  letter-spacing: -0.3px;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.cp-sub {
-  font-size: 12px;
-  color: #6b7280;
-  padding: 0px 6px;
-}
-
-.cp-chip {
-  font-size: 11px;
-  padding: 5px 10px;
-  border-radius: 20px;
-  background: #eef2ff;
-  color: #4338ca;
-}
 
 /* =====================================================
    STICKY NAV
@@ -274,12 +267,12 @@ $test-color: #f5faf8;
   z-index: 10;
 
   margin: 0 0;
- // background: $test-color;
+  // background: $test-color;
   // color: $head-color;
 
   // border-radius: 0 0 10px 10px;
   //border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-//  border-bottom: 0.1px solid #e6ebf2;
+  //  border-bottom: 0.1px solid #e6ebf2;
   //backdrop-filter: blur(8px);
 }
 
@@ -320,6 +313,7 @@ $test-color: #f5faf8;
 }
 
 .tab-content {
+  margin-top: 0.4rem;
   background: #f8f9fb;
 }
 

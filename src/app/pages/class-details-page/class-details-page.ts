@@ -107,9 +107,10 @@ export class ClassDetailsPage implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
-    this.puzzleApi.getPuzzleCollection('CL10', 'math').subscribe((res) => {
-      console.log('Puzzle collection:', res);
-    });
+    //todo
+    // this.puzzleApi.getPuzzleCollection('CL10', 'math').subscribe((res) => {
+    //   console.log('Puzzle collection:', res);
+    // });
   }
 
   loadData() {

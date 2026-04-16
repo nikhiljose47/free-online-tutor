@@ -1,0 +1,126 @@
+.badge-root {
+  z-index: 2;
+  pointer-events: none;
+}
+
+.badge-card {
+  pointer-events: auto;
+  width: 190px;
+  padding: 8px 8px 8px 8px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e6e9ee;
+  display: flex;
+  align-items: center;
+  gap: 6px; /* reduced gap */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* LEFT (take max space, remove dead gap) */
+.badge-left {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* HEADER */
+.badge-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.badge-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.badge-time {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 9px;
+  color: #6b7280;
+}
+
+.badge-time .time {
+  font-weight: 600;
+  color: #111827;
+}
+
+/* SUB */
+.badge-sub {
+  font-size: 10px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+/* ARROW PROGRESS (denser + tighter) */
+.progress-wrap {
+  margin-top: 6px;
+}
+
+.arrow-track {
+  display: flex;
+  gap: 2px; /* tighter spacing */
+}
+
+.arrow-step {
+  flex: 1;
+  height: 8px; /* reduced height */
+  background: #e5e7eb;
+  clip-path: polygon(0 0, 82% 0, 100% 50%, 82% 100%, 0 100%);
+  transition: background 0.2s ease;
+}
+
+/* COMPLETED */
+.arrow-step.done {
+  background: #166534;
+}
+
+/* CURRENT */
+.arrow-step.active {
+  background: #22c55e;
+}
+
+/* RIGHT (shrink + pull closer) */
+.badge-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* POINTS */
+.points {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #16a34a;
+}
+
+.points i {
+  font-size: 10px;
+}
+
+/* LEVEL DOT */
+.level-dot {
+  font-size: 8.5px;
+  font-weight: 600;
+  color: #1d4ed8;
+  background: #eef2ff;
+  padding: 2px 4px;
+  border-radius: 999px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .badge-card {
+    width: 200px;
+    padding: 8px 8px;
+  }
+}

@@ -51,7 +51,6 @@ export class SyllabusLookupService {
 
         return this.syllabusRepo.loadClass(classFileName).pipe(
           map((data) => {
-            console.log('🚀 repo data:', data);
             return this.normalize(data);
           }),
         );

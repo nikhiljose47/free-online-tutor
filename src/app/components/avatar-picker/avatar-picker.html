@@ -1,49 +1,60 @@
-<div class="card border-0 shadow-sm p-4">
-  <!-- HEADER -->
-  <div class="mb-3">
-    <h4 class="fw-semibold mb-1">Photo</h4>
-    <div class="text-muted small">Choose a profile avatar</div>
-  </div>
+<div class="container-fluid p-0">
+  <div class="mx-auto" style="max-width: 420px">
 
-  <!-- PREVIEW CENTER -->
-  <div class="d-flex flex-column align-items-center justify-content-center mb-4">
-    <div class="avatar-preview mb-2">
-      <img
-        *ngIf="selectedAvatar()"
-        [src]="getAvatarUrl(selectedAvatar()!)"
-        class="rounded-circle"
-        width="120"
-        height="120"
-      />
+    <!-- HEADER -->
+    <div class="mb-4">
+      <h5 class="fw-semibold mb-1">Profile photo</h5>
+      <div class="text-muted small">Pick a clean avatar</div>
+    </div>
 
-      <div
-        *ngIf="!selectedAvatar()"
-        class="rounded-circle bg-light d-flex align-items-center justify-content-center"
-        style="width: 120px; height: 120px"
-      >
-        <span class="text-muted">No Avatar</span>
+    <!-- PREVIEW -->
+    <div class="d-flex flex-column align-items-center mb-4">
+      <div class="position-relative mb-2">
+        <img
+          *ngIf="selectedAvatar()"
+          [src]="getAvatarUrl(selectedAvatar()!)"
+          width="104"
+          height="104"
+          class="rounded-circle border"
+          style="object-fit:cover; background:#f5f7fa"
+        />
+
+        <div
+          *ngIf="!selectedAvatar()"
+          class="rounded-circle border d-flex align-items-center justify-content-center text-muted small"
+          style="width:104px;height:104px;background:#f5f7fa"
+        >
+          Add
+        </div>
+      </div>
+
+      <div class="fw-medium small text-dark">
+        {{ profile()?.name || 'Student' }}
       </div>
     </div>
 
-    <div class="fw-medium">{{ profile()?.name || 'Student' }}</div>
-  </div>
-
-  <!-- AVATAR SELECTOR (BOTTOM) -->
-  <div class="avatar-grid-bottom">
-    <div
-      *ngFor="let a of avatars"
-      class="avatar-item small"
-      [class.active]="selectedAvatar() === a"
-      (click)="selectAvatar(a)"
-    >
-      <img [src]="getAvatarUrl(a)" />
+    <!-- GRID -->
+    <div class="avatar-grid">
+      <div
+        *ngFor="let a of avatars"
+        (click)="selectAvatar(a)"
+        class="avatar-tile"
+        [class.active]="selectedAvatar() === a"
+      >
+        <img [src]="getAvatarUrl(a)" />
+      </div>
     </div>
-  </div>
 
-  <!-- ACTION -->
-  <div class="mt-4 d-flex justify-content-end">
-    <button class="btn btn-dark btn-sm" [disabled]="!selectedAvatar()" (click)="saveProfile()">
-      Save
-    </button>
+    <!-- ACTION -->
+    <div class="pt-4">
+      <button
+        class="btn w-100 btn-dark rounded-pill"
+        [disabled]="!selectedAvatar()"
+        (click)="saveProfile()"
+      >
+        Save changes
+      </button>
+    </div>
+
   </div>
 </div>

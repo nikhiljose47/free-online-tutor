@@ -1,0 +1,65 @@
+<section class="lt-quiz-shell d-flex flex-column h-100">
+  <!-- Header -->
+  <div class="lt-quiz-header d-flex align-items-center justify-content-between px-3 py-2">
+    <div class="d-flex align-items-center gap-2">
+      <div class="lt-dot"></div>
+      <div class="lt-title">{{ quizTitle() }}</div>
+    </div>
+    <div class="lt-progress-text">{{ currentIndex() + 1 }} / {{ totalQuestions() }}</div>
+  </div>
+
+  <!-- Progress -->
+  <div class="lt-progress-bar">
+    <div
+      class="lt-progress-fill"
+      [style.width.%]="((currentIndex() + 1) / totalQuestions()) * 100"
+    ></div>
+  </div>
+
+  <!-- Body (takes remaining space only) -->
+  <div class="lt-quiz-body px-3 py-4 flex-grow-1 overflow-auto">
+    <!-- Question -->
+    <div class="lt-question mb-4">
+      {{ currentQuestion().question }}
+    </div>
+
+    <!-- MCQ -->
+    <div *ngIf="currentQuestion()?.type !== 'puzzle'" class="lt-options d-grid gap-2">
+      <button
+        *ngFor="let opt of currentQuestion()?.options; let i = index"
+        class="lt-option-btn"
+        [class.active]="selectedAnswer() === i"
+        (click)="selectOption(i)"
+      >
+        <span class="lt-option-index">{{ i + 1 }}</span>
+        <span class="lt-option-text">{{ opt }}</span>
+      </button>
+    </div>
+
+    <!-- Puzzle -->
+    <div *ngIf="currentQuestion()?.type === 'puzzle'" class="lt-options d-grid gap-2">
+      <button
+        *ngFor="let item of currentQuestion()?.items; let i = index"
+        class="lt-option-btn"
+        [class.active]="selectedOrder().includes(i)"
+        (click)="toggleOrder(i)"
+      >
+        <span class="lt-option-index">
+          {{ selectedOrder().includes(i) ? selectedOrder().indexOf(i) + 1 : '' }}
+        </span>
+        <span class="lt-option-text">{{ item }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer (normal flow, no sticky) -->
+  <div class="lt-quiz-footer d-flex justify-content-between align-items-center px-3 py-3">
+    <button class="btn lt-btn-secondary" (click)="prev()" [disabled]="currentIndex() === 0">
+      Back
+    </button>
+
+    <button class="btn lt-btn-primary" (click)="next()" [disabled]="!canProceed()">
+      {{ isLast() ? 'Submit' : 'Next' }}
+    </button>
+  </div>
+</section>

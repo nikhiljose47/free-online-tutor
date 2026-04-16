@@ -1,0 +1,23 @@
+<div class="result-root">
+  <div class="card result-card">
+    <!-- TITLE -->
+    <div class="title">
+      {{ title() }}
+    </div>
+
+    <!-- FEEDBACK -->
+    <div class="body">
+      {{ feedback }}
+    </div>
+
+    <!-- POINTS -->
+    <div class="points" *ngIf="isCorrect && points > 0">
+      {{ pointsText() }}
+    </div>
+
+    <!-- ACTION -->
+    <div class="action">
+      <button class="primary" (click)="onNext()">Continue</button>
+    </div>
+  </div>
+</div>

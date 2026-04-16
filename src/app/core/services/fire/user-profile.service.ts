@@ -3,6 +3,7 @@ import { effect, Injectable, signal } from '@angular/core';
 import { FirestoreDocService } from './firestore-doc.service';
 import { UserModel } from '../../../models/fire/user.model';
 import { catchError, of, tap } from 'rxjs';
+import { Timestamp } from '@angular/fire/firestore';
 
 @Injectable({ providedIn: 'root' })
 export class UserProfileService {
@@ -76,7 +77,6 @@ export class UserProfileService {
       catchError(() => of(null)),
     );
   }
-  
 
   //🛠 System/admin overrides → set  (but only updates points and not totalPoints)
   // usage: this.userProfile.setPoints(100, 'admin')
@@ -105,6 +105,31 @@ export class UserProfileService {
           points: value,
         },
         updatedAt: new Date(),
+      })
+      .pipe(catchError(() => of(null)));
+  }
+
+
+  updateProfile(data: Partial<UserModel>) {
+    const uid = this.auth.uid;
+    if (!uid) return of(null);
+
+    const now = Timestamp.now();
+
+    // instant UI
+    this.profile.update((p) => {
+      if (!p) return p;
+      return {
+        ...p,
+        ...data,
+        updatedAt: now, // ✅ correct type
+      } as UserModel;
+    });
+
+    return this.fire
+      .update('users', uid, {
+        ...data,
+        updatedAt: now,
       })
       .pipe(catchError(() => of(null)));
   }

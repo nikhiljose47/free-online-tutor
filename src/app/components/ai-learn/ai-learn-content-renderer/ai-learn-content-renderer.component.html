@@ -1,0 +1,34 @@
+<div class="content-root">
+
+  <div class="content-flow">
+    <ng-container *ngFor="let block of parsed(); trackBy: trackByBlock">
+
+      <div *ngIf="block.type === 'title'" class="title">
+        {{ block.value }}
+      </div>
+
+      <p *ngIf="block.type === 'para'" class="para">
+        {{ block.value }}
+      </p>
+
+      <ul *ngIf="block.type === 'list'" class="list">
+        <li *ngFor="let item of block.value; trackBy: trackByItem">
+          {{ item }}
+        </li>
+      </ul>
+
+      <pre *ngIf="block.type === 'code'" class="code"><code>{{ block.value }}</code></pre>
+
+      <div *ngIf="block.type === 'image'" class="image-wrap">
+        <img
+          [src]="block.value"
+          loading="lazy"
+          decoding="async"
+          referrerpolicy="no-referrer"
+        />
+      </div>
+
+    </ng-container>
+  </div>
+
+</div>

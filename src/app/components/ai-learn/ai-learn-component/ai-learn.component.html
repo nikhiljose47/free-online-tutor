@@ -1,0 +1,58 @@
+<div class="ai-learn-root position-relative">
+  <!-- BADGE (top-right, independent, no layout shift) -->
+  <ai-learn-badge
+    class="position-absolute top-0 end-0"
+    [progress]="progress"
+    [points]="score"
+  ></ai-learn-badge>
+
+  <!-- CONTENT -->
+  <div class="content-area" #container>
+    <div class="chat-surface">
+      <div class="skeleton" *ngIf="loading()">
+        <div class="line w-40"></div>
+        <div class="line w-100"></div>
+        <div class="line w-90"></div>
+      </div>
+
+      <ng-container *ngIf="!loading() && currentStep() as step">
+        <ai-learn-result-card
+          *ngIf="showResult()"
+          [isCorrect]="isCorrect()"
+          [feedback]="feedback()"
+          [points]="gainedPoints()"
+          (next)="onResultNext()"
+        ></ai-learn-result-card>
+
+        <ng-container *ngIf="!showResult()">
+          <div *ngIf="step.type === 'content'" class="content-block">
+            <ai-content-renderer [content]="step.body"></ai-content-renderer>
+          </div>
+
+          <div *ngIf="step.type === 'question'" class="question-block">
+            <div class="title">{{ step.title }}</div>
+            <ai-content-renderer [content]="step.body"></ai-content-renderer>
+
+            <textarea
+              class="answer-box"
+              [value]="answer()"
+              (input)="answer.set($any($event.target).value)"
+              placeholder="Write your answer..."
+            ></textarea>
+
+            <button class="primary" (click)="submit()" [disabled]="loading() || !answer().trim()">
+              Submit
+            </button>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- ACTION BAR -->
+  <div class="action-bar">
+    <button class="primary" (click)="next()" [disabled]="loading()">
+      {{ showResult() ? 'Continue' : 'Next' }}
+    </button>
+  </div>
+</div>

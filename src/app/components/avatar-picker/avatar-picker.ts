@@ -14,7 +14,6 @@ import { AVATARS } from '../../core/constants/app.constants';
 })
 export class AvatarPickerComponent implements OnInit {
   private profileSvc = inject(UserProfileService);
-  private toast = inject(ToastService);
 
   readonly profile = this.profileSvc.profile;
   readonly selectedAvatar = signal<string | null>(null);
@@ -51,6 +50,17 @@ export class AvatarPickerComponent implements OnInit {
     //     this.saving.set(false);
     //   }
     // });
+  }
+
+  ngOnDestroy() {
+    if (this.selectedAvatar() && this.selectedAvatar() !== this.profile()?.avatarId) {
+      this.profileSvc
+        .updateProfile({
+          name: 'Nikhil',
+          avatarId: this.selectedAvatar() ?? '',
+        })
+        .subscribe();
+    }
   }
 
   getAvatarUrl(id: string) {

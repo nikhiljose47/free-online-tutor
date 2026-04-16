@@ -1,0 +1,59 @@
+<div class="lt-shell d-flex align-items-center justify-content-center">
+  <div class="lt-frame">
+    <!-- Loading -->
+    @if (loading()) {
+      <div class="lt-skeleton w-100 h-100"></div>
+    }
+
+    <!-- Slides Completed → Navigation -->
+    @if (!loading() && isSlides()) {
+      <div
+        class="lt-content d-flex flex-column justify-content-center align-items-center text-center h-100"
+      >
+        <div class="lt-title"> Time to learn something new today!</div>
+         
+
+        <div class="lt-actions mt-4">
+            <button class="btn btn-dark px-4 me-2" (click)="goToQuestion()">
+           Watch Video & Solve Problem
+          </button>
+
+          <button class="btn btn-dark px-4 me-2" (click)="goToQuestion()">
+           Solve Problem Directly & Earn Points
+          </button>
+          <button class="btn btn-outline-dark px-4" (click)="goToLearn()">Explore More</button>
+        </div>
+      </div>
+    }
+
+    <!-- Question Completed → Navigation -->
+    @if (!loading() && isQuestion()) {
+      <div
+        class="lt-content d-flex flex-column justify-content-center align-items-center text-center h-100"
+      >
+        <div class="lt-title">Nice work! Video completed.</div>
+
+        <div class="lt-actions mt-4">
+          <button class="btn btn-dark px-4 me-2" (click)="goToQuestion()">
+            Solve Problem + Earn Points
+          </button>
+          <button class="btn btn-outline-dark px-4" (click)="goToLearn()">Study More</button>
+        </div>
+      </div>
+    }
+
+        <!-- Question Completed → Navigation -->
+    @if (!loading() && isLearn()) {
+      <div
+        class="lt-content d-flex flex-column justify-content-center align-items-center text-center h-100"
+      >
+        <div class="lt-title">Great progress. Dive deeper into the topic.</div>
+
+        <div class="lt-actions mt-4">
+          <button class="btn btn-dark px-4" (click)="goToLearn()">Continue Learning</button>
+        </div>
+      </div>
+    }
+
+  </div>
+</div>

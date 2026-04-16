@@ -1,0 +1,136 @@
+:host {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  color: #0f172a;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* equal margin all sides */
+.lt-shell {
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  display: flex;
+}
+
+/* subtle glass card (no border) */
+.lt-frame {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+
+  border-radius: 18px;
+  padding: 6px;
+
+  background: rgba(234, 237, 237, 0.973);
+  backdrop-filter: blur(8px);
+
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.08);
+
+  display: flex;
+}
+
+/* inner content FULL height */
+.lt-content {
+  flex: 1;
+  width: 100%;
+
+  border-radius: 14px;
+  padding: 20px 16px;
+
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  animation: fadeIn 0.35s ease;
+}
+
+/* text */
+.lt-title {
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  text-align: center;
+}
+
+/* actions */
+.lt-actions {
+  margin-top: 14px;
+
+  .btn {
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-weight: 500;
+    font-size: 14px;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+
+  .btn-dark {
+    background: #0f172a;
+    border: none;
+  }
+
+  .btn-outline-dark {
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    color: #0f172a;
+  }
+
+  .btn:active {
+    transform: scale(0.97);
+    opacity: 0.9;
+  }
+}
+
+/* skeleton */
+.lt-skeleton {
+  flex: 1;
+  border-radius: 14px;
+  background: linear-gradient(90deg, #e5e7eb 25%, #f1f5f9 50%, #e5e7eb 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.1s linear infinite;
+}
+
+/* animations (kept from latest) */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* mobile */
+@media (max-width: 768px) {
+  .lt-shell {
+    padding: 12px;
+  }
+
+  .lt-frame {
+    border-radius: 14px;
+    padding: 10px;
+  }
+
+  .lt-content {
+    padding: 16px 12px;
+  }
+
+  .lt-title {
+    font-size: 16px;
+  }
+}

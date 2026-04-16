@@ -1,0 +1,19 @@
+<svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .bg{fill:#0b0b0c}
+    .ring{fill:none;stroke:#fff;stroke-width:3;stroke-dasharray:6 8;opacity:.6;animation:r 4s linear infinite}
+    .arc{fill:none;stroke:#fff;stroke-width:4;stroke-linecap:round;stroke-dasharray:251;stroke-dashoffset:251;animation:p 4s ease-out forwards}
+    .t{fill:#fff;font-size:22px;text-anchor:middle;opacity:0;animation:f .6s 2.5s forwards}
+    .d{fill:#9ca3af;font-size:13px;text-anchor:middle;opacity:0;animation:f .6s 2.9s forwards}
+    @keyframes r{to{transform:rotate(360deg)}}
+    @keyframes p{to{stroke-dashoffset:0}}
+    @keyframes f{to{opacity:1}}
+  </style>
+  <rect class="bg" width="100%" height="100%"/>
+  <g transform="translate(300,150)">
+    <circle r="60" class="ring"/>
+    <circle r="40" class="arc"/>
+  </g>
+  <text x="300" y="210" class="t" data-key="title">App</text>
+  <text x="300" y="235" class="d" data-key="date">Date</text>
+</svg>

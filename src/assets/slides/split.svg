@@ -1,0 +1,49 @@
+<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- BASE -->
+  <rect width="100%" height="100%" fill="#ffffff"/>
+
+  <!-- LEFT TEXT (58%) -->
+  <text x="174" y="110"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    font-size="22"
+    fill="#0f172a"
+    data-key="left">
+
+    Left Text
+  </text>
+
+  <!-- RIGHT PANEL BASE (42%) -->
+  <rect x="348" y="0" width="252" height="220" fill="#ffffff"/>
+
+  <!-- RIGHT PANEL FILL -->
+  <rect x="600" y="0" width="252" height="220"
+    fill="#16a34a">
+
+    <animate attributeName="x"
+      from="600" to="348"
+      dur="1.1s"
+      begin="0.15s"
+      fill="freeze"/>
+  </rect>
+
+  <!-- RIGHT TEXT -->
+  <text x="474" y="110"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    font-size="22"
+    fill="#ffffff"
+    opacity="0"
+    data-key="right">
+
+    Right Text
+
+    <animate attributeName="opacity"
+      from="0" to="1"
+      dur="0.5s"
+      begin="1.2s"
+      fill="freeze"/>
+  </text>
+
+</svg>

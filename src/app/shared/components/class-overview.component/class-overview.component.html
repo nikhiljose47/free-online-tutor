@@ -1,105 +1,97 @@
-<section class="class-layout">
+<section class="lx-shell">
   <!-- MAIN -->
-  <div class="class-main">
-    <section class="class-overview">
-      <!-- HEADER (fixed alignment issue) -->
-      <header class="overview-header">
-        <div class="header-left">
-          <h2 class="overview-title">Progress</h2>
-        </div>
-      </header>
+  <main class="lx-main">
+    <section class="lx-flow">
+      <flow-orchestrator />
+    </section>
 
-      <!-- BATCH STRIP -->
-      <section class="batch-strip" *ngIf="dashboard() as db">
-        <div class="batch-list">
+    <section class="lx-overview">
+      <section class="lx-batch" *ngIf="dashboard() as db">
+        <div class="lx-batch-track">
           <button
             type="button"
-            class="batch-card"
-            *ngFor="let b of db.live"
+            class="lx-batch-card live"
+            *ngFor="let b of db.live; trackBy: trackBatch"
             [class.active]="selectedBatchId() === b.id"
             (click)="onSelectBatch(b)"
           >
-            <div class="batch-name">{{ b.label }}</div>
-            <div class="batch-meta">
+            <div class="lx-batch-name">{{ b.label }}</div>
+            <div class="lx-batch-meta">
               <span>{{ b.startAt.toDate() | date: 'hh:mm a' }}</span>
-              <span class="status live">live</span>
+              <span class="lx-tag live">Live</span>
             </div>
           </button>
 
           <button
             type="button"
-            class="batch-card"
-            *ngFor="let b of db.upcoming"
+            class="lx-batch-card upcoming"
+            *ngFor="let b of db.upcoming; trackBy: trackBatch"
             [class.active]="selectedBatchId() === b.id"
             (click)="onSelectBatch(b)"
           >
-            <div class="batch-name">{{ b.label }}</div>
-            <div class="batch-meta">
+            <div class="lx-batch-name">{{ b.label }}</div>
+            <div class="lx-batch-meta">
               <span>{{ b.startAt.toDate() | date: 'hh:mm a' }}</span>
-              <span class="status upcoming">upcoming</span>
+              <span class="lx-tag upcoming">Upcoming</span>
             </div>
           </button>
         </div>
       </section>
 
-      <!-- BODY -->
-      <section class="overview-body" *ngIf="selectedBatch() as data">
-        <div class="overview-top">
-          <div class="enroll" [class.open]="data.isEnrollmentOpen">
-            {{ data.isEnrollmentOpen ? 'Enrollment Open' : 'Enrollment Closed' }}
+      <section class="lx-body" *ngIf="selectedBatch() as data">
+        <div class="lx-top">
+          <div class="lx-enroll" [class.open]="data.isEnrollmentOpen">
+            {{ data.isEnrollmentOpen ? 'Enrollment Open' : 'Closed' }}
           </div>
 
-          <div class="stats">
-            <div class="stat">
+          <div class="lx-stats">
+            <div class="lx-stat">
               <h3>{{ data.enrolledCount }}</h3>
               <p>Students</p>
             </div>
 
-            <div class="stat">
+            <div class="lx-stat">
               <h3>{{ dashboard()?.total }}</h3>
               <p>Batches</p>
             </div>
 
-            <div class="stat">
+            <div class="lx-stat">
               <h3>{{ dashboard()?.upcomingCount }}</h3>
               <p>Upcoming</p>
             </div>
           </div>
         </div>
 
-        <!-- SUBJECTS -->
-        <section class="subjects">
-          <div class="subject" *ngFor="let s of mergedSubjectProgress()">
-            <div class="subject-head">
+        <section class="lx-subjects">
+          <div class="lx-subject" *ngFor="let s of mergedSubjectProgress(); trackBy: trackSubject">
+            <div class="lx-subject-head">
               <h4>{{ s.subjectName }}</h4>
 
-              <div class="subject-meta">
-                <span class="chip chip-not-started" *ngIf="s.status === 'not-started'">
+              <div class="lx-meta">
+                <span class="lx-chip neutral" *ngIf="s.status === 'not-started'">
                   Not Started
                 </span>
 
-                <span class="chip chip-current" *ngIf="s.status === 'in-progress'">
+                <span class="lx-chip active" *ngIf="s.status === 'in-progress'">
                   {{ s.currentChapterName }}
                 </span>
 
-                <span class="progress-text">
-                  {{ s.total ? s.currentIndex : 0 }} / {{ s.total }}
-                </span>
+                <span class="lx-progress"> {{ s.total ? s.currentIndex : 0 }}/{{ s.total }} </span>
               </div>
             </div>
 
-            <div class="progress-bar">
-              <div class="progress-fill" [style.width.%]="s.percent"></div>
+            <div class="lx-progress-bar">
+              <div class="lx-progress-fill" [style.width.%]="s.percent"></div>
             </div>
           </div>
         </section>
       </section>
     </section>
-  </div>
+  </main>
 
-  <!-- SIDEBAR (always right pinned) -->
-  <aside class="class-sidebar">
-    <div class="sidebar-inner">
+  <!-- SIDEBAR (hidden on small screens → prevents overlay issue) -->
+  <aside class="lx-sidebar d-none d-lg-block">
+    <div class="lx-sidebar-inner">
       <course-sidebar
         [subjects]="viewState.state.subjects"
         [chapters]="viewState.state.chapters"

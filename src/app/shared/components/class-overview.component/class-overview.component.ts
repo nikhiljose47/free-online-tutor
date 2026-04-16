@@ -26,6 +26,7 @@ import {
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { LearningViewState } from '../../state/learning-view-state';
 import { CourseSidebarComponent } from '../course-sidebar.component/course-sidebar.component';
+import { FlowOrchestratorComponent } from '../../../components/flow-orchestrator/flow-orchestrator.component';
 
 interface DashBoard {
   total: number;
@@ -39,7 +40,11 @@ interface DashBoard {
 @Component({
   selector: 'class-overview',
   standalone: true,
-  imports: [CommonModule, CourseSidebarComponent],
+  imports: [
+    CommonModule,
+    CourseSidebarComponent,
+    FlowOrchestratorComponent
+  ],
   templateUrl: './class-overview.component.html',
   styleUrls: ['./class-overview.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -67,14 +72,13 @@ export class ClassOverviewComponent implements OnInit {
       filter(Boolean),
       distinctUntilChanged(),
       switchMap((id) => {
-        console.log('🚀 API CALL:', id);
         return this.service.loadClass(id);
       }),
     ),
     { initialValue: null },
   );
   private syllabus$ = toObservable(this.syllabus);
-  
+
   selectedBatch = computed(() => {
     const db = this.dashboard();
     if (!db || !this.selectedBatchId()) return null;
@@ -142,14 +146,14 @@ export class ClassOverviewComponent implements OnInit {
   });
 
   constructor() {
-  this.syllabus$
-    .pipe(
-      filter((data): data is ClassSyllabus => !!data),
-      tap((data) => this.viewState.setSyllabus(data)),
-      takeUntilDestroyed()
-    )
-    .subscribe();
-}
+    this.syllabus$
+      .pipe(
+        filter((data): data is ClassSyllabus => !!data),
+        tap((data) => this.viewState.setSyllabus(data)),
+        takeUntilDestroyed(),
+      )
+      .subscribe();
+  }
 
   ngOnInit(): void {
     this.loadBatchStore();
@@ -170,6 +174,9 @@ export class ClassOverviewComponent implements OnInit {
     });
   }
 
+  trackSubject = (_: number, item: any) => item?.subjectId || item?.subjectName;
+  trackBatch = (_: number, item: any) => item?.id;
+
   private loadClassView(): void {
     toObservable(this.syllabus)
       .pipe(
@@ -181,30 +188,6 @@ export class ClassOverviewComponent implements OnInit {
   }
 
   private loadSyllabus(): void {
-    // this.syllLookUpApi
-    //   .getSubjects(this.classId)
-    //   .pipe(
-    //     switchMap((subjects) =>
-    //       subjects?.length
-    //         ? combineLatest(
-    //             subjects.map((s) =>
-    //               this.syllLookUpApi.getChapters(this.classId, s.code).pipe(
-    //                 map((chapters) => ({
-    //                   code: s.code,
-    //                   name: s.name,
-    //                   chapters,
-    //                 })),
-    //               ),
-    //             ),
-    //           )
-    //         : of([]),
-    //     ),
-    //     shareReplay({ bufferSize: 1, refCount: true }),
-    //   )
-    //   .subscribe((data) => {
-    //     this.syllabusSignal.set(data);
-    //   });
-
     this.syllLookUpApi
       .getSubjects(this.classId)
       .pipe(

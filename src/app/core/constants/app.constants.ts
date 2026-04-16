@@ -62,12 +62,28 @@ export const CLASS_AGE_RANGE: Record<string, [number, number]> = {
   'Class 10': [14, 15],
 };
 
+export const DEF_SLIDE_BG_DURATION = 4000;
 export const DEF_BATCH = 'blue';
 
 //IndexDb
 export const INDEXED_DB_NAME = 'in.sunbay.academy.offline-data-db-v1.72026.app';
 
 //Assets
+
+export const AUDIO_BG_PATH = 'assets/audio/bg-presentation.mp3';
+
+export const TYPE_CONFIG: Record<string, { path: string; duration: number }> = {
+  intro: { path: 'assets/slides/intro.svg', duration: 4000 },
+  text: { path: 'assets/slides/text.svg', duration: 6000 },
+  stats: { path: 'assets/slides/stats.svg', duration: 6000 },
+  split: { path: 'assets/slides/split.svg', duration: 6500 },
+  bullet: { path: 'assets/slides/bullet-points.svg', duration: 10000 },
+  image: { path: 'assets/slides/image.svg', duration: 10000 },
+  static: { path: 'assets/slides/conclude.svg', duration: 6000 },
+  outro: { path: 'assets/slides/conclude.svg', duration: 5000 },
+};
+
+
 export const PLACEHOLDER__COVER_IMG = 'assets/placeholder.svg';
 export const DEF_AVATAR_ID = 'avatar-boy-01';
 export const AVATARS = [
@@ -79,4 +95,46 @@ export const AVATARS = [
   'avatar-girl-02',
   'avatar-girl-03',
   'avatar-girl-04',
+];
+
+
+
+//DUmmy
+export const CHANNELS_RAW = [
+  {
+    id: 101,
+    name: 'Angular Signals',
+    tag: 'Frontend',
+    slides: [
+      {
+        type: 'intro',
+        data: { title: 'Angular Signals', date: 'Reactive Future' },
+      },
+      {
+        type: 'text',
+        data: { heading: 'Why Signals?', desc: 'Fine-grained reactivity...' },
+      },
+      {
+        type: 'split',
+        data: {
+          left: { name: 'signal()', role: 'State' },
+          right: { name: 'computed()', role: 'Derived' },
+        },
+      },
+      {
+        type: 'bullet',
+        data: {
+          title: 'Adoption Path',
+          points: ['Start local', 'Replace RxJS'],
+        },
+      },
+      {
+        type: 'image',
+        data: { image: 'https://picsum.photos/400/300', caption: 'UI' },
+      },
+
+      { type: 'text', data: { heading: 'Summary', desc: 'Signals = Fast UI' } },
+      { type: 'static' },
+    ],
+  },
 ];

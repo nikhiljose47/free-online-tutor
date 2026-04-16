@@ -38,7 +38,6 @@ export class CourseViewPage {
       filter((id): id is string => !!id),
       distinctUntilChanged(),
       switchMap(id => {
-        console.log('🚀 API CALL:', id);
         return this.service.loadClass(id);
       })
     ),

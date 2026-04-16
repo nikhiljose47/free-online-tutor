@@ -2,14 +2,15 @@
 .catalog {
   width: 100%;
   padding: 56px 24px;
-  background: #f5faf8;
+
 }
 
 /* SURFACE */
 .catalog-surface {
-  max-width: 1180px;
+  max-width: 1140px;
+  min-height: 500px;
   margin: 0 auto;
-  background: #e2e8e57d;
+  background: #e2e8e5a4;
   border-radius: 20px;
   padding: 44px;
   border: 1px solid #e5e9ef;
@@ -124,8 +125,10 @@
 
 /* ARROW */
 .item-arrow {
-  color: #9aa4b2;
+  color: #444c48;
   font-size: 1rem;
+  line-height: 1;
+  font-weight: 800;
 }
 
 /* KIDS same behavior */

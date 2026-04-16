@@ -1,0 +1,65 @@
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1f3a"/>
+      <stop offset="100%" stop-color="#0a0f1c"/>
+    </linearGradient>
+
+    <linearGradient id="blueGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3aa0ff"/>
+      <stop offset="100%" stop-color="#0057ff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="450" fill="url(#bgGrad)"/>
+
+  <!-- Rotating Ring -->
+  <g transform="translate(400,225)">
+    <circle r="90" fill="none" stroke="url(#blueGrad)" stroke-width="3" stroke-dasharray="6 8">
+      <animateTransform attributeName="transform" type="rotate"
+        from="0" to="360" dur="6s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- Center Glow -->
+  <circle cx="400" cy="225" r="60" fill="url(#blueGrad)" opacity="0.08"/>
+
+  <!-- Moving Lines -->
+  <line x1="0" y1="120" x2="800" y2="120" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1">
+    <animate attributeName="y1" values="120;300;120" dur="6s" repeatCount="indefinite"/>
+    <animate attributeName="y2" values="120;300;120" dur="6s" repeatCount="indefinite"/>
+  </line>
+
+  <line x1="0" y1="300" x2="800" y2="300" stroke="#3aa0ff" stroke-opacity="0.2" stroke-width="1">
+    <animate attributeName="y1" values="300;120;300" dur="5s" repeatCount="indefinite"/>
+    <animate attributeName="y2" values="300;120;300" dur="5s" repeatCount="indefinite"/>
+  </line>
+
+  <!-- Pulse Wave -->
+  <polyline
+    points="0,225 100,200 200,250 300,180 400,260 500,200 600,240 700,210 800,225"
+    fill="none"
+    stroke="url(#blueGrad)"
+    stroke-width="2">
+    <animate attributeName="points"
+      dur="4s"
+      repeatCount="indefinite"
+      values="
+      0,225 100,200 200,250 300,180 400,260 500,200 600,240 700,210 800,225;
+      0,225 100,240 200,180 300,260 400,200 500,250 600,210 700,240 800,225;
+      0,225 100,200 200,250 300,180 400,260 500,200 600,240 700,210 800,225
+    " />
+  </polyline>
+
+  <!-- Floating Dots -->
+  <circle cx="120" cy="90" r="4" fill="#ffffff">
+    <animate attributeName="cx" values="120;700;120" dur="7s" repeatCount="indefinite"/>
+  </circle>
+
+  <circle cx="680" cy="360" r="3" fill="#3aa0ff">
+    <animate attributeName="cx" values="680;100;680" dur="6s" repeatCount="indefinite"/>
+  </circle>
+
+</svg>

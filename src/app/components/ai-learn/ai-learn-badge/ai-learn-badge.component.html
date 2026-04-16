@@ -1,0 +1,44 @@
+<div class="badge-root position-absolute top-0 end-0 m-1">
+  <div class="badge-card">
+    <!-- LEFT -->
+    <div class="badge-left">
+      <!-- HEADER (LEVEL + DAY/TIME) -->
+      <div class="badge-head">
+        <div class="badge-title">
+          {{ levelData()[currentLevel()].title }}
+        </div>
+
+        <div class="badge-time">
+          <span class="day">{{ day() }}</span>
+          <span class="time">{{ time() }}</span>
+        </div>
+      </div>
+
+      <div class="badge-sub">
+        {{ levelData()[currentLevel()].sub }}
+      </div>
+
+      <!-- ARROW PROGRESS -->
+      <div class="progress-wrap">
+        <div class="arrow-track">
+          <div
+            class="arrow-step"
+            *ngFor="let s of stepsArr; let i = index"
+            [class.done]="i < currentStepIndex()"
+            [class.active]="i === currentStepIndex()"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="badge-right">
+      <div class="points">
+        <i class="bi bi-lightning-fill"></i>
+        <span>{{ points() }}</span>
+      </div>
+
+      <div class="level-dot">L{{ currentLevel() + 1 }}</div>
+    </div>
+  </div>
+</div>

@@ -89,10 +89,15 @@
 
       <!-- PROFILE + POINTS -->
       <div class="profile-wrap" *ngIf="profile()">
-        <!-- POINTS (game style) -->
-        <div class="points-badge">
-          <i class="bi bi-lightning-fill"></i>
-          <span>{{ profile()?.points?.points || 0 }}</span>
+        <!-- POINTS -->
+        <div class="points-badge-wrap">
+          <div class="points-badge">
+            <i class="bi bi-lightning-fill"></i>
+            <span>{{ profile()?.points?.points || 0 }}</span>
+          </div>
+
+          <!-- HINT -->
+          <div class="points-hint">Total points ⭐</div>
         </div>
 
         <!-- AVATAR -->
