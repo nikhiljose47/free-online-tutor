@@ -1,13 +1,18 @@
 .topbar {
-  height: 52px;
+  height: 46px;
   background: #2b2b3a;
   position: sticky;
   top: 0;
-  z-index: 200;
+  z-index: 100;
   display: flex;
   align-items: center;
-  border-bottom: 1px groove #1f1f23;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.192);
+  border-bottom: 1px solid #1f1f23;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+}
+
+.topbar,
+.topbar * {
+  user-select: none;
 }
 
 .topbar-inner {
@@ -40,7 +45,6 @@
   font-size: 1.05rem;
   font-weight: 600;
   color: #f3f4f6;
-  letter-spacing: 0.2px;
 }
 
 /* SEARCH */
@@ -59,6 +63,8 @@
   padding: 6px 10px;
   color: #e5e7eb;
   font-size: 0.9rem;
+  user-select: text;
+  cursor: text;
 }
 
 .search-btn {
@@ -68,17 +74,18 @@
   border: 1px solid #2a2a31;
   border-radius: 6px;
   color: #cbd5f5;
+  cursor: pointer;
 }
 
 .search-results {
   position: absolute;
   top: 100%;
+  margin-top: 6px;
   left: 0;
   right: 0;
   background: #0f0f12;
   border: 1px solid #2a2a31;
   border-radius: 8px;
-  margin-top: 6px;
   list-style: none;
   padding: 4px 0;
   z-index: 150;
@@ -88,6 +95,7 @@
   padding: 8px 12px;
   color: #e5e7eb;
   font-size: 0.88rem;
+  cursor: pointer;
 }
 
 .search-results li:active {
@@ -99,7 +107,6 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  white-space: nowrap;
 }
 
 /* LINKS */
@@ -109,6 +116,7 @@
   color: #d1d5db;
   border-radius: 6px;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .topbar-link.active {
@@ -121,19 +129,36 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  position: relative;
 }
 
+.profile-menu-trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* hover bridge */
+.profile-menu-trigger::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 100%;
+  height: 12px;
+}
+
+/* avatar */
 .profile-icon {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  object-fit: cover;
   border: 1px solid #2a2a31;
   background: #e5e7eb;
+  cursor: pointer;
+  display: block;
 }
 
-/* 🔥 POINTS BADGE (GAME STYLE) */
+/* POINTS */
 .points-badge {
   display: flex;
   align-items: center;
@@ -144,23 +169,39 @@
   font-size: 0.72rem;
   font-weight: 600;
   color: #fff;
-  letter-spacing: 0.3px;
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.points-badge i {
-  font-size: 10px;
+.points-badge-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
 }
 
-.menu-item:active {
-  background: #2a2a31;
+/* HINT */
+.points-hint {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  color: #d1d5db;
+  background: rgba(12, 12, 14, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+  white-space: nowrap;
+  z-index: 210;
 }
 
-.logout-btn {
-  width: 100%;
-  background: none;
-  border: none;
-  text-align: left;
+.points-badge-wrap:hover .points-hint {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* DROPDOWN */
@@ -170,143 +211,75 @@
   align-items: center;
 }
 
-
 .learn-menu {
+  display: none;
   position: absolute;
-  top: calc(100% + 9px);
+  top: 100%;
+  margin-top: 2px;
   right: 0;
   background: #ffffff;
-  border-radius: 8px;
-  border: 0.1px solid #4e4e5026;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
   min-width: 140px;
   padding: 6px 0;
-  z-index: 140;
+  z-index: 300;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
 }
 
+/* hover system */
+@media (hover: hover) {
+  .learn-dropdown:hover > .learn-menu {
+    display: block;
+  }
+
+  .profile-menu-trigger:hover > .learn-menu,
+  .profile-menu-trigger > .learn-menu:hover {
+    display: block;
+  }
+}
+
+/* MENU ITEMS */
 .menu-item {
   padding: 7px 14px;
   color: #111827;
   font-weight: 500;
+  margin: 0 8px;
+  border-radius: 4px;
   font-size: 0.85rem;
   display: block;
   text-decoration: none;
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    color 120ms ease;
 }
 
-/* OVERLAY */
-.menu-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
+.menu-item:hover {
+  background: #d3e4d678;
+  color: #000000;
 }
 
-/* 📱 RESPONSIVE */
+.menu-item:active {
+  background: #1f2937;
+  color: #fff;
+}
+
+.logout-btn {
+  width: 85%;
+  background: none;
+  border: none;
+  text-align: left;
+}
+
+/* RESPONSIVE */
 @media (max-width: 768px) {
   .topbar-inner {
     padding: 0 8px;
-  }
-
-  .points-badge {
-    padding: 2px 6px;
-    font-size: 0.68rem;
-  }
-
-  .topbar-link {
-    padding: 6px;
   }
 }
 
 @media (max-width: 480px) {
   .brand-text {
     display: none;
-  }
-
-  .points-badge span {
-    display: none; /* icon only on very small */
-  }
-}
-
-
-
-/* override existing badge (refine only, keep your gradient) */
-.points-badge {
-  cursor: default;
-  backdrop-filter: blur(4px);
-}
-
-/* WRAP */
-.points-badge-wrap {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-}
-
-/* HINT (fully adaptive, no fixed feel) */
-.points-hint {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  left: auto;
-
-  display: inline-block;
-
-  width: max-content;      /* ✅ key: shrink to content */
-  max-width: min(220px, calc(100vw - 16px)); /* prevent overflow */
-
-  padding: 8px 10px;
-  border-radius: 10px;
-
-  font-size: 0.72rem;
-  line-height: 1.35;
-  color: #d1d5db;
-
-  background: rgba(12, 12, 14, 0.96);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-
-  backdrop-filter: blur(8px);
-
-  opacity: 0;
-  transform: translateY(-4px);
-  pointer-events: none;
-
-  transition: opacity 120ms ease, transform 120ms ease;
-
-  white-space: nowrap;   /* single-line tight look */
-  overflow-wrap: break-word;
-
-  z-index: 210;
-}
-
-/* ARROW */
-.points-hint::before {
-  content: "";
-  position: absolute;
-  top: -6px;
-  right: 14px;
-
-  width: 10px;
-  height: 10px;
-
-  background: rgba(12, 12, 14, 0.96);
-  transform: rotate(45deg);
-
-  border-left: 1px solid rgba(255, 255, 255, 0.06);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-/* HOVER */
-.points-badge-wrap:hover .points-hint {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* OPTIONAL: allow wrapping when needed */
-.points-hint.wrap {
-  white-space: normal;
-}
-
-/* MOBILE */
-@media (hover: none) {
-  .points-hint {
-    top: calc(100% + 10px);
   }
 }

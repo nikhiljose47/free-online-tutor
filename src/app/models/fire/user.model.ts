@@ -14,8 +14,9 @@ export interface UserModel {
   skills: Array<string> | null;
   expList: Array<string> | null;
   expYrs: number | null;
-  totalPoints: PointsMap;
-  points: PointsMap;
+  totalPoints: number;
+  seasonPoints: number;
+  seasonId: string;
   subjects: Array<String> | null;
   bio: string | null;
   weekPerformance: string;
@@ -29,8 +30,3 @@ export interface UserModel {
 }
 
 export type UserRole = 'admin' | 'student' | 'guest' | 'teacher';
-
-export interface PointsMap {
-  identifier: string;
-  points: number;
-}

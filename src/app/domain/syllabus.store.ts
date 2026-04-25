@@ -5,7 +5,7 @@ import { map, switchMap, shareReplay, filter, take, tap, catchError } from 'rxjs
 import { SyllabusRepository } from './repositories/syllabus.repository';
 import { ClassSyllabus } from '../models/syllabus/class-syllabus.model';
 import { SyllabusIndex } from '../models/syllabus/syllabus-index.model';
-import { ResourceIndex, IdMapUtil } from '../shared/utils/id-map.utils';
+import { IdMapUtil, AvailableSyllabus } from '../shared/utils/id-map.utils';
 import { UiStateUtil } from '../shared/state/ui-state.utils';
 
 @Injectable({ providedIn: 'root' })
@@ -16,18 +16,18 @@ export class SyllabusStore {
   /** --------------------------------------------------
    * ID MAP STREAM (cached & shared)
    * -------------------------------------------------- */
-  private idMap$?: Observable<ResourceIndex>;
+  private idMap$?: Observable<AvailableSyllabus>;
 
-  getIdMap$(): Observable<ResourceIndex> {
+  getIdMap$(): Observable<AvailableSyllabus> {
     if (!this.idMap$) {
-      const uiCached = this.uiState.get<ResourceIndex>('resourceIndex');
+      const uiCached = this.uiState.get<AvailableSyllabus>('AvailableSyllabus');
 
       this.idMap$ = uiCached
         ? of(uiCached)
         : this.repo.loadIndex().pipe(
             take(1),
-            map((index) => (index ? IdMapUtil.buildResourceIndex(index) : {})),
-            tap((map) => this.uiState.set('resourceIndex', map)),
+            map((index) => (index ? IdMapUtil.buildAvailableSyllabus(index) : {})),
+            tap((map) => this.uiState.set('AvailableSyllabus', map)),
             shareReplay(1),
           );
     }

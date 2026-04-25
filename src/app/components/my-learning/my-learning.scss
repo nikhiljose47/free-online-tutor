@@ -97,15 +97,30 @@
   background: #ffffff;
 
   overflow: hidden;
-
   display: flex;
-
   scroll-snap-align: start;
+  cursor: pointer;
+  // transition:
+  //   transform 120ms ease,
+  //   background 120ms ease;
+  // &:active {
+  //   transform: scale(0.98);
+  //   background: #f9fafb;
+  // }
+  transition:
+    background 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+  &:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
 }
 
 /* Image */
 .ldw-thumb {
-  width: 45%;
+  width: 40%;
   position: relative;
   background: #e5e7eb;
 
@@ -140,7 +155,7 @@
 
 /* Content */
 .ldw-content {
-  width: 55%;
+  width: 60%;
   padding: 12px 14px;
 
   display: flex;

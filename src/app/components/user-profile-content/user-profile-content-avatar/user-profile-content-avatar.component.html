@@ -1,0 +1,38 @@
+<div class="profile-card profile-card--elite">
+  <div class="avatar-zone">
+    <div class="avatar-frame">
+      <img
+        *ngIf="avatarSrc()"
+        [src]="avatarSrc()!"
+        class="avatar-img"
+      />
+
+      <div *ngIf="!avatarSrc()" class="avatar-empty">
+        <span>+</span>
+      </div>
+
+      <div class="ring"></div>
+    </div>
+
+    <button class="avatar-cta" (click)="toggleGrid()">
+      {{ showGrid() ? 'Close' : 'Change Avatar' }}
+    </button>
+  </div>
+
+  <div class="meta">
+    <div class="name">{{ displayName() }}</div>
+    <div class="email">{{ displayEmail() }}</div>
+  </div>
+</div>
+
+<!-- GRID -->
+<div *ngIf="showGrid()" class="avatar-grid">
+  <div
+    *ngFor="let a of avatars"
+    class="avatar-item"
+    [class.active]="selectedAvatar() === a"
+    (click)="selectAvatar(a)"
+  >
+    <img [src]="'assets/avatars/' + a + '.svg'" />
+  </div>
+</div>

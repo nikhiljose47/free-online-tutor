@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, signal, Type, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+  Type,
+  inject,
+  effect,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { LearnTubeQuizPlayerComponent } from '../learn-tube-quiz-player/learn-tube-quiz-player.component/learn-tube-quiz-player.component';
@@ -7,7 +15,7 @@ import { LearnTubeComponent } from '../learn-tube.component/learn-tube.component
 import { AiLearnComponent } from '../ai-learn/ai-learn-component/ai-learn.component';
 
 import { LearnTubePersistService } from '../../services/learn-tube-persist/learn-tube-persist.service';
-import { LearnTubeStage } from '../../services/learn-tube/learn-tube.service';
+import { LearnTubeService, LearnTubeStage } from '../../services/learn-tube/learn-tube.service';
 
 type FlowStep = 'slides' | 'game' | 'ai-learn' | 'dashboard';
 
@@ -22,21 +30,21 @@ type FlowStep = 'slides' | 'game' | 'ai-learn' | 'dashboard';
 })
 export class FlowOrchestratorComponent {
   private readonly persistService = inject(LearnTubePersistService);
+  private learnTubeApi = inject(LearnTubeService);
 
+  private slideRedoOn = false;
   private readonly flowState = signal<{
     step: FlowStep;
     restarted: boolean;
-  }>(this.resolveInitialState());
+  }>({
+    step: this.getInitialStep(),
+    restarted: false,
+  });
 
-  // 👉 updated sequence
   private readonly flowSequence: FlowStep[] = ['slides', 'game', 'ai-learn', 'dashboard'];
 
   readonly currentComponent = computed<Type<unknown>>(() => {
-    const { step, restarted } = this.flowState();
-
-    if (restarted) return LearnTubeDashboardComponent;
-
-    switch (step) {
+    switch (this.flowState().step) {
       case 'slides':
         return LearnTubeComponent;
       case 'game':
@@ -50,8 +58,46 @@ export class FlowOrchestratorComponent {
 
   readonly childInputs = computed(() => ({
     flowNext: (step?: FlowStep) => this.go(step),
-    flowRestart: () => this.restartToDashboard(),
+    // flowRestart: () => this.restartToDashboard(),
+    flowRedoSlides: () => this.redoSlides(),
   }));
+
+  constructor() {
+    effect(() => {
+      const stage = this.persistService.stage();
+      const current = this.flowState().step;
+
+      if (stage === LearnTubeStage.Slide && current !== 'slides') {
+        this.flowState.set({ step: 'slides', restarted: false });
+      }
+
+      console.log('[FLOW]', this.flowState().step, '| stage:', stage);
+    });
+
+    this.learnTubeApi.stageChanges$.subscribe((stage) => {
+      if (!this.slideRedoOn) {
+        this.persistService.set(stage);
+      }
+      this.slideRedoOn = false;
+
+      console.log('Stage changed to:', stage);
+      // 👉 MAIN LOGIC
+      if (stage === LearnTubeStage.SlideEnded) {
+        this.flowState.set({ step: 'dashboard', restarted: false });
+      }
+    });
+  }
+
+  redoSlides() {
+    this.slideRedoOn = true;
+    this.flowState.set({ step: 'slides', restarted: true });
+  }
+
+  private getInitialStep(): FlowStep {
+    const stage = this.persistService.stage();
+
+    return stage === LearnTubeStage.Slide ? 'slides' : 'dashboard';
+  }
 
   private go(step?: FlowStep) {
     if (step) {
@@ -63,39 +109,6 @@ export class FlowOrchestratorComponent {
     const index = this.flowSequence.indexOf(current);
     const nextStep = this.flowSequence[index + 1] ?? 'dashboard';
 
-    this.flowState.set({
-      step: nextStep,
-      restarted: false,
-    });
-  }
-
-  private restartToDashboard() {
-    this.flowState.set({
-      step: 'dashboard',
-      restarted: true,
-    });
-  }
-
-  initFlowFromCache(cache?: { restarted?: boolean }) {
-    if (cache?.restarted) this.restartToDashboard();
-  }
-
-  // 👉 updated stage mapping
-  private resolveInitialState() {
-    const stage = this.persistService.stage();
-
-    if (stage === LearnTubeStage.Slide) {
-      return { step: 'slides' as FlowStep, restarted: false };
-    }
-
-    if (stage === LearnTubeStage.SlideEnded) {
-      return { step: 'game' as FlowStep, restarted: false };
-    }
-
-    if (stage === LearnTubeStage.QuizEnded) {
-      return { step: 'ai-learn' as FlowStep, restarted: false };
-    }
-
-    return { step: 'dashboard' as FlowStep, restarted: false };
+    this.flowState.set({ step: nextStep, restarted: false });
   }
 }

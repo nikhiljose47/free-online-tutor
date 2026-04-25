@@ -48,6 +48,7 @@ export const CACHE_TTL = {
   ASSESSMENT: 2 * 60 * 60 * 1000, //2 hr
 } as const;
 
+
 //Age-Class relation
 export const CLASS_AGE_RANGE: Record<string, [number, number]> = {
   'Class 1': [5, 6],
@@ -68,8 +69,11 @@ export const DEF_BATCH = 'blue';
 //IndexDb
 export const INDEXED_DB_NAME = 'in.sunbay.academy.offline-data-db-v1.72026.app';
 
-//Assets
 
+//Variables
+export const CUR_CLASS_INFO = 'cur_class_info';
+
+//Assets
 export const AUDIO_BG_PATH = 'assets/audio/bg-presentation.mp3';
 
 export const TYPE_CONFIG: Record<string, { path: string; duration: number }> = {

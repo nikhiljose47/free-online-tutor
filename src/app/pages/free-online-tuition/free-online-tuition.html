@@ -1,175 +1,169 @@
-<div>
-  <section class="landing">
-    <div class="landing-inner">
-      <!-- LEFT SIDE : BRAND / HERO -->
-      <div class="landing-left" [class.full]="profile()">
-        <!-- LOGGED IN -->
-        <ng-container *ngIf="profile(); else loggedOut">
-          <div class="full-wrap">
-            <my-learning></my-learning>
-          </div>
-        </ng-container>
+<section class="landing">
+  <section class="top-split">
+    <!-- LEFT (Component A) -->
+    <div class="top-left">
+      <highlight-banner
+        [title]="'Learning impact across regions'"
+        [image]="'assets/banner-icon.webp'"
+      />
+    </div>
 
-        <!-- LOGGED OUT -->
-        <ng-template #loggedOut>
-          <div class="hero-text">
-            <h1 class="hero-title">
-              Learning that builds
-              <br />
-              real understanding
-            </h1>
+    <!-- RIGHT (Component B) -->
+    <div class="top-right">
+      <topper-rank-board />
+    </div>
+  </section>
+  
+  <div class="landing-inner">
+    <div class="landing-left" [class.full]="profile()">
+      <ng-container *ngIf="profile(); else loggedOut">
+        <my-learning></my-learning>
+      </ng-container>
 
-            <p class="hero-description">
-              Join thousands of students exploring guided lessons, solving practice problems, and
-              progressing through structured learning paths designed for clarity.
-            </p>
-          </div>
+      <ng-template #loggedOut>
+        <div class="hero-text">
+          <h1 class="hero-title">
+            Learning that builds <br />
+            real understanding
+          </h1>
 
-          <div class="hero-image">
-            <img src="assets/svg/student-learning.svg" alt="Students learning" />
-          </div>
-
-          <div class="hero-shape hero-shape-1"></div>
-          <div class="hero-shape hero-shape-2"></div>
-        </ng-template>
-      </div>
-
-      <!-- RIGHT SIDE : LOGIN / SIGNUP PANEL -->
-      <div *ngIf="!profile(); else loggedIn" class="landing-right">
-        <div class="guest-chip">
-          <div class="guest-row">
-            <span class="guest-icon">👤</span>
-            <span class="guest-status">Guest mode active✅</span>
-          </div>
-
-          <p class="guest-text">
-            You are browsing anonymously. Sign in to track progress, save activity, and access all
-            learning features.
+          <p class="hero-description">
+            Join thousands of students exploring guided lessons, solving practice problems, and
+            progressing through structured learning paths designed for clarity.
           </p>
         </div>
-        <div style="height: 15px"></div>
-        <auth-panel />
-        <!-- <login-dummy></login-dummy> -->
-      </div>
-      <ng-template #loggedIn>
-        <!-- <student-leaderboard-widget /> -->
+
+        <div class="hero-image">
+          <img src="assets/svg/student-learning.svg" alt="Students learning" />
+        </div>
+
+        <div class="hero-shape hero-shape-1"></div>
+        <div class="hero-shape hero-shape-2"></div>
       </ng-template>
     </div>
-  </section>
-  <catalog-groups (routeTrigger)="navigateById($event)" />
 
-  <section class="section">
-    <!-- <home-intro-strip></home-intro-strip> -->
-  </section>
+    <div *ngIf="!profile()" class="landing-right">
+      <div class="guest-chip">
+        <div class="guest-row">
+          <span class="guest-icon">👤</span>
+          <span class="guest-status">Guest mode</span>
 
-  <section class="feedback-banner mt-5">
-    <div class="banner-inner">
-      <h2 class="banner-title">
-        One platform. Teaching, practice, and intelligent learning - unified.
-      </h2>
+          <!-- info icon -->
+          <span class="guest-info">?</span>
 
-      <p class="banner-desc">
-        A thoughtfully built academic ecosystem where students learn collaboratively, practice with
-        purpose, and achieve clarity with the support of 10+ experienced teachers.
-      </p>
-
-      <h3 class="banner-subtitle">
-        <span class="highlight">6+ primary features</span> for effective and consistent student
-        progress.
-      </h3>
-      <ol class="banner-points">
-        <li class="point">
-          <div class="point-title">Concept-first teaching</div>
-          <div class="banner-desc">
-            Guided by
-            <a class="trust-link" routerLink="/teachers">experienced educators</a>, every session is
-            structured to simplify concepts and eliminate confusion at the root.
+          <!-- hover hint -->
+          <div class="guest-tooltip">
+            Browsing as guest. Sign in to save progress and unlock features.
           </div>
-        </li>
-
-        <li class="point">
-          <div class="point-title">Structured curriculum</div>
-          <div class="banner-desc">
-            A carefully designed learning path ensures progression without gaps. Explore a
-            <a class="trust-link" routerLink="/details/'CL06'">
-              sample curriculum of Class 6 (NCERT)</a
-            >.
-          </div>
-        </li>
-
-        <li class="point">
-          <div class="point-title">AI-powered learning</div>
-          <div class="banner-desc">
-            Ask doubts, get instant explanations, and reinforce concepts with guided AI support/AI
-            Tutor for each class.
-          </div>
-        </li>
-
-        <li class="point">
-          <div class="point-title">Practice + progression</div>
-          <div class="banner-desc">
-            Puzzles, tracking, and leaderboards ensure continuous improvement.
-          </div>
-        </li>
-
-        <li class="point">
-          <div class="point-title">Accessible learning</div>
-          <div class="banner-desc">
-            We provide both free access classes for everyone and structured courses for registered
-            students.
-          </div>
-        </li>
-        <li class="point">
-          <div class="point-title">Disciplined learning approach</div>
-          <div class="banner-desc">
-            We maintain a structured and disciplined learning environment with regular practice,
-            accountability, and performance tracking to ensure consistent academic progress.
-          </div>
-        </li>
-      </ol>
-    </div>
-  </section>
-
-  <section class="feedback-banner">
-    <div class="banner-inner">
-      <div class="banner-content">
-        <h2 class="banner-title">Help us build better learning</h2>
-
-        <p class="banner-desc">
-          We’re growing and improving every day. Your feedback helps us make the platform clearer,
-          faster, and more useful for students everywhere.
-        </p>
-        <a
-          class="banner-cta"
-          href="https://mail.google.com/mail/?view=cm&fs=1&to=sunbay-technologies@zohomail.in&su=Scholo%20feedback"
-          target="_blank"
-        >
-          Share Feedback
-        </a>
+        </div>
       </div>
+
+      <auth-panel />
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="feedback-banner">
-    <div class="banner-inner">
-      <h2 class="banner-title">Why Online Tuition Matters ?</h2>
+<catalog-groups (routeTrigger)="navigateById($event)" />
 
-      <p class="banner-desc">
-        Online tuition helps students learn with flexibility and easier access to guidance. It
-        allows learners to study from anywhere while receiving support from experienced teachers.
-        With structured lessons and practice, students strengthen their understanding of key
-        concepts. Online learning also lets students move at their own pace and revisit topics when
-        needed. For many learners, it bridges the gap between classroom teaching and personal
-        understanding.
-      </p>
+<section class="feedback-banner mt-5">
+  <div class="banner-inner">
+    <h2 class="banner-title">
+      One platform. Teaching, practice, and intelligent learning - unified.
+    </h2>
 
-      <p class="banner-desc">
-        Our online tuition works through guided classes, practice sessions, and clear explanations
-        from teachers. Students attend lessons, solve problems, and review concepts step by step.
-        Teachers provide guidance and feedback when needed. With regular practice and simple
-        progress tracking, students build confidence and continue learning steadily.
-      </p>
+    <p class="banner-desc">
+      A thoughtfully built academic ecosystem where students learn collaboratively, practice with
+      purpose, and achieve clarity with the support of 10+ experienced teachers.
+    </p>
+
+    <h3 class="banner-subtitle">
+      <span class="highlight">6+ primary features</span> for effective and consistent student
+      progress.
+    </h3>
+
+    <ol class="banner-points">
+      <li class="point">
+        <div class="point-title">Concept-first teaching</div>
+        <div class="banner-desc">
+          Guided by
+          <a class="trust-link" routerLink="/teachers">experienced educators</a>, every session
+          simplifies concepts.
+        </div>
+      </li>
+
+      <li class="point">
+        <div class="point-title">Structured curriculum</div>
+        <div class="banner-desc">
+          Explore
+          <a class="trust-link" routerLink="/details/'CL06'">
+            sample curriculum of Class 6 (NCERT) </a
+          >.
+        </div>
+      </li>
+
+      <li class="point">
+        <div class="point-title">AI-powered learning</div>
+        <div class="banner-desc">Instant doubt solving with AI Tutor.</div>
+      </li>
+
+      <li class="point">
+        <div class="point-title">Practice + progression</div>
+        <div class="banner-desc">Puzzles, tracking, and leaderboards.</div>
+      </li>
+
+      <li class="point">
+        <div class="point-title">Accessible learning</div>
+        <div class="banner-desc">Free + structured courses.</div>
+      </li>
+
+      <li class="point">
+        <div class="point-title">Disciplined approach</div>
+        <div class="banner-desc">Regular practice with tracking.</div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="feedback-banner">
+  <div class="banner-inner">
+    <div class="banner-content">
+      <h2 class="banner-title">Help us build better learning</h2>
+
+      <p class="banner-desc">Your feedback helps us improve clarity and performance.</p>
+
+      <a
+        class="banner-cta"
+        href="https://mail.google.com/mail/?view=cm&fs=1&to=sunbay-technologies@zohomail.in&su=Scholo%20feedback"
+        target="_blank"
+      >
+        Share Feedback
+      </a>
     </div>
-  </section>
-  <div style="height: 2rem"></div>
-</div>
+  </div>
+</section>
+
+<section class="feedback-banner mt-5">
+  <div class="banner-inner">
+    <h2 class="banner-title">Why Online Tuition Matters?</h2>
+
+    <p class="banner-desc">
+      Online tuition enables flexible learning with access to experienced teachers and structured
+      guidance from anywhere.
+    </p>
+
+    <p class="banner-desc">
+      Students learn through guided lessons, regular practice, and clear explanations — helping them
+      strengthen concepts instead of memorizing.
+    </p>
+
+    <p class="banner-desc">
+      With the ability to learn at their own pace and revisit topics anytime, students build
+      confidence and maintain steady academic progress.
+    </p>
+
+    <p class="banner-desc">
+      Our approach combines teaching, practice, and simple progress tracking to ensure continuous
+      improvement without gaps.
+    </p>
+  </div>
+</section>

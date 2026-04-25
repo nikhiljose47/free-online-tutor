@@ -7,14 +7,16 @@ import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
 import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
 import { ToastService } from '../../shared/toast.service';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
-import { ResourceIndex } from '../../shared/utils/id-map.utils';
+import { AvailableSyllabus } from '../../shared/utils/id-map.utils';
 import { Router, RouterModule } from '@angular/router';
 import { MyLearning } from '../../components/my-learning/my-learning';
+import { HighlightBannerComponent } from '../../shared/components/highlight-banner.component/highlight-banner.component';
+import { TopperRankBoardComponent } from '../../components/topper-rank-board/topper-rank-board.component';
 
 @Component({
   selector: 'free-online-tuition',
   standalone: true,
-  imports: [AuthPanelComponent, MyLearning, CatalogGroupsComponent, CommonModule, RouterModule],
+  imports: [AuthPanelComponent, TopperRankBoardComponent, HighlightBannerComponent, MyLearning, CatalogGroupsComponent, CommonModule, RouterModule],
   templateUrl: './free-online-tuition.html',
   styleUrl: './free-online-tuition.scss',
 })
@@ -47,7 +49,7 @@ export class FreeOnlineTuition {
   }
 
   private loadAllClasses() {
-    const map = this.uiState.get<ResourceIndex>('ResourceIndex');
+    const map = this.uiState.get<AvailableSyllabus>('AvailableSyllabus');
 
     if (map) {
       let mapToArr = Object.values(map);

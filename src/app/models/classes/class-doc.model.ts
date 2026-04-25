@@ -2,9 +2,8 @@ import { Timestamp } from '@angular/fire/firestore';
 
 export type ClassStatus = 'active' | 'paused' | 'completed' | 'archived' | 'idle';
 
-export interface ClassMeta {
-  [key: string]: unknown;
-}
+export type ClassMeta = Record<string, unknown>;
+
 
 export interface ClassDoc {
   batch: string;
@@ -19,6 +18,7 @@ export interface ClassDoc {
   lastContentSyncAt: Timestamp;
   maxStudents: number;
   meta: ClassMeta;
+  curClassId: string;
   nextClassAt: Timestamp;
   status: ClassStatus;
   studentCount: number;

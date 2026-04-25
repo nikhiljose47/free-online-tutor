@@ -23,6 +23,7 @@ import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MeetingStatusStore } from '../../shared/state/meeting-status.store';
 import { CoverPlaceholderComponent } from '../../shared/components/cover-placeholder.component/cover-placeholder.component';
+import { UserCourseSyncService } from '../../services/user/user-course-sync/user-course-sync.service';
 
 @Component({
   selector: 'join-tution',
@@ -40,6 +41,7 @@ export class JoinTution {
   private attendanceApi = inject(AttendanceApiService);
   private toastApi = inject(ToastService);
   private statusStore = inject(MeetingStatusStore);
+  private userCourseSyncApi = inject(UserCourseSyncService);
 
   private platformId = inject(PLATFORM_ID);
 
@@ -159,10 +161,18 @@ export class JoinTution {
             this.toastApi.show(text);
           },
         });
+      this.syncCourse();
     } else if (this.joinLink) {
       if (isPlatformBrowser(this.platformId)) {
         window.open(this.joinLink, '_blank');
       }
+      this.syncCourse();
+    }
+  }
+
+  syncCourse() {
+    if (this.profile) {
+      this.userCourseSyncApi.enroll(this.profile!.uid, this.meeting.classId);
     }
   }
 

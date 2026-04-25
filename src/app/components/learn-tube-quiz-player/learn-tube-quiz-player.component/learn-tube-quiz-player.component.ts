@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { LocalStoreService } from '../../../core/services/local-store/local-store.service';
 import { LearnTubePersistService } from '../../../services/learn-tube-persist/learn-tube-persist.service';
 import { LearnTubeStage } from '../../../services/learn-tube/learn-tube.service';
+import { UserPointsService } from '../../../services/user/user-points/user-points.service';
 
 type Q = {
   id: string;
@@ -43,7 +44,7 @@ export class LearnTubeQuizPlayerComponent {
     step?: 'slides' | 'game' | 'dashboard' | 'ai-learn',
   ) => void;
   private persistService = inject(LearnTubePersistService);
-
+  private pointsService = inject(UserPointsService);
   private store = inject(LocalStoreService);
 
   private quiz = signal<Quiz>({
@@ -133,7 +134,12 @@ export class LearnTubeQuizPlayerComponent {
         ? JSON.stringify(ans) === JSON.stringify(q.correctOrder)
         : ans === q?.correctIndex;
 
-    console.log('Q:', q?.question, '| Answer:', ans, '| Correct:', isCorrect);
+    if (isCorrect && q?.question) {
+      console.log('✅ correct! +2 points');
+      this.pointsService
+        .addPoints(2, q.question) // 👈 full question as key
+        .subscribe();
+    }
 
     if (this.isLast()) {
       this.submit();

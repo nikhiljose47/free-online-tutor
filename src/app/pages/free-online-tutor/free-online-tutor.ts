@@ -7,7 +7,7 @@ import { ToastService } from '../../shared/toast.service';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
 import { PLACEHOLDER__COVER_IMG } from '../../core/constants/app.constants';
-import { ResourceIndex } from '../../shared/utils/id-map.utils';
+import { AvailableSyllabus } from '../../shared/utils/id-map.utils';
 import { SvgCardConfig } from '../../shared/utils/svg-loader.utils';
 import { CatalogLookupService } from '../../domain/syllabus-index/catalog-lookup.service';
 
@@ -73,7 +73,7 @@ export class FreeOnlineTutor implements OnInit, AfterViewInit {
   }
 
   private loadAllClasses() {
-    const map = this.uiState.get<ResourceIndex>('ResourceIndex');
+    const map = this.uiState.get<AvailableSyllabus>('AvailableSyllabus');
     if (map) {
       let mapToArr = Object.values(map);
       this.syllRepo.loadMultipleClasses(mapToArr);

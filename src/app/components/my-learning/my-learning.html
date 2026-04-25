@@ -6,7 +6,7 @@
         Welcome back,
         <span class="ldw-username">{{ userName() }}</span>
       </h2>
-      <p class="ldw-subtitle mb-0">Continue learning</p>
+      <p class="ldw-subtitle mb-0">Continue learning...</p>
     </div>
   </div>
 
@@ -27,7 +27,7 @@
       class="ldw-scroll-btn ldw-right"
       type="button"
       (click)="scrollNext()"
-      *ngIf="!isLoading()  && showRightArrow()"
+      *ngIf="!isLoading() && showRightArrow()"
     >
       <i class="bi bi-chevron-right"></i>
     </button>
@@ -42,7 +42,7 @@
       <!-- Content -->
       <ng-template #contentBlock>
         <!-- Courses -->
-        <ng-container *ngIf="courses()?.length??0 > 0; else emptyState">
+        <ng-container *ngIf="courses()?.length ?? 0 > 0; else emptyState">
           <div
             class="ldw-course-wide"
             *ngFor="let course of courses(); trackBy: trackById"

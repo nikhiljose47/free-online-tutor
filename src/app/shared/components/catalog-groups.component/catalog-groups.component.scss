@@ -2,7 +2,7 @@
 .catalog {
   width: 100%;
   padding: 56px 24px;
-
+  color: white;
 }
 
 /* SURFACE */
@@ -11,9 +11,9 @@
   min-height: 500px;
   margin: 0 auto;
   background: #e2e8e5a4;
-  border-radius: 20px;
+  border-radius: 10px;
   padding: 44px;
-  border: 1px solid #e5e9ef;
+  border: 1px solid #dfe1e4;
 }
 
 /* BLOCK */
@@ -53,15 +53,15 @@
 
 /* ICON */
 .group-icon-circle {
-  width: 56px;
-  height: 56px;
+  width: 45px;
+  height: 45px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #f1f5f9;
+  background: #7beabe;
   border: 1px solid #e2e8f0;
-  font-size: 2.1rem;
+  font-size: 1.5rem;
 }
 
 .kids-icon {

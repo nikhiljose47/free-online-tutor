@@ -1,12 +1,10 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Auth2Service } from '../../../core/services/fire/auth2.service';
 import { ToastService } from '../../toast.service';
-import { FirestoreDocService } from '../../../core/services/fire/firestore-doc.service';
-import { UserModel } from '../../../models/fire/user.model';
 import { debounceTime, Subject } from 'rxjs';
-import { DEF_AVATAR_ID } from '../../../core/constants/app.constants';
+import { UserRegisterService } from '../../../services/user/user-register/user-register.service';
 
 @Component({
   selector: 'auth-panel',
@@ -17,6 +15,8 @@ import { DEF_AVATAR_ID } from '../../../core/constants/app.constants';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthPanelComponent {
+  private registerService = inject(UserRegisterService);
+
   mode = signal<'login' | 'signup'>('login');
 
   name = signal('');
@@ -34,7 +34,6 @@ export class AuthPanelComponent {
     private auth: Auth2Service,
     private router: Router,
     private toast: ToastService,
-    private fire: FirestoreDocService,
   ) {
     this.login$.pipe(debounceTime(500)).subscribe(() => this.doLogin());
     this.register$.pipe(debounceTime(500)).subscribe(() => this.register());
@@ -96,74 +95,27 @@ export class AuthPanelComponent {
   }
 
   // ---------- REGISTER ----------
-  async register() {
+  register() {
     if (this.loading()) return;
-
-    const userName = this.name().trim();
-    if (!userName) return this.toast.show('Enter name');
-
-    if (this.password() !== this.confirmPassword()) {
-      return this.toast.show('Passwords do not match');
-    }
 
     this.loading.set(true);
 
-    try {
-      const res = await this.auth.register(this.email(), this.password());
-
-      if (res.success && res.user) {
-        const uid = res.user.uid;
-
-        const userDoc: UserModel = {
-          uid,
-          name: this.name(),
-          email: res.user.email ?? '',
-          avatarId: DEF_AVATAR_ID,
-          joinedAt: Date.now(),
-          role: 'student',
-          age: 26,
-          photoUrl: null,
-          phone: '',
-          enrolledClassIds: [],
-          totalPoints: {
-            identifier: 'initial',
-            points: 0,
-          },
-          points: {
-            identifier: 'initial',
-            points: 0,
-          },
-          abilities: [],
-          skills: [],
-          expList: [],
-          expYrs: 0,
-          subjects: [],
-          bio: '',
-          rating: 0,
-          weekPerformance: 'good',
-          specialization: [],
-          meta: {},
-          lastSession: null,
-          updatedAt: null,
-        };
-
-        this.fire.set<UserModel>('users', uid, userDoc).subscribe((saveRes) => {
-          this.loading.set(false);
-
-          if (saveRes.ok) {
-            this.toast.show('Account created');
-            this.router.navigateByUrl('');
-          } else {
-            this.toast.show(saveRes?.message ?? '');
-          }
-        });
-      } else {
-        this.toast.show(res.message);
+    this.registerService
+      .registerUser({
+        name: this.name(),
+        email: this.email(),
+        password: this.password(),
+        confirmPassword: this.confirmPassword(),
+      })
+      .subscribe((res) => {
         this.loading.set(false);
-      }
-    } catch {
-      this.loading.set(false);
-      this.toast.show('Something went wrong');
-    }
+
+        if (res.ok) {
+          this.toast.show(res.message!);
+          this.router.navigateByUrl('');
+        } else {
+          this.toast.show(res.message ?? '');
+        }
+      });
   }
 }

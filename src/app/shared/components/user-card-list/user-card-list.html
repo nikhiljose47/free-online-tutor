@@ -1,6 +1,6 @@
-<section class="teacher-list-wrap">
-  <div class="teacher-item" *ngFor="let t of users(); let i = index">
-    <div class="num">{{ i + 1 }}</div>
+<section class="teacher-list-wrap container-fluid px-2 px-md-3">
+  <div class="teacher-item d-flex" *ngFor="let t of users(); let i = index">
+    <div class="num">#{{ i + 1 }}</div>
 
     <img
       class="photo"
@@ -11,8 +11,20 @@
     />
 
     <div class="info">
-      <div class="head">
-        <h2 class="name">{{ t.name }}</h2>
+      <div class="top-row d-flex justify-content-between align-items-start">
+        <div class="left">
+          <h2 class="name">{{ t.name }}</h2>
+
+          <div class="sub">
+            <span class="last">
+              {{ t.lastSession || 'No recent session' }}
+            </span>
+
+            <span class="dot"></span>
+
+            <span class="rating"> ★ {{ t.rating || 0 }} </span>
+          </div>
+        </div>
 
         <span
           class="perf"
@@ -20,19 +32,40 @@
           [class.good]="t.weekPerformance === 'good'"
           [class.imp]="t.weekPerformance === 'improving'"
         >
-          {{ t.weekPerformance }}
+          {{ t.weekPerformance || '—' }}
         </span>
       </div>
 
-      <p class="bio">{{ t.bio }}</p>
+      <p class="bio" *ngIf="t.bio; else noBio">
+        {{ t.bio }}
+      </p>
+      <ng-template #noBio>
+        <p class="bio text-muted">No description available</p>
+      </ng-template>
 
-      <div class="meta">
-        <span class="last">Last session: {{ t.lastSession }}</span>
-        <span class="rating">★ {{ t.rating }}</span>
-      </div>
-
-      <div class="skills">
+      <div class="skills" *ngIf="t.skills?.length; else noSkills">
         <span *ngFor="let s of t.skills">{{ s }}</span>
+      </div>
+      <ng-template #noSkills>
+        <div class="skills text-muted">
+          <span>General</span>
+        </div>
+      </ng-template>
+
+      <div class="footer d-flex justify-content-between align-items-center">
+        <div class="meta-mini">
+          <span class="exp">
+            {{ t.expYrs !== null ? t.expYrs + ' yrs exp' : '—' }}
+          </span>
+
+          <span class="dot"></span>
+
+          <span class="subjects">
+            {{ t.subjects && t.subjects.length > 0 ? t.subjects.join(', ') : 'No subjects' }}
+          </span>
+        </div>
+
+        <button class="view-btn btn btn-sm">View</button>
       </div>
     </div>
   </div>

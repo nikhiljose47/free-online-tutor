@@ -1,0 +1,30 @@
+<section class="glass-shell d-flex justify-content-center align-items-center">
+  <div class="row cards-wrap gx-3 gy-3 justify-content-center perspective-wrap">
+
+    <ng-container *ngFor="let item of items(); let i = index">
+      <div class="col-12 col-md-4">
+
+        <div
+          class="card-3d animate-book"
+          [ngClass]="'delay-' + (i + 1)"
+          (click)="open(item.type)"
+        >
+          <div class="glass-card">
+
+            <!-- front -->
+            <div class="face front">
+              <div class="title">{{ item.title }}</div>
+              <div class="sub">{{ item.sub }}</div>
+            </div>
+
+            <!-- back (depth illusion only) -->
+            <div class="face back"></div>
+
+          </div>
+        </div>
+
+      </div>
+    </ng-container>
+
+  </div>
+</section>

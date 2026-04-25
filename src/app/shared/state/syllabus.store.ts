@@ -1,11 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of, forkJoin } from 'rxjs';
-import { map, switchMap, shareReplay, filter, take, tap, catchError } from 'rxjs/operators';
+import { map, switchMap, shareReplay, take, tap, catchError } from 'rxjs/operators';
 
 import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
 import { UiStateUtil } from './ui-state.utils';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus.model';
-import { ResourceIndex, IdMapUtil } from '../utils/id-map.utils';
+import { IdMapUtil, AvailableSyllabus } from '../utils/id-map.utils';
 
 @Injectable({ providedIn: 'root' })
 export class SyllabusStore {
@@ -15,18 +15,18 @@ export class SyllabusStore {
   /** --------------------------------------------------
    * ID MAP STREAM (cached & shared)
    * -------------------------------------------------- */
-  private idMap$?: Observable<ResourceIndex>;
+  private idMap$?: Observable<AvailableSyllabus>;
 
-  getIdMap$(): Observable<ResourceIndex> {
+  getIdMap$(): Observable<AvailableSyllabus> {
     if (!this.idMap$) {
-      const uiCached = this.uiState.get<ResourceIndex>('resourceIndex');
+      const uiCached = this.uiState.get<AvailableSyllabus>('AvailableSyllabus');
 
       this.idMap$ = uiCached
         ? of(uiCached)
         : this.repo.loadIndex().pipe(
             take(1),
-            map((index) => (index ? IdMapUtil.buildResourceIndex(index) : {})),
-            tap((map) => this.uiState.set('resourceIndex', map)),
+            map((index) => (index ? IdMapUtil.buildAvailableSyllabus(index) : {})),
+            tap((map) => this.uiState.set('AvailableSyllabus', map)),
             shareReplay(1),
           );
     }

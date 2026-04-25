@@ -6,6 +6,9 @@ type UiStateRecord<T> = {
   ttl?: number;
 };
 
+//Usage
+// this.uiState.set<T>('someKey', someValue, {}); 
+
 @Injectable({ providedIn: 'root' })
 export class UiStateUtil {
   private store = signal<Record<string, UiStateRecord<any>>>({});

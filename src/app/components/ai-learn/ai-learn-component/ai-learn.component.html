@@ -30,7 +30,7 @@
           </div>
 
           <div *ngIf="step.type === 'question'" class="question-block">
-            <div class="title">{{ step.title }}</div>
+            <!-- <div class="title">{{ step.title }}</div> -->
             <ai-content-renderer [content]="step.body"></ai-content-renderer>
 
             <textarea

@@ -11,16 +11,24 @@ import {
   DestroyRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { AiLearnService } from '../../../services/ai-learn/ai-learn.service';
 import { AiLearnResultCardComponent } from '../ai-learn-result-card.component/ai-learn-result-card.component';
 import { AiContentRendererComponent } from '../ai-learn-content-renderer/ai-learn-content-renderer.component';
 import { AiLearnBadgeComponent } from '../ai-learn-badge/ai-learn-badge.component';
+import { UserPointsService } from '../../../services/user/user-points/user-points.service';
+import { UiStateUtil } from '../../../shared/state/ui-state.utils';
+import { defer, of } from 'rxjs';
 
 @Component({
   selector: 'ai-learn',
   standalone: true,
-  imports: [CommonModule, AiLearnBadgeComponent, AiLearnResultCardComponent, AiContentRendererComponent],
+  imports: [
+    CommonModule,
+    AiLearnBadgeComponent,
+    AiLearnResultCardComponent,
+    AiContentRendererComponent,
+  ],
   templateUrl: './ai-learn.component.html',
   styleUrls: ['./ai-learn.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,10 +42,17 @@ export class AiLearnComponent {
   @Input({ required: true }) flowNext!: (
     step?: 'slides' | 'game' | 'dashboard' | 'ai-learn',
   ) => void;
-  @Input() flowRestart!: () => void;
+   @Input() flowRedoSlides!: () => void;
 
+  private pointsService = inject(UserPointsService);
+  private uiStateUtil = inject(UiStateUtil);
+
+  domain = toSignal(
+    defer(() => of(this.uiStateUtil.get<string>('currentClassName') || '')),
+    { initialValue: '' },
+  );
+  
   private context = 'Getting started with Flutter & Apps';
-  private domain = 'Flutter developer (2 years)';
   private MAX_STEPS = 10;
 
   readonly steps = this.learn.steps;
@@ -72,7 +87,7 @@ export class AiLearnComponent {
 
   ngOnInit() {
     this.learn
-      .init(this.context, this.domain)
+      .init(this.context, this.domain())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
   }
@@ -109,6 +124,8 @@ export class AiLearnComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res: any) => {
         const correct = res?.correct ?? false;
+
+        this.pointsService.addPoints(2, this.currentStep().title).subscribe();
 
         this.isCorrect.set(correct);
         this.feedback.set(res?.feedback || '');

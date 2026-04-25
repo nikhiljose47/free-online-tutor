@@ -1,0 +1,22 @@
+<section class="highlight-banner" [class]="'variant-' + (variant || 'centered')">
+  <div class="banner-inner">
+    <!-- HEADER -->
+    <div class="banner-head">
+      <div class="head-wrap">
+        <img class="banner-img" [src]="imageSrc()" alt="banner" />
+
+        <h2 class="banner-title">
+          {{ titleText() }}
+        </h2>
+      </div>
+    </div>
+
+    <!-- BODY -->
+    <div class="banner-body">
+      <div class="stat" *ngFor="let s of itemsList()">
+        <h3>{{ s.value }}</h3>
+        <p>{{ s.label }}</p>
+      </div>
+    </div>
+  </div>
+</section>

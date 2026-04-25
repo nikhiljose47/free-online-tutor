@@ -1,12 +1,20 @@
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import {
   ApplicationConfig,
+  inject,
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { provideFirebaseApp, initializeApp, FirebaseApp } from '@angular/fire/app';
+import {
+  enableIndexedDbPersistence,
+  getFirestore,
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
+  provideFirestore,
+} from '@angular/fire/firestore';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
@@ -19,9 +27,19 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch(), withInterceptors([baseUrlInterceptor, httpCacheInterceptor])),
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
+
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
+    // provideFirestore(() => {
+    //   const app = inject(FirebaseApp);
+
+    //   return initializeFirestore(app, {
+    //     localCache: persistentLocalCache({
+    //       tabManager: persistentMultipleTabManager(),
+    //     }),
+    //   });
+    // }),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
   ],

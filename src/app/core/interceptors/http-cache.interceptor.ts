@@ -20,7 +20,7 @@ export const httpCacheInterceptor: HttpInterceptorFn = (req, next) => {
   const now = Date.now();
 
   return from(db.get<CachedPayload>(rule.store, key)).pipe(
-    switchMap(cached => {
+    switchMap((cached) => {
       // 1️⃣ Fresh cache → return immediately
       if (cached && now - cached.ts < rule.ttl) {
         return of(new HttpResponse({ body: cached.data, status: 200 }));
@@ -28,7 +28,7 @@ export const httpCacheInterceptor: HttpInterceptorFn = (req, next) => {
 
       // 2️⃣ Network → update cache
       return next(req).pipe(
-        tap(evt => {
+        tap((evt) => {
           if (evt instanceof HttpResponse) {
             db.set(rule.store, {
               id: key,
@@ -38,8 +38,8 @@ export const httpCacheInterceptor: HttpInterceptorFn = (req, next) => {
           }
         }),
         // 3️⃣ Offline fallback (stale)
-        switchMap(evt => of(evt)),
+        switchMap((evt) => of(evt)),
       );
-    })
+    }),
   );
 };

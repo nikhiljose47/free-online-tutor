@@ -32,82 +32,82 @@ export class UserProfileService {
     });
   }
 
-  // 🎯 User earns → add
-  addPoints(value: number, identifier: string) {
-    const uid = this.auth.uid;
-    if (!uid) return of(null);
+  // // 🎯 User earns → add
+  // addPoints(value: number, identifier: string) {
+  //   const uid = this.auth.uid;
+  //   if (!uid) return of(null);
 
-    const key = identifier?.trim().toLowerCase() || 'default';
+  //   const key = identifier?.trim().toLowerCase() || 'default';
 
-    const curr = this.profile()?.points?.points || 0;
-    const total = this.profile()?.totalPoints?.points || 0;
+  //   const curr = this.profile()?.seasonPoints || 0;
+  //   const total = this.profile()?.totalPoints || 0;
 
-    const newPoints = curr + value;
-    const newTotal = total + value;
+  //   const newPoints = curr + value;
+  //   const newTotal = total + value;
 
-    // instant UI
-    this.profile.update((p) => {
-      if (!p) return p;
-      return {
-        ...p,
-        points: {
-          identifier: key,
-          points: newPoints,
-        },
-        totalPoints: {
-          identifier: 'lifetime',
-          points: newTotal,
-        },
-      };
-    });
+  //   // instant UI
+  //   this.profile.update((p) => {
+  //     if (!p) return p;
+  //     return {
+  //       ...p,
+  //       seasonPoints: {
+  //         identifier: key,
+  //         points: newPoints,
+  //       },
+  //       totalPoints: {
+  //         identifier: 'lifetime',
+  //         points: newTotal,
+  //       },
+  //     };
+  //   });
 
-    const p1$ = this.fire.incrementNested('users', uid, 'points.points', value);
-    const p2$ = this.fire.incrementNested('users', uid, 'totalPoints.points', value);
+  //   const p1$ = this.fire.incrementNested('users', uid, 'points.points', value);
+  //   const p2$ = this.fire.incrementNested('users', uid, 'totalPoints.points', value);
 
-    return p1$.pipe(
-      tap(() => p2$.subscribe()),
-      tap(() => {
-        this.fire
-          .update('users', uid, {
-            'points.identifier': key,
-            'totalPoints.identifier': 'lifetime',
-          })
-          .subscribe();
-      }),
-      catchError(() => of(null)),
-    );
-  }
+  //   return p1$.pipe(
+  //     tap(() => p2$.subscribe()),
+  //     tap(() => {
+  //       this.fire
+  //         .update('users', uid, {
+  //           'points.identifier': key,
+  //           'totalPoints.identifier': 'lifetime',
+  //         })
+  //         .subscribe();
+  //     }),
+  //     catchError(() => of(null)),
+  //   );
+  // }
 
-  //🛠 System/admin overrides → set  (but only updates points and not totalPoints)
-  // usage: this.userProfile.setPoints(100, 'admin')
-  setPoints(value: number, identifier: string) {
-    const uid = this.auth.uid;
-    if (!uid) return of(null);
+  // //🛠 System/admin overrides → set  (but only updates points and not totalPoints)
+  // // usage: this.userProfile.setPoints(100, 'admin')
+  // setPoints(value: number, identifier: string) {
+  //   const uid = this.auth.uid;
+  //   if (!uid) return of(null);
 
-    const key = identifier?.trim().toLowerCase() || 'default';
+  //   const key = identifier?.trim().toLowerCase() || 'default';
 
-    // instant UI
-    this.profile.update((p) => {
-      if (!p) return p;
-      return {
-        ...p,
-        points: {
-          identifier: key,
-          points: value,
-        },
-      };
-    });
+  //   // instant UI
+  //   this.profile.update((p) => {
+  //     if (!p) return p;
+  //     return {
+  //       ...p,
+  //       points: {
+  //         identifier: key,
+  //         points: value,
+  //       },
+  //     };
+  //   });
 
-    return this.fire
-      .update('users', uid, {
-        points: {
-          identifier: key,
-          points: value,
-        },
-        updatedAt: new Date(),
-      })
-      .pipe(catchError(() => of(null)));
-  }
+  //   return this.fire
+  //     .update('users', uid, {
+  //       points: {
+  //         identifier: key,
+  //         points: value,
+  //       },
+  //       updatedAt: new Date(),
+  //     })
+  //     .pipe(catchError(() => of(null)));
+  // }
 
 
   updateProfile(data: Partial<UserModel>) {

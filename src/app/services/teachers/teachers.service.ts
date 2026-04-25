@@ -6,7 +6,6 @@ import { FireResponse, FirestoreDocService } from '../../core/services/fire/fire
 import { UserModel } from '../../models/fire/user.model';
 import { CACHE_TTL } from '../../core/constants/app.constants';
 
-
 interface CacheEntry<T> {
   expiry: number;
   stream$: Observable<T>;
@@ -28,15 +27,13 @@ export class TeachersService {
       return this.teachersListCache.stream$;
     }
 
-    const stream$ = this.fire
-      .where<UserModel>('users', 'role', '==', 'teacher', 100)
-      .pipe(
-        map((res: FireResponse<UserModel>) => {
-          if (!res.ok || !Array.isArray(res.data)) return [];
-          return res.data as UserModel[];
-        }),
-        shareReplay({ bufferSize: 1, refCount: false })
-      );
+    const stream$ = this.fire.where<UserModel>('users', 'role', '==', 'teacher', 100).pipe(
+      map((res: FireResponse<UserModel>) => {
+        if (!res.ok || !Array.isArray(res.data)) return [];
+        return res.data as UserModel[];
+      }),
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
 
     this.teachersListCache = {
       stream$,
@@ -57,12 +54,10 @@ export class TeachersService {
       return cached.stream$;
     }
 
-    const stream$ = this.fire
-      .getOnce<UserModel>('users', uid)
-      .pipe(
-        map((res) => (res.ok && res.data ? (res.data as UserModel) : null)),
-        shareReplay({ bufferSize: 1, refCount: false })
-      );
+    const stream$ = this.fire.getOnce<UserModel>('users', uid).pipe(
+      map((res) => (res.ok && res.data ? (res.data as UserModel) : null)),
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
 
     this.teacherByIdCache.set(uid, {
       stream$,

@@ -1,11 +1,10 @@
 import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
 
-export type ResourceIndex = Record<string, string>;
+export type AvailableSyllabus = Record<string, string>;
 
 export class IdMapUtil {
-
-  static buildResourceIndex(index: SyllabusIndex): ResourceIndex {
-    const map: ResourceIndex = {};
+  static buildAvailableSyllabus(index: SyllabusIndex): AvailableSyllabus {
+    const map: AvailableSyllabus = {};
 
     index.catalog.forEach((c) => {
       if (c.id && c.ready && c.enabled) {
@@ -16,7 +15,5 @@ export class IdMapUtil {
     return map;
   }
 
-  buildIdNameMap(){
-    
-  }
+  buildIdNameMap() {}
 }

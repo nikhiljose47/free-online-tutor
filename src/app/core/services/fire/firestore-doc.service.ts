@@ -60,9 +60,6 @@ export class FirestoreDocService {
     return doc(this.db, `${path}/${id}`) as any;
   }
 
-  // --------------------------------------------------
-  // ⭐ CREATE / SET
-  // --------------------------------------------------
   add<T extends Record<string, any>>(path: string, data: T): Observable<FireResponse<T>> {
     const colRef = collection(this.db, path);
 
@@ -75,7 +72,21 @@ export class FirestoreDocService {
             data: null,
           }) as FireResponse<T>,
       ),
-      catchError((err) => of(this.fail<T>(err.message ?? 'Firestore add() error'))),
+      catchError((err) => {
+        return of(this.fail<T>(err?.message ?? 'Firestore add() error'));
+      }),
+    );
+  }
+
+  createWithId<T extends Record<string, any>>(path: string, data: T): Observable<FireResponse<T>> {
+    const colRef = collection(this.db, path);
+    const ref = doc(colRef);
+
+    const payload = { ...data, id: ref.id };
+
+    return from(setDoc(ref, payload)).pipe(
+      map(() => ({ ok: true, data: payload })),
+      catchError((err) => of(this.fail<T>(err?.message ?? 'Firestore createWithId error'))),
     );
   }
 

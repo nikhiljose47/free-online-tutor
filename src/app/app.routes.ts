@@ -20,6 +20,8 @@ import { FreeOnlineTuition } from './pages/free-online-tuition/free-online-tuiti
 import { AiTutorChatComponent } from './shared/components/ai-tutor-chat.component/ai-tutor-chat.component';
 import { OnlineTeacherJobs } from './pages/online-teacher-jobs/online-teacher-jobs';
 import { CourseViewPage } from './pages/course-view-page/course-view-page';
+import { UserProfile } from './pages/user-profile/user-profile';
+import { TestPage } from './pages/test-page/test-page';
 
 export const routes: Routes = [
   {
@@ -183,7 +185,7 @@ export const routes: Routes = [
   },
   {
     path: 'profile',
-    component: DashboardComponent,
+    component: UserProfile,
     data: { noIndex: true },
     resolve: { seo: seoResolver },
   },
@@ -202,6 +204,12 @@ export const routes: Routes = [
   {
     path: 'book/:id',
     component: BookingDrawerComponent,
+    data: { noIndex: true },
+    resolve: { seo: seoResolver },
+  },
+    {
+    path: 'test',
+    component: TestPage,
     data: { noIndex: true },
     resolve: { seo: seoResolver },
   },

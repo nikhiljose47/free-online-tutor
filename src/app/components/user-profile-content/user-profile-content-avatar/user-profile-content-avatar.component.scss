@@ -1,0 +1,139 @@
+.profile-card--elite {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 1.6rem 1.8rem;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid #e9edf2;
+  min-height: 140px;
+}
+
+/* ---------- AVATAR ZONE ---------- */
+.avatar-zone {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.avatar-frame {
+  position: relative;
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, #f7f9fc, #ffffff);
+}
+
+.avatar-img,
+.avatar-empty {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.avatar-img {
+  object-fit: cover;
+}
+
+.avatar-empty {
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  color: #9aa3af;
+  background: #f3f5f7;
+}
+
+.ring {
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #111827, #4b5563, #d1d5db, #111827);
+  opacity: 0.12;
+  animation: spin 10s linear infinite;
+}
+
+/* ---------- CTA ---------- */
+.avatar-cta {
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #111827;
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  letter-spacing: 0.2px;
+}
+
+/* ---------- META ---------- */
+.meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.name {
+  font-size: 15.5px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.email {
+  font-size: 12.5px;
+  color: #6b7280;
+}
+
+/* ---------- GRID (NEW) ---------- */
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 14px;
+  margin-top: 1.4rem;
+  padding: 1.2rem;
+  border-radius: 16px;
+  background: #fbfcfe;
+  border: 1px solid #eef2f6;
+}
+
+.avatar-item {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  border: 1px solid #edf1f5;
+  transition: border-color 0.2s ease;
+}
+
+.avatar-item img {
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* ACTIVE (clean, premium highlight) */
+.avatar-item.active {
+  border-color: #111827;
+}
+
+.avatar-item.active::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px solid #111827;
+  opacity: 0.25;
+}
+
+/* ---------- MICRO MOTION ---------- */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

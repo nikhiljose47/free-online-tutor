@@ -1,6 +1,15 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { of, map, Observable, shareReplay } from 'rxjs';
-import { endAt, Timestamp } from '@angular/fire/firestore';
+import { of, map, Observable, shareReplay, from, catchError } from 'rxjs';
+import {
+  collection,
+  Firestore,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  Timestamp,
+  where,
+} from '@angular/fire/firestore';
 
 import { Meeting } from '../../models/meeting.model';
 import { FireResponse, FirestoreDocService } from '../../core/services/fire/firestore-doc.service';
@@ -8,15 +17,64 @@ import { GLOBAL_MEETINGS } from '../../core/constants/app.constants';
 
 @Injectable({ providedIn: 'root' })
 export class MeetingsService {
-  constructor(private fs: FirestoreDocService) {}
+  private db = inject(Firestore);
+  private fs = inject(FirestoreDocService);
 
   // --------------------------------------------------
   // 🔥 Local domain cache (classId → meetings[])
   // --------------------------------------------------
   private classCache = signal<Record<string, Meeting[]>>({});
 
-  /// For live/realtime caching
   private live$?: Observable<FireResponse<Meeting[]>>;
+  
+  private success<T>(data: T | T[] | null): FireResponse<T> {
+    return { ok: true, data };
+  }
+
+  private fail<T>(msg: string): FireResponse<T> {
+    return { ok: false, data: null, message: msg };
+  }
+
+  getActiveMeetingsOnce<T>(
+    path: string,
+    lastSync?: Timestamp | null,
+    limitTo = 20,
+  ): Observable<FireResponse<T[]>> {
+    const now = Timestamp.fromDate(new Date());
+
+    let q: any;
+
+    if (!lastSync) {
+      q = query(
+        collection(this.db, path),
+        where('endAt', '>=', now),
+        orderBy('endAt'),
+        limit(limitTo),
+      );
+    } else {
+      // 🔥 DELTA LOAD (SAFE QUERY)
+      q = query(
+        collection(this.db, path),
+        where('endAt', '>=', now),
+        where('createdAt', '>', lastSync),
+        orderBy('createdAt'),
+        limit(limitTo),
+      );
+    }
+
+    q = query(collection(this.db, path), limit(10));
+
+    return from(getDocs(q)).pipe(
+      map((snap) => {
+        const data = snap.docs.map((d) => ({
+          id: d.id,
+          ...(d.data() as any),
+        }));
+        return this.success<T[]>(data);
+      }),
+      catchError((err) => of(this.fail<T[]>(err?.message ?? 'meetings fetch failed'))),
+    );
+  }
 
   getLiveMeetingsInitial(): Observable<FireResponse<Meeting[]>> {
     return this.fs.notEnded<Meeting>(GLOBAL_MEETINGS);
@@ -49,20 +107,20 @@ export class MeetingsService {
     );
   }
 
-  getLiveMeetingsByClassId(classId: string): Observable<FireResponse<Meeting[]>> {
-    return this.getLiveMeetings().pipe(
-      map((res): FireResponse<Meeting[]> => {
-        if (!res.ok || !res.data) {
-          return res as FireResponse<Meeting[]>;
-        }
-        const data = res.data as Meeting[];
-        return {
-          ok: true,
-          data: data.filter((m) => m.classId === classId),
-        };
-      }),
-    );
-  }
+  // getLiveMeetingsByClassId(classId: string): Observable<FireResponse<Meeting[]>> {
+  //   return this.getLiveMeetings().pipe(
+  //     map((res): FireResponse<Meeting[]> => {
+  //       if (!res.ok || !res.data) {
+  //         return res as FireResponse<Meeting[]>;
+  //       }
+  //       const data = res.data as Meeting[];
+  //       return {
+  //         ok: true,
+  //         data: data.filter((m) => m.classId === classId),
+  //       };
+  //     }),
+  //   );
+  // }
 
   private cacheMeetings(classId: string, meetings: Meeting[]) {
     this.classCache.set({
@@ -189,7 +247,7 @@ export class MeetingsService {
     const end = new Date(start.getTime() + (f.duration ?? 0) * 60000);
 
     const payload: Meeting = {
-      id: '',
+      id: '', // will be injected in service
       classId: f.classId,
       className: f.className,
       subjectId: f.subjectId,
@@ -210,6 +268,6 @@ export class MeetingsService {
       imageSrc: f.imageSrc,
     };
 
-    return this.fs.add(GLOBAL_MEETINGS, payload);
+    return this.fs.createWithId(GLOBAL_MEETINGS, payload);
   }
 }

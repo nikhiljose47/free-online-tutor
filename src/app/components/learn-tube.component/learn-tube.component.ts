@@ -17,7 +17,7 @@ export class LearnTubeComponent {
   @Input({ required: true }) flowNext!: (
     step?: 'slides' | 'game' | 'dashboard' | 'ai-learn',
   ) => void;
-  @Input() flowRestart!: () => void;
+   @Input() flowRedoSlides!: () => void;
 
   service = inject(LearnTubeService);
   fetchService = inject(LearnTubeFetchService);
@@ -34,17 +34,6 @@ export class LearnTubeComponent {
 
   constructor() {
     afterNextRender(() => this.init());
-
-    this.service.stageChanges$.subscribe((stage) => {
-      this.persistService.set(stage);
-
-      console.log('Stage changed to:', stage);
-      // 👉 MAIN LOGIC
-      if (stage === LearnTubeStage.SlideEnded) {
-        console.log('Slide ended, navigating to dashboard');
-        this.flowNext('dashboard');
-      }
-    });
   }
 
   init() {

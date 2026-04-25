@@ -1,6 +1,18 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { from, Observable, of, switchMap, tap, retry, catchError, forkJoin } from 'rxjs';
+import {
+  from,
+  Observable,
+  of,
+  switchMap,
+  tap,
+  retry,
+  catchError,
+  forkJoin,
+  defer,
+  startWith,
+  shareReplay,
+} from 'rxjs';
 import { IndexedDbService } from '../../core/services/cache/db/indexed-db.service';
 import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
@@ -10,6 +22,7 @@ import { SYLL_INDEX_CACHE_KEY } from '../../core/constants/app.constants';
 @Injectable({ providedIn: 'root' })
 export class SyllabusRepository {
   private readonly TTL = 15 * 60 * 1000;
+  private index$?: Observable<SyllabusIndex | null>;
 
   constructor(
     private http: HttpClient,
@@ -18,43 +31,50 @@ export class SyllabusRepository {
   ) {}
 
   loadIndex(): Observable<SyllabusIndex | null> {
-    const uiCached = this.uiState.get<SyllabusIndex>(SYLL_INDEX_CACHE_KEY);
-    if (uiCached) return of(uiCached);
+    if (this.index$) return this.index$;
 
-    return from(
-      this.indexDb.get<{ id: string; data: SyllabusIndex; ts: number }>(
-        'syllabus_index',
-        SYLL_INDEX_CACHE_KEY,
-      ),
-    ).pipe(
-      switchMap((dbCached) => {
-        const now = Date.now();
+    this.index$ = defer(() => {
+      const uiCached = this.uiState.get<SyllabusIndex>(SYLL_INDEX_CACHE_KEY);
+      if (uiCached) return of(uiCached);
 
-        if (dbCached) {
-          this.uiState.set(SYLL_INDEX_CACHE_KEY, dbCached.data, this.TTL);
-        }
+      return from(
+        this.indexDb.get<{ id: string; data: SyllabusIndex; ts: number }>(
+          'syllabus_index',
+          SYLL_INDEX_CACHE_KEY,
+        ),
+      ).pipe(
+        switchMap((dbCached) => {
+          const now = Date.now();
 
-        if (dbCached && now - dbCached.ts < this.TTL) {
-          return of(dbCached.data);
-        }
+          if (dbCached) {
+            this.uiState.set(SYLL_INDEX_CACHE_KEY, dbCached.data, this.TTL);
+          }
 
-        return this.http.get<SyllabusIndex>('index/syllabus-index.json').pipe(
-          retry({ count: 2, delay: 1000 }),
-          tap((data) => {
-            this.uiState.set(SYLL_INDEX_CACHE_KEY, data, this.TTL);
+          const shouldFetch = !dbCached || now - dbCached.ts >= this.TTL;
 
-            this.indexDb
-              .set('syllabus_index', {
-                id: SYLL_INDEX_CACHE_KEY,
-                data,
-                ts: Date.now(),
-              })
-              .catch(() => {});
-          }),
-          catchError(() => of(dbCached?.data ?? null)),
-        );
-      }),
-    );
+          if (!shouldFetch) return of(dbCached.data);
+
+          return this.http.get<SyllabusIndex>('index/syllabus-index.json').pipe(
+            retry({ count: 2, delay: 800 }),
+            tap((data) => {
+              this.uiState.set(SYLL_INDEX_CACHE_KEY, data, this.TTL);
+
+              this.indexDb
+                .set('syllabus_index', {
+                  id: SYLL_INDEX_CACHE_KEY,
+                  data,
+                  ts: Date.now(),
+                })
+                .catch(() => {});
+            }),
+            startWith(dbCached?.data ?? null), // SWR behavior
+            catchError(() => of(dbCached?.data ?? null)),
+          );
+        }),
+      );
+    }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+
+    return this.index$;
   }
 
   loadClass(classId: string): Observable<ClassSyllabus | null> {

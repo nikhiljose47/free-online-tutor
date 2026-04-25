@@ -1,59 +1,54 @@
-<div class="lt-shell d-flex align-items-center justify-content-center">
-  <div class="lt-frame">
-    <!-- Loading -->
+<section class="lt-shell">
+  <div class="lt-frame d-flex align-items-center justify-content-center">
     @if (loading()) {
-      <div class="lt-skeleton w-100 h-100"></div>
-    }
-
-    <!-- Slides Completed → Navigation -->
-    @if (!loading() && isSlides()) {
-      <div
-        class="lt-content d-flex flex-column justify-content-center align-items-center text-center h-100"
-      >
-        <div class="lt-title"> Time to learn something new today!</div>
-         
-
-        <div class="lt-actions mt-4">
-            <button class="btn btn-dark px-4 me-2" (click)="goToQuestion()">
-           Watch Video & Solve Problem
-          </button>
-
-          <button class="btn btn-dark px-4 me-2" (click)="goToQuestion()">
-           Solve Problem Directly & Earn Points
-          </button>
-          <button class="btn btn-outline-dark px-4" (click)="goToLearn()">Explore More</button>
-        </div>
+      <div class="w-100">
+        <div class="skeleton-card"></div>
       </div>
     }
 
-    <!-- Question Completed → Navigation -->
-    @if (!loading() && isQuestion()) {
-      <div
-        class="lt-content d-flex flex-column justify-content-center align-items-center text-center h-100"
-      >
-        <div class="lt-title">Nice work! Video completed.</div>
+    @if (!loading()) {
+      <div class="cards-wrap perspective-wrap w-100">
+        <div class="row gx-3 gy-3 justify-content-center">
+          <ng-container *ngFor="let item of items(); let i = index">
+            <div class="col-12 col-md-4">
+              <div class="card-holder w-100">
+                <div
+                  class="card-3d animate-book w-100"
+                  [ngClass]="[
+                    'delay-' + (i + 1),
+                    selected() === item.type ? 'active-card' : '',
+                    isCompleted(item.type) ? 'completed-card' : '',
+                  ]"
+                  (click)="select(item.type, item.action)"
+                >
+                  <div class="glass-card">
+                    <div class="face front">
+                      <div class="title">{{ item.title }}</div>
+                      <div class="sub">{{ item.sub }}</div>
 
-        <div class="lt-actions mt-4">
-          <button class="btn btn-dark px-4 me-2" (click)="goToQuestion()">
-            Solve Problem + Earn Points
-          </button>
-          <button class="btn btn-outline-dark px-4" (click)="goToLearn()">Study More</button>
+                      @if (item.type === 'insight') {
+                        <button class="redo-btn" (click)="$event.stopPropagation(); redoInsight()">
+                          Do Again
+                        </button>
+                      }
+
+                      @if (isCompleted(item.type)) {
+                        <div class="status">
+                          <i class="bi bi-check-circle-fill"></i>
+                          <span>Completed</span>
+                        </div>
+                      }
+
+                    </div>
+
+                    <div class="face back"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
         </div>
       </div>
     }
-
-        <!-- Question Completed → Navigation -->
-    @if (!loading() && isLearn()) {
-      <div
-        class="lt-content d-flex flex-column justify-content-center align-items-center text-center h-100"
-      >
-        <div class="lt-title">Great progress. Dive deeper into the topic.</div>
-
-        <div class="lt-actions mt-4">
-          <button class="btn btn-dark px-4" (click)="goToLearn()">Continue Learning</button>
-        </div>
-      </div>
-    }
-
   </div>
-</div>
+</section>

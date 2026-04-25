@@ -6,10 +6,9 @@
       <span class="brand-text d-none d-sm-inline">Scholo</span>
     </a>
 
-    <!-- SEARCH (desktop only) -->
+    <!-- SEARCH -->
     <div class="search-area d-none d-lg-flex" (click)="$event.stopPropagation()">
       <input
-        #myInput
         type="text"
         class="search-input"
         placeholder="Search..."
@@ -30,35 +29,29 @@
 
     <!-- ACTIONS -->
     <div class="actions">
-      <!-- MOBILE SEARCH ICON -->
+      <!-- MOBILE SEARCH -->
       <button class="topbar-link d-lg-none" (click)="ss.open.set(true)">
         <i class="bi bi-search"></i>
       </button>
 
       <!-- STUDENT -->
       <ng-container *ngIf="profile()?.role === 'student'">
-        <div class="learn-dropdown" (click)="$event.stopPropagation()">
-          <span class="topbar-link" [class.active]="learnOpen()" (click)="toggleLearn()">
-            Learn <i class="bi bi-caret-down-fill small"></i>
-          </span>
+        <div class="learn-dropdown">
+          <span class="topbar-link"> Learn <i class="bi bi-caret-down-fill small"></i> </span>
 
-          <div class="learn-menu" *ngIf="learnOpen()">
-            <a routerLink="/report-card" class="menu-item" (click)="closeLearn()">Report</a>
-            <a routerLink="/student-creations" class="menu-item" (click)="closeLearn()"
-              >Creations</a
-            >
+          <div class="learn-menu">
+            <a routerLink="/report-card" class="menu-item">Report</a>
+            <a routerLink="/student-creations" class="menu-item">Creations</a>
           </div>
         </div>
       </ng-container>
 
       <!-- TEACHER -->
       <ng-container *ngIf="profile()?.role === 'teacher'">
-        <div class="learn-dropdown" (click)="$event.stopPropagation()">
-          <span class="topbar-link" [class.active]="proffOpen()" (click)="toggleProff()">
-            Studio <i class="bi bi-caret-down-fill small"></i>
-          </span>
+        <div class="learn-dropdown">
+          <span class="topbar-link"> Studio <i class="bi bi-caret-down-fill small"></i> </span>
 
-          <div class="learn-menu" *ngIf="proffOpen()">
+          <div class="learn-menu">
             <a routerLink="/schedule" class="menu-item">Schedule</a>
             <a routerLink="/chapter-browser" class="menu-item">Browse</a>
             <a routerLink="/teacher-workspace" class="menu-item">Dashboard</a>
@@ -66,20 +59,18 @@
         </div>
       </ng-container>
 
-      <!-- JOIN -->
-      <div class="learn-dropdown d-none d-md-flex" (click)="$event.stopPropagation()">
-        <span class="topbar-link" [class.active]="otherOpen()" (click)="toggleOther()">
-          Explore <i class="bi bi-caret-down-fill small"></i>
-        </span>
+      <!-- EXPLORE -->
+      <div class="learn-dropdown d-none d-md-flex">
+        <span class="topbar-link"> Explore <i class="bi bi-caret-down-fill small"></i> </span>
 
-        <div class="learn-menu" *ngIf="otherOpen()">
-          <a routerLink="/about" class="menu-item" (click)="closeOther()">About</a>
-          <a routerLink="/tuition-centers" class="menu-item" (click)="closeOther()">Centers</a>
-          <a routerLink="/career" class="menu-item" (click)="closeOther()">Teach</a>
+        <div class="learn-menu">
+          <a routerLink="/about" class="menu-item">About</a>
+          <a routerLink="/tuition-centers" class="menu-item">Centers</a>
+          <a routerLink="/career" class="menu-item">Teach</a>
         </div>
       </div>
 
-      <!-- TEACHERS -->
+      <!-- MENTORS -->
       <a class="topbar-link d-none d-md-inline" routerLink="/teachers">Mentors</a>
 
       <!-- AUTH -->
@@ -87,33 +78,26 @@
         <a class="topbar-link" routerLink="/login">Login</a>
       </ng-container>
 
-      <!-- PROFILE + POINTS -->
+      <!-- PROFILE -->
       <div class="profile-wrap" *ngIf="profile()">
         <!-- POINTS -->
         <div class="points-badge-wrap">
           <div class="points-badge">
             <i class="bi bi-lightning-fill"></i>
-            <span>{{ profile()?.points?.points || 0 }}</span>
+            <span class="val">{{ points() }}</span>
           </div>
-
-          <!-- HINT -->
           <div class="points-hint">Total points ⭐</div>
         </div>
 
-        <!-- AVATAR -->
-        <img
-          [src]="CommonUtil.getAvatarUrl(profile()?.avatarId || null)"
-          class="profile-icon"
-          (click)="toggleMenu(); $event.stopPropagation()"
-        />
+        <!-- PROFILE MENU (HOVER ONLY) -->
+        <div class="profile-menu-trigger">
+          <img [src]="CommonUtil.getAvatarUrl(profile()?.avatarId || null)" class="profile-icon" />
 
-        <!-- MENU -->
-        <div class="learn-menu" *ngIf="menuOpen()">
-          <a routerLink="/profile" class="menu-item" (click)="closeMenu()">Profile</a>
-          <button class="menu-item logout-btn" (click)="logout(); closeMenu()">Logout</button>
+          <div class="learn-menu">
+            <a routerLink="/test" class="menu-item">Profile</a>
+            <button class="menu-item logout-btn" (click)="logout()">Logout</button>
+          </div>
         </div>
-
-        <div *ngIf="menuOpen()" class="menu-overlay" (click)="closeMenu()"></div>
       </div>
     </div>
   </nav>

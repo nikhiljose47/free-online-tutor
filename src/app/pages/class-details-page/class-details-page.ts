@@ -5,17 +5,15 @@ import {
   OnInit,
   computed,
   PLATFORM_ID,
+  effect,
+  DestroyRef,
 } from '@angular/core';
-import { McqPuzzleCardComponent } from '../../components/mcq-puzzle-card/mcq-puzzle-card';
 import { Timetable } from '../../components/timetable/timetable';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ClassOverviewComponent } from '../../shared/components/class-overview.component/class-overview.component';
-import { catchError, filter, forkJoin, of, switchMap, tap } from 'rxjs';
-import { SyllabusStore } from '../../domain/syllabus.store';
-import { MeetingsService } from '../../services/meetings/meetings.service';
+import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
 import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { Meeting } from '../../models/meeting.model';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus.model';
 import { UserCardlist } from '../../shared/components/user-card-list/user-card-list';
 import { FaqList } from '../../shared/components/faq-list/faq-list';
@@ -23,9 +21,15 @@ import { ClassScheduleListComponent } from '../../shared/components/class-schedu
 import { Quote } from '../../models/quote.model';
 import { QuoteUtil } from '../../shared/utils/quote.utils';
 import { AiTutorChatComponent } from '../../shared/components/ai-tutor-chat.component/ai-tutor-chat.component';
-import { PuzzleService } from '../../services/puzzle/puzzle.service';
+import { UiStateUtil } from '../../shared/state/ui-state.utils';
+import { SyllabusIndexService } from '../../services/syllabus/syllabus-index/syllabus-index.service';
+import { ClassDocService } from '../../services/class/class-doc/class-doc';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ClassDoc } from '../../models/classes/class-doc.model';
+import { CurClassInfo } from '../../models/common/common.model';
+import { CUR_CLASS_INFO } from '../../core/constants/app.constants';
 
-type TabType = 'overview' | 'games' | 'curriculum' | 'AI Tutor';
+type TabType = 'overview' | 'live' | 'curriculum' | 'ai';
 
 interface ClassStat {
   value: string;
@@ -38,7 +42,6 @@ interface ClassStat {
   templateUrl: './class-details-page.html',
   styleUrl: './class-details-page.scss',
   imports: [
-    McqPuzzleCardComponent,
     Timetable,
     CommonModule,
     UserCardlist,
@@ -51,24 +54,24 @@ interface ClassStat {
 export class ClassDetailsPage implements OnInit {
   private platformId = inject(PLATFORM_ID);
 
-  private syllabusStore = inject(SyllabusStore);
-  private meetApi = inject(MeetingsService);
+  private syllabusIndexApi = inject(SyllabusIndexService);
   private syllRepo = inject(SyllabusRepository);
   private route = inject(ActivatedRoute);
+  private uiUtil = inject(UiStateUtil);
+  private classDocApi = inject(ClassDocService);
 
-  private puzzleApi = inject(PuzzleService);
+  private destroyRef = inject(DestroyRef);
 
-  readonly classId = this.route.snapshot.paramMap.get('id') ?? 'mob-flutter-adv';
-
+  readonly classId = this.getValidClassId();
   readonly isLoading = signal(true);
   readonly hasValidData = signal(false);
-  private readonly meetings = signal<Meeting[]>([]);
 
   syllabus = signal<ClassSyllabus | null>(null);
   className = signal<string>('Class');
-  aiContext = computed(() => `${this.syllabus()?.className}`);
+  classDoc = signal<ClassDoc | null>(null);
 
-  puzzleId = 'puzzle_001';
+  aiContext = computed(() => `${this.syllabus()?.className ?? ''}`);
+
   classFileId: string = '';
 
   readonly stats = signal<ClassStat[]>([
@@ -79,98 +82,85 @@ export class ClassDetailsPage implements OnInit {
   ]);
 
   private readonly _activeTab = signal<TabType>('overview');
-
   readonly activeMainTab = computed(() => this._activeTab());
+
   readonly quote = signal<Quote>(QuoteUtil.getQuoteOfDay());
+  trackStat = (_: number, item: any) => item.label;
+  
+  constructor(private router: Router) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.router.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((e) => {
+        if (e instanceof NavigationEnd) {
+          document.querySelector('.content')?.scrollTo(0, 0);
+        }
+      });
+    }
+
+    effect(() => {
+      if (!this.syllabus()) return;
+      this.aiContext();
+    });
+  }
+
+  ngOnInit(): void {
+    forkJoin([this.loadData$(), this.getClassDoc$()])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.uiUtil.set<CurClassInfo>(CUR_CLASS_INFO, {
+          curClassId: this.classDoc()?.curClassId ?? '',
+          className: this.className(),
+        });
+
+        this.isLoading.set(false);
+      });
+  }
+
+  private getValidClassId(): string {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id) {
+      this.router.navigate([''], { replaceUrl: true });
+      return '';
+    }
+    return id;
+  }
 
   select(tab: TabType): void {
-    if (this._activeTab() !== tab) {
-      this._activeTab.set(tab);
-    }
-    if (tab === 'AI Tutor' && isPlatformBrowser(this.platformId)) {
+    if (this._activeTab() !== tab) this._activeTab.set(tab);
+
+    if (tab === 'ai' && isPlatformBrowser(this.platformId)) {
       setTimeout(() => {
         document.getElementById('tab-content-view')?.scrollIntoView({
           behavior: 'smooth',
           block: 'start',
         });
-      }, 0);
+      });
     }
   }
 
-  constructor(private router: Router) {
-    if (isPlatformBrowser(this.platformId)) {
-      this.router.events
-        .pipe(filter((e) => e instanceof NavigationEnd))
-        .subscribe(() => document.querySelector('.content')?.scrollTo(0, 0));
-    }
+  loadData$() {
+    return this.syllabusIndexApi.getIdMap$().pipe(
+      switchMap((map) => {
+        if (!map) return of(null);
+
+        this.classFileId = map[this.classId];
+
+        return this.syllRepo.loadClass(this.classFileId).pipe(catchError(() => of(null)));
+      }),
+      tap((syllabus) => {
+        if (!syllabus) return;
+
+        this.syllabus.set(syllabus);
+        this.className.set(syllabus.className);
+        this.hasValidData.set(true);
+      }),
+    );
   }
 
-  ngOnInit(): void {
-    this.loadData();
-    //todo
-    // this.puzzleApi.getPuzzleCollection('CL10', 'math').subscribe((res) => {
-    //   console.log('Puzzle collection:', res);
-    // });
-  }
-
-  loadData() {
-    this.syllabusStore
-      .getIdMap$()
-      .pipe(
-        switchMap((map) => {
-          if (!map) return of(null);
-          // Getting the file name for correspoonding classId
-          this.classFileId = map[this.classId];
-
-          //Fetching classId json and meetings doc
-          return forkJoin({
-            syllabus: this.syllRepo.loadClass(this.classFileId).pipe(catchError(() => of(null))),
-            meetings: this.meetApi
-              .getMeetingsForClass(this.classId)
-              .pipe(catchError(() => of(null))),
-          });
-        }),
-        tap((res) => {
-          if (!res) {
-            this.isLoading.set(false);
-            return;
-          }
-
-          const { syllabus, meetings } = res;
-
-          if (syllabus) {
-            this.syllabus.set(syllabus);
-            this.className.set(syllabus.className);
-          }
-
-          if (meetings) {
-            this.setMeetings(meetings as any);
-          }
-
-          /* BOTH must be valid */
-          const valid = !!syllabus && !!meetings;
-
-          this.hasValidData.set(valid);
-          this.isLoading.set(false);
-        }),
-        catchError(() => {
-          this.isLoading.set(false);
-          return of(null);
-        }),
-      )
-      .subscribe();
-  }
-
-  setMeetings(data: Meeting[]): void {
-    this.meetings.set(data);
-  }
-
-  onPuzzleCompleted(id: string) {
-    console.log('Puzzle completed:', id);
-
-    // example:
-    // give XP
-    // unlock next lesson
-    // call API
+  getClassDoc$() {
+    return this.classDocApi.getFast(this.classId).pipe(
+      tap((doc) => {
+        if (doc) this.classDoc.set(doc);
+      }),
+    );
   }
 }

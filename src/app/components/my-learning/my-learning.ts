@@ -140,7 +140,11 @@ export class MyLearning implements AfterViewInit {
   }
 
   onOpenCourse(classId: string) {
-    this.router.navigate(['/course-view', classId]);
+    setTimeout(() => {
+      this.router.navigate(['/details', classId]);
+    }, 120);
+
+    // this.router.navigate(['/course-view', classId]);
   }
 
   trackById = (_: number, item: Course) => item.classId;

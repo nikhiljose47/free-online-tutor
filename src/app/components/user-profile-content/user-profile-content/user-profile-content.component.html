@@ -1,0 +1,117 @@
+<main class="hub-main">
+  <!-- OVERVIEW -->
+  <section *ngIf="activeTab() === 'overview'" class="panel panel--wide">
+    <div class="grid grid--wide">
+      <!-- PROFILE -->
+      <div class="card profile-card profile-card--left">
+        <div class="avatar">
+          <img *ngIf="selectedAvatar()" [src]="getAvatarUrl(selectedAvatar() ?? '')" />
+          <div *ngIf="!selectedAvatar()" class="avatar-empty">+</div>
+        </div>
+
+        <div class="meta">
+          <div class="name">{{ profile()?.name || 'Student' }}</div>
+          <div class="email">{{ profile()?.email || 'student@email.com' }}</div>
+        </div>
+      </div>
+
+      <!-- STATS (expanded center) -->
+      <div class="card stats stats--expanded">
+        <div class="stat">
+          <div class="value">{{ totalPoints() || 0 }}</div>
+          <div class="label">Total Points</div>
+        </div>
+
+        <div class="stat">
+          <div class="value">{{ popularity() || 0 }}</div>
+          <div class="label">Popularity</div>
+        </div>
+
+        <div class="stat">
+          <div class="value">{{ bookings()?.length || 0 }}</div>
+          <div class="label">Sessions</div>
+        </div>
+      </div>
+
+      <!-- ACTION -->
+      <div class="card quick quick--right">
+        <button class="btn btn-dark w-100 mb-2" (click)="setTab('photo')">Change Avatar</button>
+
+        <button class="btn btn-outline-dark w-100" (click)="setTab('security')">
+          Change Password
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROFILE -->
+  <section *ngIf="activeTab() === 'profile'" class="panel panel--wide">
+    <div class="panel-title">Profile</div>
+
+    <div class="form-wrap form-wrap--wide">
+      <div class="field">
+        <label>Name</label>
+        <input class="form-control" [value]="profile()?.name" disabled />
+      </div>
+
+      <div class="field">
+        <label>Email</label>
+
+        <div *ngIf="!isEdit()" class="value">
+          {{ profile()?.email }}
+        </div>
+
+        <input
+          *ngIf="isEdit()"
+          [(ngModel)]="editable.email"
+          class="form-control"
+          placeholder="Email"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- AVATAR -->
+  <user-profile-content-avatar
+    [selectedAvatar]="selectedAvatar"
+    [profile]="profile"
+    [activeTab]="activeTab"
+  >
+  </user-profile-content-avatar>
+
+  <!-- SESSIONS -->
+  <section *ngIf="activeTab() === 'bookings'" class="panel panel--wide">
+    <div class="panel-title">Sessions</div>
+
+    <div class="list list--spacious">
+      <div *ngFor="let b of bookings()" class="list-item list-item--elevated">
+        <div class="left">
+          <div class="title">{{ b.sessionTitle }}</div>
+          <div class="sub">{{ b.startAt | date: 'medium' }}</div>
+        </div>
+
+        <button class="btn btn-outline-dark btn-sm" (click)="goToSession(b.sessionId)">Open</button>
+      </div>
+
+      <div *ngIf="!bookings()?.length" class="empty">No sessions yet</div>
+    </div>
+  </section>
+
+  <!-- POINTS -->
+  <section *ngIf="activeTab() === 'points'" class="panel panel--wide">
+    <div class="panel-title">Points & Activity</div>
+
+    <div class="points-grid points-grid--wide">
+      <div *ngFor="let p of pointsList()" class="point-item point-item--elevated">
+        <div class="p-title">{{ p.title }}</div>
+        <div class="p-value">+{{ p.value }}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECURITY -->
+  <section *ngIf="activeTab() === 'security'" class="panel panel--wide">
+    <div class="panel-title">Security</div>
+    <change-password></change-password>
+  </section>
+</main>
