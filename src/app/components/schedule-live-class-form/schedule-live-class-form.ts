@@ -10,16 +10,13 @@ import {
   Input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { combineLatest, Observable, of, shareReplay, switchMap } from 'rxjs';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { of } from 'rxjs';
 
 import { UserProfileService } from '../../core/services/fire/user-profile.service';
-import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { CatalogLookupService } from '../../domain/syllabus-index/catalog-lookup.service';
-import { ClassSubjectStore } from '../../store/class-store/class-subject.store';
 import { MeetingsService } from '../../services/meetings/meetings.service';
 import { ToastService } from '../../shared/toast.service';
-
+import { ClassLookupService } from '../../services/syllabus/class-lookup/class-lookup.service';
 
 interface ScheduleForm {
   classId: string;
@@ -45,14 +42,14 @@ export class ScheduleLiveClassForm implements OnInit {
   @Input({ required: true }) teacherId!: string;
   @Output() onSubmit = new EventEmitter<void>();
 
-  private syllabusLookup = inject(SyllabusLookupService);
+  private classLookup = inject(ClassLookupService);
   private catalogLookup = inject(CatalogLookupService);
-  private classStore = inject(ClassSubjectStore);
   private meetingsService = inject(MeetingsService);
   private toastService = inject(ToastService);
   private userProfile = inject(UserProfileService);
 
   readonly profile = this.userProfile.profile;
+
   readonly form = signal<ScheduleForm>({
     classId: '',
     subjectId: '',
@@ -66,50 +63,44 @@ export class ScheduleLiveClassForm implements OnInit {
   });
 
   readonly submitting = signal(false);
+
   readonly groupList = this.catalogLookup.groups;
   readonly batchList = this.catalogLookup.primaryGroups;
-  readonly classNameMap = toSignal(this.syllabusLookup.getClassNameMap(), {
-    initialValue: new Map<string, string>(),
-  });
+
+  constClassNameMap = signal<Record<string, string>>({});
 
   readonly selectedClass = computed(() => this.form().classId);
   readonly selectedSubject = computed(() => this.form().subjectId);
   readonly selectedChapter = computed(() => this.form().chapterCode);
 
-  readonly subjectList = toSignal(
-    toObservable(this.selectedClass).pipe(
-      switchMap((classId) => (classId ? this.syllabusLookup.getSubjects(classId) : of([]))),
-    ),
-    { initialValue: [] },
-  );
+  readonly subjectList = computed(() => {
+    const cls = this.selectedClass();
+    return cls && this.classLookup.hasData(cls)
+      ? this.classLookup.getSubjects(cls)
+      : [];
+  });
 
-  readonly chapterList$ = combineLatest([
-    toObservable(this.selectedClass),
-    toObservable(this.selectedSubject),
-  ]).pipe(
-    switchMap(([classId, subjectId]) => {
-      if (!classId || !subjectId) return of([]);
-      return this.syllabusLookup.getChapters(classId, subjectId);
-    }),
-    shareReplay({ bufferSize: 1, refCount: true }),
-  );
+  readonly chapterList = computed(() => {
+    const cls = this.selectedClass();
+    const sub = this.selectedSubject();
 
-  readonly chapterList = toSignal(this.chapterList$, { initialValue: [] });
+    return cls && sub && this.classLookup.hasData(cls)
+      ? this.classLookup.getChapters(cls, sub)
+      : [];
+  });
 
-  readonly divisions$ = combineLatest([
-    toObservable(this.selectedClass),
-    toObservable(this.selectedSubject),
-    toObservable(this.selectedChapter),
-  ]).pipe(
-    switchMap(([classId, subjectId, chapterCode]) => {
-      if (!classId || !subjectId || !chapterCode) return of([]);
-      return this.syllabusLookup.getDivisions(classId, subjectId, chapterCode);
-    }),
-    shareReplay({ bufferSize: 1, refCount: true }),
-  );
+  readonly divisions = computed(() => {
+    const cls = this.selectedClass();
+    const sub = this.selectedSubject();
+    const ch = this.selectedChapter();
 
-  readonly divisions = toSignal(this.divisions$, { initialValue: [] });
-  currentAndNext$: Observable<string[]> = of([]);
+    return cls && sub && ch && this.classLookup.hasData(cls)
+      ? this.classLookup.getDivisions(cls, sub, ch)
+      : [];
+  });
+
+  currentAndNext$ = of(['chapter-1', 'chapter-2']); // replace with store later
+
   readonly isValid = computed(() => {
     const f = this.form();
     return (
@@ -123,11 +114,21 @@ export class ScheduleLiveClassForm implements OnInit {
     );
   });
 
-  
   ngOnInit(): void {
-    this.currentAndNext$ = this.classStore
-      .getCurrentAndNextIndex('CL06', 'CL06-MATH')
-      .pipe(shareReplay({ bufferSize: 1, refCount: true }));
+    const cls = 'class_10'; // dummy initial
+    this.classLookup.load(cls).subscribe((ok) => {
+      if (!ok) return;
+
+      this.form.update((f) => ({
+        ...f,
+        classId: cls,
+        subjectId: this.classLookup.getSubjects(cls)[0]?.code ?? '',
+      }));
+
+      this.constClassNameMap.set({
+        [cls]: this.classLookup.getClassName(cls),
+      });
+    });
   }
 
   updateField<K extends keyof ScheduleForm>(key: K, value: ScheduleForm[K]) {
@@ -147,6 +148,7 @@ export class ScheduleLiveClassForm implements OnInit {
       this.toastService.show('Invalid form!');
       return;
     }
+
     if (!this.profile()?.uid) {
       this.toastService.show('Invalid teacher id');
       return;
@@ -154,12 +156,13 @@ export class ScheduleLiveClassForm implements OnInit {
 
     this.submitting.set(true);
     const f = this.form();
+
     const payload = {
       ...f,
       imageSrc: this.catalogLookup.getById(f.classId)?.file ?? '',
       teacherId: this.profile()?.uid ?? '',
       teacherName: this.profile()?.name ?? '',
-      className: this.classNameMap().get(f.classId) ?? '',
+      className: this.constClassNameMap()[f.classId] ?? '',
       subjectName: this.subjectList().find((s) => s.code === f.subjectId)?.name ?? '',
       chapterName: this.chapterList().find((c) => c.code === f.chapterCode)?.name ?? '',
     };
@@ -175,6 +178,7 @@ export class ScheduleLiveClassForm implements OnInit {
       },
     });
 
-    this.classStore.setCurrentIndex(f.classId, f.subjectId, 'chapter-5').subscribe();
+    // replace later with real store sync
+    console.log('Persist current index', f.classId, f.subjectId, f.chapterCode);
   }
 }

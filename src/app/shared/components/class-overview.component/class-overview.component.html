@@ -1,5 +1,4 @@
 <section class="lx-shell">
-  <!-- MAIN -->
   <main class="lx-main">
     <section class="lx-flow">
       <flow-orchestrator />
@@ -89,17 +88,15 @@
     </section>
   </main>
 
-  <!-- SIDEBAR (hidden on small screens → prevents overlay issue) -->
   <aside class="lx-sidebar d-none d-lg-block">
     <div class="lx-sidebar-inner">
       <course-sidebar
-        [subjects]="viewState.state.subjects"
-        [chapters]="viewState.state.chapters"
-        [selectedSubject]="viewState.state.selectedSubject"
-        [selectedChapter]="viewState.state.selectedChapter"
-        (selectSubject)="viewState.selectSubject($event)"
-        (selectChapter)="viewState.selectChapter($event)"
-      ></course-sidebar>
+        *ngIf="viewState.subjects().length"
+        [subjects]="viewState.subjects"
+        [chapters]="viewState.chapters"
+        [selectedSubject]="viewState.selectedSubject"
+        [selectedChapter]="viewState.selectedChapter"
+      />
     </div>
   </aside>
 </section>

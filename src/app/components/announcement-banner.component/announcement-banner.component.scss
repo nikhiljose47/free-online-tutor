@@ -1,0 +1,37 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.announce-wrap {
+  width: 100%;
+  height: clamp(140px, 18vh, 180px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.announce-svg {
+  width: 100%;
+  height: 100%;
+  max-height: 180px;
+  display: block;
+}
+
+/* typography normalization inside foreignObject */
+.announce-svg div {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  letter-spacing: 0.2px;
+}
+
+/* optional subtle clarity tweak */
+.announce-svg text {
+  shape-rendering: geometricPrecision;
+  text-rendering: optimizeLegibility;
+}
+
+/* ensure no unexpected scaling artifacts */
+.announce-svg * {
+  vector-effect: non-scaling-stroke;
+}

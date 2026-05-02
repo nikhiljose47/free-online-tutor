@@ -1,58 +1,67 @@
 <section class="points-board container-fluid p-0">
-
   <header class="board-header px-2 py-2 d-flex align-items-center justify-content-between">
     <div class="d-flex align-items-center gap-1">
       <span class="emoji">🏆</span>
       <h6 class="m-0 title">Top Performers</h6>
     </div>
+
+    <button class="btn btn-sm btn-light border-0" (click)="refresh()" [disabled]="isSyncing()">
+      ⟳
+    </button>
   </header>
 
   <div class="board-body px-1 py-1">
+    <!-- loading -->
+    <div *ngIf="isLoading()" class="text-center py-3 small text-muted">Loading rankings...</div>
 
     <!-- empty -->
-    <div *ngIf="users().length === 0" class="empty text-center py-3">
+    <div *ngIf="!isLoading() && users().length === 0" class="empty text-center py-3">
       <div class="icon mb-1">🧩</div>
       <div class="small text-muted">No rankings yet</div>
     </div>
 
     <!-- list -->
     <div *ngIf="users().length > 0" class="list">
-
       <div
         *ngFor="let u of users(); let i = index; trackBy: trackByUid"
         class="row-item d-flex align-items-center"
       >
-
         <!-- rank -->
         <div class="rank" [class.top]="i < 3">
           {{ i + 1 }}
         </div>
 
-        <!-- rank change -->
-        <!-- <div class="delta" *ngIf="u.meta?.rankDelta as d">
-          <span [class.up]="d > 0" [class.down]="d < 0">
-            {{ d > 0 ? '↑' : d < 0 ? '↓' : '–' }}
-          </span>
-        </div> -->
-
         <!-- avatar -->
         <div class="avatar">
-          <img [src]="u.photoUrl || fallbackAvatar" loading="lazy" alt="user" />
+          <img
+            class=""
+            [src]="getImgSrc(u?.avatarUrl)"
+            [alt]="getImgAlt(u)"
+            loading="lazy"
+            (error)="onImgError($event)"
+          />
         </div>
 
         <!-- name -->
         <div class="name text-truncate flex-grow-1">
-          {{ u.name }}
+          {{ u?.displayName || '—' }}
         </div>
 
         <!-- points -->
         <div class="points text-end">
-          {{ u.totalPoints | number }}
+          {{ u?.seasonPoints ?? 0 | number }}
         </div>
-
       </div>
-
     </div>
 
+    <!-- syncing indicator -->
+    <div *ngIf="isSyncing()" class="syncing text-center small text-muted py-1">
+      Updating latest ranks...
+    </div>
+
+    <!-- error -->
+    <div *ngIf="hasError()" class="text-center text-danger small py-1">
+      Unable to sync. Showing cached data.
+    </div>
   </div>
 </section>

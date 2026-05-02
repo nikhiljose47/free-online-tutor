@@ -11,7 +11,6 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Meeting } from '../../models/meeting.model';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
-import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
 import { Timestamp } from '@angular/fire/firestore';
 import { AttendanceApiService } from '../../services/attendance/attendance-api.service';
 import { UserProfileService } from '../../core/services/fire/user-profile.service';
@@ -24,6 +23,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { MeetingStatusStore } from '../../shared/state/meeting-status.store';
 import { CoverPlaceholderComponent } from '../../shared/components/cover-placeholder.component/cover-placeholder.component';
 import { UserCourseSyncService } from '../../services/user/user-course-sync/user-course-sync.service';
+import { ClassLookupService } from '../../services/syllabus/class-lookup/class-lookup.service';
 
 @Component({
   selector: 'join-tution',
@@ -37,12 +37,11 @@ export class JoinTution {
   private route = inject(ActivatedRoute);
   private user = inject(UserProfileService);
   private uiUtil = inject(UiStateUtil);
-  private syllabus = inject(SyllabusLookupService);
   private attendanceApi = inject(AttendanceApiService);
   private toastApi = inject(ToastService);
   private statusStore = inject(MeetingStatusStore);
   private userCourseSyncApi = inject(UserCourseSyncService);
-
+  private classLookup = inject(ClassLookupService); 
   private platformId = inject(PLATFORM_ID);
 
   hasCoverImgErr = signal<boolean>(false);
@@ -135,10 +134,9 @@ export class JoinTution {
     if (meeting.date > Timestamp.fromDate(new Date())) {
       //  this.isUpcoming = true;
     }
-
-    const chapter = this.syllabus.getChapterByCode(meeting.chapterCode).subscribe((e) => {
-      this.title = e?.chapter.name ?? '';
-    });
+    
+    const chapter = this.classLookup.getChapterByCode(meeting.classId, meeting.subjectId, meeting.chapterCode);
+    this.title = chapter.name;
   }
 
   loadAttendanceAndUsers(meeting: Meeting) {

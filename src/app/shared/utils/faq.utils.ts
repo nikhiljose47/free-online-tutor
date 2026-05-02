@@ -1,4 +1,4 @@
-import { Faq } from '../../models/common/faq.model';
+import { Faq } from '../../models/ui-state/faq.model';
 
 export const schoolFaqs: Faq[] = [
   {

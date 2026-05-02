@@ -10,19 +10,22 @@ import {
   catchError,
   forkJoin,
   defer,
-  startWith,
+  map,
   shareReplay,
 } from 'rxjs';
 import { IndexedDbService } from '../../core/services/cache/db/indexed-db.service';
 import { SyllabusIndex } from '../../models/syllabus/syllabus-index.model';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus.model';
-import { SYLL_INDEX_CACHE_KEY } from '../../core/constants/app.constants';
+import {
+  CACHE_TTL,
+  DEF_SYLLABUS_INDEX,
+  SYLL_INDEX_CACHE_KEY,
+} from '../../core/constants/app.constants';
 
 @Injectable({ providedIn: 'root' })
 export class SyllabusRepository {
-  private readonly TTL = 15 * 60 * 1000;
-  private index$?: Observable<SyllabusIndex | null>;
+  private index$?: Observable<SyllabusIndex>;
 
   constructor(
     private http: HttpClient,
@@ -30,35 +33,31 @@ export class SyllabusRepository {
     private uiState: UiStateUtil,
   ) {}
 
-  loadIndex(): Observable<SyllabusIndex | null> {
+  loadIndex(): Observable<SyllabusIndex> {
     if (this.index$) return this.index$;
 
     this.index$ = defer(() => {
-      const uiCached = this.uiState.get<SyllabusIndex>(SYLL_INDEX_CACHE_KEY);
-      if (uiCached) return of(uiCached);
+      const ui = this.uiState.get<SyllabusIndex>(SYLL_INDEX_CACHE_KEY);
+      if (ui) return of(ui);
 
       return from(
-        this.indexDb.get<{ id: string; data: SyllabusIndex; ts: number }>(
+        this.indexDb.get<{ data: SyllabusIndex; ts: number }>(
           'syllabus_index',
           SYLL_INDEX_CACHE_KEY,
         ),
       ).pipe(
-        switchMap((dbCached) => {
+        switchMap((db) => {
           const now = Date.now();
 
-          if (dbCached) {
-            this.uiState.set(SYLL_INDEX_CACHE_KEY, dbCached.data, this.TTL);
+          if (db?.data) {
+            this.setIndexUiCache(db.data);
+            if (now - db.ts < CACHE_TTL.SYLL_INDEX) return of(db.data);
           }
-
-          const shouldFetch = !dbCached || now - dbCached.ts >= this.TTL;
-
-          if (!shouldFetch) return of(dbCached.data);
 
           return this.http.get<SyllabusIndex>('index/syllabus-index.json').pipe(
             retry({ count: 2, delay: 800 }),
             tap((data) => {
-              this.uiState.set(SYLL_INDEX_CACHE_KEY, data, this.TTL);
-
+              this.setIndexUiCache(data);
               this.indexDb
                 .set('syllabus_index', {
                   id: SYLL_INDEX_CACHE_KEY,
@@ -67,22 +66,28 @@ export class SyllabusRepository {
                 })
                 .catch(() => {});
             }),
-            startWith(dbCached?.data ?? null), // SWR behavior
-            catchError(() => of(dbCached?.data ?? null)),
+            catchError(() => of(db?.data ?? DEF_SYLLABUS_INDEX)),
           );
         }),
+        map((res) => res ?? DEF_SYLLABUS_INDEX),
       );
-    }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+    }).pipe(shareReplay(1));
 
     return this.index$;
   }
 
-  loadClass(classId: string): Observable<ClassSyllabus | null> {
-    const CACHE_KEY = `syllabus:${classId}`;
-    const TTL = 24 * 60 * 60 * 1000; // 24h
 
+  private setIndexUiCache(data: SyllabusIndex) {
+    this.uiState.set(SYLL_INDEX_CACHE_KEY, data, CACHE_TTL.SYLL_INDEX);
+  }
+
+  loadClassById(classId: string, index: SyllabusIndex): Observable<ClassSyllabus | null> {
+    const CACHE_KEY = `syllabus:${classId}`;
     const uiCached = this.uiState.get<ClassSyllabus>(CACHE_KEY);
-    if (uiCached) return of(uiCached);
+
+    if (uiCached) {
+      return of(uiCached);
+    }
 
     return from(
       this.indexDb.get<{ id: string; data: ClassSyllabus; ts: number }>(
@@ -93,21 +98,19 @@ export class SyllabusRepository {
       switchMap((dbCached) => {
         const now = Date.now();
 
-        // serve stale immediately
         if (dbCached) {
-          this.uiState.set(CACHE_KEY, dbCached.data, TTL);
+          this.uiState.set(CACHE_KEY, dbCached.data, CACHE_TTL.SYLL_DATA);
+          if (now - dbCached.ts < CACHE_TTL.SYLL_DATA) {
+            return of(dbCached.data);
+          }
         }
 
-        // fresh → skip network
-        if (dbCached && now - dbCached.ts < TTL) {
-          return of(dbCached.data);
-        }
-
-        // network
-        return this.http.get<ClassSyllabus>(`syllabus/${classId}`).pipe(
+        const fileId = index.catalog.find((item) => item.id === classId)?.file;
+        return this.http.get<ClassSyllabus>(`syllabus/${fileId}`).pipe(
           retry({ count: 2, delay: 1000 }),
           tap((data) => {
-            this.uiState.set(CACHE_KEY, data, TTL);
+            this.uiState.set(CACHE_KEY, data, CACHE_TTL.SYLL_DATA);
+
             this.indexDb
               .set('syllabus_by_class', {
                 id: CACHE_KEY,
@@ -122,7 +125,9 @@ export class SyllabusRepository {
     );
   }
 
-  loadMultipleClasses(classIds: string[]): void {
-    forkJoin(classIds.map((id) => this.loadClass(id).pipe(catchError(() => of(null))))).subscribe();
+  loadMultipleClasses(classIds: string[], index: SyllabusIndex): void {
+    forkJoin(
+      classIds.map((id) => this.loadClassById(id, index).pipe(catchError(() => of(null)))),
+    ).subscribe();
   }
 }

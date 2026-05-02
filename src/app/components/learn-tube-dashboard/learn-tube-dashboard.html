@@ -16,7 +16,7 @@
                   class="card-3d animate-book w-100"
                   [ngClass]="[
                     'delay-' + (i + 1),
-                    selected() === item.type ? 'active-card' : '',
+                    selected === item.type ? 'active-card' : '',
                     isCompleted(item.type) ? 'completed-card' : '',
                   ]"
                   (click)="select(item.type, item.action)"

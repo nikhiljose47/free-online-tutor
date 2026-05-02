@@ -8,13 +8,13 @@ import { Meeting } from '../../models/meeting.model';
 import { SyllabusRepository } from '../../domain/repositories/syllabus.repository';
 import { ClassSyllabus } from '../../models/syllabus/class-syllabus.model';
 import { DotLoader } from '../../components/dot-loader/dot-loader';
-import { SyllabusStore } from '../../shared/state/syllabus.store';
-import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
+import { catchError, of, tap } from 'rxjs';
 import { MeetingsService } from '../../services/meetings/meetings.service';
 import { QuoteUtil } from '../../shared/utils/quote.utils';
 import { Quote } from '../../models/quote.model';
-import { ClassSubjectService } from '../../services/class/class-subject/class-subject.service';
 import { ClassAssignmentsService } from '../../services/class/class-assignments/class-assignments.service';
+import { UiStateUtil } from '../../shared/state/ui-state.utils';
+import { ClassLookupService } from '../../services/syllabus/class-lookup/class-lookup.service';
 
 @Component({
   selector: 'tution-details',
@@ -27,9 +27,9 @@ export class TutionDetails implements OnInit {
   /* ================= ROUTING ================= */
   private route = inject(ActivatedRoute);
   private meetApi = inject(MeetingsService);
+  private classLookup = inject(ClassLookupService);
   private syllRepo = inject(SyllabusRepository);
-  private syllabusStore = inject(SyllabusStore);
-  private classSubService = inject(ClassSubjectService);
+  private uiStateUtil = inject(UiStateUtil);
   private classAssignmentsService = inject(ClassAssignmentsService);
 
   readonly type = this.route.snapshot.paramMap.get('type') as 'class' | 'jam';
@@ -115,7 +115,12 @@ export class TutionDetails implements OnInit {
   classFileId: string = '';
 
   ngOnInit(): void {
-    this.loadData();
+    this.classLookup.load(this.id).subscribe((ready) => {
+      if (ready) {
+        this.loadData();
+      }
+    });
+
     console.log('classid', this.id);
     this.quote.set(QuoteUtil.getRandom());
     this.classAssignmentsService.getAll('CL06').subscribe({
@@ -125,43 +130,23 @@ export class TutionDetails implements OnInit {
   }
 
   loadData() {
-    this.syllabusStore
-      .getIdMap$()
+    const syllabus = this.classLookup.get(this.id);
+    this.syllabus.set(syllabus);
+
+    this.meetApi
+      .getMeetingsForClass(this.id)
       .pipe(
-        switchMap((map) => {
-          if (!map) return of(null);
+        tap((meetings) => {
+          if (meetings) this.setMeetings(meetings as any);
 
-          this.classFileId = map[this.id];
-
-          return forkJoin({
-            syllabus: this.syllRepo.loadClass(this.classFileId).pipe(catchError(() => of(null))),
-            meetings: this.meetApi.getMeetingsForClass(this.id).pipe(catchError(() => of(null))),
-          });
-        }),
-        tap((res) => {
-          if (!res) {
-            this.isLoading.set(false);
-            return;
-          }
-
-          const { syllabus, meetings } = res;
-
-          if (syllabus) {
-            this.syllabus.set(syllabus);
-          }
-
-          if (meetings) {
-            this.setMeetings(meetings as any);
-          }
-
-          /* BOTH must be valid */
-          const valid = !!syllabus && !!meetings;
+          const valid = !!meetings;
           this.hasValidData.set(valid);
           this.isLoading.set(false);
 
           if (valid) console.log('came in');
         }),
         catchError(() => {
+          this.hasValidData.set(false);
           this.isLoading.set(false);
           return of(null);
         }),

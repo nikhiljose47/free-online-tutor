@@ -20,6 +20,7 @@ import { ToastService } from '../../shared/toast.service';
 import { StudentSessionResultsListComponent } from '../../shared/components/student-session-results-list.component/student-session-results-list.component';
 import { StudentAssessmentService } from '../../services/assessment/student-assessment.service';
 import { ConfirmService } from '../../services/common/confirm.service';
+import { ClassBatchDocService } from '../../services/class/batch-doc/batch-doc.service';
 
 @Component({
   selector: 'schedule-live-class',
@@ -39,7 +40,7 @@ export class ScheduleLiveClass implements OnInit {
   /* ------------------ services ------------------ */
   private meetApi = inject(MeetingsService);
   private assessmentApi = inject(StudentAssessmentService);
-  private fire = inject(FirestoreDocService);
+  private classBatchDocApi = inject(ClassBatchDocService);
   private authApi = inject(Auth2Service);
   private uiStateUtil = inject(UiStateUtil);
   private toastApi = inject(ToastService);
@@ -153,9 +154,34 @@ export class ScheduleLiveClass implements OnInit {
     const m = this.selectedMeeting();
     if (!m) return;
 
-    this.fire.update(GLOBAL_MEETINGS, m.id, {
-      status: COMPLETED,
-      endAt: Timestamp.now(),
-    });
+    this.classBatchDocApi
+      .update(m.classId, 'blue', {
+        curClassId: m.classId,
+        curChapterId: m.chapterCode,
+      })
+      .subscribe({
+        next: (res) => {
+          if (!res?.ok) {
+            console.warn('⚠️ update failed', {
+              classId: m.classId,
+              chapterCode: m.chapterCode,
+              message: res?.message,
+            });
+            return;
+          }
+
+          console.log('✅ update success', {
+            classId: m.classId,
+            chapterCode: m.chapterCode,
+          });
+        },
+        error: (err) => {
+          console.error('❌ update error', {
+            classId: m.classId,
+            chapterCode: m.chapterCode,
+            err,
+          });
+        },
+      });
   }
 }

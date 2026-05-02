@@ -12,6 +12,7 @@ import { ToastService } from '../../shared/toast.service';
 export class Toast {
   toasts = computed(() => this.toastService.toasts());
   constructor(private toastService: ToastService) {}
+  
   remove(id: string) {
     this.toastService.remove(id);
   }

@@ -1,9 +1,16 @@
-<div class="placeholder-box">
-  <i class="bi bi-hourglass-split placeholder-icon"></i>
+<section class="ph-wrap d-flex flex-column align-items-center justify-content-center text-center">
+  <div class="ph-icon-wrap">
+    <i class="bi" [class]="'bi ' + image"></i>
+  </div>
 
-  <h2 class="placeholder-title">Hold On…</h2>
+  <h1 class="ph-title">Something went wrong</h1>
 
-  <p class="placeholder-text">
-    {{ message }}
+  <p class="ph-desc">
+    {{ message || 'We’re trying to reconnect things. You can continue or go back safely.' }}
   </p>
-</div>
+
+  <div class="ph-actions d-flex gap-2 justify-content-center flex-wrap">
+    <button class="ph-link-primary" (click)="goHome()">Go to Home</button>
+    <button class="ph-link-secondary" (click)="retry()">Try again</button>
+  </div>
+</section>

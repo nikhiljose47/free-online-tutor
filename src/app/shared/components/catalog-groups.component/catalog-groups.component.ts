@@ -12,6 +12,11 @@ import { CatalogItem, PrimaryGroup } from '../../../models/syllabus/syllabus-ind
 import { StringUtil } from '../../utils/string.util';
 import { PLACEHOLDER__COVER_IMG } from '../../../core/constants/app.constants';
 
+type GroupMeta = {
+  icon: string;
+  bg: string;
+};
+
 @Component({
   selector: 'catalog-groups',
   standalone: true,
@@ -29,15 +34,39 @@ export class CatalogGroupsComponent {
   openGroups = signal<Set<string>>(new Set());
   slugToText = StringUtil.slugToTitle;
 
-  primaryGroupIcons: Record<PrimaryGroup, string> = {
-    school: '🏫',
-    skills: '🔬',
-    'exam-prep': '✍️',
-    coding: '👨‍💻',
-    language: '🗣️',
-    creative: '🎭',
-    career: '💼',
-    wellness: '🧘‍♂️',
+  primaryGroupMeta: Record<PrimaryGroup, GroupMeta> = {
+    school: {
+      icon: '🏫',
+      bg: '#E8F0FE',
+    },
+    skills: {
+      icon: '🔬',
+      bg: '#F3E8FF',
+    },
+    'exam-prep': {
+      icon: '✍️',
+      bg: '#FFF4E5',
+    },
+    coding: {
+      icon: '👨‍💻',
+      bg: '#E6F7FF',
+    },
+    language: {
+      icon: '🗣️',
+      bg: '#E6FFFA',
+    },
+    creative: {
+      icon: '🎭',
+      bg: '#FFF0F6',
+    },
+    career: {
+      icon: '💼',
+      bg: '#F1F3F5',
+    },
+    wellness: {
+      icon: '🧘‍♂️',
+      bg: '#E9F7EF',
+    },
   };
 
   constructor() {
@@ -82,13 +111,5 @@ export class CatalogGroupsComponent {
 
   openItem(item: CatalogItem) {
     this.routeTrigger.emit(item.id);
-  }
-
-  getBannerSrc(src?: string | null): string {
-    return src || PLACEHOLDER__COVER_IMG;
-  }
-
-  onImgError(event: Event) {
-    (event.target as HTMLImageElement).src = PLACEHOLDER__COVER_IMG;
   }
 }

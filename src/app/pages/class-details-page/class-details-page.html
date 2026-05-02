@@ -1,4 +1,8 @@
-<section class="class-details-page d-flex flex-column">
+<ng-template #hasError>
+  <content-placeholder></content-placeholder>
+</ng-template>
+
+<section *ngIf="!hasDataErr(); else hasError" class="class-details-page d-flex flex-column">
   @let s = syllabus();
   @let q = quote();
   @let st = stats();

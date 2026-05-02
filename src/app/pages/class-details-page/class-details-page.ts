@@ -22,12 +22,13 @@ import { Quote } from '../../models/quote.model';
 import { QuoteUtil } from '../../shared/utils/quote.utils';
 import { AiTutorChatComponent } from '../../shared/components/ai-tutor-chat.component/ai-tutor-chat.component';
 import { UiStateUtil } from '../../shared/state/ui-state.utils';
-import { SyllabusIndexService } from '../../services/syllabus/syllabus-index/syllabus-index.service';
-import { ClassDocService } from '../../services/class/class-doc/class-doc';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ClassDoc } from '../../models/classes/class-doc.model';
-import { CurClassInfo } from '../../models/common/common.model';
+import { CurrentClassState } from '../../models/ui-state/current-class-state.model';
 import { CUR_CLASS_INFO } from '../../core/constants/app.constants';
+import { ClassBatchDocService } from '../../services/class/batch-doc/batch-doc.service';
+import { BatchDoc } from '../../models/batch/batch-doc.model';
+import { ClassLookupService } from '../../services/syllabus/class-lookup/class-lookup.service';
+import { ContentPlaceholder } from '../../components/content-placeholder/content-placeholder';
 
 type TabType = 'overview' | 'live' | 'curriculum' | 'ai';
 
@@ -46,6 +47,7 @@ interface ClassStat {
     CommonModule,
     UserCardlist,
     FaqList,
+    ContentPlaceholder,
     ClassScheduleListComponent,
     AiTutorChatComponent,
     ClassOverviewComponent,
@@ -53,22 +55,18 @@ interface ClassStat {
 })
 export class ClassDetailsPage implements OnInit {
   private platformId = inject(PLATFORM_ID);
-
-  private syllabusIndexApi = inject(SyllabusIndexService);
-  private syllRepo = inject(SyllabusRepository);
   private route = inject(ActivatedRoute);
   private uiUtil = inject(UiStateUtil);
-  private classDocApi = inject(ClassDocService);
-
+  private batchDocApi = inject(ClassBatchDocService);
+  private classLookup = inject(ClassLookupService);
   private destroyRef = inject(DestroyRef);
 
   readonly classId = this.getValidClassId();
-  readonly isLoading = signal(true);
-  readonly hasValidData = signal(false);
-
+  hasDataErr = signal(false);
+  hasData = false;
   syllabus = signal<ClassSyllabus | null>(null);
   className = signal<string>('Class');
-  classDoc = signal<ClassDoc | null>(null);
+  batchDoc = signal<BatchDoc | null>(null);
 
   aiContext = computed(() => `${this.syllabus()?.className ?? ''}`);
 
@@ -86,7 +84,7 @@ export class ClassDetailsPage implements OnInit {
 
   readonly quote = signal<Quote>(QuoteUtil.getQuoteOfDay());
   trackStat = (_: number, item: any) => item.label;
-  
+
   constructor(private router: Router) {
     if (isPlatformBrowser(this.platformId)) {
       this.router.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((e) => {
@@ -102,19 +100,6 @@ export class ClassDetailsPage implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    forkJoin([this.loadData$(), this.getClassDoc$()])
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.uiUtil.set<CurClassInfo>(CUR_CLASS_INFO, {
-          curClassId: this.classDoc()?.curClassId ?? '',
-          className: this.className(),
-        });
-
-        this.isLoading.set(false);
-      });
-  }
-
   private getValidClassId(): string {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
@@ -122,6 +107,30 @@ export class ClassDetailsPage implements OnInit {
       return '';
     }
     return id;
+  }
+
+  ngOnInit(): void {
+    this.loadClass();
+    this.getBatchDoc$().subscribe((res) => {
+      this.uiUtil.set<CurrentClassState>(CUR_CLASS_INFO, {
+        classId: this.batchDoc()?.curClassId ?? '',
+        className: this.className(),
+      });
+    });
+  }
+
+  private loadClass() {
+    this.classLookup.load(this.classId).subscribe((ready) => {
+      console.log('Class data load status for', this.classId, ':', ready);
+      if (ready) {
+        this.className.set(this.classLookup.getClassName(this.classId));
+        this.syllabus.set(this.classLookup.get(this.classId)); // safe to use sync getters
+        // safe to use sync getters
+        this.hasData = true;
+      } else {
+        this.hasDataErr.set(true);
+      }
+    });
   }
 
   select(tab: TabType): void {
@@ -137,29 +146,10 @@ export class ClassDetailsPage implements OnInit {
     }
   }
 
-  loadData$() {
-    return this.syllabusIndexApi.getIdMap$().pipe(
-      switchMap((map) => {
-        if (!map) return of(null);
-
-        this.classFileId = map[this.classId];
-
-        return this.syllRepo.loadClass(this.classFileId).pipe(catchError(() => of(null)));
-      }),
-      tap((syllabus) => {
-        if (!syllabus) return;
-
-        this.syllabus.set(syllabus);
-        this.className.set(syllabus.className);
-        this.hasValidData.set(true);
-      }),
-    );
-  }
-
-  getClassDoc$() {
-    return this.classDocApi.getFast(this.classId).pipe(
+  getBatchDoc$() {
+    return this.batchDocApi.getFast(this.classId, 'blue').pipe(
       tap((doc) => {
-        if (doc) this.classDoc.set(doc);
+        if (doc) this.batchDoc.set(doc);
       }),
     );
   }

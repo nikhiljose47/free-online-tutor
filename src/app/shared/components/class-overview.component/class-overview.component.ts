@@ -10,41 +10,18 @@ import {
 import { CommonModule } from '@angular/common';
 import { BatchQueryService } from '../../../services/class/batch-query/batch-query.service';
 import { BatchDoc } from '../../../models/batch/batch-doc.model';
-import { SyllabusLookupService } from '../../../services/syllabus/syllabus-lookup.service';
 import { Chapter, ClassSyllabus } from '../../../models/syllabus/class-syllabus.model';
-import {
-  combineLatest,
-  distinctUntilChanged,
-  filter,
-  map,
-  of,
-  shareReplay,
-  Subject,
-  switchMap,
-  tap,
-} from 'rxjs';
-import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { distinctUntilChanged, filter, Subject, switchMap, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LearningViewState } from '../../state/learning-view-state';
 import { CourseSidebarComponent } from '../course-sidebar.component/course-sidebar.component';
 import { FlowOrchestratorComponent } from '../../../components/flow-orchestrator/flow-orchestrator.component';
-
-interface DashBoard {
-  total: number;
-  upcoming: BatchDoc[];
-  live: BatchDoc[];
-  enrollmentOpen: BatchDoc[];
-  upcomingCount: number;
-  liveCount: number;
-}
+import { ClassLookupService } from '../../../services/syllabus/class-lookup/class-lookup.service';
 
 @Component({
   selector: 'class-overview',
   standalone: true,
-  imports: [
-    CommonModule,
-    CourseSidebarComponent,
-    FlowOrchestratorComponent
-  ],
+  imports: [CommonModule, CourseSidebarComponent, FlowOrchestratorComponent],
   templateUrl: './class-overview.component.html',
   styleUrls: ['./class-overview.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,43 +34,68 @@ export class ClassOverviewComponent implements OnInit {
     this.classId$.next(value);
   }
 
-  batchQueryApi = inject(BatchQueryService);
-  syllLookUpApi = inject(SyllabusLookupService);
+  private classLookup = inject(ClassLookupService);
+  private batchQueryApi = inject(BatchQueryService);
   readonly viewState = inject(LearningViewState);
 
-  readonly dashboard = signal<DashBoard | null>(null);
+  readonly dashboard = signal<any>(null);
   selectedBatchId = signal<string | null>(null);
-  private syllabusSignal = signal<any[]>([]);
-  selectedType = signal<'live' | 'upcoming' | 'enrollmentOpen'>('live');
-  private service = inject(SyllabusLookupService);
 
-  readonly syllabus = toSignal<ClassSyllabus | null>(
-    this.classId$.pipe(
-      filter(Boolean),
-      distinctUntilChanged(),
-      switchMap((id) => {
-        return this.service.loadClass(id);
-      }),
-    ),
-    { initialValue: null },
-  );
-  private syllabus$ = toObservable(this.syllabus);
+  readonly syllabus = signal<ClassSyllabus | null>(null);
+
+  selectedType = signal<'live' | 'upcoming' | 'enrollmentOpen'>('live');
+
+  constructor() {
+    this.classId$
+      .pipe(
+        filter(Boolean),
+        distinctUntilChanged(),
+        switchMap((id) => {
+          if (this.classLookup.hasData(id)) {
+            return [{ id, ok: true }];
+          }
+          return this.classLookup.load(id).pipe(tap((ok) => ({ id, ok })));
+        }),
+        tap((res: any) => {
+          const id = res.id ?? res[0]?.id;
+          const ok = res.ok ?? res[0]?.ok;
+          if (!ok) return;
+
+          const data = this.classLookup.get(id);
+
+          this.syllabus.set(data);
+          this.viewState.setSyllabus(data);
+          
+
+          const firstSub = data.subjects?.[0]?.code ?? null;
+          if (firstSub) this.viewState.selectSubject(firstSub);
+        }),
+        takeUntilDestroyed(),
+      )
+      .subscribe();
+  }
+
+  readonly allBatches = computed(() => [
+    ...(this.dashboard()?.live ?? []),
+    ...(this.dashboard()?.upcoming ?? []),
+  ]);
 
   selectedBatch = computed(() => {
-    const db = this.dashboard();
-    if (!db || !this.selectedBatchId()) return null;
-
-    return [...db.live, ...db.upcoming].find((b) => b.id === this.selectedBatchId()) ?? null;
+    const id = this.selectedBatchId();
+    if (!id) return null;
+    return this.allBatches().find((b) => b.id === id) ?? null;
   });
 
   readonly mergedSubjectProgress = computed(() => {
     const batch = this.selectedBatch();
-    const syllabus = this.syllabusSignal();
+    const syllabus = this.syllabus();
 
-    if (!batch || !syllabus.length) return [];
+    if (!batch || !syllabus) return [];
 
-    return batch.subjectIndex.map((sub) => {
-      const subject = syllabus.find((s) => s.code === sub.subjectId);
+    const subjectMap = new Map(syllabus.subjects.map((s) => [s.code, s]));
+
+    return batch.subjectIndex.map((sub: any) => {
+      const subject = subjectMap.get(sub.subjectId);
 
       if (!subject || !subject.chapters.length) {
         return {
@@ -145,27 +147,7 @@ export class ClassOverviewComponent implements OnInit {
     });
   });
 
-  constructor() {
-    this.syllabus$
-      .pipe(
-        filter((data): data is ClassSyllabus => !!data),
-        tap((data) => this.viewState.setSyllabus(data)),
-        takeUntilDestroyed(),
-      )
-      .subscribe();
-  }
-
   ngOnInit(): void {
-    this.loadBatchStore();
-    this.loadSyllabus();
-    //this.loadClassView();
-  }
-
-  onSelectBatch(b: BatchDoc) {
-    this.selectedBatchId.set(b.id);
-  }
-
-  private loadBatchStore(): void {
     this.batchQueryApi.getDashboard(this.classId).subscribe((db) => {
       this.dashboard.set(db);
       const first = db.live?.[0] ?? db.upcoming?.[0] ?? db.enrollmentOpen?.[0] ?? null;
@@ -174,88 +156,10 @@ export class ClassOverviewComponent implements OnInit {
     });
   }
 
+  onSelectBatch(b: BatchDoc) {
+    this.selectedBatchId.set(b.id);
+  }
+
   trackSubject = (_: number, item: any) => item?.subjectId || item?.subjectName;
   trackBatch = (_: number, item: any) => item?.id;
-
-  private loadClassView(): void {
-    toObservable(this.syllabus)
-      .pipe(
-        filter((data): data is ClassSyllabus => !!data),
-        tap((data) => this.viewState.setSyllabus(data)),
-        takeUntilDestroyed(),
-      )
-      .subscribe();
-  }
-
-  private loadSyllabus(): void {
-    this.syllLookUpApi
-      .getSubjects(this.classId)
-      .pipe(
-        switchMap((subjects) =>
-          subjects?.length
-            ? combineLatest(
-                subjects.map((s) =>
-                  this.syllLookUpApi.getChapters(this.classId, s.code).pipe(
-                    map((chapters) => ({
-                      code: s.code,
-                      name: s.name,
-                      chapters,
-                    })),
-                  ),
-                ),
-              )
-            : of([]),
-        ),
-
-        shareReplay({ bufferSize: 1, refCount: true }),
-      )
-      .subscribe((data) => {
-        this.syllabusSignal.set(data);
-      });
-  }
 }
-
-// readonly batches = signal<any[]>([
-//   {
-//     name: 'Batch A',
-//     time: '4:30 PM',
-//     status: 'live',
-//     totalStudents: 320,
-//     totalBatches: 3,
-//     upcomingClass: '2 hrs',
-//     enrollmentOpen: true,
-//     subjects: [
-//       {
-//         name: 'Mathematics',
-//         currentIndex: 2,
-//         chapters: ['Numbers', 'Fractions', 'Decimals', 'Ratio', 'Algebra'],
-//       },
-//       {
-//         name: 'Science',
-//         currentIndex: 1,
-//         chapters: ['Food', 'Components', 'Fibre', 'Sorting', 'Separation'],
-//       },
-//     ],
-//   },
-//   {
-//     name: 'Batch B',
-//     time: '6:00 PM',
-//     status: 'upcoming',
-//     totalStudents: 210,
-//     totalBatches: 3,
-//     upcomingClass: '5 hrs',
-//     enrollmentOpen: true,
-//     subjects: [
-//       {
-//         name: 'Mathematics',
-//         currentIndex: 1,
-//         chapters: ['Numbers', 'Fractions', 'Decimals', 'Ratio', 'Algebra'],
-//       },
-//       {
-//         name: 'Science',
-//         currentIndex: 0,
-//         chapters: ['Food', 'Components', 'Fibre', 'Sorting', 'Separation'],
-//       },
-//     ],
-//   },
-// ]);

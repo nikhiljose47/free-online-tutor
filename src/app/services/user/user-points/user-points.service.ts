@@ -1,9 +1,16 @@
 import { Injectable, inject } from '@angular/core';
-import { from, switchMap, of, map, Subject } from 'rxjs';
-
+import { from, switchMap, of, map, Subject, Observable, catchError, shareReplay } from 'rxjs';
 import { FirestoreDocService } from '../../../core/services/fire/firestore-doc.service';
 import { Auth2Service } from '../../../core/services/fire/auth2.service';
 import { DBStore, IndexedDbService } from '../../../core/services/cache/db/indexed-db.service';
+import { UserModel } from '../../../models/fire/user.model';
+
+export type RankboardUser = {
+  id: string;
+  displayName: string;
+  seasonPoints: number;
+  avatarUrl?: string;
+};
 
 type PointLog = { id: string; ts: number };
 
@@ -20,6 +27,23 @@ export class UserPointsService {
   private currentSeasonId = '';
 
   /* ---------- GET ---------- */
+
+  getTop10Rankboard(): Observable<RankboardUser[]> {
+    return this.fs.realtimeTopN<UserModel>('users', 'seasonPoints', 10).pipe(
+      map((res) => {
+        if (!res.ok || !res.data) return [];
+
+        return (res.data as UserModel[]).map((u) => ({
+          id: u.uid,
+          displayName: u.name ?? 'User',
+          seasonPoints: Number(u.seasonPoints ?? 0),
+          avatarUrl: u.avatarId ?? '',
+        }));
+      }),
+      catchError(() => of([])),
+      shareReplay({ bufferSize: 1, refCount: true }),
+    );
+  }
 
   get() {
     const uid = this.auth.uid;
@@ -47,7 +71,7 @@ export class UserPointsService {
         }
 
         return user;
-      })
+      }),
     );
   }
 
@@ -75,11 +99,11 @@ export class UserPointsService {
               this.idb.set(this.store, {
                 id: finalKey,
                 ts: Date.now(),
-              })
+              }),
             ).pipe(map(() => res));
-          })
+          }),
         );
-      })
+      }),
     );
   }
 
@@ -101,9 +125,7 @@ export class UserPointsService {
           : of({ ok: true });
 
         return reset$.pipe(
-          switchMap(() =>
-            this.fs.incrementNested('users', uid, 'points.points', points)
-          ),
+          switchMap(() => this.fs.incrementNested('users', uid, 'points.points', points)),
           switchMap((res) => {
             if (!res.ok) return of(res);
 
@@ -114,16 +136,18 @@ export class UserPointsService {
               this._points$.next(points);
             }
             return r;
-          })
+          }),
         );
-      })
+      }),
     );
   }
 
   /* ---------- HELPERS ---------- */
 
   private hash(str: string): string {
-    let h = 0, i, chr;
+    let h = 0,
+      i,
+      chr;
     for (i = 0; i < str.length; i++) {
       chr = str.charCodeAt(i);
       h = (h << 5) - h + chr;

@@ -3,12 +3,11 @@
     <div class="catalog-block">
       <div class="catalog-main-grid">
         <ng-container *ngFor="let g of groupsArray()">
-          <!-- NORMAL GROUPS (non-kids first) -->
           <ng-container *ngIf="!g.key.toLowerCase().includes('kids')">
             <div class="catalog-group">
               <div class="group-header">
-                <span class="group-icon-circle">
-                  {{ primaryGroupIcons[g.key] }}
+                <span class="group-icon-circle" [style.background]="primaryGroupMeta[g.key]?.bg">
+                  {{ primaryGroupMeta[g.key]?.icon }}
                 </span>
 
                 <h3 class="group-title">
@@ -22,18 +21,20 @@
                     {{ item.title }}
                   </span>
 
-               <i class="bi bi-arrow-right-circle item-arrow"></i>
+                  <i class="bi bi-arrow-right-circle item-arrow"></i>
                 </button>
               </div>
             </div>
           </ng-container>
 
-          <!-- KIDS GROUP → ALWAYS LAST -->
           <ng-container *ngIf="g.key.toLowerCase().includes('kids')">
             <div class="catalog-group kids-block">
               <div class="group-header">
-                <span class="group-icon-circle kids-icon">
-                  {{ primaryGroupIcons[g.key] }}
+                <span
+                  class="group-icon-circle kids-icon"
+                  [style.background]="primaryGroupMeta[g.key]?.bg"
+                >
+                  {{ primaryGroupMeta[g.key]?.icon }}
                 </span>
 
                 <h3 class="group-title">

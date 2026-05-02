@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, shareReplay, map, tap, of } from 'rxjs';
+import { Observable, shareReplay, map, tap, of, startWith, retry, take } from 'rxjs';
 import {
   FireResponse,
   FirestoreDocService,
@@ -21,52 +21,61 @@ export class ClassBatchDocService {
     return `${this.basePath}/${classId}/batches`;
   }
 
-  private isValid(key: string): boolean {
-    const entry = this.memory()[key];
-    if (!entry) return false;
-    return Date.now() - entry.ts < this.ttl;
+  private key(classId: string, batchId: string) {
+    return `${classId}-${batchId}`;
   }
 
-  // ---------- SINGLE DOC ----------
+  private isValid(k: string) {
+    const e = this.memory()[k];
+    return !!e && Date.now() - e.ts < this.ttl;
+  }
+
+  private extract(doc: BatchDoc | BatchDoc[] | null): BatchDoc | null {
+    if (!doc) return null;
+    return Array.isArray(doc) ? (doc[0] ?? null) : doc;
+  }
+
+  // ---------- GET ONCE ----------
   getOnce(classId: string, batchId: string): Observable<BatchDoc | null> {
-    const key = `${classId}-${batchId}`;
+    const k = this.key(classId, batchId);
+    const mem = this.memory()[k]?.data;
 
-    if (this.isValid(key)) {
-      return of(this.memory()[key].data);
-    }
+    if (this.isValid(k)) return of(mem);
 
-    if (this.cache.has(key)) return this.cache.get(key)!;
+    if (this.cache.has(k)) return this.cache.get(k)!;
 
     const req$ = this.fs.getOnce<BatchDoc>(this.path(classId), batchId).pipe(
-      map((r: FireResponse<BatchDoc>) => (r.ok && r.data ? (r.data as BatchDoc) : null)),
+      map((r: FireResponse<BatchDoc>) => (r.ok ? this.extract(r.data) : null)),
+      retry({ count: 2, delay: 500 }),
       tap((doc) => {
         if (!doc) return;
         this.memory.update((m) => ({
           ...m,
-          [key]: { data: doc, ts: Date.now() },
+          [k]: { data: doc, ts: Date.now() },
         }));
       }),
-      shareReplay({ bufferSize: 1, refCount: false }),
+      mem ? startWith(mem) : (o) => o,
+      shareReplay({ bufferSize: 1, refCount: true }),
     );
 
-    this.cache.set(key, req$);
+    this.cache.set(k, req$);
     return req$;
   }
 
   // ---------- REALTIME ----------
   listen(classId: string, batchId: string): Observable<BatchDoc | null> {
-    const liveKey = `live-${classId}-${batchId}`;
-    const memKey = `${classId}-${batchId}`;
+    const k = this.key(classId, batchId);
+    const liveKey = `live-${k}`;
 
     if (this.cache.has(liveKey)) return this.cache.get(liveKey)!;
 
     const req$ = this.fs.listen<BatchDoc>(this.path(classId), batchId).pipe(
-      map((r: FireResponse<BatchDoc>) => (r.ok && r.data ? (r.data as BatchDoc) : null)),
+      map((r: FireResponse<BatchDoc>) => (r.ok ? this.extract(r.data) : null)),
       tap((doc) => {
         if (!doc) return;
         this.memory.update((m) => ({
           ...m,
-          [memKey]: { data: doc, ts: Date.now() },
+          [k]: { data: doc, ts: Date.now() },
         }));
       }),
       shareReplay({ bufferSize: 1, refCount: true }),
@@ -76,38 +85,70 @@ export class ClassBatchDocService {
     return req$;
   }
 
+  // ---------- FAST ----------
+  getFast(classId: string, batchId: string): Observable<BatchDoc | null> {
+    const k = this.key(classId, batchId);
+    const mem = this.memory()[k]?.data;
+    if (mem) return of(mem);
+    return this.listen(classId, batchId).pipe(take(1));
+  }
+
   // ---------- MEMORY FIRST ----------
   get(classId: string, batchId: string): Observable<BatchDoc | null> {
-    const key = `${classId}-${batchId}`;
-
-    if (this.isValid(key)) {
-      return of(this.memory()[key].data);
-    }
-
+    const k = this.key(classId, batchId);
+    if (this.isValid(k)) return of(this.memory()[k].data);
     return this.getOnce(classId, batchId);
   }
 
   // ---------- MUTATIONS ----------
   set(classId: string, doc: BatchDoc) {
+    const k = this.key(classId, doc.id);
+
+    this.memory.update((m) => ({
+      ...m,
+      [k]: { data: doc, ts: Date.now() },
+    }));
+
     return this.fs.set(this.path(classId), doc.id, doc);
   }
 
   update(classId: string, batchId: string, data: Partial<BatchDoc>) {
+    const k = this.key(classId, batchId);
+
+    this.memory.update((m) => {
+      const e = m[k];
+      if (!e) return m;
+      return {
+        ...m,
+        [k]: { data: { ...e.data, ...data }, ts: Date.now() },
+      };
+    });
+
     return this.fs.update(this.path(classId), batchId, data);
   }
 
   delete(classId: string, batchId: string) {
+    const k = this.key(classId, batchId);
+
+    this.memory.update((m) => {
+      const { [k]: _, ...rest } = m;
+      return rest;
+    });
+
+    this.cache.delete(k);
+    this.cache.delete(`live-${k}`);
+
     return this.fs.delete(this.path(classId), batchId);
   }
 
-  // ---------- CACHE CLEAR ----------
+  // ---------- CLEAR ----------
   clear(classId?: string, batchId?: string) {
     if (classId && batchId) {
-      const key = `${classId}-${batchId}`;
-      this.cache.delete(key);
-      this.cache.delete(`live-${key}`);
+      const k = this.key(classId, batchId);
+      this.cache.delete(k);
+      this.cache.delete(`live-${k}`);
       this.memory.update((m) => {
-        const { [key]: _, ...rest } = m;
+        const { [k]: _, ...rest } = m;
         return rest;
       });
       return;
@@ -118,12 +159,9 @@ export class ClassBatchDocService {
         .filter((k) => k.includes(classId))
         .forEach((k) => this.cache.delete(k));
 
-      this.memory.update((m) => {
-        const filtered = Object.fromEntries(
-          Object.entries(m).filter(([k]) => !k.startsWith(classId)),
-        );
-        return filtered;
-      });
+      this.memory.update((m) =>
+        Object.fromEntries(Object.entries(m).filter(([k]) => !k.startsWith(classId))),
+      );
       return;
     }
 

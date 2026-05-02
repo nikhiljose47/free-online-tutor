@@ -75,7 +75,7 @@
 
       <!-- AUTH -->
       <ng-container *ngIf="!profile()">
-        <a class="topbar-link" routerLink="/login">Login</a>
+        <a class="topbar-link fw-bold" routerLink="/login">Login</a>
       </ng-container>
 
       <!-- PROFILE -->
@@ -94,7 +94,7 @@
           <img [src]="CommonUtil.getAvatarUrl(profile()?.avatarId || null)" class="profile-icon" />
 
           <div class="learn-menu">
-            <a routerLink="/test" class="menu-item">Profile</a>
+            <a routerLink="/course-view/flutter-mobile-adv" class="menu-item">Profile</a>
             <button class="menu-item logout-btn" (click)="logout()">Logout</button>
           </div>
         </div>

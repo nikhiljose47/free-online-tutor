@@ -7,9 +7,6 @@ import { ClassStreamSidebar } from './components/class-stream-sidebar/class-stre
 import { Footer } from './components/footer/footer';
 import { ConfirmDialogComponent } from './shared/components/confirm-dialog.component/confirm-dialog.component';
 
-
-//ResourceIndex or IdMap have 
-
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, ConfirmDialogComponent, Topbar, Footer, Toast, CommonModule, ClassStreamSidebar],

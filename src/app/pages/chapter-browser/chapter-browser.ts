@@ -9,9 +9,9 @@ import {
 } from '@angular/core';
 
 import { ClassSyllabus, Chapter, Subject } from '../../models/syllabus/class-syllabus.model';
-import { SyllabusLookupService } from '../../services/syllabus/syllabus-lookup.service';
-import { EMPTY, switchMap, take } from 'rxjs';
 import { DotLoader } from '../../components/dot-loader/dot-loader';
+import { take } from 'rxjs';
+import { ClassLookupService } from '../../services/syllabus/class-lookup/class-lookup.service';
 
 @Component({
   selector: 'chapter-browser',
@@ -22,9 +22,9 @@ import { DotLoader } from '../../components/dot-loader/dot-loader';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChapterBrowser implements OnInit {
-  private syllabusLookup = inject(SyllabusLookupService);
+  private classLookup = inject(ClassLookupService);
 
-  readonly classes = signal<string[]>([]);
+  readonly classes = signal<string[]>(['class_10', 'class_9']); // replace via service later
   readonly syllabus = signal<ClassSyllabus | null>(null);
 
   readonly selectedClass = signal<string | null>(null);
@@ -32,20 +32,20 @@ export class ChapterBrowser implements OnInit {
 
   readonly isOnline = signal<boolean>(navigator.onLine);
   readonly syncing = signal<boolean>(false);
+  readonly loading = signal<boolean>(true);
 
   readonly subjects = computed<Subject[]>(() => {
-    return this.syllabus()?.subjects ?? [];
+    const cls = this.selectedClass();
+    return cls ? this.classLookup.getSubjects(cls) : [];
   });
 
   readonly chapters = computed<Chapter[]>(() => {
-    const syl = this.syllabus();
+    const cls = this.selectedClass();
     const subjectCode = this.selectedSubjectCode();
 
-    if (!syl || !subjectCode) return [];
+    if (!cls || !subjectCode || !this.classLookup.hasData(cls)) return [];
 
-    const subject = syl.subjects.find((s) => s.code === subjectCode);
-
-    return subject?.chapters ?? [];
+    return this.classLookup.getChapters(cls, subjectCode);
   });
 
   readonly expanded = signal<Record<string, boolean>>({});
@@ -58,46 +58,43 @@ export class ChapterBrowser implements OnInit {
   }
 
   ngOnInit(): void {
-    this.syllabusLookup
-      .getClassIds()
-      .pipe(
-        take(1),
-        switchMap((ids) => {
-          this.classes.set(ids);
+    const firstClass = this.classes()[0];
+    if (!firstClass) return;
 
-          if (!ids.length) return EMPTY;
+    this.selectedClass.set(firstClass);
 
-          const firstClass = ids[0];
+    this.classLookup
+      .load(firstClass)
+      .pipe(take(1))
+      .subscribe((ok) => {
+        this.loading.set(false);
+        if (!ok) return;
 
-          this.selectedClass.set(firstClass);
+        this.syllabus.set(this.classLookup.get(firstClass));
 
-          return this.syllabusLookup.getClass(firstClass).pipe(take(1));
-        }),
-      )
-      .subscribe((cls) => {
-        if (!cls) return;
-
-        this.syllabus.set(cls);
-
-        if (cls.subjects?.length) {
-          this.selectedSubjectCode.set(cls.subjects[0].code);
+        const subjects = this.classLookup.getSubjects(firstClass);
+        if (subjects?.length) {
+          this.selectedSubjectCode.set(subjects[0].code);
         }
       });
   }
 
   selectClass(classId: string) {
     this.selectedClass.set(classId);
+    this.loading.set(true);
 
-    this.syllabusLookup
-      .getClass(classId)
+    this.classLookup
+      .load(classId)
       .pipe(take(1))
-      .subscribe((cls) => {
-        if (!cls) return;
+      .subscribe((ok) => {
+        this.loading.set(false);
+        if (!ok) return;
 
-        this.syllabus.set(cls);
+        this.syllabus.set(this.classLookup.get(classId));
 
-        if (cls.subjects?.length) {
-          this.selectedSubjectCode.set(cls.subjects[0].code);
+        const subjects = this.classLookup.getSubjects(classId);
+        if (subjects?.length) {
+          this.selectedSubjectCode.set(subjects[0].code);
         }
       });
   }
@@ -121,6 +118,6 @@ export class ChapterBrowser implements OnInit {
   }
 
   private queueOfflineRequest(chapter: Chapter) {
-    console.warn('Offline: change request queued for', chapter.code);
+    console.warn('Offline queued', chapter.code);
   }
 }

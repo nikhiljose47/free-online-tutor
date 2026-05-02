@@ -1,10 +1,11 @@
 import { Component, computed, inject, afterNextRender, signal, effect, Input } from '@angular/core';
-import { LearnTubeService, LearnTubeStage } from '../../services/learn-tube/learn-tube.service';
+import { LearnTubeService } from '../../services/learn-tube/learn-tube.service';
 import { AUDIO_BG_PATH, TYPE_CONFIG } from '../../core/constants/app.constants';
 import { CommonModule } from '@angular/common';
 import { LearnTubeFetchService } from '../../services/learntube-fetch/learntube-fetch.service';
 import { LearnTubeModel } from '../../models/learn-tube/learn-tube.model';
-import { LearnTubePersistService } from '../../services/learn-tube-persist/learn-tube-persist.service';
+import { filter, take } from 'rxjs';
+import { UserPointsService } from '../../services/user/user-points/user-points.service';
 
 @Component({
   selector: 'learn-tube',
@@ -17,11 +18,11 @@ export class LearnTubeComponent {
   @Input({ required: true }) flowNext!: (
     step?: 'slides' | 'game' | 'dashboard' | 'ai-learn',
   ) => void;
-   @Input() flowRedoSlides!: () => void;
+  @Input() flowRedoSlides!: () => void;
 
+  private pointsService = inject(UserPointsService);
   service = inject(LearnTubeService);
   fetchService = inject(LearnTubeFetchService);
-  persistService = inject(LearnTubePersistService);
 
   isLoading = signal(true);
   hasError = signal(false);
@@ -39,7 +40,6 @@ export class LearnTubeComponent {
   init() {
     this.isLoading.set(true);
     this.hasError.set(false);
-
     this.fetchService.getById('mob-flutter-adv').subscribe({
       next: (res: LearnTubeModel | null) => {
         if (!res) {
@@ -55,6 +55,13 @@ export class LearnTubeComponent {
         this.isLoading.set(false);
       },
       error: () => this.fail(),
+    });
+
+    this.service.playbackCompleted$.pipe(filter(Boolean), take(1)).subscribe(() => {
+      this.pointsService
+        .addPoints(2, 'slides') // 👈 full question as key
+        .subscribe();
+      this.flowNext('dashboard');
     });
   }
 

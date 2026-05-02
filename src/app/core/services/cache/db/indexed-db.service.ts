@@ -9,12 +9,20 @@ export type DBStore =
   | 'puzzle_sessions'
   | 'user_point_logs'
   | 'app_context_map'
-  | 'user_course_map';
+  | 'user_course_map'
+  | 'user_flow_state'
+  | 'leaderboard_top10';
 
 export interface DBConfig {
   dbName: string;
   version: number;
 }
+
+type CacheItem<T> = {
+  id: string;
+  value: T;
+  expiry: number;
+};
 
 @Injectable({ providedIn: 'root' })
 export class IndexedDbService {
@@ -77,6 +85,18 @@ export class IndexedDbService {
         }
         if (!db.objectStoreNames.contains('user_course_map')) {
           db.createObjectStore('user_course_map', { keyPath: 'id' });
+        }
+
+        if (!db.objectStoreNames.contains('ttl_store')) {
+          db.createObjectStore('ttl_store', { keyPath: 'id' });
+        }
+
+        if (!db.objectStoreNames.contains('user_flow_state')) {
+          db.createObjectStore('user_flow_state', { keyPath: 'id' });
+        }
+
+        if (!db.objectStoreNames.contains('leaderboard_top10')) {
+          db.createObjectStore('leaderboard_top10');
         }
       };
 
@@ -158,6 +178,58 @@ export class IndexedDbService {
 
   clear(store: DBStore): Promise<void> {
     return this.tx(store, 'readwrite', (s) => s.clear()).then(() => {});
+  }
+
+  //TTL-specific methods
+
+  async setWithTTL<T>(id: string, value: T, ttlMs: number): Promise<void> {
+    const expiry = Date.now() + ttlMs;
+
+    return this.tx('ttl_store' as DBStore, 'readwrite', (s) =>
+      s.put({ id, value, expiry } as CacheItem<T>),
+    ).then(() => {});
+  }
+
+  async getWithTTL<T>(id: string): Promise<T | null> {
+    const item = await this.tx<CacheItem<T> | undefined>('ttl_store' as DBStore, 'readonly', (s) =>
+      s.get(id),
+    );
+
+    if (!item) return null;
+
+    if (Date.now() > item.expiry) {
+      // 🔥 auto cleanup
+      await this.deleteTTL(id);
+      return null;
+    }
+
+    return item.value;
+  }
+
+  async deleteTTL(id: string): Promise<void> {
+    return this.tx('ttl_store' as DBStore, 'readwrite', (s) => s.delete(id)).then(() => {});
+  }
+
+  async clearExpiredTTL(): Promise<void> {
+    const all = await this.tx<CacheItem<any>[]>('ttl_store' as DBStore, 'readonly', (s) =>
+      s.getAll(),
+    );
+
+    const expired = all.filter((i) => Date.now() > i.expiry);
+
+    if (!expired.length) return;
+
+    await this.ready;
+
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction('ttl_store', 'readwrite');
+      const store = tx.objectStore('ttl_store');
+
+      expired.forEach((i) => store.delete(i.id));
+
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
   }
 
   /* ---------- RECOVERY ---------- */

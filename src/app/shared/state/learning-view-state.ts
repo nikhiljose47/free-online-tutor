@@ -29,6 +29,12 @@ export class LearningViewState {
   private _hasData = computed(() => this._subjects().length > 0);
 
   /* PUBLIC STATE */
+  readonly subjects = this._subjects;
+  readonly chapters = this._chapters;
+  readonly selectedSubject = this._selectedSubject;
+  readonly selectedChapter = this._selectedChapter;
+  readonly hasData = this._hasData;
+
   readonly state: LearningViewStateModel = {
     subjects: this._subjects,
     chapters: this._chapters,

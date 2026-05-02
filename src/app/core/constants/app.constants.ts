@@ -1,3 +1,5 @@
+import { SyllabusIndex } from "../../models/syllabus/syllabus-index.model";
+
 export const APP_VERSION = '1.0.0';
 
 export const SYLLABUS_VERSION = '1.0.0';
@@ -13,6 +15,7 @@ export const TEACHER_JOB_FORM_URL =
 export const SYLL_DATA_BASE_URL = 'https://authentication-785fd.web.app/index/';
 
 export const SYLL_INDEX_CACHE_KEY = 'syllabus_index_ckey';
+export const READY_SYLL_FILE_IDS_CACHE_KEY = 'ready_syllabus_file_ids_ckey';
 
 export const UPCOMING = 'upcoming';
 export const COMPLETED = 'completed';
@@ -38,15 +41,30 @@ export type SyllabusErrorCode =
   | 'NETWORK_ERROR'
   | 'INVALID_SCHEMA';
 
+export const ONE_HOUR = 60 * 60 * 1000; // 1 hour in milliseconds
+
 export const CACHE_TTL = {
-  TEACHERS_LIST: 5 * 24 * 60 * 60 * 1000, // 5 days
-  TEACHER_BY_ID: 2 * 60 * 60 * 1000, // 2 hour
+  TEACHERS_LIST: 5 * 24 * ONE_HOUR, // 5 days
+  TEACHER_BY_ID: 2 * ONE_HOUR, // 2 hours
   BATCH_DOC: 5 * 60 * 1000, // 5 min
-  ANNOUNCEMENTS: 6 * 60 * 60 * 1000, // 6 hours
+  ANNOUNCEMENTS: 6 * ONE_HOUR, // 6 hours
   ASSIGNMENTS: 5 * 60 * 1000, // 5 min
-  PUZZLE_SESS: 24 * 60 * 60 * 1000, //24 hr
-  ASSESSMENT: 2 * 60 * 60 * 1000, //2 hr
+  PUZZLE_SESS: 24 * ONE_HOUR, // 24 hr
+  ASSESSMENT: 2 * ONE_HOUR, // 2 hr
+  RANKBOARD_TOP10: 1.5 * 24 * ONE_HOUR, // 1.5 days
+  SYLL_INDEX: 1 * 24 * ONE_HOUR, // 1 day
+  SYLL_DATA: 5 * 24 * ONE_HOUR, // 5 days
 } as const;
+
+export const DEF_SYLLABUS_INDEX = {
+  version: SYLLABUS_VERSION,
+  generatedAt: new Date().toISOString(),
+  primaryGroups: [],
+  groups: [],
+  catalog: [],
+} as SyllabusIndex;
+
+
 
 
 //Age-Class relation
@@ -69,7 +87,6 @@ export const DEF_BATCH = 'blue';
 //IndexDb
 export const INDEXED_DB_NAME = 'in.sunbay.academy.offline-data-db-v1.72026.app';
 
-
 //Variables
 export const CUR_CLASS_INFO = 'cur_class_info';
 
@@ -87,7 +104,6 @@ export const TYPE_CONFIG: Record<string, { path: string; duration: number }> = {
   outro: { path: 'assets/slides/conclude.svg', duration: 5000 },
 };
 
-
 export const PLACEHOLDER__COVER_IMG = 'assets/placeholder.svg';
 export const DEF_AVATAR_ID = 'avatar-boy-01';
 export const AVATARS = [
@@ -100,8 +116,6 @@ export const AVATARS = [
   'avatar-girl-03',
   'avatar-girl-04',
 ];
-
-
 
 //DUmmy
 export const CHANNELS_RAW = [

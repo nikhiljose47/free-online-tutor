@@ -2,10 +2,11 @@
   <section class="top-split">
     <!-- LEFT (Component A) -->
     <div class="top-left">
-      <highlight-banner
+      <announcement-banner></announcement-banner>
+      <!-- <highlight-banner
         [title]="'Learning impact across regions'"
         [image]="'assets/banner-icon.webp'"
-      />
+      /> -->
     </div>
 
     <!-- RIGHT (Component B) -->
@@ -13,7 +14,7 @@
       <topper-rank-board />
     </div>
   </section>
-  
+
   <div class="landing-inner">
     <div class="landing-left" [class.full]="profile()">
       <ng-container *ngIf="profile(); else loggedOut">

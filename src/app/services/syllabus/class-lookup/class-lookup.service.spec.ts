@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SyllabusIndexService } from './syllabus-index.service';
+import { ClassLookupService } from './class-lookup.service';
 
-describe('SyllabusIndexService', () => {
-  let service: SyllabusIndexService;
+describe('ClassLookupService', () => {
+  let service: ClassLookupService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(SyllabusIndexService);
+    service = TestBed.inject(ClassLookupService);
   });
 
   it('should be created', () => {

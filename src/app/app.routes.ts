@@ -19,7 +19,6 @@ import { seoResolver } from './resolvers/seo-resolver';
 import { FreeOnlineTuition } from './pages/free-online-tuition/free-online-tuition';
 import { AiTutorChatComponent } from './shared/components/ai-tutor-chat.component/ai-tutor-chat.component';
 import { OnlineTeacherJobs } from './pages/online-teacher-jobs/online-teacher-jobs';
-import { CourseViewPage } from './pages/course-view-page/course-view-page';
 import { UserProfile } from './pages/user-profile/user-profile';
 import { TestPage } from './pages/test-page/test-page';
 
@@ -240,12 +239,6 @@ export const routes: Routes = [
   {
     path: 'schedule',
     component: ScheduleLiveClass,
-    data: { noIndex: true },
-    resolve: { seo: seoResolver },
-  },
-  {
-    path: 'course-view/:classId',
-    component: CourseViewPage,
     data: { noIndex: true },
     resolve: { seo: seoResolver },
   },

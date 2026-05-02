@@ -307,6 +307,21 @@ export class FirestoreDocService {
     );
   }
 
+  realtimeTopN<T>(path: string, orderField: string, limitTo = 10): Observable<FireResponse<T>> {
+    const q = query(this.col<T>(path), orderBy(orderField, 'desc'), limit(limitTo));
+
+    return collectionData(q, { idField: 'id' } as any).pipe(
+      map((arr: any[]) => {
+        const ranked = arr.map((d, i) => ({
+          ...d,
+          rank: i + 1,
+        }));
+        return this.success<T>(ranked as T[]);
+      }),
+      catchError((err) => of(this.fail<T>(err.message ?? 'TopN query failed'))),
+    );
+  }
+
   notEnded<T>(path: string, limitTo = 15): Observable<FireResponse<T[]>> {
     const now = Timestamp.fromDate(new Date());
 

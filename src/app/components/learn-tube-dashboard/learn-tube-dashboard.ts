@@ -10,7 +10,6 @@ import {
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { of, delay, tap, shareReplay, fromEvent, merge } from 'rxjs';
 import { map, startWith, debounceTime } from 'rxjs/operators';
-import { LearnTubePersistService } from '../../services/learn-tube-persist/learn-tube-persist.service';
 import { LocalStoreService } from '../../core/services/local-store/local-store.service';
 
 type CardType = 'insight' | 'challenge' | 'flow';
@@ -30,15 +29,10 @@ export class LearnTubeDashboardComponent {
 
   @Input() flowRedoSlides!: () => void;
 
-  private stageSvc = inject(LearnTubePersistService);
   private store = inject(LocalStoreService);
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
 
-  /* source of truth */
-  isSlides = this.stageSvc.isSlides;
-  isQuestion = this.stageSvc.isSlideEnded;
-  isLearn = this.stageSvc.isQuizEnded;
 
   loading = signal(true);
 
@@ -48,15 +42,11 @@ export class LearnTubeDashboardComponent {
   private readonly order: CardType[] = ['insight', 'challenge', 'flow'];
 
   /* current active */
-  readonly selected = computed<CardType>(() => {
-    if (this.isQuestion()) return 'challenge';
-    if (this.isLearn()) return 'flow';
-    return 'insight';
-  });
+  readonly selected = 'challenge';
 
   /* 🔥 completed logic (clean + scalable) */
   readonly completedSet = computed<Set<CardType>>(() => {
-    const currentIndex = this.order.indexOf(this.selected());
+    const currentIndex = this.order.indexOf(this.selected);
     return new Set(this.order.slice(0, currentIndex));
   });
 

@@ -9,8 +9,6 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LocalStoreService } from '../../../core/services/local-store/local-store.service';
-import { LearnTubePersistService } from '../../../services/learn-tube-persist/learn-tube-persist.service';
-import { LearnTubeStage } from '../../../services/learn-tube/learn-tube.service';
 import { UserPointsService } from '../../../services/user/user-points/user-points.service';
 
 type Q = {
@@ -43,7 +41,8 @@ export class LearnTubeQuizPlayerComponent {
   @Input({ required: true }) flowNext!: (
     step?: 'slides' | 'game' | 'dashboard' | 'ai-learn',
   ) => void;
-  private persistService = inject(LearnTubePersistService);
+  @Input() flowRedoSlides!: () => void;
+
   private pointsService = inject(UserPointsService);
   private store = inject(LocalStoreService);
 
@@ -157,7 +156,6 @@ export class LearnTubeQuizPlayerComponent {
   private submit() {
     const score = this.calculateScore();
     this.cacheResult(score);
-    this.persistService.set(LearnTubeStage.QuizEnded);
     this.flowNext('dashboard');
   }
 

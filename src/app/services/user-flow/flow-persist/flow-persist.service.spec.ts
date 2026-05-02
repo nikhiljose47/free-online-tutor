@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SyllabusDataService } from './syllabus-data.service';
+import { FlowPersistService } from './flow-persist.service';
 
-describe('SyllabusDataService', () => {
-  let service: SyllabusDataService;
+describe('FlowPersistService', () => {
+  let service: FlowPersistService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(SyllabusDataService);
+    service = TestBed.inject(FlowPersistService);
   });
 
   it('should be created', () => {
